@@ -3,6 +3,6 @@ module uk.ac.soton.comp2312.group42.energyclient {
     requires javafx.fxml;
 
 
-    opens uk.ac.soton.comp2312.group42.energyclient to javafx.fxml;
+    opens uk.ac.soton.comp2312.group42.energyclient.controller to javafx.fxml;
     exports uk.ac.soton.comp2312.group42.energyclient;
 }

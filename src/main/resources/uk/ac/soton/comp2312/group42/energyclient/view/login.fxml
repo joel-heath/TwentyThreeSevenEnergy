@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="uk.ac.soton.comp2312.group42.energyclient.controller.LoginController"
+           prefHeight="400.0" prefWidth="600.0">
+
+    <Button text="Go back" onAction="#onBack" StackPane.alignment="TOP_LEFT">
+        <StackPane.margin>
+            <Insets top="15" left="15"/>
+        </StackPane.margin>
+    </Button>
+
+    <VBox spacing="20" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity">
+
+        <Label text="Email:"/>
+        <TextField fx:id="emailField" />
+
+        <Label text="Password:" />
+        <PasswordField fx:id="passwordField" />
+
+        <Button text="Log in" onAction="#onLogin"/>
+        <Button text="Create account" onAction="#onCreateAccount"/>
+
+    </VBox>
+
+</StackPane>

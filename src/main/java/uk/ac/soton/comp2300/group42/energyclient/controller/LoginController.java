@@ -1,0 +1,21 @@
+package uk.ac.soton.comp2300.group42.energyclient.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
+
+public class LoginController {
+
+    @FXML TextField emailField;
+    @FXML TextField passwordField;
+
+    public void onBack() { Navigator.goBack(); }
+
+    public void onLogin() {
+        // not implemented
+    }
+
+    public void onCreateAccount() {
+        Navigator.goTo("/uk/ac/soton/comp2300/group42/energyclient/view/createAccount.fxml");
+    }
+}

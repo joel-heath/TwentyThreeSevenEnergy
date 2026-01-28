@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Rectangle?>
+
+<VBox spacing="20" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
+
+    <StackPane alignment="CENTER_LEFT">
+        <!-- Background bar -->
+        <Rectangle width="300" height="25"
+                   arcWidth="10" arcHeight="10"
+                   fill="#cccccc"/>
+
+        <!-- Progress bar -->
+        <Rectangle fx:id="usageRect"
+                   height="25"
+                   arcWidth="10" arcHeight="10"
+                   fill="#4CAF50"/>
+    </StackPane>
+
+    <TextField fx:id="costGoalField"
+               layoutX="50"
+               layoutY="100"
+               promptText="Enter cost goal as a value (e.g. 10 or 10.50)" />
+
+    <Button text="Set Goal"
+            layoutX="220"
+            layoutY="100"
+            onAction="#onSetCostGoal" />
+
+    <Label layoutX="50"
+           layoutY="80"
+           text="Goal:"
+           fx:id="goalLabel"/>
+
+    <Button text="Schedule Appliance" onAction="#onSchedule"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Increment Counter" onAction="#onIncrement"/>
+        <Label fx:id="counterLabel"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Recalculate Energy Cost (£)" onAction="#onRecalculate"/>
+        <Label fx:id="costLabel"/>
+    </HBox>
+
+</VBox>
+

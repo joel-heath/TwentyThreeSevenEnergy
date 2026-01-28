@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="20"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.ScheduleController">
+
+    <Label text="Schedule Page"/>
+    <Button text="Back to Dashboard" onAction="#onBack"/>
+</VBox>

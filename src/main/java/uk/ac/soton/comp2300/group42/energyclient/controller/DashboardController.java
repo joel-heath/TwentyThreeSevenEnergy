@@ -31,7 +31,7 @@ public class DashboardController {
     }
 
     public void onSchedule() {
-        Navigator.goTo("/uk/ac/soton/comp2300/group42/energyclient/view/schedule.fxml");
+        Navigator.goTo("schedule.fxml");
     }
 
     public void onIncrement() {

@@ -16,8 +16,10 @@ public class Navigator {
     private static Scene mainScene;
     private static final Stack<Parent> backHistory = new Stack<>();
     private static final Stack<Parent> forwardHistory = new Stack<>();
+    private static final String defaultPath = "/uk/ac/soton/comp2300/group42/energyclient/view/";
 
     private static Parent loadFXML(String fxmlPath) throws IOException {
+
         URL fxml = Objects.requireNonNull(
                 Navigator.class.getResource(fxmlPath),
                 fxmlPath + " not found"
@@ -26,7 +28,7 @@ public class Navigator {
         return FXMLLoader.load(fxml);
     }
 
-    public static void initialize(String fxmlPath, Stage mainStage) throws IOException {
+    public static void initializeAbsolute(String fxmlPath, Stage mainStage) throws IOException {
         if (mainScene != null)
             System.out.println("Warning: You shouldn't call `initialise` more than once");
 
@@ -46,7 +48,11 @@ public class Navigator {
         mainStage.setScene(mainScene);
     }
 
-    public static void goTo(String fxmlPath) {
+    public static void initialize(String fxmlPath, Stage mainStage) throws IOException {
+        initializeAbsolute(defaultPath + fxmlPath, mainStage);
+    }
+
+    public static void goToAbsolute(String fxmlPath) {
         try {
             Parent newRoot = loadFXML(fxmlPath);
             backHistory.push(mainScene.getRoot());
@@ -55,6 +61,10 @@ public class Navigator {
         } catch (IOException e) {
             throw new RuntimeException("Failed to load view: " + fxmlPath, e);
         }
+    }
+
+    public static void goTo(String fxmlPath) {
+        goToAbsolute(defaultPath + fxmlPath);
     }
 
     public static void goBack() {

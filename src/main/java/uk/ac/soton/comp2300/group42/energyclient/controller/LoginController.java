@@ -16,6 +16,6 @@ public class LoginController {
     }
 
     public void onCreateAccount() {
-        Navigator.goTo("/uk/ac/soton/comp2300/group42/energyclient/view/createAccount.fxml");
+        Navigator.goTo("createAccount.fxml");
     }
 }

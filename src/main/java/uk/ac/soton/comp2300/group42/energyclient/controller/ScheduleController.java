@@ -5,6 +5,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.services.NotificationService;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
@@ -21,9 +22,11 @@ public class ScheduleController {
     @FXML private Spinner<Integer> hourSpinner;
     @FXML private Spinner<Integer> minuteSpinner;
 
-    private final ScheduleViewModel vm = new ScheduleViewModel();
+    private final ScheduleViewModel vm;
 
-    public void initialize() {
+    public ScheduleController(ScheduleViewModel vm) { this.vm = vm; }
+
+    @FXML private void initialize() {
         applianceSelector.setItems(vm.getApplianceList());
         applianceSelector.valueProperty().bindBidirectional(vm.selectedApplianceProperty());
 
@@ -58,8 +61,9 @@ public class ScheduleController {
         if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
 
         NotificationService.scheduleNotification(selected.getName(), targetDateTime);
-        String formattedTime = targetDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        vm.scheduleAppliance(new Activation(-1, selected, targetDateTime));
 
+        String formattedTime = targetDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
         responseLabel.setText(selected + " scheduled for " +
             (isBeforeOrNow ? "tomorrow at " : "") +
             formattedTime);

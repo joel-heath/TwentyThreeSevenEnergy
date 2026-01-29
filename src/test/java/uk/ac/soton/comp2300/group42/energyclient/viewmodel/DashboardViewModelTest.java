@@ -5,14 +5,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
+
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class DashboardViewModelTest {
 
-    @Mock
-    EnergyCalculator fakeCalc;
+    @Mock EnergyCalculator fakeCalc;
+    @Mock ActivationRepository activationRepository;
 
     @Test
     void testRecalculateCost() {
@@ -20,7 +22,7 @@ class DashboardViewModelTest {
         when(fakeCalc.convertJoulesToPounds(100)).thenReturn(50.0);
 
         // 2. Inject the fake calculator into the ViewModel
-        DashboardViewModel viewModel = new DashboardViewModel(fakeCalc);
+        DashboardViewModel viewModel = new DashboardViewModel(fakeCalc, activationRepository);
 
         // 3. Act: Trigger the logic
         viewModel.recalculateCost(); // (Assume this triggers logic using 100 joules)
@@ -32,7 +34,7 @@ class DashboardViewModelTest {
     @Test
     void testIncrementCounter() {
         // Simple test without mocks, just checking internal state
-        DashboardViewModel viewModel = new DashboardViewModel(fakeCalc);
+        DashboardViewModel viewModel = new DashboardViewModel(fakeCalc, activationRepository);
 
         assertEquals(0, viewModel.counterProperty().get());
 

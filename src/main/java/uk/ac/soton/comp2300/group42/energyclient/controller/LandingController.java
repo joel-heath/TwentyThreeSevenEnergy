@@ -9,6 +9,6 @@ public class LandingController {
     }
 
     public void onDive() {
-        Navigator.goTo("dashboard.fxml");
+        Navigator.goToIrreversible("dashboard.fxml");
     }
 }

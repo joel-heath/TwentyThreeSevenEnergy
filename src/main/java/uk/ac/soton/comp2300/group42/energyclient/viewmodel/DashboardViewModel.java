@@ -1,7 +1,11 @@
 package uk.ac.soton.comp2300.group42.energyclient.viewmodel;
 
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.model.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
+import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
 
 public class DashboardViewModel {
 
@@ -12,14 +16,14 @@ public class DashboardViewModel {
     private final DoubleProperty costGoal = new SimpleDoubleProperty(0);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
+    private final ObservableList<Activation> activations = FXCollections.observableArrayList();
+
     private final EnergyCalculator calc;
+    private final ActivationRepository activationRepo;
 
-    public DashboardViewModel() {
-        this(new EnergyCalculator());
-    }
-
-    public DashboardViewModel(EnergyCalculator calc) {
+    public DashboardViewModel(EnergyCalculator calc, ActivationRepository activationRepo) {
         this.calc = calc;
+        this.activationRepo = activationRepo;
     }
 
     public IntegerProperty counterProperty() { return counter; }
@@ -50,5 +54,12 @@ public class DashboardViewModel {
         double target = costGoal.get();
         double percentUsage = cost / target;
         usage.set(percentUsage);
+    }
+
+
+    public ObservableList<Activation> getActivations() { return activations; }
+
+    public void loadCards() {
+        activations.addAll(activationRepo.findAll());
     }
 }

@@ -49,5 +49,12 @@
         <Label fx:id="costLabel"/>
     </HBox>
 
+    <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
+        <VBox style="-fx-padding: 10;">
+            <Label text="Upcoming Device Schedules"/>
+            <HBox fx:id="scheduleContainer" spacing="15"/>
+        </VBox>
+    </ScrollPane>
+
 </VBox>
 

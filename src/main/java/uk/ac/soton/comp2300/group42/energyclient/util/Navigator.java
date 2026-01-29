@@ -101,7 +101,6 @@ public class Navigator {
     public static void goBack() {
         if (!backHistory.empty()) {
             forwardHistory.push((String)mainScene.getRoot().getUserData());
-            System.out.println(backHistory.peek());
             goToAbsoluteNoHistory(backHistory.pop());
         }
     }

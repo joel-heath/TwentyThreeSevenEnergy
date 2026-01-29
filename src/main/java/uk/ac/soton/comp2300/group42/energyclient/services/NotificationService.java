@@ -2,6 +2,8 @@ package uk.ac.soton.comp2300.group42.energyclient.services;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +14,7 @@ public class NotificationService {
 
     private static final Timer timer = new Timer(true);
 
-    public static void scheduleNotification(String applianceName, LocalDateTime targetTime) {
+    public static void scheduleNotification(Appliance appliance, LocalDateTime targetTime) {
         LocalDateTime now = LocalDateTime.now();
         String formattedTime = targetTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 
@@ -26,8 +28,8 @@ public class NotificationService {
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Scheduled Reminder");
-                    alert.setHeaderText(applianceName + " Reminder.");
-                    alert.setContentText("The time is " + formattedTime + ", time to use the " + applianceName + ".");
+                    alert.setHeaderText(appliance.getName() + " Reminder.");
+                    alert.setContentText("The time is " + formattedTime + ", time to use the " + appliance.getName() + ".");
                     alert.show();
                 });
             }

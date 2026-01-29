@@ -1,6 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.controller;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.transformation.SortedList;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -22,7 +25,9 @@ public class DashboardController {
     @FXML private TextField costGoalField;
     @FXML private Rectangle usageRect;
 
-    double maxBarWidth = 300;
+    @FXML private HBox scheduleContainer;
+
+    private static final double maxBarWidth = 300;
 
     private final DashboardViewModel vm;
 
@@ -34,18 +39,50 @@ public class DashboardController {
         usageRect.widthProperty().bind(vm.usageProperty().multiply(maxBarWidth));
         goalLabel.textProperty().bind(vm.goalProperty());
 
-        vm.getActivations().addListener((ListChangeListener<Activation>) change -> {
+        bindActivations();
+    }
+
+    private void bindActivations() {
+        // `activations` is the live list, the ViewModel passes it on from the ActivationRepository
+        SortedList<Activation> activations = vm.getActivations();
+
+        scheduleContainer.getChildren().clear();
+        for (Activation activation : activations) {
+            scheduleContainer.getChildren().add(createActivationView(activation));
+        }
+
+        activations.addListener((ListChangeListener<Activation>) change -> {
             while (change.next()) {
+                // Schedule reminder -> Activation appears on dashboard
                 if (change.wasAdded()) {
-                    for (Activation a : change.getAddedSubList()) {
-                        Pane cardNode = createActivationView(a);
-                        scheduleContainer.getChildren().add(cardNode);
+                    for (int i = 0; i < change.getAddedSize(); i++) {
+                        Activation addedItem = change.getAddedSubList().get(i);
+                        Node view = createActivationView(addedItem);
+                        scheduleContainer.getChildren().add(change.getFrom() + i, view);
                     }
                 }
+
+                // Reminder alert appears and Activation is dismissed -> Activation disappears from dashboard
+                if (change.wasRemoved())
+                    scheduleContainer.getChildren().remove(change.getFrom(), change.getFrom() + change.getRemovedSize());
+
+                // Activation time is altered -> Dashboard is resorted so Activations appear in chronological order
+                if (change.wasPermutated() || change.wasUpdated())
+                    sortActivations(activations);
             }
         });
+    }
 
-        vm.loadCards();
+    private void sortActivations(SortedList<Activation> activations) {
+        FXCollections.sort(scheduleContainer.getChildren(), (node1, node2) -> {
+            Activation a1 = (Activation) node1.getUserData();
+            Activation a2 = (Activation) node2.getUserData();
+
+            int index1 = activations.indexOf(a1);
+            int index2 = activations.indexOf(a2);
+
+            return Integer.compare(index1, index2);
+        });
     }
 
     public void onSchedule() {
@@ -75,8 +112,6 @@ public class DashboardController {
         }
     }
 
-    @FXML private HBox scheduleContainer;
-
     private Pane createActivationView(Activation activation) {
         VBox card = new VBox();
         // card.setPrefSize(100, 150);
@@ -86,6 +121,9 @@ public class DashboardController {
                 new Label(activation.getAppliance().getName()),
                 new Label(activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")))
         );
+
+        card.setUserData(activation); // for sorting when an activation's time is changed.
+
         return card;
     }
 }

@@ -60,8 +60,8 @@ public class ScheduleController {
         boolean isBeforeOrNow = targetDateTime.isBefore(now) || targetDateTime.isEqual(now);
         if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
 
-        NotificationService.scheduleNotification(selected.getName(), targetDateTime);
-        vm.scheduleAppliance(new Activation(-1, selected, targetDateTime));
+        NotificationService.scheduleNotification(selected, targetDateTime);
+        vm.scheduleAutoDismissingActivation(new Activation(-1, selected, targetDateTime));
 
         String formattedTime = targetDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
         responseLabel.setText(selected + " scheduled for " +

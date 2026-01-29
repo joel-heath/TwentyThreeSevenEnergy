@@ -1,5 +1,8 @@
 package uk.ac.soton.comp2300.group42.energyclient.model.repository;
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 
@@ -10,7 +13,11 @@ import java.util.Optional;
 
 public class ActivationRepository {
 
-    private final ArrayList<Activation> activations = new ArrayList<>();
+    private final ObservableList<Activation> activations = FXCollections.observableArrayList(
+            a -> new Observable[] { a.activationTimeProperty() }
+    );
+
+    public ObservableList<Activation> getActivations() { return activations; }
 
     public Optional<Activation> findById(int id) {
         return activations.stream().filter(a -> a.getId() == id).findFirst();
@@ -41,8 +48,6 @@ public class ActivationRepository {
         int lastId = activations.stream().map(Activation::getId).max(Integer::compareTo).orElse(0);
         return save(new Activation(lastId + 1, appliance, targetDateTime));
     }
-
-
 
     public void delete(Activation activation) {
         activations.remove(activation);

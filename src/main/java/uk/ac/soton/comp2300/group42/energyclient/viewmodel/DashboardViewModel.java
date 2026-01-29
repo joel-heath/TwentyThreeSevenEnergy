@@ -1,11 +1,12 @@
 package uk.ac.soton.comp2300.group42.energyclient.viewmodel;
 
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import uk.ac.soton.comp2300.group42.energyclient.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
+
+import java.util.Comparator;
 
 public class DashboardViewModel {
 
@@ -16,20 +17,22 @@ public class DashboardViewModel {
     private final DoubleProperty costGoal = new SimpleDoubleProperty(0);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
-    private final ObservableList<Activation> activations = FXCollections.observableArrayList();
+    private final SortedList<Activation> activations;
 
     private final EnergyCalculator calc;
-    private final ActivationRepository activationRepo;
 
     public DashboardViewModel(EnergyCalculator calc, ActivationRepository activationRepo) {
         this.calc = calc;
-        this.activationRepo = activationRepo;
+
+        activations = new SortedList<>(activationRepo.getActivations());
+        activations.setComparator(Comparator.comparing(Activation::getActivationTime));
     }
 
     public IntegerProperty counterProperty() { return counter; }
     public StringProperty costProperty() { return cost; }
     public DoubleProperty usageProperty() { return usage; }
     public StringProperty goalProperty() { return goalStr; }
+    public SortedList<Activation> getActivations() { return activations; }
 
     public void incrementCounter() {
         counter.set(counter.get() + 1);
@@ -54,12 +57,5 @@ public class DashboardViewModel {
         double target = costGoal.get();
         double percentUsage = cost / target;
         usage.set(percentUsage);
-    }
-
-
-    public ObservableList<Activation> getActivations() { return activations; }
-
-    public void loadCards() {
-        activations.addAll(activationRepo.findAll());
     }
 }

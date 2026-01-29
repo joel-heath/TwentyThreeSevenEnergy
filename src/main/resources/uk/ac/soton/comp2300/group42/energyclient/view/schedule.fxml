@@ -28,6 +28,8 @@
 
         <Button text="Schedule" onAction="#onSchedule"/>
 
+        <Label fx:id="responseLabel" />
+
     </VBox>
 
 </StackPane>

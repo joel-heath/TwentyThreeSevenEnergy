@@ -6,8 +6,8 @@ import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 
 public class LoginController {
 
-    @FXML TextField emailField;
-    @FXML TextField passwordField;
+    @FXML private TextField emailField;
+    @FXML private TextField passwordField;
 
     public void onBack() { Navigator.goBack(); }
 

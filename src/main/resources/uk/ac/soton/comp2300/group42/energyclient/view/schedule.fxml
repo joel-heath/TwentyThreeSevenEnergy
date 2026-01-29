@@ -2,11 +2,32 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox alignment="CENTER" spacing="20"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.ScheduleController">
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.ScheduleController"
+           prefHeight="400.0" prefWidth="600.0">
 
-    <Label text="Schedule Page"/>
-    <Button text="Back to Dashboard" onAction="#onBack"/>
-</VBox>
+    <Button text="Go back" onAction="#onBack" StackPane.alignment="TOP_LEFT">
+        <StackPane.margin><Insets top="15" left="15"/></StackPane.margin>
+    </Button>
+
+    <VBox spacing="20" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity">
+
+        <Label text="Schedule Page"/>
+
+        <ComboBox fx:id="applianceSelector" promptText="Select an Appliance"/>
+
+        <Label text="Select time to activate (24 hour clock)"/>
+        <HBox alignment="CENTER" spacing="5.0">
+            <Spinner fx:id="hourSpinner" prefWidth="60.0" editable="true" />
+            <Label text=":" />
+            <Spinner fx:id="minuteSpinner" prefWidth="60.0" editable="true" />
+        </HBox>
+
+        <Button text="Schedule" onAction="#onSchedule"/>
+
+    </VBox>
+
+</StackPane>

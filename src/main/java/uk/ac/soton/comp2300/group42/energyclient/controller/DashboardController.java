@@ -126,7 +126,6 @@ public class DashboardController {
         Button removeButton = new Button("Remove");
         removeButton.setOnAction(e -> {
             vm.removeActivation(activation);
-            bindActivations();
         }
         );
 

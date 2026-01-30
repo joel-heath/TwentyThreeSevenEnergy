@@ -8,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepo
 
 import java.util.Comparator;
 
+
 public class DashboardViewModel {
 
     private final IntegerProperty counter = new SimpleIntegerProperty(0);

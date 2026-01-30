@@ -15,6 +15,8 @@ import java.util.Stack;
 import java.util.function.Consumer;
 
 public class Navigator {
+    // Can't convert to a record class because of the unchecked Consumer<?>
+    @SuppressWarnings("ClassCanBeRecord")
     private static class ViewContext {
         final String fxmlPath;
         final Consumer<Object> controllerSetup;
@@ -119,7 +121,7 @@ public class Navigator {
         goToAbsolute(defaultPath + fxmlPath, controllerSetup);
     }
 
-    public static void goToIrreversible(String fxmlPath) { goTo(fxmlPath, null); }
+    public static void goToIrreversible(String fxmlPath) { goToIrreversible(fxmlPath, null); }
     public static <T> void goToIrreversible(String fxmlPath, Consumer<T> controllerSetup) {
         goToAbsoluteIrreversible(defaultPath + fxmlPath, controllerSetup);
     }

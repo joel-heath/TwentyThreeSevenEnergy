@@ -5,7 +5,7 @@
 
 <?import javafx.scene.shape.Rectangle?>
 
-<VBox spacing="20" alignment="CENTER"
+<VBox spacing="20" alignment="CENTER" fillWidth="false"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
 
@@ -25,7 +25,7 @@
     <TextField fx:id="costGoalField"
                layoutX="50"
                layoutY="100"
-               promptText="Enter cost goal as a value (e.g. 10 or 10.50)" />
+               promptText="Enter cost goal:" />
 
     <Button text="Set Goal"
             layoutX="220"
@@ -37,7 +37,6 @@
            text="Goal:"
            fx:id="goalLabel"/>
 
-    <Button text="Schedule Appliance" onAction="#onSchedule"/>
 
     <HBox spacing="10" alignment="CENTER">
         <Button text="Increment Counter" onAction="#onIncrement"/>
@@ -55,6 +54,8 @@
             <HBox fx:id="scheduleContainer" spacing="15"/>
         </VBox>
     </ScrollPane>
+
+    <Button text="Schedule Appliance" onAction="#onSchedule"/>
 
 </VBox>
 

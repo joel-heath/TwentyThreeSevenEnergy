@@ -17,22 +17,24 @@ public class DashboardViewModel {
     private final DoubleProperty costGoal = new SimpleDoubleProperty(0);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
-    private final SortedList<Activation> activations;
+    private final ActivationRepository activationRepo;
+    private final SortedList<Activation> sortedActivations;
 
     private final EnergyCalculator calc;
 
     public DashboardViewModel(EnergyCalculator calc, ActivationRepository activationRepo) {
         this.calc = calc;
-
-        activations = new SortedList<>(activationRepo.getActivations());
-        activations.setComparator(Comparator.comparing(Activation::getActivationTime));
+        this.activationRepo = activationRepo;
+        sortedActivations = new SortedList<>(activationRepo.getActivations());
+        sortedActivations.setComparator(Comparator.comparing(Activation::getActivationTime));
     }
 
     public IntegerProperty counterProperty() { return counter; }
     public StringProperty costProperty() { return cost; }
     public DoubleProperty usageProperty() { return usage; }
     public StringProperty goalProperty() { return goalStr; }
-    public SortedList<Activation> getActivations() { return activations; }
+    public ActivationRepository getActivations() { return activationRepo; }
+    public SortedList<Activation> getSortedActivations() { return sortedActivations; }
 
     public void incrementCounter() {
         counter.set(counter.get() + 1);
@@ -56,6 +58,11 @@ public class DashboardViewModel {
         double cost = costVal.get();
         double target = costGoal.get();
         double percentUsage = cost / target;
-        usage.set(percentUsage);
+        usage.set(Math.max(0, Math.min(percentUsage, 1)));
+    }
+
+
+    public void removeActivation(Activation activation) {
+        activationRepo.delete(activation);
     }
 }

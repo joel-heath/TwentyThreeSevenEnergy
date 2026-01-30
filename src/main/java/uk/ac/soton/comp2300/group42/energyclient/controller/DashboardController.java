@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -44,7 +45,7 @@ public class DashboardController {
 
     private void bindActivations() {
         // `activations` is the live list, the ViewModel passes it on from the ActivationRepository
-        SortedList<Activation> activations = vm.getActivations();
+        SortedList<Activation> activations = vm.getSortedActivations();
 
         scheduleContainer.getChildren().clear();
         for (Activation activation : activations) {
@@ -63,8 +64,12 @@ public class DashboardController {
                 }
 
                 // Reminder alert appears and Activation is dismissed -> Activation disappears from dashboard
-                if (change.wasRemoved())
-                    scheduleContainer.getChildren().remove(change.getFrom(), change.getFrom() + change.getRemovedSize());
+                if (change.wasRemoved()) {
+                    scheduleContainer.getChildren().remove(
+                            change.getFrom(),
+                            change.getFrom() + change.getRemovedSize()
+                    );
+                }
 
                 // Activation time is altered -> Dashboard is resorted so Activations appear in chronological order
                 if (change.wasPermutated() || change.wasUpdated())
@@ -117,9 +122,17 @@ public class DashboardController {
         // card.setPrefSize(100, 150);
         card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5;");
 
+        Button removeButton = new Button("Remove");
+        removeButton.setOnAction(e -> {
+            vm.removeActivation(activation);
+            bindActivations();
+        }
+        );
+
         card.getChildren().addAll(
                 new Label(activation.getAppliance().getName()),
-                new Label(activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                new Label(activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
+                removeButton
         );
 
         card.setUserData(activation); // for sorting when an activation's time is changed.

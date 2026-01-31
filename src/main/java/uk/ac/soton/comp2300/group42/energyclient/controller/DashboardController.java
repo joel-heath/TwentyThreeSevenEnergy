@@ -26,6 +26,7 @@ public class DashboardController {
 
     @FXML private TextField costGoalField;
     @FXML private Rectangle usageRect;
+    private final Rectangle clip = new Rectangle();
 
     @FXML private HBox scheduleContainer;
 
@@ -38,7 +39,9 @@ public class DashboardController {
     @FXML private void initialize() {
         counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costProperty());
-        usageRect.widthProperty().bind(vm.usageProperty().multiply(maxBarWidth));
+        clip.setHeight(25);
+        usageRect.setClip(clip);
+        clip.widthProperty().bind(vm.usageProperty().multiply(maxBarWidth));
         goalLabel.textProperty().bind(vm.goalProperty());
 
         bindActivations();

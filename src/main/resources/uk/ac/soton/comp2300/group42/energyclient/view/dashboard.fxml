@@ -5,6 +5,8 @@
 
 <?import javafx.scene.shape.Rectangle?>
 
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.paint.LinearGradient?>
 <VBox spacing="20" alignment="CENTER" fillWidth="false"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
@@ -17,9 +19,18 @@
 
         <!-- Progress bar -->
         <Rectangle fx:id="usageRect"
-                   height="25"
-                   arcWidth="10" arcHeight="10"
-                   fill="#4CAF50"/>
+                   width="300" height="25"
+                   arcWidth="10" arcHeight="10">
+                   <fill>
+                       <LinearGradient endY="0">
+                           <stops>
+                               <Stop color="#2ECC71"/>  <!-- green -->
+                               <Stop offset="0.5" color="#FFC107"/>  <!-- yellow -->
+                               <Stop offset="1.0" color="#E74C3C"/>  <!-- red -->
+                           </stops>
+                       </LinearGradient>
+                   </fill>
+        </Rectangle>
     </StackPane>
 
     <TextField fx:id="costGoalField"

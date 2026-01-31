@@ -49,7 +49,7 @@ public class DashboardViewModel {
 
     public void setCostGoal(double goal) {
         costGoal.set(goal);
-        goalStr.set(String.format("%.2f", goal));
+        goalStr.set(String.format("£%.2f", goal));
         recalculateUsage();
     }
 

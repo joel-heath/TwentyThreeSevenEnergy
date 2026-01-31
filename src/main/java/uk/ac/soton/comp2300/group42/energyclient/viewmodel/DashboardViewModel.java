@@ -8,7 +8,6 @@ import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepo
 
 import java.util.Comparator;
 
-
 public class DashboardViewModel {
 
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
@@ -19,23 +18,22 @@ public class DashboardViewModel {
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
     private final ActivationRepository activationRepo;
-    private final SortedList<Activation> sortedActivations;
+    private final SortedList<Activation> activations;
 
     private final EnergyCalculator calc;
 
     public DashboardViewModel(EnergyCalculator calc, ActivationRepository activationRepo) {
         this.calc = calc;
         this.activationRepo = activationRepo;
-        sortedActivations = new SortedList<>(activationRepo.getActivations());
-        sortedActivations.setComparator(Comparator.comparing(Activation::getActivationTime));
+        activations = new SortedList<>(activationRepo.getActivations());
+        activations.setComparator(Comparator.comparing(Activation::getActivationTime));
     }
 
     public IntegerProperty counterProperty() { return counter; }
     public StringProperty costProperty() { return cost; }
     public DoubleProperty usageProperty() { return usage; }
     public StringProperty goalProperty() { return goalStr; }
-    public ActivationRepository getActivations() { return activationRepo; }
-    public SortedList<Activation> getSortedActivations() { return sortedActivations; }
+    public SortedList<Activation> getActivations() { return activations; }
 
     public void incrementCounter() {
         counter.set(counter.get() + 1);
@@ -61,7 +59,6 @@ public class DashboardViewModel {
         double percentUsage = cost / target;
         usage.set(Math.max(0, Math.min(percentUsage, 1)));
     }
-
 
     public void removeActivation(Activation activation) {
         activationRepo.delete(activation);

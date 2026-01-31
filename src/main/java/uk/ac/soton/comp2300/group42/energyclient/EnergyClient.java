@@ -18,7 +18,7 @@ public class EnergyClient extends Application {
         stage.setMinWidth(225);
         stage.setMinHeight(400);
 
-        stage.setTitle("Energy App Template");
+        stage.setTitle("23/7 Energy");
         stage.show();
     }
 }

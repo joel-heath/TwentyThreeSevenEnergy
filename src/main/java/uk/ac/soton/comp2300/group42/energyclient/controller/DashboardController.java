@@ -46,7 +46,7 @@ public class DashboardController {
 
     private void bindActivations() {
         // `activations` is the live list, the ViewModel passes it on from the ActivationRepository
-        SortedList<Activation> activations = vm.getSortedActivations();
+        SortedList<Activation> activations = vm.getActivations();
 
         scheduleContainer.getChildren().clear();
         for (Activation activation : activations) {
@@ -124,10 +124,7 @@ public class DashboardController {
         card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5;");
 
         Button removeButton = new Button("Remove");
-        removeButton.setOnAction(e -> {
-            vm.removeActivation(activation);
-        }
-        );
+        removeButton.setOnAction((_) -> vm.removeActivation(activation));
 
         card.getChildren().addAll(
                 new Label(activation.getAppliance().getName()),

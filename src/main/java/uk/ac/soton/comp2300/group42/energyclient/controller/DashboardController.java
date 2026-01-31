@@ -12,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
+import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.viewmodel.DashboardViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
@@ -19,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.fxml.FXML;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 
@@ -51,35 +53,25 @@ public class DashboardController {
     @FXML private void initialize() {
         //counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costProperty());
-        clip.setHeight(25);
-        usageRect.setClip(clip);
         clip.widthProperty().bind(vm.usageProperty().multiply(maxBarWidth));
         goalLabel.textProperty().bind(vm.goalProperty());
-        onStartAutoUpdateTest();
         bindActivations();
 
+        clip.setHeight(25);
+        usageRect.setClip(clip);
+
+        schedulePane.setApplianceList(vm.getAppliances());
         editModalOverlay.setVisible(false);
         editModalOverlay.setOnMouseClicked(e -> {
             if (e.getTarget() == editModalOverlay)
-                closeModal();
+                onCloseEditModal();
         });
 
-        schedulePane.setApplianceList(vm.getAppliances());
+        vm.startAutoUpdateTest();
     }
 
-    public void openEditModal(Activation activation) {
+    private void openEditModal(Activation activation) {
         this.currentEditingActivation = activation;
-
-        schedulePane.setOnScheduleAction((appliance, time) -> {
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime targetDateTime = LocalDateTime.of(now.toLocalDate(), time);
-
-            boolean isBeforeOrNow = targetDateTime.isBefore(now) || targetDateTime.isEqual(now);
-            if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
-
-            vm.updateActivation(activation, appliance, targetDateTime);
-            closeModal();
-        });
 
         schedulePane.selectedApplianceProperty().setValue(activation.getAppliance());
         schedulePane.setHour(activation.getActivationTime().getHour());
@@ -89,21 +81,31 @@ public class DashboardController {
         editModalOverlay.setVisible(true);
     }
 
-    @FXML
-    public void closeModal() {
+    @FXML private void onCloseEditModal() {
         mainContentArea.setEffect(null);
         editModalOverlay.setVisible(false);
         this.currentEditingActivation = null;
     }
 
-    @FXML
-    public void saveModal() {
-        if (currentEditingActivation != null) {
-            // Once the schedule button is factored out of ActivationSchedulePane, it's function will be here instead.
-        }
-        closeModal();
+    @FXML private void onSaveActivation() {
+        Appliance appliance = schedulePane.getSelectedAppliance();
+        int hour = schedulePane.getHour();
+        int minute = schedulePane.getMinute();
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime targetDateTime = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hour, minute));
+
+        boolean isBeforeOrNow = targetDateTime.isBefore(now) || targetDateTime.isEqual(now);
+        if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
+
+        vm.updateActivation(currentEditingActivation, appliance, targetDateTime);
+        onCloseEditModal();
     }
 
+    @FXML private void onCancelActivation() {
+        vm.removeActivation(currentEditingActivation);
+        onCloseEditModal();
+    }
 
 
     private void bindActivations() {
@@ -153,19 +155,19 @@ public class DashboardController {
         });
     }
 
-    public void onSchedule() {
+    @FXML private void onSchedule() {
         Navigator.goTo("schedule.fxml");
     }
 
-    //public void onIncrement() {
+    //@FXML private void onIncrement() {
     //    vm.incrementCounter();
     //}
 
-    //public void onRecalculate() {
+    //@FXML private void onRecalculate() {
     //    vm.recalculateCost();
     //}
 
-    public void onSetCostGoal() {
+    @FXML private void onSetCostGoal() {
         try {
             double value = Double.parseDouble(costGoalField.getText());
 
@@ -178,10 +180,6 @@ public class DashboardController {
         } catch (NumberFormatException e) {
             costGoalField.setStyle("-fx-border-color: red;");
         }
-    }
-
-    public void onStartAutoUpdateTest() {
-        vm.startAutoUpdateTest();
     }
 
     private Pane createActivationView(Activation activation) {

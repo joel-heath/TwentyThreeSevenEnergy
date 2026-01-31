@@ -2,11 +2,13 @@ package uk.ac.soton.comp2300.group42.energyclient.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.viewmodel.ScheduleViewModel;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class ScheduleController {
@@ -21,23 +23,33 @@ public class ScheduleController {
     @FXML private void initialize() {
         schedulePane.setApplianceList(vm.getApplianceList());
         schedulePane.selectedApplianceProperty().bindBidirectional(vm.selectedApplianceProperty());
-        schedulePane.setOnScheduleAction((appliance, time) -> {
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime targetDateTime = LocalDateTime.of(now.toLocalDate(), time);
-
-            boolean isBeforeOrNow = targetDateTime.isBefore(now) || targetDateTime.isEqual(now);
-            if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
-
-            vm.scheduleActivation(targetDateTime);
-
-            String formattedTime = targetDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-            responseLabel.setText(appliance.getName() + " scheduled for " +
-                    (isBeforeOrNow ? "tomorrow at " : "") +
-                    formattedTime);
-        });
     }
 
-    public void onBack() {
+    @FXML private void onBack() {
         Navigator.goTo("dashboard.fxml");
+    }
+
+    @FXML private void onSchedule() {
+        Appliance appliance = schedulePane.getSelectedAppliance();
+        int hour = schedulePane.getHour();
+        int minute = schedulePane.getMinute();
+
+        if (appliance == null) {
+            responseLabel.setText("Failed to schedule, no appliance selected");
+            return;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime targetDateTime = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hour, minute));
+
+        boolean isBeforeOrNow = targetDateTime.isBefore(now) || targetDateTime.isEqual(now);
+        if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
+
+        vm.scheduleActivation(targetDateTime);
+
+        String formattedTime = targetDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        responseLabel.setText(appliance.getName() + " scheduled for " +
+                (isBeforeOrNow ? "tomorrow at " : "") +
+                formattedTime);
     }
 }

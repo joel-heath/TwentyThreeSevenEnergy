@@ -19,6 +19,7 @@
         <Label text="Schedule Page"/>
 
         <ActivationSchedulePane fx:id="schedulePane"/>
+        <Button text="Schedule" onAction="#onSchedule"/>
 
         <Label fx:id="responseLabel" />
     </VBox>

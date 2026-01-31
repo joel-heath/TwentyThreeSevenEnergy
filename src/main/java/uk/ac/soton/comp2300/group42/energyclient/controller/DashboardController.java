@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 
 public class DashboardController {
 
-    @FXML private Label counterLabel;
+    //@FXML private Label counterLabel;
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
 
@@ -30,20 +30,20 @@ public class DashboardController {
 
     @FXML private HBox scheduleContainer;
 
-    private static final double maxBarWidth = 300;
+    private static final double maxBarWidth = 250;
 
     private final DashboardViewModel vm;
 
     public DashboardController(DashboardViewModel vm) { this.vm = vm; }
 
     @FXML private void initialize() {
-        counterLabel.textProperty().bind(vm.counterProperty().asString());
+        //counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costProperty());
         clip.setHeight(25);
         usageRect.setClip(clip);
         clip.widthProperty().bind(vm.usageProperty().multiply(maxBarWidth));
         goalLabel.textProperty().bind(vm.goalProperty());
-
+        onStartAutoUpdateTest();
         bindActivations();
     }
 
@@ -98,13 +98,13 @@ public class DashboardController {
         Navigator.goTo("schedule.fxml");
     }
 
-    public void onIncrement() {
-        vm.incrementCounter();
-    }
+    //public void onIncrement() {
+    //    vm.incrementCounter();
+    //}
 
-    public void onRecalculate() {
-        vm.recalculateCost();
-    }
+    //public void onRecalculate() {
+    //    vm.recalculateCost();
+    //}
 
     public void onSetCostGoal() {
         try {
@@ -119,6 +119,10 @@ public class DashboardController {
         } catch (NumberFormatException e) {
             costGoalField.setStyle("-fx-border-color: red;");
         }
+    }
+
+    public void onStartAutoUpdateTest() {
+        vm.startAutoUpdateTest();
     }
 
     private Pane createActivationView(Activation activation) {

@@ -11,15 +11,20 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
 
+    <VBox spacing="10"
+          alignment="CENTER"
+          fillWidth="false"
+          style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+
     <StackPane alignment="CENTER_LEFT">
         <!-- Background bar -->
-        <Rectangle width="300" height="25"
+        <Rectangle width="250" height="25"
                    arcWidth="10" arcHeight="10"
                    fill="#cccccc"/>
 
         <!-- Progress bar -->
         <Rectangle fx:id="usageRect"
-                   width="300" height="25"
+                   width="250" height="25"
                    arcWidth="10" arcHeight="10">
                    <fill>
                        <LinearGradient endY="0">
@@ -48,16 +53,24 @@
            text="Goal:"
            fx:id="goalLabel"/>
 
-
+    <!--
     <HBox spacing="10" alignment="CENTER">
         <Button text="Increment Counter" onAction="#onIncrement"/>
         <Label fx:id="counterLabel"/>
     </HBox>
 
+
     <HBox spacing="10" alignment="CENTER">
         <Button text="Recalculate Energy Cost (£)" onAction="#onRecalculate"/>
         <Label fx:id="costLabel"/>
     </HBox>
+    -->
+    <Label fx:id="costLabel"/>
+
+    </VBox>
+
+    <VBox spacing="10"
+          style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
 
     <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
         <VBox style="-fx-padding: 10;">
@@ -67,6 +80,8 @@
     </ScrollPane>
 
     <Button text="Schedule Appliance" onAction="#onSchedule"/>
+
+    </VBox>
 
 </VBox>
 

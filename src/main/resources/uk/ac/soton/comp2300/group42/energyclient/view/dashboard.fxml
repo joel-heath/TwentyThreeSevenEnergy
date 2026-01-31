@@ -7,81 +7,91 @@
 
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.paint.LinearGradient?>
-<VBox spacing="20" alignment="CENTER" fillWidth="false"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
 
-    <VBox spacing="10"
-          alignment="CENTER"
-          fillWidth="false"
-          style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+<?import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
 
-    <StackPane alignment="CENTER_LEFT">
-        <!-- Background bar -->
-        <Rectangle width="250" height="25"
-                   arcWidth="10" arcHeight="10"
-                   fill="#cccccc"/>
+    <VBox spacing="20" alignment="CENTER" fillWidth="false" fx:id="mainContentArea">
+        <VBox spacing="10"
+              alignment="CENTER"
+              fillWidth="false"
+              style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
 
-        <!-- Progress bar -->
-        <Rectangle fx:id="usageRect"
-                   width="250" height="25"
-                   arcWidth="10" arcHeight="10">
-                   <fill>
-                       <LinearGradient endY="0">
-                           <stops>
-                               <Stop color="#2ECC71"/>  <!-- green -->
-                               <Stop offset="0.5" color="#FFC107"/>  <!-- yellow -->
-                               <Stop offset="1.0" color="#E74C3C"/>  <!-- red -->
-                           </stops>
-                       </LinearGradient>
-                   </fill>
-        </Rectangle>
+            <StackPane alignment="CENTER_LEFT">
+                <!-- Background bar -->
+                <Rectangle width="250" height="25"
+                           arcWidth="10" arcHeight="10"
+                           fill="#cccccc"/>
+
+                <!-- Progress bar -->
+                <Rectangle fx:id="usageRect"
+                           width="250" height="25"
+                           arcWidth="10" arcHeight="10">
+                    <fill>
+                        <LinearGradient endY="0">
+                            <stops>
+                                <Stop color="#2ECC71"/>  <!-- green -->
+                                <Stop offset="0.5" color="#FFC107"/>  <!-- yellow -->
+                                <Stop offset="1.0" color="#E74C3C"/>  <!-- red -->
+                            </stops>
+                        </LinearGradient>
+                    </fill>
+                </Rectangle>
+            </StackPane>
+
+            <TextField fx:id="costGoalField"
+                       layoutX="50"
+                       layoutY="100"
+                       promptText="Enter cost goal:" />
+
+            <Button text="Set Goal"
+                    layoutX="220"
+                    layoutY="100"
+                    onAction="#onSetCostGoal" />
+
+            <Label layoutX="50"
+                   layoutY="80"
+                   text="Goal:"
+                   fx:id="goalLabel"/>
+
+            <!--
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Increment Counter" onAction="#onIncrement"/>
+                <Label fx:id="counterLabel"/>
+            </HBox>
+
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Recalculate Energy Cost (£)" onAction="#onRecalculate"/>
+                <Label fx:id="costLabel"/>
+            </HBox>
+            -->
+            <Label fx:id="costLabel"/>
+
+        </VBox>
+
+        <VBox spacing="10"
+              style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+
+            <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
+                <VBox style="-fx-padding: 10;">
+                    <Label text="Upcoming Device Schedules"/>
+                    <HBox fx:id="scheduleContainer" spacing="15"/>
+                </VBox>
+            </ScrollPane>
+
+            <Button text="Schedule Appliance" onAction="#onSchedule"/>
+
+        </VBox>
+    </VBox>
+
+
+    <StackPane fx:id="editModalOverlay" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.5);">
+        <VBox fx:id="editModal" maxWidth="250" maxHeight="300" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
+            <Label text="Edit Scheduled Reminder" style="-fx-padding: 0 0 20 0;"/>
+            <ActivationSchedulePane fx:id="schedulePane" />
+        </VBox>
     </StackPane>
 
-    <TextField fx:id="costGoalField"
-               layoutX="50"
-               layoutY="100"
-               promptText="Enter cost goal:" />
-
-    <Button text="Set Goal"
-            layoutX="220"
-            layoutY="100"
-            onAction="#onSetCostGoal" />
-
-    <Label layoutX="50"
-           layoutY="80"
-           text="Goal:"
-           fx:id="goalLabel"/>
-
-    <!--
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Increment Counter" onAction="#onIncrement"/>
-        <Label fx:id="counterLabel"/>
-    </HBox>
-
-
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Recalculate Energy Cost (£)" onAction="#onRecalculate"/>
-        <Label fx:id="costLabel"/>
-    </HBox>
-    -->
-    <Label fx:id="costLabel"/>
-
-    </VBox>
-
-    <VBox spacing="10"
-          style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
-
-    <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
-        <VBox style="-fx-padding: 10;">
-            <Label text="Upcoming Device Schedules"/>
-            <HBox fx:id="scheduleContainer" spacing="15"/>
-        </VBox>
-    </ScrollPane>
-
-    <Button text="Schedule Appliance" onAction="#onSchedule"/>
-
-    </VBox>
-
-</VBox>
-
+</StackPane>

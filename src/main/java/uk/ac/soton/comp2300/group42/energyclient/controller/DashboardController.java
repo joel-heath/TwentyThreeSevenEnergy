@@ -4,21 +4,33 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
+import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.viewmodel.DashboardViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 import javafx.scene.control.Label;
 import javafx.fxml.FXML;
+
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
 public class DashboardController {
+
+    @FXML private VBox mainContentArea;
+    @FXML private StackPane editModalOverlay;
+    @FXML private VBox editModal;
+    @FXML private ActivationSchedulePane schedulePane;
+
+    private final BoxBlur blur = new BoxBlur(10, 10, 3);
+    private Activation currentEditingActivation;
 
     //@FXML private Label counterLabel;
     @FXML private Label costLabel;
@@ -45,7 +57,54 @@ public class DashboardController {
         goalLabel.textProperty().bind(vm.goalProperty());
         onStartAutoUpdateTest();
         bindActivations();
+
+        editModalOverlay.setVisible(false);
+        editModalOverlay.setOnMouseClicked(e -> {
+            if (e.getTarget() == editModalOverlay)
+                closeModal();
+        });
+
+        schedulePane.setApplianceList(vm.getAppliances());
     }
+
+    public void openEditModal(Activation activation) {
+        this.currentEditingActivation = activation;
+
+        schedulePane.setOnScheduleAction((appliance, time) -> {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime targetDateTime = LocalDateTime.of(now.toLocalDate(), time);
+
+            boolean isBeforeOrNow = targetDateTime.isBefore(now) || targetDateTime.isEqual(now);
+            if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
+
+            vm.updateActivation(activation, appliance, targetDateTime);
+            closeModal();
+        });
+
+        schedulePane.selectedApplianceProperty().setValue(activation.getAppliance());
+        schedulePane.setHour(activation.getActivationTime().getHour());
+        schedulePane.setMinute(activation.getActivationTime().getMinute());
+
+        mainContentArea.setEffect(blur);
+        editModalOverlay.setVisible(true);
+    }
+
+    @FXML
+    public void closeModal() {
+        mainContentArea.setEffect(null);
+        editModalOverlay.setVisible(false);
+        this.currentEditingActivation = null;
+    }
+
+    @FXML
+    public void saveModal() {
+        if (currentEditingActivation != null) {
+            // Once the schedule button is factored out of ActivationSchedulePane, it's function will be here instead.
+        }
+        closeModal();
+    }
+
+
 
     private void bindActivations() {
         // `activations` is the live list, the ViewModel passes it on from the ActivationRepository
@@ -130,14 +189,12 @@ public class DashboardController {
         // card.setPrefSize(100, 150);
         card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5;");
 
-        Button removeButton = new Button("Remove");
-        removeButton.setOnAction((_) -> vm.removeActivation(activation));
-
         card.getChildren().addAll(
                 new Label(activation.getAppliance().getName()),
-                new Label(activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
-                removeButton
+                new Label(activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")))
         );
+
+        card.setOnMouseClicked(_ -> this.openEditModal(activation));
 
         card.setUserData(activation); // for sorting when an activation's time is changed.
 

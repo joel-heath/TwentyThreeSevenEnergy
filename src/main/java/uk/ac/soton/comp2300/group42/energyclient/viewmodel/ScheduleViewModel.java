@@ -1,6 +1,5 @@
 package uk.ac.soton.comp2300.group42.energyclient.viewmodel;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.property.ObjectProperty;
@@ -9,10 +8,8 @@ import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ApplianceRepository;
-import java.time.Duration;
+import uk.ac.soton.comp2300.group42.energyclient.services.NotificationService;
 import java.time.LocalDateTime;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ScheduleViewModel {
 
@@ -20,12 +17,12 @@ public class ScheduleViewModel {
     private final ObjectProperty<Appliance> selectedAppliance = new SimpleObjectProperty<>();
     private final ApplianceRepository applianceRepository;
     private final ActivationRepository activationRepository;
+    private final NotificationService notificationService;
 
-    private static final Timer timer = new Timer(true);
-
-    public ScheduleViewModel(ApplianceRepository applianceRepo,  ActivationRepository activationRepo) {
+    public ScheduleViewModel(ApplianceRepository applianceRepo,  ActivationRepository activationRepo, NotificationService notificationService) {
         this.applianceRepository = applianceRepo;
         this.activationRepository = activationRepo;
+        this.notificationService = notificationService;
         loadAppliances();
     }
 
@@ -40,24 +37,13 @@ public class ScheduleViewModel {
 
     public Appliance getSelectedAppliance() { return selectedAppliance.get(); }
 
-    public void scheduleAutoDismissingActivation(Activation activation) {
-        scheduleActivation(activation);
-        LocalDateTime now = LocalDateTime.now();
-        long delay = Duration.between(now, activation.getActivationTime()).toMillis();
-        if (delay < 0) delay = 0;
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> dismissActivation(activation));
-            }
-        }, delay);
-    }
+    public void scheduleActivation(LocalDateTime targetDateTime) {
+        Appliance selected = selectedAppliance.get();
+        Activation activation = new Activation(-1, selected, targetDateTime);
 
-    public void scheduleActivation(Activation activation) {
         activationRepository.save(activation);
+        notificationService.scheduleNotification(activation);
     }
 
-    public void dismissActivation(Activation activation) {
-        activationRepository.delete(activation);
-    }
+
 }

@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
@@ -17,19 +18,9 @@
 
         <Label text="Schedule Page"/>
 
-        <ComboBox fx:id="applianceSelector" promptText="Select an Appliance"/>
-
-        <Label text="Select time to activate (24 hour clock)"/>
-        <HBox alignment="CENTER" spacing="5.0">
-            <Spinner fx:id="hourSpinner" prefWidth="60.0" editable="true" />
-            <Label text=":" />
-            <Spinner fx:id="minuteSpinner" prefWidth="60.0" editable="true" />
-        </HBox>
-
-        <Button text="Schedule" onAction="#onSchedule"/>
+        <ActivationSchedulePane fx:id="schedulePane"/>
 
         <Label fx:id="responseLabel" />
-
     </VBox>
 
 </StackPane>

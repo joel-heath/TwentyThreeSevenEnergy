@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.ac.soton.comp2300.group42.energyclient.services.NotificationService;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,13 +22,14 @@ class ScheduleViewModelTest {
     @Mock private ActivationRepository actRepo;
     @Mock private Appliance appliance1;
     @Mock private Appliance appliance2;
+    @Mock NotificationService notifService;
 
     @Test
     void testLoadAppliances() {
         List<Appliance> expectedData = List.of(appliance1, appliance2);
         when(appRepo.findAll()).thenReturn(expectedData);
 
-        ScheduleViewModel vm = new ScheduleViewModel(appRepo, actRepo);
+        ScheduleViewModel vm = new ScheduleViewModel(appRepo, actRepo, notifService);
 
         ObservableList<Appliance> list = vm.getApplianceList();
         assertEquals(2, list.size(), "ApplianceList should contain 2 items");
@@ -40,7 +43,7 @@ class ScheduleViewModelTest {
     void testEmptyRepository() {
         when(appRepo.findAll()).thenReturn(Collections.emptyList());
 
-        ScheduleViewModel vm = new ScheduleViewModel(appRepo, actRepo);
+        ScheduleViewModel vm = new ScheduleViewModel(appRepo, actRepo, notifService);
 
         assertNotNull(vm);
         assertNotNull(vm.getApplianceList());
@@ -50,7 +53,7 @@ class ScheduleViewModelTest {
     @Test
     void testSelectedApplianceProperty() {
         when(appRepo.findAll()).thenReturn(Collections.emptyList());
-        ScheduleViewModel vm = new ScheduleViewModel(appRepo, actRepo);
+        ScheduleViewModel vm = new ScheduleViewModel(appRepo, actRepo, notifService);
 
         vm.selectedApplianceProperty().set(appliance1);
 

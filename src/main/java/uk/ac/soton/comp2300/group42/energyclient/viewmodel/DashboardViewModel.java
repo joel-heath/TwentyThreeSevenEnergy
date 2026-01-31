@@ -65,7 +65,7 @@ public class DashboardViewModel {
 
     public void startAutoUpdateTest() {
         Timeline testTimeline = new Timeline(
-            new KeyFrame(Duration.seconds(1), e -> {
+            new KeyFrame(Duration.seconds(1), (_) -> {
                 counter.set(counter.get() + 1);
                 recalculateCost();
             })

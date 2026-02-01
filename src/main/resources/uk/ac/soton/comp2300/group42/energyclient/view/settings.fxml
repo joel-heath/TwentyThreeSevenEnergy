@@ -17,6 +17,12 @@
 
         <Label text="Settings"/>
 
+        <ToggleButton text="Dark Mode"/>
+        <ToggleButton text="High Contrast Mode"/>
+        <ToggleButton text="Greyscale Mode"/>
+        <ToggleButton text="Toggle Advanced Mode"/>
+        <ToggleButton text="Share Location"/>
+
     </VBox>
 
 </StackPane>

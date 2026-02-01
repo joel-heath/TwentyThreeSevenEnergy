@@ -1,16 +1,21 @@
 package uk.ac.soton.comp2300.group42.energyclient.viewmodel;
 
-import uk.ac.soton.comp2300.group42.energyclient.model.EnergyCalculator;
-import org.mockito.junit.jupiter.MockitoExtension;
+import java.time.LocalDateTime;
+import java.util.List;
+import javafx.collections.FXCollections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.ac.soton.comp2300.group42.energyclient.model.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
+import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ApplianceRepository;
 import uk.ac.soton.comp2300.group42.energyclient.services.NotificationService;
-
-import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DashboardViewModelTest {
@@ -20,31 +25,97 @@ class DashboardViewModelTest {
     @Mock ApplianceRepository applianceRepo;
     @Mock NotificationService notificationService;
 
+    @Mock Activation mockActivation;
+    @Mock Appliance mockAppliance;
 
-    @Test
-    void testRecalculateCost() {
-        // We tell the fake: "When someone asks to convert 100 joules, return 50.0"
-        when(mockCalc.convertJoulesToPounds(100)).thenReturn(50.0);
+    private DashboardViewModel viewModel;
 
-        // 2. Inject the fake calculator into the ViewModel
-        DashboardViewModel viewModel = new DashboardViewModel(mockCalc, activationRepo, applianceRepo, notificationService);
-
-        // 3. Act: Trigger the logic
-        viewModel.recalculateCost(); // (Assume this triggers logic using 100 joules)
-
-        // 4. Assert: Check if the ViewModel updated the cost property correctly
-        assertEquals("£50.00", viewModel.costProperty().get());
+    @BeforeEach void setUp() {
+        when(activationRepo.getActivations()).thenReturn(FXCollections.observableArrayList());
+        when(applianceRepo.findAll()).thenReturn(List.of(mockAppliance));
+        viewModel = new DashboardViewModel(mockCalc, activationRepo, applianceRepo, notificationService);
     }
 
-    @Test
-    void testIncrementCounter() {
-        // Simple test without mocks, just checking internal state
-        DashboardViewModel viewModel = new DashboardViewModel(mockCalc, activationRepo, applianceRepo, notificationService);
+    // == Initialization Tests ==
+    @Test void testLoadsAppliances() {
+        // Assert that during initialization the appliances list in the VM is populated from the repository
+        assertEquals(1, viewModel.getAppliances().size());
+        assertEquals(mockAppliance, viewModel.getAppliances().getFirst());
+    }
 
+    @Test void testDefaultValues() {
+        // Verify defaults set in the field definitions
         assertEquals(0, viewModel.counterProperty().get());
+        assertEquals("Total Spent: £0.00", viewModel.costMessageProperty().get());
+        // If we add public getters for these properties:
+        // assertEquals(0.0, viewModel.costValProperty().get());
+        // assertEquals(1.0, viewModel.costGoalProperty().get(), "Default goal should be 1.0"); */
+    }
 
+    // == Logic Tests ==
+    @Test void testIncrementCounter() {
+        assertEquals(0, viewModel.counterProperty().get());
         viewModel.incrementCounter();
-
         assertEquals(1, viewModel.counterProperty().get());
+    }
+
+    @Test void testRecalculateCost() {
+        // joules = 1 + 5 * counter
+        // counter = 1 => joules = 6.
+        viewModel.incrementCounter();
+        when(mockCalc.convertJoulesToPounds(anyInt())).thenReturn(2.50);
+
+        viewModel.recalculateCost();
+
+        assertEquals("Total Spent: £2.50", viewModel.costMessageProperty().get());
+
+        // usage = | 2.50 spent / 1.00 goal = 2.5 | clamped to 1.0
+        assertEquals(1.0, viewModel.usageProperty().get(), "Usage should update when cost updates");
+    }
+
+    @Test void testSetCostGoal() {
+        viewModel.setCostGoal(10.00);
+
+        assertEquals("Cost Goal: £10.00", viewModel.goalMessageProperty().get());
+
+        // usage = 0 current cost / 10 goal = 0 usage
+        assertEquals(0.0, viewModel.usageProperty().get());
+    }
+
+    @Test void testSetCostGoalAndRecalculateCost() {
+        // Spent £5.00, Goal £10.00 -> Usage should be 0.5
+        viewModel.setCostGoal(10.0);
+
+        when(mockCalc.convertJoulesToPounds(anyInt())).thenReturn(5.0);
+        viewModel.recalculateCost();
+
+        assertEquals(0.5, viewModel.usageProperty().get(), "Usage should be 50%");
+    }
+
+    @Test void testCostClamping() {
+        // Spent £20.00, Goal £10.00 -> Usage = clamp(20/10=2, 1.0) = 1.0
+        viewModel.setCostGoal(10.0);
+
+        when(mockCalc.convertJoulesToPounds(anyInt())).thenReturn(20.0);
+        viewModel.recalculateCost();
+
+        assertEquals(1.0, viewModel.usageProperty().get(), "Usage should be clamped to max 1.0");
+    }
+
+    // == Repository Tests ==
+    @Test void testRemoveActivation() {
+        viewModel.removeActivation(mockActivation);
+        verify(activationRepo).delete(mockActivation);
+    }
+
+    @Test void testUpdateActivation() {
+        LocalDateTime newTime = LocalDateTime.of(2025, 1, 1, 12, 0);
+
+        viewModel.updateActivation(mockActivation, mockAppliance, newTime);
+
+        verify(mockActivation).setAppliance(mockAppliance);
+        verify(mockActivation).setActivationTime(newTime);
+        verify(activationRepo).save(mockActivation);
+        verify(notificationService).rescheduleNotification(mockActivation);
     }
 }

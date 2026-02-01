@@ -55,18 +55,6 @@
                    text="Goal:"
                    fx:id="goalLabel"/>
 
-            <!--
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Increment Counter" onAction="#onIncrement"/>
-                <Label fx:id="counterLabel"/>
-            </HBox>
-
-
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Recalculate Energy Cost (£)" onAction="#onRecalculate"/>
-                <Label fx:id="costLabel"/>
-            </HBox>
-            -->
             <Label fx:id="costLabel"/>
 
         </VBox>
@@ -75,7 +63,7 @@
               style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
 
             <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
-                <VBox style="-fx-padding: 10;">
+                <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
                     <Label text="Upcoming Device Schedules"/>
                     <HBox fx:id="scheduleContainer" spacing="15"/>
                 </VBox>
@@ -88,7 +76,7 @@
 
 
     <StackPane fx:id="editModalOverlay" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.5);">
-        <VBox fx:id="editModal" maxWidth="250" maxHeight="300" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
+        <VBox maxWidth="250" maxHeight="300" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
             <Label text="Edit Scheduled Reminder" style="-fx-padding: 0 0 20 0;"/>
             <ActivationSchedulePane fx:id="schedulePane" />
             <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">

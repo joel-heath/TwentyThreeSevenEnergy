@@ -13,16 +13,15 @@ import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ApplianceRepository;
 import uk.ac.soton.comp2300.group42.energyclient.services.NotificationService;
-
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
 public class DashboardViewModel {
 
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
-    private final StringProperty cost = new SimpleStringProperty("Total Spent: £0.00");
-    private final DoubleProperty costVal = new SimpleDoubleProperty(0);
-    private final StringProperty goalStr = new SimpleStringProperty("Cost Goal: £1.00");
+    private final StringProperty costMessage = new SimpleStringProperty("Total Spent: £0.00");
+    private final DoubleProperty cost = new SimpleDoubleProperty(0);
+    private final StringProperty goalMessage = new SimpleStringProperty("Cost Goal: £1.00");
     private final DoubleProperty costGoal = new SimpleDoubleProperty(1);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
@@ -52,9 +51,9 @@ public class DashboardViewModel {
     public ObservableList<Appliance> getAppliances() { return appliances; }
 
     public IntegerProperty counterProperty() { return counter; }
-    public StringProperty costProperty() { return cost; }
     public DoubleProperty usageProperty() { return usage; }
-    public StringProperty goalProperty() { return goalStr; }
+    public StringProperty costMessageProperty() { return costMessage; }
+    public StringProperty goalMessageProperty() { return goalMessage; }
     public SortedList<Activation> getActivations() { return activations; }
 
     public void incrementCounter() {
@@ -64,19 +63,19 @@ public class DashboardViewModel {
     public void recalculateCost() {
         int joules = 1 + 5 * counter.get();
         double pounds = calc.convertJoulesToPounds(joules);
-        costVal.set(pounds);
-        cost.set(String.format("Total Spent: £%.2f", pounds));
+        cost.set(pounds);
+        costMessage.set(String.format("Total Spent: £%.2f", pounds));
         recalculateUsage();
     }
 
     public void setCostGoal(double goal) {
         costGoal.set(goal);
-        goalStr.set(String.format("Cost Goal: £%.2f", goal));
+        goalMessage.set(String.format("Cost Goal: £%.2f", goal));
         recalculateUsage();
     }
 
     public void recalculateUsage() {
-        double cost = costVal.get();
+        double cost = this.cost.get();
         double target = costGoal.get();
         double percentUsage = cost / target;
         usage.set(Math.max(0, Math.min(percentUsage, 1)));
@@ -95,6 +94,7 @@ public class DashboardViewModel {
 
     public void removeActivation(Activation activation) {
         activationRepo.delete(activation);
+        notificationService.cancelNotification(activation);
     }
 
     public void updateActivation(Activation act, Appliance app, LocalDateTime time) {

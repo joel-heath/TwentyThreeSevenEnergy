@@ -28,13 +28,11 @@ public class DashboardController {
 
     @FXML private VBox mainContentArea;
     @FXML private StackPane editModalOverlay;
-    @FXML private VBox editModal;
     @FXML private ActivationSchedulePane schedulePane;
 
     private final BoxBlur blur = new BoxBlur(10, 10, 3);
     private Activation currentEditingActivation;
 
-    //@FXML private Label counterLabel;
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
 
@@ -51,10 +49,9 @@ public class DashboardController {
     public DashboardController(DashboardViewModel vm) { this.vm = vm; }
 
     @FXML private void initialize() {
-        //counterLabel.textProperty().bind(vm.counterProperty().asString());
-        costLabel.textProperty().bind(vm.costProperty());
+        costLabel.textProperty().bind(vm.costMessageProperty());
         clip.widthProperty().bind(vm.usageProperty().multiply(maxBarWidth));
-        goalLabel.textProperty().bind(vm.goalProperty());
+        goalLabel.textProperty().bind(vm.goalMessageProperty());
         bindActivations();
 
         clip.setHeight(25);
@@ -159,14 +156,6 @@ public class DashboardController {
         Navigator.goTo("schedule.fxml");
     }
 
-    //@FXML private void onIncrement() {
-    //    vm.incrementCounter();
-    //}
-
-    //@FXML private void onRecalculate() {
-    //    vm.recalculateCost();
-    //}
-
     @FXML private void onSetCostGoal() {
         try {
             double value = Double.parseDouble(costGoalField.getText());
@@ -185,7 +174,7 @@ public class DashboardController {
     private Pane createActivationView(Activation activation) {
         VBox card = new VBox();
         // card.setPrefSize(100, 150);
-        card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5;");
+        card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5");
 
         card.getChildren().addAll(
                 new Label(activation.getAppliance().getName()),

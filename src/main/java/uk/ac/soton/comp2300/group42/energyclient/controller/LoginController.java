@@ -9,8 +9,6 @@ public class LoginController {
     @FXML private TextField emailField;
     @FXML private TextField passwordField;
 
-    public void onBack() { Navigator.goBack(); }
-
     public void onLogin() {
         // not implemented
     }

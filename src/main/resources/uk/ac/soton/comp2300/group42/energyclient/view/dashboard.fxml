@@ -2,84 +2,79 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.shape.Rectangle?>
-
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.paint.LinearGradient?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane?>
-<?import javafx.geometry.Insets?>
+<?import uk.ac.soton.comp2300.group42.energyclient.view.components.SettingsOverlayPane?>
+
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
 
+    <SettingsOverlayPane>
+        <VBox spacing="20" alignment="CENTER" fillWidth="false" fx:id="mainContentArea" maxHeight="-Infinity" maxWidth="-Infinity">
+            <VBox spacing="10"
+                  alignment="CENTER"
+                  fillWidth="false"
+                  style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
 
+                <StackPane alignment="CENTER_LEFT">
+                    <!-- Background bar -->
+                    <Rectangle width="250" height="25"
+                               arcWidth="10" arcHeight="10"
+                               fill="#cccccc"/>
 
-    <VBox spacing="20" alignment="CENTER" fillWidth="false" fx:id="mainContentArea">
-        <Button text="Settings" onAction="#onSettings" StackPane.alignment="TOP_LEFT">
-            <StackPane.margin><Insets top="15" left="15"/></StackPane.margin>
-        </Button>
+                    <!-- Progress bar -->
+                    <Rectangle fx:id="usageRect"
+                               width="250" height="25"
+                               arcWidth="10" arcHeight="10">
+                        <fill>
+                            <LinearGradient endY="0">
+                                <stops>
+                                    <Stop color="#2ECC71"/>  <!-- green -->
+                                    <Stop offset="0.5" color="#FFC107"/>  <!-- yellow -->
+                                    <Stop offset="1.0" color="#E74C3C"/>  <!-- red -->
+                                </stops>
+                            </LinearGradient>
+                        </fill>
+                    </Rectangle>
+                </StackPane>
 
-        <VBox spacing="10"
-              alignment="CENTER"
-              fillWidth="false"
-              style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+                <TextField fx:id="costGoalField"
+                           layoutX="50"
+                           layoutY="100"
+                           promptText="Enter cost goal:" />
 
-            <StackPane alignment="CENTER_LEFT">
-                <!-- Background bar -->
-                <Rectangle width="250" height="25"
-                           arcWidth="10" arcHeight="10"
-                           fill="#cccccc"/>
+                <Button text="Set Goal"
+                        layoutX="220"
+                        layoutY="100"
+                        onAction="#onSetCostGoal" />
 
-                <!-- Progress bar -->
-                <Rectangle fx:id="usageRect"
-                           width="250" height="25"
-                           arcWidth="10" arcHeight="10">
-                    <fill>
-                        <LinearGradient endY="0">
-                            <stops>
-                                <Stop color="#2ECC71"/>  <!-- green -->
-                                <Stop offset="0.5" color="#FFC107"/>  <!-- yellow -->
-                                <Stop offset="1.0" color="#E74C3C"/>  <!-- red -->
-                            </stops>
-                        </LinearGradient>
-                    </fill>
-                </Rectangle>
-            </StackPane>
+                <Label layoutX="50"
+                       layoutY="80"
+                       text="Goal:"
+                       fx:id="goalLabel"/>
 
-            <TextField fx:id="costGoalField"
-                       layoutX="50"
-                       layoutY="100"
-                       promptText="Enter cost goal:" />
+                <Label fx:id="costLabel"/>
 
-            <Button text="Set Goal"
-                    layoutX="220"
-                    layoutY="100"
-                    onAction="#onSetCostGoal" />
+            </VBox>
 
-            <Label layoutX="50"
-                   layoutY="80"
-                   text="Goal:"
-                   fx:id="goalLabel"/>
+            <VBox spacing="10"
+                  style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
 
-            <Label fx:id="costLabel"/>
+                <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
+                    <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
+                        <Label text="Upcoming Device Schedules"/>
+                        <HBox fx:id="scheduleContainer" spacing="15"/>
+                    </VBox>
+                </ScrollPane>
 
+                <Button text="Schedule Appliance" onAction="#onSchedule"/>
+
+            </VBox>
         </VBox>
-
-        <VBox spacing="10"
-              style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
-
-            <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
-                <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
-                    <Label text="Upcoming Device Schedules"/>
-                    <HBox fx:id="scheduleContainer" spacing="15"/>
-                </VBox>
-            </ScrollPane>
-
-            <Button text="Schedule Appliance" onAction="#onSchedule"/>
-
-        </VBox>
-    </VBox>
+    </SettingsOverlayPane>
 
 
     <StackPane fx:id="editModalOverlay" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.5);">

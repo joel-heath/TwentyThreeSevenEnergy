@@ -1,13 +1,29 @@
 package uk.ac.soton.comp2300.group42.energyclient.controller;
 
 import javafx.fxml.FXML;
-import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 
 public class SettingsController {
+    @FXML private void toggleLargeFont() {
+        throw new RuntimeException("Not implemented");
+    }
 
-    //private final SettingsViewModel vm;
+    @FXML private void toggleDarkMode() {
+        throw new RuntimeException("Not implemented");
+    }
 
-    //public SettingsController(SettingsViewModel vm) { this.vm = vm; }
+    @FXML private void toggleHighContrast() {
+        throw new RuntimeException("Not implemented");
+    }
 
-    @FXML private void onBack() { Navigator.goTo("dashboard.fxml"); }
+    @FXML private void toggleGrayscale() {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @FXML private void toggleAdvancedMode() {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @FXML private void toggleShareLocation() {
+        throw new RuntimeException("Not implemented");
+    }
 }

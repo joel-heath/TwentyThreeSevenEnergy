@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane;
-import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.viewmodel.ScheduleViewModel;
 
 import java.time.LocalDateTime;
@@ -23,10 +22,6 @@ public class ScheduleController {
     @FXML private void initialize() {
         schedulePane.setApplianceList(vm.getApplianceList());
         schedulePane.selectedApplianceProperty().bindBidirectional(vm.selectedApplianceProperty());
-    }
-
-    @FXML private void onBack() {
-        Navigator.goTo("dashboard.fxml");
     }
 
     @FXML private void onSchedule() {

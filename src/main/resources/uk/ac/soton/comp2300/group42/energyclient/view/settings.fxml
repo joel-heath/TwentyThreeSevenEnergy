@@ -2,27 +2,20 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import uk.ac.soton.comp2300.group42.energyclient.view.components.BackOverlayPane?>
 
-<?import javafx.geometry.Insets?>
-<StackPane xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.SettingsController"
-           prefHeight="400.0" prefWidth="600.0">
+<BackOverlayPane xmlns="http://javafx.com/javafx"
+                 xmlns:fx="http://javafx.com/fxml"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.SettingsController"
+                 prefHeight="400.0" prefWidth="600.0">
+        <VBox spacing="20" alignment="CENTER">
+            <Label text="Settings"/>
 
-    <Button text="Back" onAction="#onBack" StackPane.alignment="TOP_LEFT">
-        <StackPane.margin><Insets top="15" left="15"/></StackPane.margin>
-    </Button>
-
-    <VBox spacing="20" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity">
-
-        <Label text="Settings"/>
-
-        <ToggleButton text="Dark Mode"/>
-        <ToggleButton text="High Contrast Mode"/>
-        <ToggleButton text="Greyscale Mode"/>
-        <ToggleButton text="Toggle Advanced Mode"/>
-        <ToggleButton text="Share Location"/>
-
-    </VBox>
-
-</StackPane>
+            <ToggleButton text="Large Font Mode" onAction="#toggleLargeFont"/>
+            <ToggleButton text="Dark Mode" onAction="#toggleDarkMode"/>
+            <ToggleButton text="High Contrast Mode" onAction="#toggleHighContrast"/>
+            <ToggleButton text="Greyscale Mode" onAction="#toggleGrayscale"/>
+            <ToggleButton text="Toggle Advanced Mode" onAction="#toggleAdvancedMode"/>
+            <ToggleButton text="Share Location" onAction="#toggleShareLocation"/>
+        </VBox>
+</BackOverlayPane>

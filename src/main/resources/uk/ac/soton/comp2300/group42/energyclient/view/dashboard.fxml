@@ -9,10 +9,17 @@
 <?import javafx.scene.paint.LinearGradient?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane?>
+<?import javafx.geometry.Insets?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.DashboardController">
 
+
+
     <VBox spacing="20" alignment="CENTER" fillWidth="false" fx:id="mainContentArea">
+        <Button text="Settings" onAction="#onSettings" StackPane.alignment="TOP_LEFT">
+            <StackPane.margin><Insets top="15" left="15"/></StackPane.margin>
+        </Button>
+
         <VBox spacing="10"
               alignment="CENTER"
               fillWidth="false"

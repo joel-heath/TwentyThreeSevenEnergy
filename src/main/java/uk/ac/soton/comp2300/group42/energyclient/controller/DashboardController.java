@@ -187,4 +187,6 @@ public class DashboardController {
 
         return card;
     }
+
+    @FXML private void onSettings() { Navigator.goTo("settings.fxml"); }
 }

@@ -8,8 +8,10 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import uk.ac.soton.comp2300.group42.energyclient.model.ColourSettings;
 import uk.ac.soton.comp2300.group42.energyclient.model.ColourVisionMode;
+import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 
 public class SettingsController {
+    private static String previousMode = "dashboard";
 
 
     LinearGradient colourblindGradient = new LinearGradient(
@@ -47,8 +49,14 @@ public class SettingsController {
         throw new RuntimeException("Not implemented");
     }
 
-    @FXML private void toggleAdvancedMode() {
-        throw new RuntimeException("Not implemented");
+    @FXML private void toggleMode() {
+        if (previousMode.equals("dashboard")) {
+            Navigator.goTo("advanceddashboard.fxml");
+            previousMode = "advanced";
+        } else {
+            Navigator.goTo("dashboard.fxml");
+            previousMode = "dashboard";
+        }
     }
 
     @FXML private void toggleShareLocation() {

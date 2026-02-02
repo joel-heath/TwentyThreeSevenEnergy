@@ -1,25 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<?import uk.ac.soton.comp2300.group42.energyclient.view.components.BackOverlayPane?>
-<StackPane xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.LoginController"
-           prefHeight="400.0" prefWidth="600.0">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.LoginController"
+      spacing="15"
+      alignment="CENTER">
 
-    <BackOverlayPane>
-        <VBox spacing="20" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity">
-            <Label text="Email:"/>
-            <TextField fx:id="emailField" />
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
 
-            <Label text="Password:" />
-            <PasswordField fx:id="passwordField" />
+    <Label text="Login"
+           style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
 
-            <Button text="Log in" onAction="#onLogin"/>
-            <Button text="Create account" onAction="#onCreateAccount"/>
-        </VBox>
-    </BackOverlayPane>
+    <TextField fx:id="usernameField"
+               promptText="Username"
+               maxWidth="250"/>
 
-</StackPane>
+    <PasswordField fx:id="passwordField"
+                   promptText="Password"
+                   maxWidth="250"/>
+
+    <Button text="Login"
+            maxWidth="250"
+            onAction="#loginController"/>
+
+    <Hyperlink text="Don't have an account? Sign up"
+               onAction="#goToSignup"/>
+
+</VBox>

@@ -6,7 +6,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 
-public class LoginController {
+public class SignupController {
 
     @FXML
     private TextField usernameField;
@@ -15,32 +15,40 @@ public class LoginController {
     private PasswordField passwordField;
 
     @FXML
-    private void loginController() {
+    private PasswordField confirmPasswordField;
+
+    @FXML
+    private void signupController() {
         String username = usernameField.getText();
         String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
 
-        if (username.isBlank() || password.isBlank()) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Please enter username and password.");
+        if (username.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+            showAlert(Alert.AlertType.ERROR, "Error", "All fields are required.");
             return;
         }
 
-        // TEMPORARY authentication (no database yet)
-        // Accept any non-empty credentials
-        System.out.println("[LOGIN ATTEMPT]");
+        if (!password.equals(confirmPassword)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Passwords do not match.");
+            return;
+        }
+
+        // Temporary (no database)
+        System.out.println("[SIGN UP]");
         System.out.println("Username: " + username);
         System.out.println("Password: " + password);
 
         showAlert(Alert.AlertType.INFORMATION,
-                "Login Successful",
-                "Welcome, " + username + "!");
+                "Account Created",
+                "Account created successfully. Please log in.");
 
-        // Navigate to landing or dashboard page
-        Navigator.goTo("landing.fxml");
+        // Go back to login page
+        Navigator.goTo("login.fxml");
     }
 
     @FXML
-    private void goToSignup() {
-        Navigator.goTo("signup.fxml");
+    private void goToLogin() {
+        Navigator.goTo("login.fxml");
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {

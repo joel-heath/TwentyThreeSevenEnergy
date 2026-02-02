@@ -1,13 +1,13 @@
 package uk.ac.soton.comp2300.group42.energyclient.services;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
+import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,7 +27,6 @@ public class NotificationService {
         LocalDateTime targetTime = activation.getActivationTime();
 
         LocalDateTime now = LocalDateTime.now();
-        String formattedTime = targetTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 
         long delay = Duration.between(now, targetTime).toMillis();
         if (delay < 0)  return;
@@ -36,11 +35,7 @@ public class NotificationService {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Scheduled Reminder");
-                    alert.setHeaderText(appliance.getName() + " Reminder.");
-                    alert.setContentText("The time is " + formattedTime + ", time to use the " + appliance.getName() + ".");
-                    alert.show();
+                    Navigator.showPopup(appliance.getName());
                     dismissActivation(activation);
                     timerTasks.remove(activation);
                 });

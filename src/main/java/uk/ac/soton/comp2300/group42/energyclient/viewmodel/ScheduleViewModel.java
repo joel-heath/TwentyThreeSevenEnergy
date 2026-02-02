@@ -9,6 +9,7 @@ import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ActivationRepository;
 import uk.ac.soton.comp2300.group42.energyclient.model.repository.ApplianceRepository;
 import uk.ac.soton.comp2300.group42.energyclient.services.NotificationService;
+
 import java.time.LocalDateTime;
 
 public class ScheduleViewModel {

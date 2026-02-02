@@ -5,7 +5,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2300.group42.energyclient.controller.RootController;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -30,11 +32,13 @@ public class Navigator {
         }
     }
 
-    private static Scene mainScene;
     private static final Stack<ViewContext> backHistory = new Stack<>();
     private static final Stack<ViewContext> forwardHistory = new Stack<>();
     private static final String defaultPath = "/uk/ac/soton/comp2300/group42/energyclient/view/";
     private static final ViewModelFactory vmFactory = new ViewModelFactory();
+
+    private static RootController rootController;
+    private static StackPane contentArea;
 
     private static <T> Parent loadFXML(ViewContext context) throws IOException {
         URL fxml = Objects.requireNonNull(
@@ -63,20 +67,26 @@ public class Navigator {
         if (context.controllerSetup != null && controller != null)
             context.controllerSetup.accept(controller);
 
-        root.setUserData(context);
+        contentArea.setUserData(context);
 
         return root;
     }
 
     public static void initializeAbsolute(String fxmlPath, Stage mainStage) throws IOException { initializeAbsolute(fxmlPath, mainStage, null); }
     public static <T> void initializeAbsolute(String fxmlPath, Stage mainStage, Consumer<T> controllerSetup) throws IOException {
-        if (mainScene != null)
+        if (contentArea != null)
             System.out.println("Warning: You shouldn't call `initialise` more than once");
 
-        Parent root = loadFXML(new ViewContext(fxmlPath, controllerSetup));
-        mainScene = new Scene(root);
+        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(defaultPath + "root.fxml"));
+        Parent root = loader.load();
 
-        mainScene.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+        rootController = loader.getController();
+        contentArea = rootController.getContentArea();
+
+        Scene rootScene = new Scene(root);
+        rootScene.getStylesheets().add(Objects.requireNonNull(Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/styles/global.css")).toExternalForm());
+
+        rootScene.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             MouseButton button = event.getButton();
             if (button == MouseButton.BACK) {
                 goBack();
@@ -87,7 +97,9 @@ public class Navigator {
             }
         });
 
-        mainStage.setScene(mainScene);
+        mainStage.setScene(rootScene);
+
+        goToAbsoluteIrreversible(fxmlPath, controllerSetup);
     }
 
     public static void initialize(String fxmlPath, Stage mainStage) throws IOException { initialize(fxmlPath, mainStage, null); }
@@ -98,7 +110,7 @@ public class Navigator {
     private static void switchView(ViewContext context) {
         try {
             Parent newRoot = loadFXML(context);
-            mainScene.setRoot(newRoot);
+            contentArea.getChildren().setAll(newRoot);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load view: " + context.fxmlPath, e);
         }
@@ -112,7 +124,7 @@ public class Navigator {
 
     public static void goToAbsolute(String fxmlPath) { goToAbsolute(fxmlPath, null); }
     public static <T> void goToAbsolute(String fxmlPath, Consumer<T> controllerSetup) {
-        backHistory.push((ViewContext) mainScene.getRoot().getUserData());
+        backHistory.push((ViewContext) contentArea.getUserData());
         goToAbsoluteIrreversible(fxmlPath, controllerSetup);
     }
 
@@ -128,15 +140,19 @@ public class Navigator {
 
     public static void goBack() {
         if (!backHistory.empty()) {
-            forwardHistory.push((ViewContext) mainScene.getRoot().getUserData());
+            forwardHistory.push((ViewContext) contentArea.getUserData());
             switchView(backHistory.pop());
         }
     }
 
     public static void goForward() {
         if (!forwardHistory.empty()) {
-            backHistory.push((ViewContext) mainScene.getRoot().getUserData());
+            backHistory.push((ViewContext) contentArea.getUserData());
             switchView(forwardHistory.pop());
         }
+    }
+
+    public static void showPopup(String popupTitle) {
+        rootController.showPopup(popupTitle);
     }
 }

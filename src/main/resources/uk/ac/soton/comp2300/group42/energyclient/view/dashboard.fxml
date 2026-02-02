@@ -61,9 +61,10 @@
             </VBox>
 
             <VBox spacing="10"
+                  prefWidth="280"
                   style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
 
-                <ScrollPane fitToHeight="true" vbarPolicy="NEVER" pannable="true">
+                <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">
                     <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
                         <Label text="Upcoming Device Schedules"/>
                         <HBox fx:id="scheduleContainer" spacing="15"/>

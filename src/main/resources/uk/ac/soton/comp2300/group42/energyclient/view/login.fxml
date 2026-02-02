@@ -5,32 +5,25 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.LoginController"
-      spacing="15"
-      alignment="CENTER">
 
-    <padding>
-        <Insets top="30" right="30" bottom="30" left="30"/>
-    </padding>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="uk.ac.soton.comp2300.group42.energyclient.controller.LoginController">
 
-    <Label text="Login"
-           style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+    <VBox spacing="15" alignment="CENTER">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
 
-    <TextField fx:id="usernameField"
-               promptText="Username"
-               maxWidth="250"/>
+        <Label text="Login" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
 
-    <PasswordField fx:id="passwordField"
-                   promptText="Password"
-                   maxWidth="250"/>
+        <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
+        <PasswordField fx:id="passwordField" promptText="Password" maxWidth="250"/>
 
-    <Button text="Login"
-            maxWidth="250"
-            onAction="#loginController"/>
+        <Button text="Login" onAction="#loginController" maxWidth="250"/>
+        <Hyperlink text="Don't have an account? Sign up"
+                   onAction="#goToSignup"/>
+    </VBox>
 
-    <Hyperlink text="Don't have an account? Sign up"
-               onAction="#goToSignup"/>
+</StackPane>
 
-</VBox>

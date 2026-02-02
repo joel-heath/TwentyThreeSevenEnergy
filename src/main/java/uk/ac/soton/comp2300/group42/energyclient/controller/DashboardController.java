@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import uk.ac.soton.comp2300.group42.energyclient.model.ColourSettings;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane;
@@ -56,6 +57,7 @@ public class DashboardController {
 
         clip.setHeight(25);
         usageRect.setClip(clip);
+        usageRect.fillProperty().bind(ColourSettings.usageGradientProperty());
 
         schedulePane.setApplianceList(vm.getAppliances());
         editModalOverlay.setVisible(false);

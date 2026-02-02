@@ -17,5 +17,8 @@
             <ToggleButton text="Greyscale Mode" onAction="#toggleGrayscale"/>
             <ToggleButton text="Toggle Advanced Mode" onAction="#toggleAdvancedMode"/>
             <ToggleButton text="Share Location" onAction="#toggleShareLocation"/>
+            <ToggleButton text="Toggle Colourblind Test" onAction="#toggleColourblindTest"/>
+
+            <ComboBox fx:id="visionModeCombo" prefWidth="220"/>
         </VBox>
 </BackOverlayPane>

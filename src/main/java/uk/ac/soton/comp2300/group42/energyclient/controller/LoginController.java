@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.services.AuthService;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 
 public class LoginController {
@@ -24,18 +25,18 @@ public class LoginController {
             return;
         }
 
-        // TEMPORARY authentication (no database yet)
-        // Accept any non-empty credentials
-        System.out.println("[LOGIN ATTEMPT]");
-        System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
+        boolean authenticated = AuthService.login(username, password);
+
+        if(!authenticated) {
+            showAlert(Alert.AlertType.ERROR, "Login failed", "Invalid username or password.");
+            return;
+        }
 
         showAlert(Alert.AlertType.INFORMATION,
                 "Login Successful",
                 "Welcome, " + username + "!");
 
-        // Navigate to landing or dashboard page
-        Navigator.goTo("landing.fxml");
+        Navigator.goTo("dashboard.fxml");
     }
 
     @FXML

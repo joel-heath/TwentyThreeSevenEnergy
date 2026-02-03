@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.services.AuthService;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 
 public class SignupController {
@@ -33,10 +34,12 @@ public class SignupController {
             return;
         }
 
-        // Temporary (no database)
-        System.out.println("[SIGN UP]");
-        System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
+        boolean success = AuthService.register(username, password);
+
+        if (!success) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Username already exists.");
+            return;
+        }
 
         showAlert(Alert.AlertType.INFORMATION,
                 "Account Created",

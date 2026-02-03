@@ -6,12 +6,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.control.Button;
 import uk.ac.soton.comp2300.group42.energyclient.model.ColourSettings;
 import uk.ac.soton.comp2300.group42.energyclient.model.ColourVisionMode;
 import uk.ac.soton.comp2300.group42.energyclient.util.Navigator;
 
 public class SettingsController {
     private static String previousMode = "dashboard";
+    @FXML private Button toggleButton;
 
 
     LinearGradient colourblindGradient = new LinearGradient(
@@ -31,6 +33,8 @@ public class SettingsController {
         visionModeCombo.valueProperty().bindBidirectional(
                 ColourSettings.visionModeProperty()
         );
+
+        updateButtonText();
     }
 
     @FXML private void toggleLargeFont() {
@@ -56,6 +60,15 @@ public class SettingsController {
         } else {
             Navigator.goTo("dashboard.fxml");
             previousMode = "dashboard";
+        }
+        updateButtonText();
+    }
+
+    @FXML private void updateButtonText() {
+        if (previousMode.equals("dashboard")) {
+            toggleButton.setText("Switch to Advanced Mode");
+        } else {
+            toggleButton.setText("Switch to Simple Mode");
         }
     }
 

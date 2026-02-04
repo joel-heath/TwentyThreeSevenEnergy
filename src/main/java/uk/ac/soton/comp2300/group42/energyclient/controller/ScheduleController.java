@@ -2,6 +2,8 @@ package uk.ac.soton.comp2300.group42.energyclient.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
+import javafx.collections.FXCollections;
 import uk.ac.soton.comp2300.group42.energyclient.model.entity.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.viewmodel.ScheduleViewModel;
@@ -14,6 +16,7 @@ public class ScheduleController {
 
     @FXML private ActivationSchedulePane schedulePane;
     @FXML private Label responseLabel;
+    @FXML private ComboBox<String> repeatComboBox;
 
     private final ScheduleViewModel vm;
 
@@ -22,6 +25,22 @@ public class ScheduleController {
     @FXML private void initialize() {
         schedulePane.setApplianceList(vm.getApplianceList());
         schedulePane.selectedApplianceProperty().bindBidirectional(vm.selectedApplianceProperty());
+
+        repeatComboBox.setItems(FXCollections.observableArrayList(
+                "Does not repeat",
+                "Every day",
+                "Every week",
+                "Every month",
+                "Every year",
+                "Custom"
+        ));
+
+        repeatComboBox.setValue("Does not repeat");
+
+        repeatComboBox.setOnAction(event -> {
+            String selected = repeatComboBox.getValue();
+            System.out.println("User selected: " + selected);
+        });
     }
 
     @FXML private void onSchedule() {

@@ -18,6 +18,11 @@ public class ApplianceModel {
         return dto;
     }
 
+    public void updateFrom(ApplianceDTO dto) {
+        if (!getName().equals(dto.getName()))
+            setName(dto.getName());
+    }
+
     public Long getId() { return dto.getId(); }
 
     public String getName() { return name.get(); }

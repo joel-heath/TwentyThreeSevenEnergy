@@ -10,16 +10,19 @@ import java.util.Map;
 
 public class ModelFactory {
     private final Map<Long, ApplianceModel> applianceCache = new HashMap<>();
+    private final Map<Long, ActivationModel> activationCache = new HashMap<>();
 
-    public ApplianceModel getApplianceModel(ApplianceDTO dto) {
+    /**
+     * Called when loading the Appliance List.
+     * Updates existing models or creates new ones.
+     */
+    public ApplianceModel saveAppliance(ApplianceDTO dto) {
         if (dto == null) return null;
 
         if (applianceCache.containsKey(dto.getId())) {
-            ApplianceModel existingModel = applianceCache.get(dto.getId());
-            if (!existingModel.getName().equals(dto.getName())) {
-                existingModel.setName(dto.getName());
-            }
-            return existingModel;
+            ApplianceModel existing = applianceCache.get(dto.getId());
+            existing.updateFrom(dto);
+            return existing;
         }
 
         ApplianceModel newModel = new ApplianceModel(dto);
@@ -27,22 +30,34 @@ public class ModelFactory {
         return newModel;
     }
 
-    // Assumes cache is populated (the ViewModel caller has run
-    public ApplianceModel getApplianceModelById(Long id) {
-        return applianceCache.get(id);
-    }
-
-    // Assumes cache is populated (the ViewModel caller has run
+    /**
+     * Called when loading Activations.
+     * Looks up the Appliance by ID.
+     */
     public ActivationModel createActivationModel(ActivationDTO dto) {
-        Long applianceId = dto.getApplianceId();
-        ApplianceModel sharedAppliance = getApplianceModelById(applianceId);
+        if (dto == null) return null;
 
-        if (sharedAppliance == null) {
-            System.err.println("Warning: Activation found for unknown Appliance ID: " + applianceId);
-            return null;
+        ApplianceModel appliance = applianceCache.get(dto.getApplianceId());
+
+        // Handle orphaned activations (data integrity safety)
+        if (appliance == null) {
+            System.err.println("Orphaned Activation found for missing ApplianceID: " + dto.getApplianceId());
+            // We could display an error or create a placeholder to avoid crashing the UI.
+            ApplianceDTO placeholderDto = new ApplianceDTO(
+                    dto.getApplianceId(),
+                    "Unknown Device");
+            appliance = saveAppliance(placeholderDto);
         }
 
-        return new ActivationModel(dto, sharedAppliance);
+        if (activationCache.containsKey(dto.getId())) {
+            ActivationModel existing = activationCache.get(dto.getId());
+            existing.updateFrom(dto, appliance);
+            return existing;
+        }
+
+        ActivationModel newModel = new ActivationModel(dto, appliance);
+        activationCache.put(dto.getId(), newModel);
+        return newModel;
     }
 
     // Clear cache if user logs out or wants to do a full hard refresh

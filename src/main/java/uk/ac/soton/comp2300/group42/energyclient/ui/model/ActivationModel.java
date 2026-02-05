@@ -24,6 +24,13 @@ public class ActivationModel {
         return dto;
     }
 
+    public void updateFrom(ActivationDTO dto, ApplianceModel appliance) {
+        if (!getActivationTime().equals(dto.getActivationTime()))
+            setActivationTime(dto.getActivationTime());
+        if (!getAppliance().getId().equals(dto.getApplianceId()))
+            setAppliance(appliance);
+    }
+
     public Long getId() { return dto.getId(); }
 
     public ApplianceModel getAppliance() { return appliance.get(); }

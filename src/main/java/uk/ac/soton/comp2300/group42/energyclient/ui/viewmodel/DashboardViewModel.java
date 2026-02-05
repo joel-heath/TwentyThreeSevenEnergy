@@ -2,23 +2,18 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.Observable;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.util.Duration;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelFactory;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.concurrent.CompletableFuture;
 
 public class DashboardViewModel {
 
@@ -29,48 +24,21 @@ public class DashboardViewModel {
     private final DoubleProperty costGoal = new SimpleDoubleProperty(1);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
-    private final ModelFactory modelFactory;
-    private final ApplianceClient applianceClient;
-    private final ActivationClient activationClient;
-    private final NotificationService notificationService;
+    private final Repository repository;
     private final ObservableList<ApplianceModel> appliances;
     private final SortedList<ActivationModel> activations;
 
     private final EnergyCalculator calc;
 
-    public DashboardViewModel(ModelFactory modelFactory, EnergyCalculator calc, ActivationClient activationClient, ApplianceClient applianceClient, NotificationService notificationService) {
-        this.modelFactory = modelFactory;
+    public DashboardViewModel(Repository repository, EnergyCalculator calc) {
+        this.repository = repository;
         this.calc = calc;
-        this.activationClient = activationClient;
-        this.applianceClient = applianceClient;
-        this.notificationService = notificationService;
 
-        appliances = loadAppliances();
-        activations = new SortedList<>(loadActivations());
-        activations.setComparator(Comparator.comparing(ActivationModel::getActivationTime));
-    }
+        this.appliances = repository.getAppliances();
+        this.activations = new SortedList<>(repository.getActivations());
+        this.activations.setComparator(Comparator.comparing(ActivationModel::getActivationTime));
 
-    private ObservableList<ApplianceModel> loadAppliances() {
-        var dtos = applianceClient.findAll();
-        var models = dtos.stream().map(modelFactory::getApplianceModel).toList();
-        return FXCollections.observableArrayList(models);
-    }
-
-    private ObservableList<ActivationModel> loadActivations() {
-        ObservableList<ActivationModel> activationsSource = FXCollections.observableArrayList(
-                activation -> new Observable[] {
-                        activation.activationTimeProperty(),
-                        activation.applianceProperty()
-                }
-        );
-
-        activationsSource.addAll(
-                activationClient.findAll()
-                        .stream()
-                        .map(modelFactory::createActivationModel)
-                        .toList()
-        );
-        return activationsSource;
+        CompletableFuture.runAsync(repository::fetchAllData); // Run on a background thread so UI doesn't hang if the API is slow
     }
 
     public ObservableList<ApplianceModel> getAppliances() { return appliances; }
@@ -117,16 +85,12 @@ public class DashboardViewModel {
     }
 
     public void removeActivation(ActivationModel activation) {
-        ActivationDTO dto = activation.commit();
-        activationClient.delete(dto);
-        notificationService.cancelNotification(activation);
+        repository.deleteActivation(activation);
     }
 
     public void updateActivation(ActivationModel act, ApplianceModel app, LocalDateTime time) {
         act.setAppliance(app);
         act.setActivationTime(time);
-        ActivationDTO dto = act.commit();
-        activationClient.save(dto);
-        notificationService.rescheduleNotification(act);
+        repository.saveActivation(act);
     }
 }

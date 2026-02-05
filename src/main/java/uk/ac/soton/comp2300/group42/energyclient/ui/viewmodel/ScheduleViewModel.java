@@ -1,42 +1,27 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelFactory;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 public class ScheduleViewModel {
 
-    private final ObservableList<ApplianceModel> applianceList = FXCollections.observableArrayList();
-    private final ObjectProperty<ApplianceModel> selectedAppliance = new SimpleObjectProperty<>();
+    private final Repository repository;
+    private final ObservableList<ApplianceModel> applianceList;
+    private final ObjectProperty<ApplianceModel> selectedAppliance;
 
-    private final ModelFactory modelFactory;
-    private final ApplianceClient applianceClient;
-    private final ActivationClient activationClient;
-    private final NotificationService notificationService;
-
-    public ScheduleViewModel(ModelFactory modelFactory, ApplianceClient applianceRepo,  ActivationClient activationRepo, NotificationService notificationService) {
-        this.modelFactory = modelFactory;
-        this.applianceClient = applianceRepo;
-        this.activationClient = activationRepo;
-        this.notificationService = notificationService;
-        loadAppliances();
-    }
-
-    private void loadAppliances() {
-        var dtos = applianceClient.findAll();
-        var models = dtos.stream().map(modelFactory::getApplianceModel).toList();
-        applianceList.addAll(models);
+    public ScheduleViewModel(Repository repository) {
+        this.repository = repository;
+        this.applianceList = repository.getAppliances();
+        selectedAppliance = new SimpleObjectProperty<>();
+        CompletableFuture.runAsync(repository::fetchAllData);
     }
 
     public ObservableList<ApplianceModel> getApplianceList() { return applianceList; }
@@ -45,9 +30,9 @@ public class ScheduleViewModel {
 
     public void scheduleActivation(LocalDateTime targetDateTime) {
         ApplianceModel selected = selectedAppliance.get();
+        if (selected == null)
+            return;
         ActivationDTO dto = new ActivationDTO(selected.getId(), targetDateTime);
-        ActivationModel activation = modelFactory.createActivationModel(dto);
-        activationClient.save(dto);
-        notificationService.scheduleNotification(activation);
+        repository.createActivation(dto);
     }
 }

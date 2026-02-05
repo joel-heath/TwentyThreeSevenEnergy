@@ -16,18 +16,20 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleViewModel;
 // We can't just make ActivationClient a singleton because then we can't mock it for unit tests.
 
 public class ViewModelFactory {
-    private final ModelFactory modelFactory;
     private final ApplianceClient applianceClient;
     private final ActivationClient activationClient;
-    private final EnergyCalculator energyCalculator;
+    private final ModelFactory modelFactory;
+    private final Repository repository;
     private final NotificationService notificationService;
+    private final EnergyCalculator energyCalculator;
 
     public ViewModelFactory() {
-        this.modelFactory = new ModelFactory();
         this.applianceClient = new ApplianceClient();
         this.activationClient = new ActivationClient();
+        this.modelFactory = new ModelFactory();
+        this.notificationService = new NotificationService();
+        this.repository = new Repository(applianceClient, activationClient, notificationService, modelFactory);
         this.energyCalculator = new EnergyCalculator();
-        this.notificationService = new NotificationService(activationClient);
     }
 
     // You only need to add one of these clauses if the ViewModel you're adding requires any model parameters
@@ -36,9 +38,9 @@ public class ViewModelFactory {
     public Object getViewModel(Class<?> controllerClass) {
         return switch (controllerClass) {
             case Class<?> c when c == DashboardController.class
-                    -> new DashboardViewModel(modelFactory, energyCalculator, activationClient, applianceClient, notificationService);
+                    -> new DashboardViewModel(repository, energyCalculator);
             case Class<?> c when c == ScheduleController.class
-                    -> new ScheduleViewModel(modelFactory, applianceClient, activationClient, notificationService);
+                    -> new ScheduleViewModel(repository);
             default -> null;
         };
     }

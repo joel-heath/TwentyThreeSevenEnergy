@@ -26,7 +26,6 @@ public class ActivationClient {
         // return httpClient.sendAsync(...)
 
         // testing implementation:
-
         if (activation.getId() == null) {
             Long nextId = activations.stream()
                     .mapToLong(ActivationDTO::getId)
@@ -42,16 +41,14 @@ public class ActivationClient {
                 throw new RuntimeException("Failed to set id via reflection", e);
             }
         }
-        else {
-            Optional<ActivationDTO> existing = findById(activation.getId());
-            existing.ifPresent(activations::remove);
-        }
+        else delete(activation);
 
         activations.add(activation);
         return activation;
     }
 
     public void delete(ActivationDTO activation) {
-        activations.remove(activation);
+        Optional<ActivationDTO> existing = findById(activation.getId());
+        existing.ifPresent(activations::remove);
     }
 }

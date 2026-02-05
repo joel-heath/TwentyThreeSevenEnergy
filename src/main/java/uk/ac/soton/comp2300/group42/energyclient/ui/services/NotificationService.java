@@ -2,7 +2,6 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.services;
 
 import javafx.application.Platform;
 
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
@@ -12,15 +11,16 @@ import java.time.LocalDateTime;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 
 public class NotificationService {
 
-    private final Hashtable<ActivationModel, TimerTask> timerTasks = new Hashtable<>();
     private final Timer timer = new Timer(true);
-    private final ActivationClient activationClient;
+    private final Hashtable<ActivationModel, TimerTask> timerTasks = new Hashtable<>();
+    private Consumer<ActivationModel> onCleanupAction;
 
-    public NotificationService(ActivationClient activationClient) {
-        this.activationClient = activationClient;
+    public void setOnCleanupAction(Consumer<ActivationModel> action) {
+        this.onCleanupAction = action;
     }
 
     public void scheduleNotification(ActivationModel activation) {
@@ -37,7 +37,8 @@ public class NotificationService {
             public void run() {
                 Platform.runLater(() -> {
                     Navigator.showPopup(appliance.getName());
-                    dismissActivation(activation);
+                    if (onCleanupAction != null)
+                        onCleanupAction.accept(activation);
                     timerTasks.remove(activation);
                 });
             }
@@ -55,10 +56,5 @@ public class NotificationService {
     public void rescheduleNotification(ActivationModel activation) {
         cancelNotification(activation);
         scheduleNotification(activation);
-    }
-
-    private void dismissActivation(ActivationModel activation) {
-        var dto = activation.commit();
-        activationClient.delete(dto);
     }
 }

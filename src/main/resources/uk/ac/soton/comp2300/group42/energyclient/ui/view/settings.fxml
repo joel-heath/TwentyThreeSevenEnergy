@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.BackOverlayPane?>
+
+<BackOverlayPane xmlns="http://javafx.com/javafx"
+                 xmlns:fx="http://javafx.com/fxml"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SettingsController"
+                 prefHeight="400.0" prefWidth="600.0">
+        <VBox spacing="20" alignment="CENTER">
+            <Label text="Settings"/>
+
+            <ToggleButton text="Large Font Mode" onAction="#toggleLargeFont"/>
+            <ToggleButton text="Dark Mode" onAction="#toggleDarkMode"/>
+            <ToggleButton text="High Contrast Mode" onAction="#toggleHighContrast"/>
+            <ToggleButton text="Greyscale Mode" onAction="#toggleGrayscale"/>
+            <Button fx:id="toggleButton" text="Toggle Mode" onAction="#toggleMode"/>
+            <ToggleButton text="Share Location" onAction="#toggleShareLocation"/>
+            <ToggleButton text="Toggle Colourblind Test" onAction="#toggleColourblindTest"/>
+
+            <ComboBox fx:id="visionModeCombo" prefWidth="220"/>
+        </VBox>
+</BackOverlayPane>

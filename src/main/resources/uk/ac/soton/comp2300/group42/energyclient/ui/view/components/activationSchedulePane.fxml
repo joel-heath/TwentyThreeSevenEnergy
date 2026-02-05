@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
+
+<fx:root type="ActivationSchedulePane"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="20"
+         alignment="CENTER">
+
+    <ComboBox fx:id="applianceSelector" promptText="Select an Appliance"/>
+
+    <Label text="Select time to activate (24 hour clock)"/>
+
+    <HBox alignment="CENTER" spacing="5.0">
+        <Spinner fx:id="hourSpinner" prefWidth="60.0" editable="true" />
+        <Label text=":" />
+        <Spinner fx:id="minuteSpinner" prefWidth="60.0" editable="true" />
+    </HBox>
+</fx:root>

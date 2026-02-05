@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.BackOverlayPane?>
+
+<fx:root type="BackOverlayPane"
+         xmlns:fx="http://javafx.com/fxml">
+    <Button text="Back"
+            onAction="#onBack"
+            StackPane.alignment="TOP_LEFT"
+            viewOrder="-1.0">
+        <StackPane.margin>
+            <Insets top="15" left="15"/>
+        </StackPane.margin>
+    </Button>
+</fx:root>

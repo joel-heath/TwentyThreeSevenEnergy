@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.BackOverlayPane?>
+
+<BackOverlayPane xmlns="http://javafx.com/javafx"
+                 xmlns:fx="http://javafx.com/fxml"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.ScheduleController"
+                 prefHeight="400.0" prefWidth="600.0">
+
+        <SettingsOverlayPane>
+            <VBox spacing="20" alignment="CENTER">
+                <Label text="Schedule Page"/>
+
+                <ActivationSchedulePane fx:id="schedulePane"/>
+
+                <ComboBox fx:id="repeatComboBox" promptText="Does not repeat"/>
+                <Button text="Schedule" onAction="#onSchedule"/>
+
+                <Label fx:id="responseLabel" />
+            </VBox>
+        </SettingsOverlayPane>
+</BackOverlayPane>

@@ -22,17 +22,17 @@ public class ActivationDTOTest {
         ActivationDTO act = new ActivationDTO(dishwasher, christmas);
 
         assertNull(act.getId());
-        assertEquals(dishwasher, act.getAppliance());
+        assertEquals(dishwasher, act.getApplianceId());
         assertEquals(christmas, act.getActivationTime());
     }
 
     @Test void testSetters() {
         ActivationDTO act = new ActivationDTO(dishwasher, christmas);
 
-        act.setAppliance(washingMachine);
+        act.setApplianceId(washingMachine);
         act.setActivationTime(easter);
 
-        assertEquals(washingMachine, act.getAppliance());
+        assertEquals(washingMachine, act.getApplianceId());
         assertEquals(easter, act.getActivationTime());
     }
 }

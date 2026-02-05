@@ -18,9 +18,9 @@ public class ActivationModel {
     }
 
     public ActivationDTO commit() {
-        // dto.setAppliance(appliance.get().commit()); not necessary with the model factory
+        // dto.setApplianceId(appliance.get().commit().getId());
+        // dto.setApplianceId(appliance.get().getId());
         dto.setActivationTime(activationTime.get());
-
         return dto;
     }
 

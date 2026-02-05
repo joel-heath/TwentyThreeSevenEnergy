@@ -9,17 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModelFactory {
-    private final Map<Integer, ApplianceModel> applianceCache = new HashMap<>();
+    private final Map<Long, ApplianceModel> applianceCache = new HashMap<>();
 
     public ApplianceModel getApplianceModel(ApplianceDTO dto) {
         if (dto == null) return null;
 
         if (applianceCache.containsKey(dto.getId())) {
             ApplianceModel existingModel = applianceCache.get(dto.getId());
-            if (!existingModel.getName().equals(dto.getName()))
+            if (!existingModel.getName().equals(dto.getName())) {
                 existingModel.setName(dto.getName());
-
-            return applianceCache.get(dto.getId());
+            }
+            return existingModel;
         }
 
         ApplianceModel newModel = new ApplianceModel(dto);
@@ -27,8 +27,20 @@ public class ModelFactory {
         return newModel;
     }
 
+    // Assumes cache is populated (the ViewModel caller has run
+    public ApplianceModel getApplianceModelById(Long id) {
+        return applianceCache.get(id);
+    }
+
+    // Assumes cache is populated (the ViewModel caller has run
     public ActivationModel createActivationModel(ActivationDTO dto) {
-        ApplianceModel sharedAppliance = getApplianceModel(dto.getAppliance());
+        Long applianceId = dto.getApplianceId();
+        ApplianceModel sharedAppliance = getApplianceModelById(applianceId);
+
+        if (sharedAppliance == null) {
+            System.err.println("Warning: Activation found for unknown Appliance ID: " + applianceId);
+            return null;
+        }
 
         return new ActivationModel(dto, sharedAppliance);
     }

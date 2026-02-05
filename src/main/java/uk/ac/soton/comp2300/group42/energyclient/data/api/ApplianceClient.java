@@ -9,16 +9,16 @@ import java.util.Optional;
 
 public class ApplianceClient {
 
-    public Optional<ApplianceDTO> findById(int id) {
+    public Optional<ApplianceDTO> findById(Long id) {
         return Optional.of(new ApplianceDTO(id, "Dishwasher"));
     }
 
     public List<ApplianceDTO> findAll() {
         return List.of(
-            new ApplianceDTO(1, "Dishwasher"),
-            new ApplianceDTO(2, "Washing Machine"),
-            new ApplianceDTO(3, "Tumble Dryer"),
-            new ApplianceDTO(4, "Oven"));
+            new ApplianceDTO(1L, "Dishwasher"),
+            new ApplianceDTO(2L, "Washing Machine"),
+            new ApplianceDTO(3L, "Tumble Dryer"),
+            new ApplianceDTO(4L, "Oven"));
     }
 
     public ApplianceDTO save(ApplianceDTO appliance) {

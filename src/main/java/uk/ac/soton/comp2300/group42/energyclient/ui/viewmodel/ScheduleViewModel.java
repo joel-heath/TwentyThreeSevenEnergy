@@ -6,7 +6,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
@@ -46,13 +45,9 @@ public class ScheduleViewModel {
 
     public void scheduleActivation(LocalDateTime targetDateTime) {
         ApplianceModel selected = selectedAppliance.get();
-        ApplianceDTO selectedDTO = selected.commit();
-        ActivationModel activation = modelFactory.createActivationModel(
-                new ActivationDTO(selectedDTO, targetDateTime)
-        );
-        ActivationDTO activationDTO = activation.commit();
-
-        activationClient.save(activationDTO);
+        ActivationDTO dto = new ActivationDTO(selected.getId(), targetDateTime);
+        ActivationModel activation = modelFactory.createActivationModel(dto);
+        activationClient.save(dto);
         notificationService.scheduleNotification(activation);
     }
 }

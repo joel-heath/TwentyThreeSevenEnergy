@@ -18,7 +18,7 @@ public class ApplianceModel {
         return dto;
     }
 
-    public int getId() { return dto.getId(); }
+    public Long getId() { return dto.getId(); }
 
     public String getName() { return name.get(); }
     public void setName(String value) { name.set(value); }

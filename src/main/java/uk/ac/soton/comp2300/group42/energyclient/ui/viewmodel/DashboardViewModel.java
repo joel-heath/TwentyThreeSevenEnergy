@@ -14,7 +14,6 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelFactory;
 
@@ -64,6 +63,7 @@ public class DashboardViewModel {
                         activation.applianceProperty()
                 }
         );
+
         activationsSource.addAll(
                 activationClient.findAll()
                         .stream()

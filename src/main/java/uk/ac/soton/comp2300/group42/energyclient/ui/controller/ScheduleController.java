@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ComboBox;
 import javafx.collections.FXCollections;
 
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleViewModel;

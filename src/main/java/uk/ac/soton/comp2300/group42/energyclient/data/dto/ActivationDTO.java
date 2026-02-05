@@ -4,19 +4,19 @@ import java.time.LocalDateTime;
 
 public class ActivationDTO {
     private final Long id;
-    private ApplianceDTO appliance;
+    private Long applianceId;
     private LocalDateTime activationTime;
 
-    public ActivationDTO(ApplianceDTO appliance, LocalDateTime activationTime) {
+    public ActivationDTO(Long applianceId, LocalDateTime activationTime) {
         this.id = null;
-        this.appliance = appliance;
+        this.applianceId = applianceId;
         this.activationTime = activationTime;
     }
 
     public Long getId() { return id; }
 
-    public ApplianceDTO getAppliance() { return appliance; }
-    public void setAppliance(ApplianceDTO appliance) { this.appliance = appliance; }
+    public Long getApplianceId() { return applianceId; }
+    public void setApplianceId(Long applianceId) { this.applianceId = applianceId; }
 
     public LocalDateTime getActivationTime() { return activationTime; }
     public void setActivationTime(LocalDateTime activationTime) { this.activationTime = activationTime; }

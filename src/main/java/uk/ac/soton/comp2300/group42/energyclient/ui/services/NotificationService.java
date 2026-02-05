@@ -1,8 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.services;
 
 import javafx.application.Platform;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
+
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;

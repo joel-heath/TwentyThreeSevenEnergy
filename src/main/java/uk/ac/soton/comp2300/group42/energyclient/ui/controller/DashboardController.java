@@ -1,7 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.SortedList;
@@ -16,8 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColourSettings;

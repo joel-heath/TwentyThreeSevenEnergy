@@ -2,15 +2,27 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
+import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModelFactory {
+    private PreferencesModel preferencesModel;
     private final Map<Long, ApplianceModel> applianceCache = new HashMap<>();
     private final Map<Long, ActivationModel> activationCache = new HashMap<>();
+
+    public PreferencesModel getPreferencesModel(PreferencesDTO dto) {
+        if (preferencesModel != null)
+            preferencesModel.updateFrom(dto);
+        else
+            preferencesModel = new PreferencesModel(dto);
+
+        return preferencesModel;
+    }
 
     /**
      * Called when loading the Appliance List.

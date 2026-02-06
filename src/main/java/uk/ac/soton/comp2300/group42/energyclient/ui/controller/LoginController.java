@@ -36,12 +36,12 @@ public class LoginController {
                 "Login Successful",
                 "Welcome, " + username + "!");
 
-        Navigator.goTo("dashboard.fxml");
+        Navigator.goTo("SimpleDashboard.fxml");
     }
 
     @FXML
     private void goToSignup() {
-        Navigator.goTo("signup.fxml");
+        Navigator.goTo("Signup.fxml");
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {

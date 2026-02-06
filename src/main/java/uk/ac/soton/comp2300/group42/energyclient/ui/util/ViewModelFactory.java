@@ -1,13 +1,14 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
-import uk.ac.soton.comp2300.group42.energyclient.ui.controller.DashboardController;
-import uk.ac.soton.comp2300.group42.energyclient.ui.controller.ScheduleController;
+import uk.ac.soton.comp2300.group42.energyclient.ui.controller.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.DashboardViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SettingsViewModel;
 
 
 // The factory exists to pass the same instance of any given model all around the UI,
@@ -35,12 +36,19 @@ public class ViewModelFactory {
     // You only need to add one of these clauses if the ViewModel you're adding requires any model parameters
     // Navigator handles calling parameterless constructors for ViewModels.
 
+    // for access by the Navigator
+    public Repository getRepository() { return repository; }
+
     public Object getViewModel(Class<?> controllerClass) {
         return switch (controllerClass) {
             case Class<?> c when c == DashboardController.class
-                    -> new DashboardViewModel(repository, energyCalculator);
+                    -> new DashboardViewModel(repository);
+            case Class<?> c when c == SimpleDashboardController.class
+                    -> new SimpleDashboardViewModel(repository, energyCalculator);
             case Class<?> c when c == ScheduleController.class
                     -> new ScheduleViewModel(repository);
+            case Class<?> c when c == SettingsController.class
+                    -> new SettingsViewModel(repository);
             default -> null;
         };
     }

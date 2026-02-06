@@ -5,10 +5,10 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 public class LandingController {
 
     public void onLogin() {
-        Navigator.goTo("login.fxml");
+        Navigator.goTo("Login.fxml");
     }
 
     public void onDive() {
-        Navigator.goToIrreversible("dashboard.fxml");
+        Navigator.goToIrreversible("Dashboard.fxml");
     }
 }

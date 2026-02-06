@@ -19,14 +19,15 @@ import java.util.function.Consumer;
 public class Navigator {
     // Can't convert to a record class because of the unchecked Consumer<?>
     @SuppressWarnings("ClassCanBeRecord")
-    private static class ViewContext {
+    public static class ViewContext {
         final String fxmlPath;
         final Consumer<Object> controllerSetup;
+        // could add bool doNotRedirect if wanted to force go to advanced dashboard, even if user preference is simple dashboard
 
         // We use unchecked casting here because we trust that the Consumer passed
         // matches the Controller of the FXML path.
         @SuppressWarnings("unchecked")
-        ViewContext(String path, Consumer<?> setup) {
+        public ViewContext(String path, Consumer<?> setup) {
             this.fxmlPath = path;
             this.controllerSetup = (Consumer<Object>) setup;
         }
@@ -34,13 +35,13 @@ public class Navigator {
 
     private static final Stack<ViewContext> backHistory = new Stack<>();
     private static final Stack<ViewContext> forwardHistory = new Stack<>();
-    private static final String defaultPath = "/uk/ac/soton/comp2300/group42/energyclient/ui/view/";
+    public static final String defaultPath = "/uk/ac/soton/comp2300/group42/energyclient/ui/view/";
     private static final ViewModelFactory vmFactory = new ViewModelFactory();
 
     private static RootController rootController;
     private static StackPane contentArea;
 
-    private static <T> Parent loadFXML(ViewContext context) throws IOException {
+    public static <T> Parent loadFXML(ViewContext context) throws IOException {
         URL fxml = Objects.requireNonNull(
                 Navigator.class.getResource(context.fxmlPath),
                 context.fxmlPath + " not found"
@@ -64,8 +65,8 @@ public class Navigator {
         Parent root = loader.load();
 
         T controller = loader.getController();
-        if (context.controllerSetup != null && controller != null)
-            context.controllerSetup.accept(controller);
+        if (context.controllerSetup != null && controller != null) {
+            context.controllerSetup.accept(controller);}
 
         contentArea.setUserData(context);
 
@@ -77,7 +78,14 @@ public class Navigator {
         if (contentArea != null)
             System.out.println("Warning: You shouldn't call `initialise` more than once");
 
-        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(defaultPath + "root.fxml"));
+        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(defaultPath + "Root.fxml"));
+        loader.setControllerFactory(_ -> {
+            try {
+                return new RootController(vmFactory.getRepository());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to build RootController", e);
+            }
+        });
         Parent root = loader.load();
 
         rootController = loader.getController();

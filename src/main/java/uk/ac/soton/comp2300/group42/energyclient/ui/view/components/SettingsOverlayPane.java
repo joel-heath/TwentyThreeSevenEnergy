@@ -21,6 +21,6 @@ public class SettingsOverlayPane extends StackPane {
     }
 
     @FXML private void onSettings() {
-        Navigator.goTo("settings.fxml");
+        Navigator.goTo("Settings.fxml");
     }
 }

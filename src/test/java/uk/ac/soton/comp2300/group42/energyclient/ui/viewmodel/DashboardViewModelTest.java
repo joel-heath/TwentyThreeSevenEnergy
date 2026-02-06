@@ -34,12 +34,12 @@ class DashboardViewModelTest {
     @Mock ApplianceDTO mockApplianceDTO;
     @Mock ApplianceModel mockAppliance;
 
-    private uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.DashboardViewModel viewModel;
+    private SimpleDashboardViewModel viewModel;
 
     @BeforeEach void setUp() {
         when(activationClient.findAll()).thenReturn(List.of());
         when(applianceClient.findAll()).thenReturn(List.of(mockApplianceDTO));
-        viewModel = new DashboardViewModel(modelFactory, mockCalc, activationClient, applianceClient, notificationService);
+        viewModel = new SimpleDashboardViewModel(modelFactory, mockCalc, activationClient, applianceClient, notificationService);
     }
 
     // == Initialization Tests ==

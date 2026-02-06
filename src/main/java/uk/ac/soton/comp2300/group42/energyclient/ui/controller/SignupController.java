@@ -46,12 +46,12 @@ public class SignupController {
                 "Account created successfully. Please log in.");
 
         // Go back to login page
-        Navigator.goTo("login.fxml");
+        Navigator.goTo("Login.fxml");
     }
 
     @FXML
     private void goToLogin() {
-        Navigator.goTo("login.fxml");
+        Navigator.goTo("Login.fxml");
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {

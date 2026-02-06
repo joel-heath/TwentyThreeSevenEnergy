@@ -6,8 +6,10 @@ import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
+import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public class Repository {
     private final ActivationClient activationClient;
     private final NotificationService notificationService;
     private final ModelFactory modelFactory;
+    private final PreferencesModel preferences;
 
     private final ObservableList<ApplianceModel> appliances;
     private final ObservableList<ActivationModel> activations;
@@ -30,6 +33,7 @@ public class Repository {
         this.activationClient = activationClient;
         this.notificationService = notificationService;
         this.modelFactory = modelFactory;
+        this.preferences = modelFactory.getPreferencesModel(new PreferencesDTO());
 
         appliances = FXCollections.observableArrayList(activation -> new Observable[] { activation.nameProperty() });
         activations = FXCollections.observableArrayList(
@@ -70,13 +74,9 @@ public class Repository {
 
     // --- Expose Data for ViewModels ---
 
-    public ObservableList<ApplianceModel> getAppliances() {
-        return appliances;
-    }
-
-    public ObservableList<ActivationModel> getActivations() {
-        return activations;
-    }
+    public ObservableList<ApplianceModel> getAppliances() { return appliances; }
+    public ObservableList<ActivationModel> getActivations() { return activations; }
+    public PreferencesModel getPreferences() { return preferences; }
 
     // --- Business Logic / Write Operations ---
 

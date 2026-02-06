@@ -9,11 +9,14 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class RootController {
+    private final Repository repository;
+
     @FXML private StackPane contentArea;
     @FXML private StackPane popupArea;
     @FXML private ScrollPane reminderScroll;
@@ -22,7 +25,9 @@ public class RootController {
     private final BoxBlur blur = new BoxBlur(10, 10, 3);
     private boolean startedOnBg = false;
 
-    public StackPane getContentArea() { return contentArea; }
+    public RootController(Repository repository) {
+        this.repository = repository;
+    }
 
     @FXML private void initialize() {
         popupArea.setVisible(false);
@@ -35,7 +40,15 @@ public class RootController {
         reminderScroll.maxHeightProperty().bind(
                 Bindings.min(500, remindersArea.heightProperty().add(40))
         );
+
+        repository.getPreferences().themeProperty().addListener((obs, oldVal, newVal) -> {
+            // Logic to switch CSS files on contentArea or Scene
+            System.out.println("Theme changed to: " + newVal);
+            // applyTheme(newVal);
+        });
     }
+
+    public StackPane getContentArea() { return contentArea; }
 
     public void showPopup(String popupTitle) {
         Node popup = createPopup(popupTitle);

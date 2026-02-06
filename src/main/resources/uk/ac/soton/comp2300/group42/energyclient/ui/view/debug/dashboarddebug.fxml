@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug.DashboardDebugController"
+           fx:id="root">
+
+    <SettingsOverlayPane>
+        <VBox spacing="20" alignment="CENTER" fx:id="mainContentArea">
+
+            <Label text="Dashboard Debug" />
+
+            <Button text="Exit" onAction="#onExit" />
+
+        </VBox>
+    </SettingsOverlayPane>
+</StackPane>

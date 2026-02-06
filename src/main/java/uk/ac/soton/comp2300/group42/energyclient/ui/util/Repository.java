@@ -114,4 +114,13 @@ public class Repository {
             e.printStackTrace();
         }
     }
+
+    public void savePreferences() {
+        try {
+            PreferencesDTO dto = preferences.commit();
+            // call preferencesClient save
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

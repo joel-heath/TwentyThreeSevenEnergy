@@ -10,6 +10,7 @@ public class PreferencesDTO {
     private Theme theme;
     private Mode mode;
     private boolean shareLocation;
+    private double energyGoal;
 
     public boolean getLargeFont() { return largeFont; }
     public void setLargeFont(boolean largeFont) { this.largeFont = largeFont; }
@@ -26,15 +27,19 @@ public class PreferencesDTO {
     public boolean getShareLocation() { return shareLocation; }
     public void setShareLocation(boolean shareLocation) { this.shareLocation = shareLocation; }
 
-    public PreferencesDTO(boolean largeFont, ColorVision vision, Theme theme, Mode mode, boolean shareLocation) {
+    public double getEnergyGoal() { return energyGoal; }
+    public void setEnergyGoal(double energyGoal) { this.energyGoal = energyGoal; }
+
+    public PreferencesDTO(boolean largeFont, ColorVision vision, Theme theme, Mode mode, boolean shareLocation, double energyGoal) {
         this.largeFont = largeFont;
         this.vision = vision;
         this.theme = theme;
         this.mode = mode;
         this.shareLocation = shareLocation;
+        this.energyGoal = energyGoal;
     }
 
     public PreferencesDTO() {
-        this(false, ColorVision.TYPICAL, Theme.LIGHT, Mode.SIMPLE, false);
+        this(false, ColorVision.TYPICAL, Theme.LIGHT, Mode.SIMPLE, false, 1);
     }
 }

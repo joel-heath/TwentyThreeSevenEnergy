@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -22,7 +23,6 @@ public class SimpleDashboardViewModel {
     private final StringProperty costMessage = new SimpleStringProperty("Total Spent: £0.00");
     private final DoubleProperty cost = new SimpleDoubleProperty(0);
     private final StringProperty goalMessage = new SimpleStringProperty("Cost Goal: £1.00");
-    private final DoubleProperty costGoal = new SimpleDoubleProperty(1);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
     private final Repository repository;
@@ -38,6 +38,20 @@ public class SimpleDashboardViewModel {
         this.appliances = repository.getAppliances();
         this.activations = new SortedList<>(repository.getActivations());
         this.activations.setComparator(Comparator.comparing(ActivationModel::getActivationTime));
+
+        goalMessage.bind(
+                repository.getPreferences().energyGoalProperty()
+                          .map(goal -> String.format("Cost Goal: £%.2f", goal.doubleValue()))
+        );
+        usage.bind(Bindings.createDoubleBinding(
+                () -> {
+                    double currentCost = cost.get();
+                    double target = repository.getPreferences().getEnergyGoal();
+                    if (target == 0) return 0.0;
+                    double percentUsage = currentCost / target;
+                    return Math.max(0, Math.min(percentUsage, 1));
+                }, this.cost, repository.getPreferences().energyGoalProperty()
+        ));
 
         CompletableFuture.runAsync(repository::fetchAllData); // Run on a background thread so UI doesn't hang if the API is slow
     }
@@ -58,20 +72,6 @@ public class SimpleDashboardViewModel {
         double pounds = calc.convertJoulesToPounds(joules);
         cost.set(pounds);
         costMessage.set(String.format("Total Spent: £%.2f", pounds));
-        recalculateUsage();
-    }
-
-    public void setCostGoal(double goal) {
-        costGoal.set(goal);
-        goalMessage.set(String.format("Cost Goal: £%.2f", goal));
-        recalculateUsage();
-    }
-
-    public void recalculateUsage() {
-        double cost = this.cost.get();
-        double target = costGoal.get();
-        double percentUsage = cost / target;
-        usage.set(Math.max(0, Math.min(percentUsage, 1)));
     }
 
     public void startAutoUpdateTest() {

@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
@@ -16,6 +17,9 @@ public class SettingsController {
     @FXML private ComboBox<Theme> themeComboBox;
     @FXML private ComboBox<Mode> modeComboBox;
     @FXML private ToggleButton shareLocationToggle;
+
+    @FXML private TextField costGoalField;
+
 
     public SettingsController(SettingsViewModel vm) {
         this.vm = vm;
@@ -38,5 +42,20 @@ public class SettingsController {
 
     @FXML private void toggleShareLocation() {
         throw new RuntimeException("Not implemented");
+    }
+
+    @FXML private void onSetCostGoal() {
+        try {
+            double value = Double.parseDouble(costGoalField.getText());
+
+            if (value <= 0) throw new NumberFormatException();
+
+            vm.setCostGoal(value);
+            costGoalField.clear();
+            costGoalField.setStyle("");
+
+        } catch (NumberFormatException e) {
+            costGoalField.setStyle("-fx-border-color: red;");
+        }
     }
 }

@@ -7,7 +7,6 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -37,7 +36,6 @@ public class SimpleDashboardController {
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
 
-    @FXML private TextField costGoalField;
     @FXML private Rectangle usageRect;
     private final Rectangle clip = new Rectangle();
 
@@ -159,21 +157,6 @@ public class SimpleDashboardController {
 
     @FXML private void onSchedule() {
         Navigator.goTo("Schedule.fxml");
-    }
-
-    @FXML private void onSetCostGoal() {
-        try {
-            double value = Double.parseDouble(costGoalField.getText());
-
-            if (value <= 0) throw new NumberFormatException();
-
-            vm.setCostGoal(value);
-            costGoalField.clear();
-            costGoalField.setStyle("");
-
-        } catch (NumberFormatException e) {
-            costGoalField.setStyle("-fx-border-color: red;");
-        }
     }
 
     private Pane createActivationView(ActivationModel activation) {

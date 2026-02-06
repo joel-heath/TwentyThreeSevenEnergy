@@ -3,8 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.paint.Stop?>
-<?import javafx.scene.paint.LinearGradient?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
@@ -29,27 +27,8 @@
                     <Rectangle fx:id="usageRect"
                                width="250" height="25"
                                arcWidth="10" arcHeight="10">
-                        <fill>
-                            <LinearGradient endY="0">
-                                <stops>
-                                    <Stop color="#2ECC71"/>  <!-- green -->
-                                    <Stop offset="0.5" color="#FFC107"/>  <!-- yellow -->
-                                    <Stop offset="1.0" color="#E74C3C"/>  <!-- red -->
-                                </stops>
-                            </LinearGradient>
-                        </fill>
                     </Rectangle>
                 </StackPane>
-
-                <TextField fx:id="costGoalField"
-                           layoutX="50"
-                           layoutY="100"
-                           promptText="Enter cost goal:" />
-
-                <Button text="Set Goal"
-                        layoutX="220"
-                        layoutY="100"
-                        onAction="#onSetCostGoal" />
 
                 <Label layoutX="50"
                        layoutY="80"

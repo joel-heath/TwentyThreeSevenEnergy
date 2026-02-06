@@ -1,21 +1,30 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
+import javafx.beans.property.DoubleProperty;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
 public class SettingsViewModel {
+    private final Repository repository;
     private final PreferencesModel preferences;
+    private final DoubleProperty costGoal;
+
 
     public SettingsViewModel(Repository repository) {
+        this.repository = repository;
         this.preferences = repository.getPreferences();
+        this.costGoal = preferences.energyGoalProperty();
     }
 
     public PreferencesModel getPreferences() {
         return preferences;
     }
 
-    // You can add save logic here later
+    public void setCostGoal(double goal) {
+        costGoal.set(goal);
+    }
+
     public void save() {
-        // repository.savePreferences(preferences);
+        repository.savePreferences();
     }
 }

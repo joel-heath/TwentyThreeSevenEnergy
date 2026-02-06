@@ -1,9 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
@@ -16,6 +13,7 @@ public class PreferencesModel {
     private final ObjectProperty<Theme> theme;
     private final ObjectProperty<Mode> mode;
     private final BooleanProperty shareLocation;
+    private final DoubleProperty energyGoal;
 
     public PreferencesModel(PreferencesDTO dto) {
         this.dto = dto;
@@ -24,6 +22,7 @@ public class PreferencesModel {
         this.theme = new SimpleObjectProperty<>(dto.getTheme());
         this.mode = new SimpleObjectProperty<>(dto.getMode());
         this.shareLocation = new SimpleBooleanProperty(dto.getShareLocation());
+        this.energyGoal = new SimpleDoubleProperty(dto.getEnergyGoal());
     }
 
     public PreferencesDTO commit() {
@@ -32,11 +31,12 @@ public class PreferencesModel {
         dto.setTheme(theme.get());
         dto.setMode(mode.get());
         dto.setShareLocation(shareLocation.get());
+        dto.setEnergyGoal(energyGoal.get());
         return dto;
     }
 
     public void updateFrom(PreferencesDTO dto) {
-        if (!getLargeFont() == dto.getLargeFont())
+        if (getLargeFont() != dto.getLargeFont())
             setLargeFont(dto.getLargeFont());
         if (!getVision().equals(dto.getVision()))
             setVision(dto.getVision());
@@ -44,8 +44,10 @@ public class PreferencesModel {
             setTheme(dto.getTheme());
         if (!getMode().equals(dto.getMode()))
             setMode(dto.getMode());
-        if (!getShareLocation() == dto.getShareLocation())
+        if (getShareLocation() != dto.getShareLocation())
             setShareLocation(dto.getShareLocation());
+        if (getEnergyGoal() != dto.getEnergyGoal())
+            setEnergyGoal(dto.getEnergyGoal());
     }
 
     public boolean getLargeFont() { return largeFont.get(); }
@@ -67,4 +69,8 @@ public class PreferencesModel {
     public boolean getShareLocation() { return shareLocation.get(); }
     public void setShareLocation(boolean shareLocation) { this.shareLocation.set(shareLocation); }
     public BooleanProperty shareLocationProperty() { return shareLocation; }
+
+    public double getEnergyGoal() { return energyGoal.get(); }
+    public void setEnergyGoal(double energyGoal) { this.energyGoal.set(energyGoal); }
+    public DoubleProperty energyGoalProperty() { return energyGoal; }
 }

@@ -13,6 +13,21 @@
 
             <Label text="Dashboard Debug" />
 
+            <VBox alignment="CENTER">
+                <fx:include source="../components/energyUsageRect.fxml" fx:id="energyUsage"/>
+            </VBox>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Label fx:id="counterLabel"/>
+                <Button text="−" onAction="#onDecrement"/>
+                <Button text="+" onAction="#onIncrement"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Label fx:id="costLabel"/>
+                <Label fx:id="goalLabel"/>
+            </HBox>
+
+
             <Button text="Exit" onAction="#onExit" />
 
         </VBox>

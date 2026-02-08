@@ -5,17 +5,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum ColorVision {
-    TYPICAL("typical"),
-    PROTAN("protanopia"),
-    DEUTERAN("deuteranopia"),
-    TRITAN("tritanopia"),
-    ACHROMA("achromatopsia");
+    TYPICAL("typical", "Typical"),
+    PROTAN("protanopia", "Protanopia"),
+    DEUTERAN("deuteranopia", "Deuteranopia"),
+    TRITAN("tritanopia", "Tritanopia"),
+    ACHROMA("achromatopsia", "Achromatopsia");
 
     private final String id;
+    private final String name;
 
-    ColorVision(String id) { this.id = id; }
+    ColorVision(String id, String name) { this.id = id; this.name = name; }
 
     public String getId() { return id; }
+    public String getName() { return name; }
 
     private static final Map<String, ColorVision> BY_ID =
             Arrays.stream(values())

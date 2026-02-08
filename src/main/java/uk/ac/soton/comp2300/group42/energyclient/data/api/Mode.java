@@ -5,18 +5,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum Mode {
-    SIMPLE("simple"),
-    ADVANCED("advanced");
+    SIMPLE("simple", "Simple (Recommended)"),
+    ADVANCED("advanced", "Advanced"),;
 
     private final String id;
+    private final String name;
 
-    Mode(String id) { this.id = id; }
+    Mode(String id, String name) { this.id = id; this.name = name; }
 
-    public String id() { return id; }
+    public String getId() { return id; }
+    public String getName() { return name; }
 
     private static final Map<String, Mode> BY_ID =
             Arrays.stream(values())
-                    .collect(Collectors.toUnmodifiableMap(Mode::id, m -> m));
+                    .collect(Collectors.toUnmodifiableMap(Mode::getId, m -> m));
 
     public static Mode fromId(String id) {
         Mode mode = BY_ID.get(id);

@@ -5,19 +5,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum Theme {
-    LIGHT("light"),
-    DARK("dark"),
-    HIGH_CONTRAST("high_contrast");
+    LIGHT("light", "Light"),
+    DARK("dark", "Dark"),
+    LIGHT_CONTRAST("light_high_contrast", "Light (High Contrast)"),
+    DARK_CONTRAST("dark_high_contrast", "Dark (High Contrast)");
 
     private final String id;
+    private final String name;
 
-    Theme(String id) { this.id = id; }
+    Theme(String id, String name) { this.id = id; this.name = name; }
 
-    public String id() { return id; }
+    public String getId() { return id; }
+    public String getName() { return name; }
 
     private static final Map<String, Theme> BY_ID =
             Arrays.stream(values())
-                    .collect(Collectors.toUnmodifiableMap(Theme::id, m -> m));
+                    .collect(Collectors.toUnmodifiableMap(Theme::getId, m -> m));
 
     public static Theme fromId(String id) {
         Theme mode = BY_ID.get(id);

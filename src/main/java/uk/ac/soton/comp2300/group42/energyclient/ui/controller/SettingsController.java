@@ -9,6 +9,8 @@ import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SettingsViewModel;
 
+import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.createConverter;
+
 public class SettingsController {
     private final SettingsViewModel vm;
 
@@ -29,10 +31,13 @@ public class SettingsController {
         largeFontToggle.selectedProperty().bindBidirectional(vm.getPreferences().largeFontProperty());
         shareLocationToggle.selectedProperty().bindBidirectional(vm.getPreferences().shareLocationProperty());
         themeComboBox.getItems().setAll(Theme.values());
+        themeComboBox.setConverter(createConverter(Theme::getName));
         themeComboBox.valueProperty().bindBidirectional(vm.getPreferences().themeProperty());
         colorVisionComboBox.getItems().setAll(ColorVision.values());
+        colorVisionComboBox.setConverter(createConverter(ColorVision::getName));
         colorVisionComboBox.valueProperty().bindBidirectional(vm.getPreferences().visionProperty());
         modeComboBox.getItems().setAll(Mode.values());
+        modeComboBox.setConverter(createConverter(Mode::getName));
         modeComboBox.valueProperty().bindBidirectional(vm.getPreferences().modeProperty());
     }
 

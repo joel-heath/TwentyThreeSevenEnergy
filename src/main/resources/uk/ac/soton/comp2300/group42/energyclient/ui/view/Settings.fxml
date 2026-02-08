@@ -17,14 +17,17 @@
             <!-- <ToggleButton fx:id="modeToggle" text="Toggle Mode"/> -->
             <ToggleButton fx:id="shareLocationToggle" text="Share Location" onAction="#toggleShareLocation"/>
 
-            <TextField fx:id="costGoalField"
-                       layoutX="50"
-                       layoutY="100"
-                       promptText="Enter cost goal:" />
+            <HBox spacing="10" alignment="CENTER">
+                <TextField fx:id="costGoalField"
+                           layoutX="50"
+                           layoutY="100"
+                           promptText="Enter cost goal:" />
 
-            <Button text="Set Goal"
-                    layoutX="220"
-                    layoutY="100"
-                    onAction="#onSetCostGoal" />
+                <Button text="Set Goal"
+                        layoutX="220"
+                        layoutY="100"
+                        onAction="#onSetCostGoal" />
+            </HBox>
+
         </VBox>
 </BackOverlayPane>

@@ -1,11 +1,20 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
 import javafx.util.StringConverter;
+
+import java.lang.management.ManagementFactory;
 import java.util.function.Function;
 
 public class ControllerUtils {
 
-    public static  <T> StringConverter<T> createConverter(Function<T, String> nameExtractor) {
+    public static boolean isDebugging() {
+        return ManagementFactory.getRuntimeMXBean()
+                .getInputArguments()
+                .stream()
+                .anyMatch(arg -> arg.contains("jdwp"));
+    }
+
+    public static <T> StringConverter<T> createConverter(Function<T, String> nameExtractor) {
         return new StringConverter<>() {
             @Override
             public String toString(T object) {

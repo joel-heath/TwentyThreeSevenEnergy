@@ -2,10 +2,10 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Rectangle?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SimpleDashboardController">
@@ -17,18 +17,7 @@
                   fillWidth="false"
                   style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
 
-                <StackPane alignment="CENTER_LEFT">
-                    <!-- Background bar -->
-                    <Rectangle width="250" height="25"
-                               arcWidth="10" arcHeight="10"
-                               fill="#cccccc"/>
-
-                    <!-- Progress bar -->
-                    <Rectangle fx:id="usageRect"
-                               width="250" height="25"
-                               arcWidth="10" arcHeight="10">
-                    </Rectangle>
-                </StackPane>
+                <EnergyUsageRect fx:id="energyUsageRect"/>
 
                 <Label layoutX="50"
                        layoutY="80"

@@ -12,13 +12,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
 
 import java.time.LocalDateTime;
@@ -33,15 +33,11 @@ public class SimpleDashboardController {
     private ActivationModel currentEditingActivation;
     private final BoxBlur blur = new BoxBlur(10, 10, 3);
 
+    @FXML private EnergyUsageRect energyUsageRect;
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
 
-    @FXML private Rectangle usageRect;
-    private final Rectangle clip = new Rectangle();
-
     @FXML private HBox scheduleContainer;
-
-    private static final double maxBarWidth = 250;
 
     private final SimpleDashboardViewModel vm;
 
@@ -49,16 +45,10 @@ public class SimpleDashboardController {
 
     @FXML private void initialize() {
         costLabel.textProperty().bind(vm.costMessageProperty());
-        clip.widthProperty().bind(vm.usageProperty().multiply(maxBarWidth));
         goalLabel.textProperty().bind(vm.goalMessageProperty());
+        energyUsageRect.usageProperty().bind(vm.usageProperty());
+        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));
         bindActivations();
-
-        clip.setHeight(25);
-        usageRect.setClip(clip);
-        usageRect.fillProperty().setValue(ColorSettings.getGradientFor(vm.getPreferences().getVision()));
-        vm.getPreferences().visionProperty().addListener((_, _, mode) ->
-                usageRect.fillProperty().set(ColorSettings.getGradientFor(mode))
-        );
 
         schedulePane.setApplianceList(vm.getAppliances());
         editModalOverlay.setVisible(false);

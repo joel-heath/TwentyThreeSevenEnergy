@@ -4,9 +4,12 @@
 <?import javafx.scene.layout.*?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
-<StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug.DashboardDebugController"
-           fx:id="root">
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.BackOverlayPane?>
+
+<BackOverlayPane xmlns:fx="http://javafx.com/fxml"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug.DashboardDebugController"
+                 fx:id="root">
 
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fx:id="mainContentArea">
@@ -15,9 +18,7 @@
 
             <ComboBox fx:id="colorVisionComboBox" prefWidth="220"/>
 
-            <VBox alignment="CENTER">
-                <fx:include source="../components/energyUsageRect.fxml" fx:id="energyUsage"/>
-            </VBox>
+            <EnergyUsageRect fx:id="energyUsageRect"/>
 
             <HBox spacing="10" alignment="CENTER">
                 <Label fx:id="counterLabel"/>
@@ -60,4 +61,4 @@
 
         </VBox>
     </SettingsOverlayPane>
-</StackPane>
+</BackOverlayPane>

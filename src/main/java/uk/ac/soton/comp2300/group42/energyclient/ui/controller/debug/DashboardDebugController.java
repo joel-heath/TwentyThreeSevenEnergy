@@ -22,7 +22,7 @@ public class DashboardDebugController {
     public StackPane root;
     public VBox mainContentArea;
 
-    @FXML private EnergyUsageRect energyUsageController;
+    @FXML private EnergyUsageRect energyUsageRect;
     @FXML private Label counterLabel;
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
@@ -36,18 +36,14 @@ public class DashboardDebugController {
 
     @FXML
     private void initialize() {
-        energyUsageController.usageProperty().bind(vm.usageProperty());
+        energyUsageRect.usageProperty().bind(vm.usageProperty());
+        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));
         counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
 
         colorVisionComboBox.getItems().setAll(ColorVision.values());
         colorVisionComboBox.valueProperty().bindBidirectional(vm.getPreferences().visionProperty());
-
-        energyUsageController.setFillProperty(ColorSettings.getGradientFor(vm.getPreferences().getVision()));
-        vm.getPreferences().visionProperty().addListener((_, _, mode) ->
-                energyUsageController.setFillProperty(ColorSettings.getGradientFor(mode))
-        );
 
         LocalTime now = LocalTime.now().withSecond(0).withNano(0);
 

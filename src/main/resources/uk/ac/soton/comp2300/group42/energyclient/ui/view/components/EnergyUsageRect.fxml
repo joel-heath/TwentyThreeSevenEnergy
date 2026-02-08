@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect?>
+
+<fx:root type="EnergyUsageRect"
+         xmlns:fx="http://javafx.com/fxml">
+
+    <!-- Background bar -->
+    <Rectangle width="250" height="25"
+               arcWidth="10" arcHeight="10"
+               fill="#cccccc"/>
+
+    <!-- Progress bar -->
+    <Rectangle fx:id="usageRect"
+               width="250" height="25"
+               arcWidth="10" arcHeight="10">
+    </Rectangle>
+
+</fx:root>

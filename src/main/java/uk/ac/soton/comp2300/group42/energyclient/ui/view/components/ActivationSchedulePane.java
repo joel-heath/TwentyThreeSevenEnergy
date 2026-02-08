@@ -19,7 +19,7 @@ public class ActivationSchedulePane extends VBox {
     @FXML private Spinner<Integer> minuteSpinner;
 
     public ActivationSchedulePane()  {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("activationSchedulePane.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ActivationSchedulePane.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 

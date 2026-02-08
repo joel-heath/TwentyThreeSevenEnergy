@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class SettingsOverlayPane extends StackPane {
     public SettingsOverlayPane() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("settingsOverlayPane.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SettingsOverlayPane.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 

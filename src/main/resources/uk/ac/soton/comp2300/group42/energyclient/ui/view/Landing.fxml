@@ -10,6 +10,7 @@
 
     <Button text="Log in" onAction="#onLogin"/>
     <Button text="Dive straight in" onAction="#onDive"/>
+    <Button text="Debug Dashboard" onAction="#onDebug" visible="false" fx:id="debugButton"/>
 </VBox>
 
 

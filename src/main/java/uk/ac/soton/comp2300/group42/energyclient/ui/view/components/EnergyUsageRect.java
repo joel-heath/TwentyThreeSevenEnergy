@@ -1,36 +1,41 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.view.components;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
-public class EnergyUsageRect {
+import java.io.IOException;
 
-    @FXML
-    private Rectangle usageRect;
+public class EnergyUsageRect extends StackPane {
+
+    @FXML private Rectangle usageRect;
+    private final DoubleProperty usage = new SimpleDoubleProperty(0);
     private final Rectangle clip = new Rectangle();
-
     private static final double MAX_WIDTH = 250;
 
-    private final DoubleProperty usage = new SimpleDoubleProperty(0);
+    public EnergyUsageRect() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EnergyUsageRect.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
 
-    @FXML
-    public void initialize() {
-        clip.widthProperty().bind(
-                usage.multiply(MAX_WIDTH)
-        );
+        try {
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    @FXML private void initialize() {
+        clip.widthProperty().bind(usage.multiply(MAX_WIDTH));
         clip.setHeight(25);
         usageRect.setClip(clip);
     }
 
-    public DoubleProperty usageProperty() {
-        return usage;
-    }
-
-
-    public void setFillProperty(Paint fill) {
-        usageRect.fillProperty().setValue(fill);
-    }
+    public ObjectProperty<Paint> fillProperty() { return usageRect.fillProperty(); }
+    public DoubleProperty usageProperty() { return usage; }
 }

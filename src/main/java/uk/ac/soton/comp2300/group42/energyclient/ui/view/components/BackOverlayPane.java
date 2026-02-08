@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class BackOverlayPane extends StackPane {
     public BackOverlayPane() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("backOverlayPane.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("BackOverlayPane.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 

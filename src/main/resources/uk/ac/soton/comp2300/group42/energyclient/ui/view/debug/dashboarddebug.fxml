@@ -31,6 +31,7 @@
                 <Label fx:id="costLabel"/>
                 <Label fx:id="goalLabel"/>
             </HBox>
+
             <HBox spacing="10" alignment="CENTER">
                 <TextField fx:id="costGoalField"
                            layoutX="50"
@@ -41,6 +42,18 @@
                         layoutY="100"
                         onAction="#onSetCostGoal" />
             </HBox>
+
+            <VBox spacing="10" alignment="CENTER">
+
+                <VBox alignment="CENTER">
+                    <DatePicker maxWidth="150" fx:id="datePicker"/>
+                    <Spinner fx:id="timeSpinner" editable="true"/>
+                </VBox>
+
+                <Button text="Schedule Reset" onAction="#onScheduleReset"/>
+
+            </VBox>
+
 
 
             <Button text="Exit" onAction="#onExit" />

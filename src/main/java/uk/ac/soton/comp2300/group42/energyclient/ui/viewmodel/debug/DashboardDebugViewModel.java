@@ -1,12 +1,22 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class DashboardDebugViewModel {
+
+    private final ScheduledExecutorService scheduler =
+            Executors.newSingleThreadScheduledExecutor();
 
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
@@ -56,6 +66,29 @@ public class DashboardDebugViewModel {
         double pounds = calc.convertJoulesToPounds(joules);
         cost.set(pounds);
         costMessage.set(String.format("Total Spent: £%.2f", pounds));
+    }
+
+    public void scheduleReset(LocalDateTime resetTime) {
+        long delayMillis = Duration.between(
+                LocalDateTime.now(),
+                resetTime
+        ).toMillis();
+
+        if (delayMillis <= 0) {
+            counter.set(0);
+            return;
+        }
+
+        scheduler.schedule(
+            () -> Platform.runLater(this::resetCounter),
+            delayMillis,
+            TimeUnit.MILLISECONDS
+        );
+    }
+
+    public void resetCounter() {
+        counter.set(0);
+        recalculateCost();
     }
 
     public PreferencesModel getPreferences() {

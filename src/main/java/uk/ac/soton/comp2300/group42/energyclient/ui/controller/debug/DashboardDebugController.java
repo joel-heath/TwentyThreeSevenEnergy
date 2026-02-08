@@ -1,9 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
@@ -11,6 +9,10 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 public class DashboardDebugController {
@@ -27,6 +29,8 @@ public class DashboardDebugController {
     @FXML private ComboBox<ColorVision> colorVisionComboBox;
 
     @FXML private TextField costGoalField;
+    @FXML private DatePicker datePicker;
+    @FXML private Spinner<LocalTime> timeSpinner;
 
     public DashboardDebugController(DashboardDebugViewModel vm) { this.vm = vm; }
 
@@ -44,6 +48,28 @@ public class DashboardDebugController {
         vm.getPreferences().visionProperty().addListener((_, _, mode) ->
                 energyUsageController.setFillProperty(ColorSettings.getGradientFor(mode))
         );
+
+        LocalTime now = LocalTime.now().withSecond(0).withNano(0);
+
+        SpinnerValueFactory<LocalTime> valueFactory =
+                new SpinnerValueFactory<>() {
+                    {
+                        setValue(now);
+                    }
+
+                    @Override
+                    public void decrement(int steps) {
+                        setValue(getValue().minusMinutes(steps));
+                    }
+
+                    @Override
+                    public void increment(int steps) {
+                        setValue(getValue().plusMinutes(steps));
+                    }
+                };
+
+        timeSpinner.setValueFactory(valueFactory);
+
     }
 
 
@@ -70,6 +96,21 @@ public class DashboardDebugController {
         } catch (NumberFormatException e) {
             costGoalField.setStyle("-fx-border-color: red;");
         }
+    }
+
+    @FXML private void onScheduleReset() {
+        LocalDate date = datePicker.getValue();
+        LocalTime time = timeSpinner.getValue();
+
+
+        if (date == null || time == null) {
+            return;
+        }
+
+        LocalDateTime resetTime = LocalDateTime.of(date, time);
+        System.out.println("Reset scheduled for: " + resetTime);
+
+        vm.scheduleReset(resetTime);
     }
 
     @FXML

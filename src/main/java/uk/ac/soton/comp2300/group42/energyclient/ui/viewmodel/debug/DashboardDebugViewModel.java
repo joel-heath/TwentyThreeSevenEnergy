@@ -39,6 +39,10 @@ public class DashboardDebugViewModel {
         recalculateCost();
     }
 
+    public void setCostGoal(double goal) {
+        this.goal.set(goal);
+        goalMessage.set(String.format("Goal: £%.2f", goal));
+    }
 
 
     public void recalculateCost() {

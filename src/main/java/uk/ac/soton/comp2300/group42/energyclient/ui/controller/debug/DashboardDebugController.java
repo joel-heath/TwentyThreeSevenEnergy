@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
@@ -19,6 +20,8 @@ public class DashboardDebugController {
     @FXML private Label counterLabel;
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
+
+    @FXML private TextField costGoalField;
 
     @FXML private final DashboardDebugViewModel vm = new DashboardDebugViewModel(new EnergyCalculator());
 
@@ -40,6 +43,20 @@ public class DashboardDebugController {
         vm.decrementCounter();
     }
 
+    @FXML private void onSetCostGoal() {
+        try {
+            double value = Double.parseDouble(costGoalField.getText());
+
+            if (value <= 0) throw new NumberFormatException();
+
+            vm.setCostGoal(value);
+            costGoalField.clear();
+            costGoalField.setStyle("");
+
+        } catch (NumberFormatException e) {
+            costGoalField.setStyle("-fx-border-color: red;");
+        }
+    }
 
     @FXML
     private void onExit() {

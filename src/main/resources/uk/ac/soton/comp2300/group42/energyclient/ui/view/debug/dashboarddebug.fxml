@@ -13,6 +13,8 @@
 
             <Label text="Dashboard Debug" />
 
+            <ComboBox fx:id="colorVisionComboBox" prefWidth="220"/>
+
             <VBox alignment="CENTER">
                 <fx:include source="../components/energyUsageRect.fxml" fx:id="energyUsage"/>
             </VBox>
@@ -22,6 +24,9 @@
                 <Button text="−" onAction="#onDecrement"/>
                 <Button text="+" onAction="#onIncrement"/>
             </HBox>
+
+
+
             <HBox spacing="10" alignment="CENTER">
                 <Label fx:id="costLabel"/>
                 <Label fx:id="goalLabel"/>

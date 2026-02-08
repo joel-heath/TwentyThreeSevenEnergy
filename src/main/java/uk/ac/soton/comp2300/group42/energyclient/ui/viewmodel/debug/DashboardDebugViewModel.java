@@ -3,6 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
 public class DashboardDebugViewModel {
 
@@ -14,11 +16,16 @@ public class DashboardDebugViewModel {
     private final StringProperty goalMessage = new SimpleStringProperty("Goal: £1.00");
 
     private final EnergyCalculator calc;
+    private final Repository repository;
+    private final PreferencesModel preferences;
 
-    public DashboardDebugViewModel(EnergyCalculator calc) {
+    public DashboardDebugViewModel(Repository repository, EnergyCalculator calc) {
         //costMessage.bind(Bindings.format("%£.2f", cost.get()));
         //goalMessage.bind(Bindings.format("%£.2f", goal.get()));
+        this.repository = repository;
         this.calc = calc;
+        this.preferences = repository.getPreferences();
+
         usage.bind(Bindings.when(goal.isEqualTo(0))
                 .then(0.0)
                 .otherwise(cost.divide(goal)));
@@ -44,12 +51,17 @@ public class DashboardDebugViewModel {
         goalMessage.set(String.format("Goal: £%.2f", goal));
     }
 
-
     public void recalculateCost() {
         int joules = 100 + 500 * counter.get();
         double pounds = calc.convertJoulesToPounds(joules);
         cost.set(pounds);
         costMessage.set(String.format("Total Spent: £%.2f", pounds));
     }
+
+    public PreferencesModel getPreferences() {
+        return preferences;
+    }
+
+    public void save() { repository.savePreferences(); }
 
 }

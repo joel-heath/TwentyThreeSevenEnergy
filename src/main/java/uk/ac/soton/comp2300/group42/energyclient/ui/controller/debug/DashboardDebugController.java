@@ -1,17 +1,21 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
 
 
 public class DashboardDebugController {
+
+    private final DashboardDebugViewModel vm;
 
     public StackPane root;
     public VBox mainContentArea;
@@ -20,10 +24,11 @@ public class DashboardDebugController {
     @FXML private Label counterLabel;
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
+    @FXML private ComboBox<ColorVision> colorVisionComboBox;
 
     @FXML private TextField costGoalField;
 
-    @FXML private final DashboardDebugViewModel vm = new DashboardDebugViewModel(new EnergyCalculator());
+    public DashboardDebugController(DashboardDebugViewModel vm) { this.vm = vm; }
 
     @FXML
     private void initialize() {
@@ -31,7 +36,16 @@ public class DashboardDebugController {
         counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
+
+        colorVisionComboBox.getItems().setAll(ColorVision.values());
+        colorVisionComboBox.valueProperty().bindBidirectional(vm.getPreferences().visionProperty());
+
+        energyUsageController.setFillProperty(ColorSettings.getGradientFor(vm.getPreferences().getVision()));
+        vm.getPreferences().visionProperty().addListener((_, _, mode) ->
+                energyUsageController.setFillProperty(ColorSettings.getGradientFor(mode))
+        );
     }
+
 
     @FXML
     private void onIncrement() {

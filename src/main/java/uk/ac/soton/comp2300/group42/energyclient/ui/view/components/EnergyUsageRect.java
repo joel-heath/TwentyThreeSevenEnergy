@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.view.components;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class EnergyUsageRect {
@@ -10,8 +11,6 @@ public class EnergyUsageRect {
     @FXML
     private Rectangle usageRect;
     private final Rectangle clip = new Rectangle();
-
-
 
     private static final double MAX_WIDTH = 250;
 
@@ -31,4 +30,7 @@ public class EnergyUsageRect {
     }
 
 
+    public void setFillProperty(Paint fill) {
+        usageRect.fillProperty().setValue(fill);
+    }
 }

@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.*;
+import uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug.DashboardDebugController;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
@@ -9,6 +10,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.DashboardViewModel
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SettingsViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
 
 
 // The factory exists to pass the same instance of any given model all around the UI,
@@ -49,6 +51,8 @@ public class ViewModelFactory {
                     -> new ScheduleViewModel(repository);
             case Class<?> c when c == SettingsController.class
                     -> new SettingsViewModel(repository);
+            case Class<?> c when c == DashboardDebugController.class
+                    -> new DashboardDebugViewModel(repository, energyCalculator);
             default -> null;
         };
     }

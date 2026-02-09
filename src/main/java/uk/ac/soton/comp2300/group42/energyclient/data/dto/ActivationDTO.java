@@ -8,7 +8,11 @@ public class ActivationDTO {
     private LocalDateTime activationTime;
 
     public ActivationDTO(Long applianceId, LocalDateTime activationTime) {
-        this.id = null;
+        this(null, applianceId, activationTime);
+    }
+
+    public ActivationDTO(Long id, Long applianceId, LocalDateTime activationTime) {
+        this.id = id;
         this.applianceId = applianceId;
         this.activationTime = activationTime;
     }

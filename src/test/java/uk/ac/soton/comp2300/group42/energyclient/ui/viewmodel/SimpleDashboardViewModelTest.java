@@ -1,45 +1,46 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
-import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelFactory;
+
+import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DashboardViewModelTest {
+class SimpleDashboardViewModelTest {
 
-    @Mock ModelFactory modelFactory;
     @Mock EnergyCalculator mockCalc;
-    @Mock ActivationClient activationClient;
-    @Mock ApplianceClient applianceClient;
-    @Mock NotificationService notificationService;
 
-    @Mock ActivationDTO mockActivationDTO;
+    @Mock Repository mockRepo;
+    PreferencesModel preferences;
+    ObservableList<ActivationModel> activations;
+    ObservableList<ApplianceModel> appliances;
     @Mock ActivationModel mockActivation;
-    @Mock ApplianceDTO mockApplianceDTO;
     @Mock ApplianceModel mockAppliance;
 
     private SimpleDashboardViewModel viewModel;
 
     @BeforeEach void setUp() {
-        when(activationClient.findAll()).thenReturn(List.of());
-        when(applianceClient.findAll()).thenReturn(List.of(mockApplianceDTO));
-        viewModel = new SimpleDashboardViewModel(modelFactory, mockCalc, activationClient, applianceClient, notificationService);
+        preferences = new PreferencesModel(new PreferencesDTO());
+        activations = FXCollections.observableArrayList();
+        appliances =  FXCollections.observableArrayList(mockAppliance);
+
+        when(mockRepo.getPreferences()).thenReturn(preferences);
+        when(mockRepo.getActivations()).thenReturn(activations);
+        when(mockRepo.getAppliances()).thenReturn(appliances);
+
+        viewModel = new SimpleDashboardViewModel(mockRepo, mockCalc);
     }
 
     // == Initialization Tests ==
@@ -80,7 +81,7 @@ class DashboardViewModelTest {
     }
 
     @Test void testSetCostGoal() {
-        viewModel.setCostGoal(10.00);
+        mockRepo.getPreferences().setEnergyGoal(10.0);
 
         assertEquals("Cost Goal: £10.00", viewModel.goalMessageProperty().get());
 
@@ -90,7 +91,7 @@ class DashboardViewModelTest {
 
     @Test void testSetCostGoalAndRecalculateCost() {
         // Spent £5.00, Goal £10.00 -> Usage should be 0.5
-        viewModel.setCostGoal(10.0);
+        mockRepo.getPreferences().setEnergyGoal(10.0);
 
         when(mockCalc.convertJoulesToPounds(anyInt())).thenReturn(5.0);
         viewModel.recalculateCost();
@@ -100,7 +101,7 @@ class DashboardViewModelTest {
 
     @Test void testCostClamping() {
         // Spent £20.00, Goal £10.00 -> Usage = clamp(20/10=2, 1.0) = 1.0
-        viewModel.setCostGoal(10.0);
+        mockRepo.getPreferences().setEnergyGoal(10.0);
 
         when(mockCalc.convertJoulesToPounds(anyInt())).thenReturn(20.0);
         viewModel.recalculateCost();
@@ -111,9 +112,7 @@ class DashboardViewModelTest {
     // == Repository Tests ==
     @Test void testRemoveActivation() {
         viewModel.removeActivation(mockActivation);
-        // verify(activationClient).delete(mockActivation.commit()); this would produce a different object
-
-        // assert no such element with .getId() == mockActivation.getId() in activationClient.findAll()
+        verify(mockRepo).deleteActivation(mockActivation);
     }
 
     @Test void testUpdateActivation() {
@@ -123,7 +122,6 @@ class DashboardViewModelTest {
 
         verify(mockActivation).setAppliance(mockAppliance);
         verify(mockActivation).setActivationTime(newTime);
-        // verify(activationClient).save(mockActivation);
-        // verify(notificationService).rescheduleNotification(mockActivation);
+        verify(mockRepo).saveActivation(mockActivation);
     }
 }

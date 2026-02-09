@@ -18,8 +18,7 @@ public class ActivationModel {
     }
 
     public ActivationDTO commit() {
-        // dto.setApplianceId(appliance.get().commit().getId());
-        // dto.setApplianceId(appliance.get().getId());
+        dto.setApplianceId(appliance.get().getId());
         dto.setActivationTime(activationTime.get());
         return dto;
     }

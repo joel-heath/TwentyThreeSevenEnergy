@@ -7,7 +7,7 @@ import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.LoginViewModel;
 
-public class LoginController {
+public class CreateAccountController {
 
     @FXML
     private TextField usernameField;
@@ -15,32 +15,41 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
+    @FXML
+    private PasswordField confirmPasswordField;
+
     private final LoginViewModel viewModel = new LoginViewModel();
 
     @FXML
-    private void onLogin() {
-        String userEmail = usernameField.getText();
-        String userPassword = passwordField.getText();
+    private void onSignup() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        String confirm = confirmPasswordField.getText();
 
-        if (userEmail.isBlank() || userPassword.isBlank()) {
+        if (username.isBlank() || password.isBlank() || confirm.isBlank()) {
             showError("All fields are required.");
             return;
         }
 
-        boolean authenticated = viewModel.login(userEmail, userPassword);
-
-        if (!authenticated) {
-            showError("Invalid email or password.");
+        if (!password.equals(confirm)) {
+            showError("Passwords do not match.");
             return;
         }
 
-        // Successful login → dashboard
-        Navigator.goTo("dashboard.fxml");
+        boolean success = viewModel.register(username, password);
+
+        if (!success) {
+            showError("User already exists.");
+            return;
+        }
+
+        // Account created → back to login
+        Navigator.goTo("login.fxml");
     }
 
     @FXML
-    private void goToSignUp() {
-        Navigator.goTo("signup.fxml");
+    private void goToLogin() {
+        Navigator.goTo("login.fxml");
     }
 
     @FXML
@@ -51,7 +60,7 @@ public class LoginController {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Login Error");
+        alert.setTitle("Sign Up Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

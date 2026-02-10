@@ -20,9 +20,14 @@
         <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
         <PasswordField fx:id="passwordField" promptText="Password" maxWidth="250"/>
 
-        <Button text="Login" onAction="#loginController" maxWidth="250"/>
+        <Button text="Login" onAction="#onLogin" maxWidth="250"/>
         <Hyperlink text="Don't have an account? Sign up"
-                   onAction="#goToSignup"/>
+                   onAction="#goToSignUp"/>
+
+        <Button text="← Back"
+                onAction="#goToLanding"
+                maxWidth="250"/>
+
     </VBox>
 
 </StackPane>

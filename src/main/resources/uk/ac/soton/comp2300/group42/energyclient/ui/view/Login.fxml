@@ -4,11 +4,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.BackOverlayPane?>
 
 
-<StackPane xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.LoginController">
+<BackOverlayPane xmlns="http://javafx.com/javafx"
+                 xmlns:fx="http://javafx.com/fxml"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.LoginController"
+                 prefHeight="400.0" prefWidth="600.0">
 
     <VBox spacing="15" alignment="CENTER">
         <padding>
@@ -24,11 +26,5 @@
         <Hyperlink text="Don't have an account? Sign up"
                    onAction="#goToSignUp"/>
 
-        <Button text="← Back"
-                onAction="#goToLanding"
-                maxWidth="250"/>
-
     </VBox>
-
-</StackPane>
-
+</BackOverlayPane>

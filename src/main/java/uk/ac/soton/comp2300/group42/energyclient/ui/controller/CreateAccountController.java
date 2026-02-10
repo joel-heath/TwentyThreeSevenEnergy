@@ -52,11 +52,6 @@ public class CreateAccountController {
         Navigator.goTo("login.fxml");
     }
 
-    @FXML
-    private void goToLanding() {
-        Navigator.goTo("landing.fxml");
-    }
-
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

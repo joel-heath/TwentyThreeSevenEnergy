@@ -43,11 +43,6 @@ public class LoginController {
         Navigator.goTo("signup.fxml");
     }
 
-    @FXML
-    private void goToLanding() {
-        Navigator.goTo("landing.fxml");
-    }
-
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

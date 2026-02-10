@@ -1,0 +1,21 @@
+/* Container - make the default button transparent */
+.toggle-switch {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+/* The capsule track */
+.toggle-switch .track {
+    -fx-fill: #b0b0b0; /* Gray when off */
+}
+
+/* Blue track when selected */
+.toggle-switch:selected .track {
+    -fx-fill: #3797ef; /* Blue when on */
+}
+
+/* The thumb (white circle) */
+.toggle-switch .thumb {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.DoubleUnaryOperator;
 
 import static java.lang.Math.max;
 
@@ -26,6 +27,8 @@ public class DashboardDebugViewModel {
     private final StringProperty costMessage = new SimpleStringProperty("Total Spent: £0.00");
     private final DoubleProperty goal = new SimpleDoubleProperty(1);
     private final StringProperty goalMessage = new SimpleStringProperty("Goal: £1.00");
+
+    private DoubleUnaryOperator formula = x -> x * 500 + 100;
 
     private final EnergyCalculator calc;
     private final Repository repository;
@@ -66,7 +69,7 @@ public class DashboardDebugViewModel {
     }
 
     public void recalculateCost() {
-        int joules = 100 + 500 * counter.get();
+        int joules = (int) formula.applyAsDouble(counter.get());
         double pounds = calc.convertJoulesToPounds(joules);
         cost.set(pounds);
         costMessage.set(String.format("Total Spent: £%.2f", pounds));
@@ -97,6 +100,10 @@ public class DashboardDebugViewModel {
 
     public PreferencesModel getPreferences() {
         return preferences;
+    }
+
+    public void setFormula(DoubleUnaryOperator formula) {
+        this.formula = formula;
     }
 
     public void save() { repository.savePreferences(); }

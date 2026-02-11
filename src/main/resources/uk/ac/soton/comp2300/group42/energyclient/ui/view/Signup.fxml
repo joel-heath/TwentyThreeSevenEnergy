@@ -9,7 +9,7 @@
 
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
-                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.CreateAccountController"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SignupController"
                  prefHeight="400.0" prefWidth="600.0">
 
 

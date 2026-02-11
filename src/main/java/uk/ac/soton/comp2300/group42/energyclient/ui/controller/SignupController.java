@@ -7,18 +7,14 @@ import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.LoginViewModel;
 
-public class CreateAccountController {
+public class SignupController {
 
-    @FXML
-    private TextField usernameField;
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmPasswordField;
 
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private PasswordField confirmPasswordField;
-
-    private final LoginViewModel viewModel = new LoginViewModel();
+    private final LoginViewModel vm;
+    public SignupController(LoginViewModel vm) { this.vm = vm; }
 
     @FXML
     private void onSignup() {
@@ -36,20 +32,18 @@ public class CreateAccountController {
             return;
         }
 
-        boolean success = viewModel.register(username, password);
+        boolean success = vm.register(username, password);
 
         if (!success) {
             showError("User already exists.");
             return;
         }
 
-        // Account created → back to login
-        Navigator.goTo("login.fxml");
+        Navigator.goToIrreversible("Dashboard.fxml");
     }
 
-    @FXML
-    private void goToLogin() {
-        Navigator.goTo("login.fxml");
+    @FXML private void goToLogin() {
+        Navigator.goTo("Login.fxml");
     }
 
 

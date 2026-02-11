@@ -9,16 +9,13 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.LoginViewModel;
 
 public class LoginController {
 
-    @FXML
-    private TextField usernameField;
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
 
-    @FXML
-    private PasswordField passwordField;
+    private final LoginViewModel vm;
+    public LoginController(LoginViewModel vm) { this.vm = vm; }
 
-    private final LoginViewModel viewModel = new LoginViewModel();
-
-    @FXML
-    private void onLogin() {
+    @FXML private void onLogin() {
         String userEmail = usernameField.getText();
         String userPassword = passwordField.getText();
 
@@ -27,7 +24,7 @@ public class LoginController {
             return;
         }
 
-        boolean authenticated = viewModel.login(userEmail, userPassword);
+        boolean authenticated = vm.login(userEmail, userPassword);
 
         if (!authenticated) {
             showError("Invalid email or password.");
@@ -35,14 +32,12 @@ public class LoginController {
         }
 
         // Successful login → dashboard
-        Navigator.goTo("dashboard.fxml");
+        Navigator.goToIrreversible("dashboard.fxml");
     }
 
-    @FXML
-    private void goToSignUp() {
-        Navigator.goTo("signup.fxml");
+    @FXML private void goToSignUp() {
+        Navigator.goTo("Signup.fxml");
     }
-
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

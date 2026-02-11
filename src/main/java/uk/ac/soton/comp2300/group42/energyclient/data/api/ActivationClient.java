@@ -1,5 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 
 import java.lang.reflect.Field;
@@ -9,6 +11,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class ActivationClient {
+
+    private final AuthenticatedHttpClient httpClient;
+    private final ObjectMapper mapper;
+
+    public ActivationClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
+        this.httpClient = httpClient;
+        this.mapper = mapper;
+    }
 
     private final List<ActivationDTO> activations = new ArrayList<>();
 

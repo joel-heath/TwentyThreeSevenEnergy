@@ -1,15 +1,39 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
+
 import java.util.List;
 import java.util.Optional;
 
-// TODO: In Sprint 2, use a HttpClient to call the server
-// Currently contains hard-coded testing data
-
 public class ApplianceClient {
 
+    private final AuthenticatedHttpClient httpClient;
+    private final ObjectMapper mapper;
+
+    public ApplianceClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
+        this.httpClient = httpClient;
+        this.mapper = mapper;
+    }
+
     public Optional<ApplianceDTO> findById(Long id) {
+        /* Actual implementation will look like this:
+        try {
+            var response = httpClient.get("appliance/" + id);
+            if (response.statusCode() != 200)
+                return Optional.empty();
+
+            var json = response.body();
+            var appliance = mapper.readValue(json, ApplianceDTO.class);
+            return Optional.of(appliance);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+        */
+
         return Optional.of(new ApplianceDTO(id, "Dishwasher"));
     }
 

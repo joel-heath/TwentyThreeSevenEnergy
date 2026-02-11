@@ -124,16 +124,21 @@ public class Navigator {
         }
     }
 
-    public static void goToAbsoluteIrreversible(String fxmlPath) { goToAbsoluteIrreversible(fxmlPath, null); }
-    public static <T> void goToAbsoluteIrreversible(String fxmlPath, Consumer<T> controllerSetup) {
+    private static <T> void _goTo(String fxmlPath, Consumer<T> controllerSetup) {
         forwardHistory.clear();
         switchView(new ViewContext(fxmlPath, controllerSetup));
+    }
+
+    public static void goToAbsoluteIrreversible(String fxmlPath) { goToAbsoluteIrreversible(fxmlPath, null); }
+    public static <T> void goToAbsoluteIrreversible(String fxmlPath, Consumer<T> controllerSetup) {
+        backHistory.clear();
+        _goTo(fxmlPath, controllerSetup);
     }
 
     public static void goToAbsolute(String fxmlPath) { goToAbsolute(fxmlPath, null); }
     public static <T> void goToAbsolute(String fxmlPath, Consumer<T> controllerSetup) {
         backHistory.push((ViewContext) contentArea.getUserData());
-        goToAbsoluteIrreversible(fxmlPath, controllerSetup);
+        _goTo(fxmlPath, controllerSetup);
     }
 
     public static void goTo(String fxmlPath) { goTo(fxmlPath, null); }

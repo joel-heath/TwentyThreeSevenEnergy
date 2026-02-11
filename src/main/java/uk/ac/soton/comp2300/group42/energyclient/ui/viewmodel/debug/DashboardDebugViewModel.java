@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Math.max;
+
 public class DashboardDebugViewModel {
 
     private final ScheduledExecutorService scheduler =
@@ -41,9 +43,11 @@ public class DashboardDebugViewModel {
                 .otherwise(cost.divide(goal)));
     }
 
-    public DoubleProperty usageProperty() { return usage; }
     public IntegerProperty counterProperty() { return counter; }
+    public DoubleProperty usageProperty() { return usage; }
+    public DoubleProperty costProperty() { return cost; }
     public StringProperty costMessageProperty() { return costMessage; }
+    public DoubleProperty goalProperty() { return goal; }
     public StringProperty goalMessageProperty() { return goalMessage; }
 
     public void incrementCounter() {
@@ -52,7 +56,7 @@ public class DashboardDebugViewModel {
     }
 
     public void decrementCounter() {
-        counter.set(counter.get() - 1);
+        counter.set(max(counter.get() - 1, 0));
         recalculateCost();
     }
 

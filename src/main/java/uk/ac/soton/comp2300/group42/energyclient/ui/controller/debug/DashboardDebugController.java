@@ -81,7 +81,8 @@ public class DashboardDebugController {
 
     @FXML private void onSetCostGoal() {
         try {
-            double value = Double.parseDouble(costGoalField.getText());
+            String text = costGoalField.getText().replace("£", "");
+            double value = Double.parseDouble(text);
 
             if (value <= 0) throw new NumberFormatException();
 
@@ -108,6 +109,8 @@ public class DashboardDebugController {
 
         vm.scheduleReset(resetTime);
     }
+
+
 
     @FXML
     private void onExit() {

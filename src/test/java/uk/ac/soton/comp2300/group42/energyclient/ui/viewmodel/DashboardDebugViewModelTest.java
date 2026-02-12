@@ -72,4 +72,20 @@ public class DashboardDebugViewModelTest {
         assertEquals(0.5, vm.goalProperty().getValue());
     }
 
+    @Test
+    void testApplyFormula() {
+        vm.incrementCounter();
+        assertEquals(600, vm.applyFormula());
+        vm.incrementCounter();
+        assertEquals(1100, vm.applyFormula());
+    }
+
+    @Test
+    void testSetFormula() {
+        vm.incrementCounter();
+        assertEquals(600, vm.applyFormula());
+        vm.setFormula(x -> 200*x);
+        assertEquals(200, vm.applyFormula());
+    }
+
 }

@@ -49,9 +49,8 @@ public class ScheduleViewModel {
     }
 
     public ObservableList<ApplianceModel> getApplianceList() { return applianceList; }
-    public ApplianceModel getSelectedAppliance() { return selectedAppliance.get(); }
-    public ObjectProperty<ApplianceModel> selectedApplianceProperty() { return selectedAppliance; }
 
+    public ObjectProperty<ApplianceModel> selectedApplianceProperty() { return selectedAppliance; }
     public IntegerProperty hourProperty() { return hour; }
     public IntegerProperty minuteProperty() { return minute; }
     public ObjectProperty<LocalDate> dateProperty() { return date; }

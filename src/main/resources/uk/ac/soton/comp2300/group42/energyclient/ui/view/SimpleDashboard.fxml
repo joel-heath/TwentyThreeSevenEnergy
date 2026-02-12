@@ -27,7 +27,6 @@
 
                 <EnergyUsageRect fx:id="energyUsageRect"/>
 
-
                 <VBox spacing="5" alignment="CENTER">
 
                     <VBox alignment="CENTER">

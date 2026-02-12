@@ -53,7 +53,7 @@ class SimpleDashboardViewModelTest {
     @Test void testDefaultValues() {
         // Verify defaults set in the field definitions
         assertEquals(0, viewModel.counterProperty().get());
-        assertEquals("Total Spent: £0.00", viewModel.costMessageProperty().get());
+        assertEquals("£0.00", viewModel.costMessageProperty().get());
         // If we add public getters for these properties:
         // assertEquals(0.0, viewModel.costValProperty().get());
         // assertEquals(1.0, viewModel.costGoalProperty().get(), "Default goal should be 1.0"); */
@@ -74,7 +74,7 @@ class SimpleDashboardViewModelTest {
 
         viewModel.recalculateCost();
 
-        assertEquals("Total Spent: £2.50", viewModel.costMessageProperty().get());
+        assertEquals("£2.50", viewModel.costMessageProperty().get());
 
         // usage = | 2.50 spent / 1.00 goal = 2.5 | clamped to 1.0
         assertEquals(1.0, viewModel.usageProperty().get(), "Usage should update when cost updates");
@@ -83,7 +83,7 @@ class SimpleDashboardViewModelTest {
     @Test void testSetCostGoal() {
         mockRepo.getPreferences().setEnergyGoal(10.0);
 
-        assertEquals("Cost Goal: £10.00", viewModel.goalMessageProperty().get());
+        assertEquals("Goal: £10.00", viewModel.goalMessageProperty().get());
 
         // usage = 0 current cost / 10 goal = 0 usage
         assertEquals(0.0, viewModel.usageProperty().get());

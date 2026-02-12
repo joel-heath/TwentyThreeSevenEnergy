@@ -13,7 +13,8 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
@@ -37,7 +38,7 @@ public class SimpleDashboardViewModel {
 
         this.appliances = repository.getAppliances();
         this.activations = new SortedList<>(repository.getActivations());
-        this.activations.setComparator(Comparator.comparing(ActivationModel::getActivationTime));
+        this.activations.setComparator(Comparator.comparing(ActivationModel::getNextActivationDateTime));
 
         goalMessage.bind(
                 repository.getPreferences().energyGoalProperty()
@@ -89,9 +90,39 @@ public class SimpleDashboardViewModel {
         repository.deleteActivation(activation);
     }
 
-    public void updateActivation(ActivationModel act, ApplianceModel app, LocalDateTime time) {
+    public void updateActivation(ActivationModel act, ApplianceModel app, LocalTime time, LocalDate date,
+                                 boolean recursMonday,
+                                 boolean recursTuesday,
+                                 boolean recursWednesday,
+                                 boolean recursThursday,
+                                 boolean recursFriday,
+                                 boolean recursSaturday,
+                                 boolean recursSunday,
+                                 boolean isRecurring) {
         act.setAppliance(app);
         act.setActivationTime(time);
+
+        if (isRecurring) {
+            act.setActivationDate(null);
+            act.setRecursMonday(recursMonday);
+            act.setRecursTuesday(recursTuesday);
+            act.setRecursWednesday(recursWednesday);
+            act.setRecursThursday(recursThursday);
+            act.setRecursFriday(recursFriday);
+            act.setRecursSaturday(recursSaturday);
+            act.setRecursSunday(recursSunday);
+        }
+        else {
+            act.setActivationDate(date);
+            act.setRecursMonday(false);
+            act.setRecursTuesday(false);
+            act.setRecursWednesday(false);
+            act.setRecursThursday(false);
+            act.setRecursFriday(false);
+            act.setRecursSaturday(false);
+            act.setRecursSunday(false);
+        }
+
         repository.saveActivation(act);
     }
 

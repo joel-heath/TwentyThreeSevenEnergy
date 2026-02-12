@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +14,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Repository {
@@ -42,8 +44,16 @@ public class Repository {
         appliances = FXCollections.observableArrayList(activation -> new Observable[] { activation.nameProperty() });
         activations = FXCollections.observableArrayList(
                 activation -> new Observable[] {
+                        activation.applianceProperty(),
                         activation.activationTimeProperty(),
-                        activation.applianceProperty()
+                        activation.activationDateProperty(),
+                        activation.recursMondayProperty(),
+                        activation.recursTuesdayProperty(),
+                        activation.recursWednesdayProperty(),
+                        activation.recursThursdayProperty(),
+                        activation.recursFridayProperty(),
+                        activation.recursSaturdayProperty(),
+                        activation.recursSundayProperty()
                 }
         );
 
@@ -55,26 +65,19 @@ public class Repository {
      * MUST be called in this order: Appliances first, then Activations.
      */
     public void fetchAllData() {
-        try {
-            var applianceDTOs = applianceClient.findAll();
-            List<ApplianceModel> loadedAppliances = applianceDTOs.stream()
-                    .map(modelFactory::saveAppliance)
-                    .toList();
+        var applianceDTOs = applianceClient.findAll();
+        List<ApplianceModel> loadedAppliances = applianceDTOs.stream()
+                .map(modelFactory::saveAppliance)
+                .toList();
 
-            appliances.setAll(loadedAppliances);
+        Platform.runLater(() -> appliances.setAll(loadedAppliances));
 
-            var activationDTOs = activationClient.findAll();
-            List<ActivationModel> loadedActivations = activationDTOs.stream()
-                    .map(modelFactory::createActivationModel)
-                    .toList();
+        var activationDTOs = activationClient.findAll();
+        List<ActivationModel> loadedActivations = activationDTOs.stream()
+                .map(modelFactory::createActivationModel)
+                .toList();
 
-            activations.setAll(loadedActivations);
-
-        } catch (Exception e) {
-            // Show an Alert?
-            e.printStackTrace();
-        }
-    }
+        Platform.runLater(() -> activations.setAll(loadedActivations));    }
 
     // --- Expose Data for ViewModels ---
 
@@ -85,47 +88,31 @@ public class Repository {
     // --- Business Logic / Write Operations ---
 
     public void deleteActivation(ActivationModel activation) {
-        try {
-            activationClient.delete(activation.commit());
-            notificationService.cancelNotification(activation);
-            activations.remove(activation);
-        } catch (Exception e) {
-            // Rollback if needed, or show error
-            e.printStackTrace();
-        }
+        activationClient.delete(activation.commit());
+        notificationService.cancelNotification(activation);
+        activations.remove(activation);
     }
 
-    public void createActivation(ActivationDTO dto) {
-        try {
-            ActivationDTO savedDto = activationClient.save(dto);
-            ActivationModel newModel = modelFactory.createActivationModel(savedDto);
-            notificationService.scheduleNotification(newModel);
-            if (!activations.contains(newModel))
-                activations.add(newModel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public LocalDateTime createActivation(ActivationDTO dto) {
+        ActivationDTO savedDto = activationClient.save(dto);
+        ActivationModel newModel = modelFactory.createActivationModel(savedDto);
+        LocalDateTime activationTime = notificationService.scheduleNotification(newModel);
+        if (!activations.contains(newModel))
+            activations.add(newModel);
+        return activationTime;
     }
 
     public void saveActivation(ActivationModel activation) {
-        try {
-            ActivationDTO dto = activation.commit();
-            activationClient.save(dto);
-            notificationService.rescheduleNotification(activation);
-            if (!activations.contains(activation))
-                activations.add(activation);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ActivationDTO dto = activation.commit();
+        activationClient.save(dto);
+        notificationService.rescheduleNotification(activation);
+        if (!activations.contains(activation))
+            activations.add(activation);
     }
 
     public void savePreferences() {
-        try {
-            PreferencesDTO dto = preferences.commit();
-            // call preferencesClient save
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        PreferencesDTO dto = preferences.commit();
+        // call preferencesClient save
     }
 
     // User client requires no caching of UserDTO objects so no need to wrap methods, just expose it as is.

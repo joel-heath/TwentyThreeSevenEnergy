@@ -18,7 +18,6 @@
 
                 <ActivationSchedulePane fx:id="schedulePane"/>
 
-                <ComboBox fx:id="repeatComboBox" promptText="Does not repeat"/>
                 <Button text="Schedule" onAction="#onSchedule"/>
 
                 <Label fx:id="responseLabel" />

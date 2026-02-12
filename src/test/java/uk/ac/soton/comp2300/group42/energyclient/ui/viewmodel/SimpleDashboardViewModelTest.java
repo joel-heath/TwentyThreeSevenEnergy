@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +15,7 @@ import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,14 +27,15 @@ class SimpleDashboardViewModelTest {
     PreferencesModel preferences;
     ObservableList<ActivationModel> activations;
     ObservableList<ApplianceModel> appliances;
-    @Mock ActivationModel mockActivation;
+
+    @Mock ActivationModel activation;
     @Mock ApplianceModel mockAppliance;
 
     private SimpleDashboardViewModel viewModel;
 
     @BeforeEach void setUp() {
         preferences = new PreferencesModel(new PreferencesDTO());
-        activations = FXCollections.observableArrayList();
+        activations = FXCollections.observableArrayList(activation);
         appliances =  FXCollections.observableArrayList(mockAppliance);
 
         when(mockRepo.getPreferences()).thenReturn(preferences);
@@ -111,17 +113,55 @@ class SimpleDashboardViewModelTest {
 
     // == Repository Tests ==
     @Test void testRemoveActivation() {
-        viewModel.removeActivation(mockActivation);
-        verify(mockRepo).deleteActivation(mockActivation);
+        assertEquals(1, viewModel.getActivations().size());
+        assertTrue(viewModel.getActivations().contains(activation));
+
+        viewModel.removeActivation(activation);
+        verify(mockRepo).deleteActivation(activation);
+
+        // assertEquals(0, viewModel.getActivations().size());           // this should be true with a real repo thanks to bindings
+        // assertFalse(viewModel.getActivations().contains(activation)); // but isn't with the mock.
     }
 
-    @Test void testUpdateActivation() {
-        LocalDateTime newTime = LocalDateTime.of(2025, 1, 1, 12, 0);
+    @Test void testUpdateActivation_nonRecurring() {
+        LocalDate date = LocalDate.of(2025, 1, 1);
+        LocalTime time = LocalTime.of(12, 0);
 
-        viewModel.updateActivation(mockActivation, mockAppliance, newTime);
+        viewModel.updateActivation(activation, mockAppliance, time, date,
+                                   false, true, false, true, false, true, false,
+                                   false);
 
-        verify(mockActivation).setAppliance(mockAppliance);
-        verify(mockActivation).setActivationTime(newTime);
-        verify(mockRepo).saveActivation(mockActivation);
+        verify(activation).setAppliance(mockAppliance);
+        verify(activation).setActivationTime(time);
+        verify(activation).setActivationDate(date);
+        verify(activation).setRecursMonday(false);
+        verify(activation).setRecursTuesday(false);
+        verify(activation).setRecursWednesday(false);
+        verify(activation).setRecursThursday(false);
+        verify(activation).setRecursFriday(false);
+        verify(activation).setRecursSaturday(false);
+        verify(activation).setRecursSunday(false);
+        verify(mockRepo).saveActivation(activation);
+    }
+
+    @Test void testUpdateActivation_recurring() {
+        LocalDate date = LocalDate.of(2025, 1, 1);
+        LocalTime time = LocalTime.of(12, 0);
+
+        viewModel.updateActivation(activation, mockAppliance, time, date,
+                false, true, false, true, false, true, false,
+                true);
+
+        verify(activation).setAppliance(mockAppliance);
+        verify(activation).setActivationTime(time);
+        verify(activation).setActivationDate(null);
+        verify(activation).setRecursMonday(false);
+        verify(activation).setRecursTuesday(true);
+        verify(activation).setRecursWednesday(false);
+        verify(activation).setRecursThursday(true);
+        verify(activation).setRecursFriday(false);
+        verify(activation).setRecursSaturday(true);
+        verify(activation).setRecursSunday(false);
+        verify(mockRepo).saveActivation(activation);
     }
 }

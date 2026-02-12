@@ -23,29 +23,33 @@ public class NotificationService {
         this.onCleanupAction = action;
     }
 
-    public void scheduleNotification(ActivationModel activation) {
+    public LocalDateTime scheduleNotification(ActivationModel activation) {
         ApplianceModel appliance = activation.getAppliance();
-        LocalDateTime targetTime = activation.getActivationTime();
+        LocalDateTime targetTime = activation.getNextActivationDateTime();
 
         LocalDateTime now = LocalDateTime.now();
-
-        long delay = Duration.between(now, targetTime).toMillis();
-        if (delay < 0)  return;
+        long delay = Math.max(0, Duration.between(now, targetTime).toMillis());
 
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     Navigator.showPopup(appliance.getName());
-                    if (onCleanupAction != null)
-                        onCleanupAction.accept(activation);
                     timerTasks.remove(activation);
+                    if (activation.isRecurring()) {
+                        scheduleNotification(activation);
+                    }
+                    else if (onCleanupAction != null) {
+                        onCleanupAction.accept(activation);
+                    }
                 });
             }
         };
 
         timerTasks.put(activation, task);
         timer.schedule(task, delay);
+
+        return targetTime;
     }
 
     public void cancelNotification(ActivationModel activation) {

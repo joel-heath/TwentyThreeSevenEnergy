@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 
+import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;
+
 public class ApplianceModel {
     private final ApplianceDTO dto;
     private final StringProperty name;
@@ -19,8 +21,7 @@ public class ApplianceModel {
     }
 
     public void updateFrom(ApplianceDTO dto) {
-        if (!getName().equals(dto.getName()))
-            setName(dto.getName());
+        updateIfChanged(getName(), dto.getName(), this::setName);
     }
 
     public Long getId() { return dto.getId(); }

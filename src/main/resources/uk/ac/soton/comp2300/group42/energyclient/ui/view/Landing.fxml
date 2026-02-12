@@ -8,8 +8,16 @@
       fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.LandingController"
       fx:id="mainContentArea">
 
-    <Button text="Log in" onAction="#onLogin"/>
-    <Button text="Dive straight in" onAction="#onDive"/>
+    <VBox spacing="10" alignment="TOP_CENTER"
+          xmlns:fx="http://javafx.com/fxml">
+
+        <Label text="23/7 Energy"
+               style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+
+    </VBox>
+
+    <Button text="Log In" onAction="#onLogin"/>
+    <Button text="Dive Straight In" onAction="#onDive"/>
     <Button text="Debug Dashboard" onAction="#onDebug" visible="false" fx:id="debugButton"/>
 </VBox>
 

@@ -7,6 +7,7 @@
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect?>
 
+<?import javafx.scene.effect.DropShadow?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SimpleDashboardController">
 
@@ -15,22 +16,46 @@
             <VBox spacing="10"
                   alignment="CENTER"
                   fillWidth="false"
-                  style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+                  style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15; -fx-font-weight: bold">
+
+                <effect>
+                    <DropShadow radius="15"
+                                offsetX="5"
+                                offsetY="5"
+                                color="#00000088"/>
+                </effect>
 
                 <EnergyUsageRect fx:id="energyUsageRect"/>
 
-                <Label layoutX="50"
-                       layoutY="80"
-                       text="Goal:"
-                       fx:id="goalLabel"/>
 
-                <Label fx:id="costLabel"/>
+                <VBox spacing="5" alignment="CENTER">
+
+                    <VBox alignment="CENTER">
+                        <Label text="Total Spent"
+                               style="-fx-text-fill: #477890; -fx-font-size: 12"/>
+                        <Label fx:id="costLabel"
+                               style="-fx-text-fill: #477890; -fx-font-size: 20"/>
+                    </VBox>
+
+
+                    <Label layoutX="50"
+                           layoutY="80"
+                           fx:id="goalLabel"
+                           style="-fx-text-fill: #477890; -fx-font-size: 12"/>
+                </VBox>
 
             </VBox>
 
             <VBox spacing="10"
                   prefWidth="280"
                   style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+
+                <effect>
+                    <DropShadow radius="15"
+                                offsetX="5"
+                                offsetY="5"
+                                color="#00000088"/>
+                </effect>
 
                 <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">
                     <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
@@ -48,6 +73,8 @@
 
     <StackPane fx:id="editModalOverlay" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.5);">
         <VBox maxWidth="250" maxHeight="300" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
+
+
             <Label text="Edit Scheduled Reminder" style="-fx-padding: 0 0 20 0;"/>
             <ActivationSchedulePane fx:id="schedulePane" />
             <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">

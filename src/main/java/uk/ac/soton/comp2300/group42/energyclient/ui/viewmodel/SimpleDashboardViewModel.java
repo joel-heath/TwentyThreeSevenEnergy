@@ -20,9 +20,9 @@ import java.util.concurrent.CompletableFuture;
 public class SimpleDashboardViewModel {
 
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
-    private final StringProperty costMessage = new SimpleStringProperty("Total Spent: £0.00");
+    private final StringProperty costMessage = new SimpleStringProperty("£0.00");
     private final DoubleProperty cost = new SimpleDoubleProperty(0);
-    private final StringProperty goalMessage = new SimpleStringProperty("Cost Goal: £1.00");
+    private final StringProperty goalMessage = new SimpleStringProperty("Goal: £1.00");
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
     private final Repository repository;
@@ -41,7 +41,7 @@ public class SimpleDashboardViewModel {
 
         goalMessage.bind(
                 repository.getPreferences().energyGoalProperty()
-                          .map(goal -> String.format("Cost Goal: £%.2f", goal.doubleValue()))
+                          .map(goal -> String.format("Goal: £%.2f", goal.doubleValue()))
         );
         usage.bind(Bindings.createDoubleBinding(
                 () -> {
@@ -71,7 +71,7 @@ public class SimpleDashboardViewModel {
         int joules = 1 + 5 * counter.get();
         double pounds = calc.convertJoulesToPounds(joules);
         cost.set(pounds);
-        costMessage.set(String.format("Total Spent: £%.2f", pounds));
+        costMessage.set(String.format("£%.2f", pounds));
     }
 
     public void startAutoUpdateTest() {

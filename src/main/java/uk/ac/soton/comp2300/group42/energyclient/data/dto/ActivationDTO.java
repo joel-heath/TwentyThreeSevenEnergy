@@ -63,24 +63,24 @@ public class ActivationDTO {
     public LocalDate getActivationDate() { return activationDate; }
     public void setActivationDate(LocalDate activationDate) { this.activationDate = activationDate; }
 
-    public Boolean getRecursMonday() { return recursMonday; }
+    public Boolean isRecursMonday() { return recursMonday; }
     public void setRecursMonday(Boolean recursMonday) { this.recursMonday = recursMonday; }
 
-    public Boolean getRecursTuesday() { return recursTuesday; }
+    public Boolean isRecursTuesday() { return recursTuesday; }
     public void setRecursTuesday(Boolean recursTuesday) { this.recursTuesday = recursTuesday; }
 
-    public Boolean getRecursWednesday() { return recursWednesday; }
+    public Boolean isRecursWednesday() { return recursWednesday; }
     public void setRecursWednesday(Boolean recursWednesday) { this.recursWednesday = recursWednesday; }
 
-    public Boolean getRecursThursday() { return recursThursday; }
+    public Boolean isRecursThursday() { return recursThursday; }
     public void setRecursThursday(Boolean recursThursday) { this.recursThursday = recursThursday; }
 
-    public Boolean getRecursFriday() { return recursFriday; }
+    public Boolean isRecursFriday() { return recursFriday; }
     public void setRecursFriday(Boolean recursFriday) { this.recursFriday = recursFriday; }
 
-    public Boolean getRecursSaturday() { return recursSaturday; }
+    public Boolean isRecursSaturday() { return recursSaturday; }
     public void setRecursSaturday(Boolean recursSaturday) { this.recursSaturday = recursSaturday; }
 
-    public Boolean getRecursSunday() { return recursSunday; }
+    public Boolean isRecursSunday() { return recursSunday; }
     public void setRecursSunday(Boolean recursSunday) { this.recursSunday = recursSunday; }
 }

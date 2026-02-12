@@ -31,13 +31,13 @@ public class ActivationModel {
         this.appliance = new SimpleObjectProperty<>(appliance);
         this.activationTime = new SimpleObjectProperty<>(dto.getActivationTime());
         this.activationDate = new SimpleObjectProperty<>(dto.getActivationDate());
-        this.recursMonday = new SimpleBooleanProperty(dto.getRecursMonday());
-        this.recursTuesday = new SimpleBooleanProperty(dto.getRecursTuesday());
-        this.recursWednesday = new SimpleBooleanProperty(dto.getRecursWednesday());
-        this.recursThursday = new SimpleBooleanProperty(dto.getRecursThursday());
-        this.recursFriday = new SimpleBooleanProperty(dto.getRecursFriday());
-        this.recursSaturday = new SimpleBooleanProperty(dto.getRecursSaturday());
-        this.recursSunday = new SimpleBooleanProperty(dto.getRecursSunday());
+        this.recursMonday = new SimpleBooleanProperty(dto.isRecursMonday());
+        this.recursTuesday = new SimpleBooleanProperty(dto.isRecursTuesday());
+        this.recursWednesday = new SimpleBooleanProperty(dto.isRecursWednesday());
+        this.recursThursday = new SimpleBooleanProperty(dto.isRecursThursday());
+        this.recursFriday = new SimpleBooleanProperty(dto.isRecursFriday());
+        this.recursSaturday = new SimpleBooleanProperty(dto.isRecursSaturday());
+        this.recursSunday = new SimpleBooleanProperty(dto.isRecursSunday());
     }
 
     public ActivationDTO commit() {
@@ -57,13 +57,13 @@ public class ActivationModel {
     public void updateFrom(ActivationDTO dto, ApplianceModel appliance) {
         updateIfChanged(getActivationTime(), dto.getActivationTime(), this::setActivationTime);
         updateIfChanged(getActivationDate(), dto.getActivationDate(), this::setActivationDate);
-        updateIfChanged(isRecursMonday(), dto.getRecursMonday(), this::setRecursMonday);
-        updateIfChanged(isRecursTuesday(), dto.getRecursTuesday(), this::setRecursTuesday);
-        updateIfChanged(isRecursWednesday(), dto.getRecursWednesday(), this::setRecursWednesday);
-        updateIfChanged(isRecursThursday(), dto.getRecursThursday(), this::setRecursThursday);
-        updateIfChanged(isRecursFriday(), dto.getRecursFriday(), this::setRecursFriday);
-        updateIfChanged(isRecursSaturday(), dto.getRecursSaturday(), this::setRecursSaturday);
-        updateIfChanged(isRecursSunday(), dto.getRecursSunday(), this::setRecursSunday);
+        updateIfChanged(isRecursMonday(), dto.isRecursMonday(), this::setRecursMonday);
+        updateIfChanged(isRecursTuesday(), dto.isRecursTuesday(), this::setRecursTuesday);
+        updateIfChanged(isRecursWednesday(), dto.isRecursWednesday(), this::setRecursWednesday);
+        updateIfChanged(isRecursThursday(), dto.isRecursThursday(), this::setRecursThursday);
+        updateIfChanged(isRecursFriday(), dto.isRecursFriday(), this::setRecursFriday);
+        updateIfChanged(isRecursSaturday(), dto.isRecursSaturday(), this::setRecursSaturday);
+        updateIfChanged(isRecursSunday(), dto.isRecursSunday(), this::setRecursSunday);
 
         if (!getAppliance().getId().equals(dto.getApplianceId()))
             setAppliance(appliance);
@@ -122,8 +122,10 @@ public class ActivationModel {
     }
 
     public LocalDateTime getNextActivationDateTime() {
-        LocalDateTime now = LocalDateTime.now();
+        return getNextActivationDateTime(LocalDateTime.now());
+    }
 
+    public LocalDateTime getNextActivationDateTime(LocalDateTime now) {
         if (!isRecurring())
             return LocalDateTime.of(getActivationDate(), getActivationTime());
 

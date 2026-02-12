@@ -1,37 +1,38 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
+import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug.DashboardDebugController;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.DashboardViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SettingsViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
 
 
 // The factory exists to pass the same instance of any given model all around the UI,
 // e.g. to allow Schedule page to add a reminder to the ActivationClient
 //      and for the Dashboard page to see that same reminder.
-// We can't just make ActivationClient a singleton because then we can't mock it for unit tests.
 
 public class ViewModelFactory {
-    private final ApplianceClient applianceClient;
-    private final ActivationClient activationClient;
-    private final ModelFactory modelFactory;
+
     private final Repository repository;
-    private final NotificationService notificationService;
     private final EnergyCalculator energyCalculator;
 
     public ViewModelFactory() {
-        this.applianceClient = new ApplianceClient();
-        this.activationClient = new ActivationClient();
-        this.modelFactory = new ModelFactory();
-        this.notificationService = new NotificationService();
-        this.repository = new Repository(applianceClient, activationClient, notificationService, modelFactory);
+        AuthenticatedHttpClient httpClient = new AuthenticatedHttpClient();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ApplianceClient applianceClient = new ApplianceClient(httpClient, objectMapper);
+        ActivationClient activationClient = new ActivationClient(httpClient, objectMapper);
+        UserClient userClient = new UserClient(httpClient, objectMapper);
+
+        ModelFactory modelFactory = new ModelFactory();
+        NotificationService notificationService = new NotificationService();
+
+        this.repository = new Repository(applianceClient, activationClient, userClient, notificationService, modelFactory);
         this.energyCalculator = new EnergyCalculator();
     }
 
@@ -51,6 +52,8 @@ public class ViewModelFactory {
                     -> new ScheduleViewModel(repository);
             case Class<?> c when c == SettingsController.class
                     -> new SettingsViewModel(repository);
+            case Class<?> c when c == LoginController.class || c == SignupController.class
+                    -> new LoginViewModel(repository);
             case Class<?> c when c == DashboardDebugController.class
                     -> new DashboardDebugViewModel(repository, energyCalculator);
             default -> null;

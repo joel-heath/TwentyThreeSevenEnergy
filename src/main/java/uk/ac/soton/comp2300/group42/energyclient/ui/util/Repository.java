@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
+import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
@@ -18,6 +19,7 @@ public class Repository {
 
     private final ApplianceClient applianceClient;
     private final ActivationClient activationClient;
+    private final UserClient userClient;
     private final NotificationService notificationService;
     private final ModelFactory modelFactory;
     private final PreferencesModel preferences;
@@ -26,11 +28,13 @@ public class Repository {
     private final ObservableList<ActivationModel> activations;
 
     public Repository(ApplianceClient applianceClient,
-                            ActivationClient activationClient,
-                            NotificationService notificationService,
-                            ModelFactory modelFactory) {
+                      ActivationClient activationClient,
+                      UserClient userClient,
+                      NotificationService notificationService,
+                      ModelFactory modelFactory) {
         this.applianceClient = applianceClient;
         this.activationClient = activationClient;
+        this.userClient = userClient;
         this.notificationService = notificationService;
         this.modelFactory = modelFactory;
         this.preferences = modelFactory.getPreferencesModel(new PreferencesDTO());
@@ -123,4 +127,7 @@ public class Repository {
             e.printStackTrace();
         }
     }
+
+    // User client requires no caching of UserDTO objects so no need to wrap methods, just expose it as is.
+    public UserClient getUserClient() { return userClient; }
 }

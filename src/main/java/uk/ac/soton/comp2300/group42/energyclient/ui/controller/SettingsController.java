@@ -1,11 +1,10 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 // Change this to ToggleSwitch
-import uk.ac.soton.comp2300.group42.energyclient.ui.controller.ToggleSwitch;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;

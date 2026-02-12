@@ -6,6 +6,8 @@ import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 
+import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;
+
 public class PreferencesModel {
     private final PreferencesDTO dto;
     private final BooleanProperty largeFont;
@@ -36,18 +38,12 @@ public class PreferencesModel {
     }
 
     public void updateFrom(PreferencesDTO dto) {
-        if (getLargeFont() != dto.getLargeFont())
-            setLargeFont(dto.getLargeFont());
-        if (!getVision().equals(dto.getVision()))
-            setVision(dto.getVision());
-        if (!getTheme().equals(dto.getTheme()))
-            setTheme(dto.getTheme());
-        if (!getMode().equals(dto.getMode()))
-            setMode(dto.getMode());
-        if (getShareLocation() != dto.getShareLocation())
-            setShareLocation(dto.getShareLocation());
-        if (getEnergyGoal() != dto.getEnergyGoal())
-            setEnergyGoal(dto.getEnergyGoal());
+        updateIfChanged(getLargeFont(), dto.getLargeFont(), this::setLargeFont);
+        updateIfChanged(getVision(), dto.getVision(), this::setVision);
+        updateIfChanged(getTheme(), dto.getTheme(), this::setTheme);
+        updateIfChanged(getMode(), dto.getMode(), this::setMode);
+        updateIfChanged(getShareLocation(), dto.getShareLocation(), this::setShareLocation);
+        updateIfChanged(getEnergyGoal(), dto.getEnergyGoal(), this::setEnergyGoal);
     }
 
     public boolean getLargeFont() { return largeFont.get(); }

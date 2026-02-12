@@ -14,8 +14,27 @@
     <Label text="Select time to activate (24 hour clock)"/>
 
     <HBox alignment="CENTER" spacing="5.0">
-        <Spinner fx:id="hourSpinner" prefWidth="60.0" editable="true" />
-        <Label text=":" />
-        <Spinner fx:id="minuteSpinner" prefWidth="60.0" editable="true" />
+        <Spinner fx:id="hourSpinner" prefWidth="60.0" editable="true"/>
+        <Label text=":"/>
+        <Spinner fx:id="minuteSpinner" prefWidth="60.0" editable="true"/>
     </HBox>
+    <Button fx:id="recurrenceButton" text="Enable recurrence" onAction="#onRecur"/>
+    <StackPane>
+        <VBox fx:id="recurrenceRules" visible="false" alignment="CENTER" maxWidth="200" spacing="10">
+            <Label text="Activates every week on"/>
+            <VBox spacing="2">
+                <RadioButton fx:id="mondayButton" text="Monday"/>
+                <RadioButton fx:id="tuesdayButton" text="Tuesday"/>
+                <RadioButton fx:id="wednesdayButton" text="Wednesday"/>
+                <RadioButton fx:id="thursdayButton" text="Thursday"/>
+                <RadioButton fx:id="fridayButton" text="Friday"/>
+                <RadioButton fx:id="saturdayButton" text="Saturday"/>
+                <RadioButton fx:id="sundayButton" text="Sunday"/>
+            </VBox>
+        </VBox>
+        <VBox fx:id="oneTimeSchedule" alignment="CENTER">
+            <Label text="Select date to activate"/>
+            <DatePicker maxWidth="150" fx:id="datePicker"/>
+        </VBox>
+    </StackPane>
 </fx:root>

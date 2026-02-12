@@ -25,11 +25,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.formatDay;
+
 public class SimpleDashboardController {
 
     @FXML private VBox mainContentArea;
     @FXML private StackPane editModalOverlay;
     @FXML private ActivationSchedulePane schedulePane;
+    @FXML private Label responseLabel;
     private ActivationModel currentEditingActivation;
     private final BoxBlur blur = new BoxBlur(10, 10, 3);
 
@@ -66,6 +69,15 @@ public class SimpleDashboardController {
         schedulePane.selectedApplianceProperty().setValue(activation.getAppliance());
         schedulePane.setHour(activation.getActivationTime().getHour());
         schedulePane.setMinute(activation.getActivationTime().getMinute());
+        schedulePane.setDate(activation.getActivationDate() == null ? LocalDateTime.now().toLocalDate() : activation.getActivationDate());
+        schedulePane.setRecurrenceRulesVisible(activation.isRecurring());
+        schedulePane.setRecursMonday(activation.isRecursMonday());
+        schedulePane.setRecursTuesday(activation.isRecursTuesday());
+        schedulePane.setRecursWednesday(activation.isRecursWednesday());
+        schedulePane.setRecursThursday(activation.isRecursThursday());
+        schedulePane.setRecursFriday(activation.isRecursFriday());
+        schedulePane.setRecursSaturday(activation.isRecursSaturday());
+        schedulePane.setRecursSunday(activation.isRecursSunday());
 
         mainContentArea.setEffect(blur);
         editModalOverlay.setVisible(true);
@@ -77,18 +89,32 @@ public class SimpleDashboardController {
         this.currentEditingActivation = null;
     }
 
+    private boolean guard(boolean condition, String errorMessage) {
+        if (condition)
+            responseLabel.setText(errorMessage);
+        return condition;
+    }
+
     @FXML private void onSaveActivation() {
         ApplianceModel appliance = schedulePane.getSelectedAppliance();
         int hour = schedulePane.getHour();
         int minute = schedulePane.getMinute();
+        boolean recurs = schedulePane.isRecurrenceRulesVisible();
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime targetDateTime = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hour, minute));
+        if (guard(appliance == null,
+                  "Failed to schedule, no appliance selected") ||
+            guard(recurs && !schedulePane.isRecursSet(),
+                  "Failed to schedule, no recurrence days selected") ||
+            guard(!recurs && schedulePane.getDate().isBefore(LocalDateTime.now().toLocalDate()),
+                  "Failed to schedule, selected date is in the past")
+        ) return;
 
-        boolean isBeforeOrNow = targetDateTime.isBefore(now) || targetDateTime.isEqual(now);
-        if (isBeforeOrNow) targetDateTime = targetDateTime.plusDays(1);
-
-        vm.updateActivation(currentEditingActivation, appliance, targetDateTime);
+        vm.updateActivation(currentEditingActivation,
+                            appliance,
+                            LocalTime.of(hour, minute),
+                            schedulePane.getDate(),
+                            schedulePane.isRecursMonday(), schedulePane.isRecursTuesday(), schedulePane.isRecursWednesday(), schedulePane.isRecursThursday(), schedulePane.isRecursFriday(), schedulePane.isRecursSaturday(), schedulePane.isRecursSunday(),
+                            schedulePane.isRecurrenceRulesVisible());
         onCloseEditModal();
     }
 
@@ -156,6 +182,7 @@ public class SimpleDashboardController {
 
         Label nameLabel = new Label();
         Label timeLabel = new Label();
+        Label dateLabel = new Label();
 
         nameLabel.textProperty().bind(
                 activation.applianceProperty().flatMap(ApplianceModel::nameProperty)
@@ -164,8 +191,26 @@ public class SimpleDashboardController {
                 () -> activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                 activation.activationTimeProperty()
         ));
+        dateLabel.textProperty().bind(Bindings.createStringBinding(
+                () -> {
+                    // This lambda runs whenever any dependency below changes
+                    var nextDateTime = activation.getNextActivationDateTime();
+                    return nextDateTime != null ? formatDay(nextDateTime) : "No Date";
+                },
+                // 2. List all properties that should trigger a recalculation
+                activation.recursMondayProperty(),
+                activation.recursTuesdayProperty(),
+                activation.recursWednesdayProperty(),
+                activation.recursThursdayProperty(),
+                activation.recursFridayProperty(),
+                activation.recursSaturdayProperty(),
+                activation.recursSundayProperty(),
+                activation.activationDateProperty(),
+                // Good practice: Include time property too, in case the date calculation rolls over based on time
+                activation.activationTimeProperty()
+        ));
 
-        card.getChildren().addAll(nameLabel, timeLabel);
+        card.getChildren().addAll(nameLabel, timeLabel, dateLabel);
 
         card.setOnMouseClicked(_ -> this.openEditModal(activation));
         card.setUserData(activation); // for sorting when an activation's time is changed.

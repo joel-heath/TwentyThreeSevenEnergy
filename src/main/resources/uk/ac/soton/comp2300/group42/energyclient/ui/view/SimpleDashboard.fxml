@@ -55,6 +55,7 @@
                 <Button text="Remove Activation" onAction="#onCancelActivation"/>
                 <Button text="Exit Without Saving" onAction="#onCloseEditModal"/>
             </VBox>
+            <Label fx:id="responseLabel"/>
         </VBox>
     </StackPane>
 

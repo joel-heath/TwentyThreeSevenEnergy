@@ -21,7 +21,7 @@ public class PreferencesDTOTest {
                 Mode.ADVANCED,
                 true,
                 5.2,
-                -1L);
+                1L);
     }
 
     @Test void testGetters() {
@@ -31,6 +31,7 @@ public class PreferencesDTOTest {
         assertEquals(Mode.ADVANCED, custom.getMode());
         assertTrue(custom.getShareLocation());
         assertEquals(5.2, custom.getEnergyGoal());
+        assertEquals(1L, custom.getActiveHouseId());
     }
 
     @Test void testSetters() {
@@ -40,6 +41,7 @@ public class PreferencesDTOTest {
         defaults.setMode(Mode.ADVANCED);
         defaults.setShareLocation(true);
         defaults.setEnergyGoal(8.7);
+        defaults.setActiveHouseId(2L);
 
         assertTrue(defaults.getLargeFont());
         assertEquals(ColorVision.ACHROMA, defaults.getVision());
@@ -47,6 +49,7 @@ public class PreferencesDTOTest {
         assertEquals(Mode.ADVANCED, defaults.getMode());
         assertTrue(defaults.getShareLocation());
         assertEquals(8.7, defaults.getEnergyGoal());
+        assertEquals(2L, defaults.getActiveHouseId());
     }
 
     @Test void testDefault() {
@@ -56,5 +59,6 @@ public class PreferencesDTOTest {
         assertEquals(Mode.SIMPLE, defaults.getMode());
         assertFalse(defaults.getShareLocation());
         assertEquals(1, defaults.getEnergyGoal());
+        assertEquals(-1L, defaults.getActiveHouseId());
     }
 }

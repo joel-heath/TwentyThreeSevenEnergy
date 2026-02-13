@@ -12,11 +12,10 @@
         <VBox spacing="20" alignment="CENTER">
 
             <VBox spacing="5" alignment="CENTER">
-                <Label text="Large Font Mode"/>
-                <HBox spacing="5" alignment="CENTER">
-                    <Label>Off</Label>
+
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Large Font Mode"/>
                     <ToggleSwitch fx:id="largeFontToggle" onAction="#toggleLargeFont"/>
-                    <Label>On</Label>
                 </HBox>
             </VBox>
             <VBox spacing="5" alignment="CENTER">
@@ -32,11 +31,10 @@
                 <ComboBox fx:id="modeComboBox" prefWidth="220"/>
             </VBox>
             <VBox spacing="5" alignment="CENTER">
-                <Label text="Share Location"/>
-                <HBox spacing="5" alignment="CENTER">
-                    <Label>Off</Label>
+
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Share Location"/>
                     <ToggleSwitch fx:id="shareLocationToggle" onAction="#toggleShareLocation"/>
-                    <Label>On</Label>
                 </HBox>
             </VBox>
 

@@ -6,7 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.data.dto.HouseDTO;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
@@ -19,10 +21,11 @@ public class SettingsViewModelTest {
     SettingsViewModel vm;
     PreferencesModel preferences;
     @Mock Repository mockRepo;
+    @Mock HouseModel mockHouse;
 
     @BeforeEach
     void setUp() {
-        preferences = new PreferencesModel(new PreferencesDTO());
+        preferences = new PreferencesModel(new PreferencesDTO(), mockHouse);
         //preferences.setVision(ColorVision.TYPICAL);
 
         when(mockRepo.getPreferences()).thenReturn(preferences);
@@ -42,5 +45,7 @@ public class SettingsViewModelTest {
         mockRepo.getPreferences().setVision(newVision);
         assertEquals(ColorVision.PROTAN, mockRepo.getPreferences().getVision());
     }
+
+
 
 }

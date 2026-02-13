@@ -106,6 +106,11 @@ public class DashboardDebugViewModel {
         this.formula = formula;
     }
 
+
+    public DoubleUnaryOperator getFormula() {
+        return formula;
+    }
+
     public void save() { repository.savePreferences(); }
 
 }

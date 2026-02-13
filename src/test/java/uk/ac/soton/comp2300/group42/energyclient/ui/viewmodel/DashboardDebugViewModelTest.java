@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
@@ -22,11 +23,12 @@ public class DashboardDebugViewModelTest {
     @Mock Repository mockRepo;
     PreferencesModel preferences;
     @Mock EnergyCalculator calc;
+    @Mock HouseModel mockHouse;
 
     private DashboardDebugViewModel vm;
 
     @BeforeEach void setUp() {
-        preferences = new PreferencesModel(new PreferencesDTO());
+        preferences = new PreferencesModel(new PreferencesDTO(), mockHouse);
         when(mockRepo.getPreferences()).thenReturn(preferences);
 
         vm = new DashboardDebugViewModel(mockRepo, calc);
@@ -75,17 +77,21 @@ public class DashboardDebugViewModelTest {
     @Test
     void testApplyFormula() {
         vm.incrementCounter();
-        assertEquals(600, vm.applyFormula());
+        int originalVal = (int) vm.getFormula().applyAsDouble(vm.counterProperty().get());
+        assertEquals(600, originalVal);
         vm.incrementCounter();
-        assertEquals(1100, vm.applyFormula());
+        int updatedVal = (int) vm.getFormula().applyAsDouble(vm.counterProperty().get());
+        assertEquals(1100, updatedVal);
     }
 
     @Test
     void testSetFormula() {
         vm.incrementCounter();
-        assertEquals(600, vm.applyFormula());
+        int originalVal = (int) vm.getFormula().applyAsDouble(vm.counterProperty().get());
+        assertEquals(600, originalVal);
         vm.setFormula(x -> 200*x);
-        assertEquals(200, vm.applyFormula());
+        int updatedVal = (int) vm.getFormula().applyAsDouble(vm.counterProperty().get());
+        assertEquals(200, updatedVal);
     }
 
 }

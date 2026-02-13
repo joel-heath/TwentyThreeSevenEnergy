@@ -30,11 +30,12 @@ class SimpleDashboardViewModelTest {
 
     @Mock ActivationModel activation;
     @Mock ApplianceModel mockAppliance;
+    @Mock HouseModel mockHouse;
 
     private SimpleDashboardViewModel viewModel;
 
     @BeforeEach void setUp() {
-        preferences = new PreferencesModel(new PreferencesDTO());
+        preferences = new PreferencesModel(new PreferencesDTO(), mockHouse);
         activations = FXCollections.observableArrayList(activation);
         appliances =  FXCollections.observableArrayList(mockAppliance);
 

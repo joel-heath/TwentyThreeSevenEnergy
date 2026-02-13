@@ -20,7 +20,8 @@ public class PreferencesDTOTest {
                 Theme.LIGHT_CONTRAST,
                 Mode.ADVANCED,
                 true,
-                5.2);
+                5.2,
+                -1L);
     }
 
     @Test void testGetters() {

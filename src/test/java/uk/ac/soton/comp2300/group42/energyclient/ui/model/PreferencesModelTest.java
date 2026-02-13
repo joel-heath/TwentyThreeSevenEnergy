@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
@@ -12,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PreferencesModelTest {
     PreferencesDTO dto;
     PreferencesModel model;
+    @Mock HouseModel mockHouse;
 
     @BeforeEach void setUp() {
         dto = new PreferencesDTO(
@@ -20,9 +22,10 @@ public class PreferencesModelTest {
                 Theme.LIGHT_CONTRAST,
                 Mode.ADVANCED,
                 true,
-                5.2);
+                5.2,
+                -1L);
 
-        model = new PreferencesModel(dto);
+        model = new PreferencesModel(dto, mockHouse);
     }
 
     @Test void testGetters() {
@@ -84,9 +87,10 @@ public class PreferencesModelTest {
             Theme.DARK_CONTRAST,
             Mode.ADVANCED,
             true,
-            9.1);
+            9.1,
+                -1L);
 
-        model.updateFrom(newDto);
+        model.updateFrom(newDto, mockHouse);
 
         assertTrue(model.getLargeFont(), "Model LargeFont should be updated from new DTO");
         assertEquals(ColorVision.DEUTERAN, model.getVision(), "Model Vision should be updated from new DTO");

@@ -29,8 +29,6 @@ public class SettingsController {
     }
 
     @FXML private void initialize() {
-        // Because of these bindings, the ViewModel is updated automatically
-        // as soon as the switch is flipped. You don't need extra methods!
         largeFontToggle.selectedProperty().bindBidirectional(vm.getPreferences().largeFontProperty());
         shareLocationToggle.selectedProperty().bindBidirectional(vm.getPreferences().shareLocationProperty());
 

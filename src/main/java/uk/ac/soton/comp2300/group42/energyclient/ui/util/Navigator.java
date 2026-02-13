@@ -65,8 +65,8 @@ public class Navigator {
         Parent root = loader.load();
 
         T controller = loader.getController();
-        if (context.controllerSetup != null && controller != null) {
-            context.controllerSetup.accept(controller);}
+        if (context.controllerSetup != null && controller != null)
+            context.controllerSetup.accept(controller);
 
         contentArea.setUserData(context);
 

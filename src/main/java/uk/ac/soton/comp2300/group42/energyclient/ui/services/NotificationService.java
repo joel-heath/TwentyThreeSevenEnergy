@@ -38,6 +38,7 @@ public class NotificationService {
                     timerTasks.remove(activation);
                     if (activation.isRecurring()) {
                         scheduleNotification(activation);
+                        activation.triggerUpdate(); // Trigger UI to recalculate next activation time
                     }
                     else if (onCleanupAction != null) {
                         onCleanupAction.accept(activation);

@@ -1,14 +1,17 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
+import javafx.beans.property.ObjectProperty;
+import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
 public class DashboardViewModel {
-    private final Repository repository;
+    private final ObjectProperty<Mode> preferredMode;
 
     public DashboardViewModel(Repository repository) {
-        this.repository = repository;
+        PreferencesModel prefs = repository.getPreferences();
+        preferredMode = prefs.modeProperty();
     }
 
-    public PreferencesModel getPreferences() { return repository.getPreferences(); }
+    public Mode getPreferredMode() { return preferredMode.get(); }
 }

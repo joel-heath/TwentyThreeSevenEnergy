@@ -50,6 +50,8 @@ public class ViewModelFactory {
                     -> new SimpleDashboardViewModel(repository, energyCalculator);
             case Class<?> c when c == ScheduleController.class
                     -> new ScheduleViewModel(repository);
+            case Class<?> c when c == ManageHousesController.class
+                    -> new ManageHousesViewModel(repository);
             case Class<?> c when c == SettingsController.class
                     -> new SettingsViewModel(repository);
             case Class<?> c when c == LoginController.class || c == SignupController.class

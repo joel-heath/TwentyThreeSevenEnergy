@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.dto;
 
 public class UserDTO {
+    
     private final Long id;
     private String forename;
     private String surname;

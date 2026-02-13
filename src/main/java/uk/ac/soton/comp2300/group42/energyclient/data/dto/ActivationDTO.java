@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ActivationDTO {
+    
     private final Long id;
     private Long applianceId;
     private LocalTime activationTime;

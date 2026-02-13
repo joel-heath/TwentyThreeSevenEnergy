@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum ColorVision {
+    
     TYPICAL("typical", "Typical"),
     PROTAN("protanopia", "Protanopia"),
     DEUTERAN("deuteranopia", "Deuteranopia"),

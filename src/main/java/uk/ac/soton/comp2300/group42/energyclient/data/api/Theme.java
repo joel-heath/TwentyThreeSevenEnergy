@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum Theme {
+    
     LIGHT("light", "Light"),
     DARK("dark", "Dark"),
     LIGHT_CONTRAST("light_high_contrast", "Light (High Contrast)"),

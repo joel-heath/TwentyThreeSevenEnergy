@@ -24,6 +24,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardVie
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.formatDay;
 
@@ -123,6 +124,48 @@ public class SimpleDashboardController {
         onCloseEditModal();
     }
 
+    @FXML private void onSchedule() {
+        Navigator.goTo("Schedule.fxml");
+    }
+
+    @FXML private void onManageHouses() {
+        Navigator.goTo("ManageHouses.fxml");
+    }
+
+    private Pane createActivationView(ActivationModel activation) {
+        VBox card = new VBox();
+        // card.setPrefSize(100, 150);
+        card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5");
+
+        Label nameLabel = new Label();
+        Label timeLabel = new Label();
+        Label dateLabel = new Label();
+
+        nameLabel.textProperty().bind(
+                activation.applianceProperty().flatMap(ApplianceModel::nameProperty)
+        );
+        timeLabel.textProperty().bind(Bindings.createStringBinding(
+                () -> activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                activation.activationTimeProperty()
+        ));
+        dateLabel.textProperty().bind(Bindings.createStringBinding(
+                () -> formatDay(activation.getNextActivationDateTime()),
+                activation.activationTimeProperty(),
+                activation.activationDateProperty(),
+                activation.recursMondayProperty(),
+                activation.recursTuesdayProperty(),
+                activation.recursWednesdayProperty(),
+                activation.recursThursdayProperty(),
+                activation.recursFridayProperty(),
+                activation.recursSaturdayProperty(),
+                activation.recursSundayProperty()
+        ));
+        card.getChildren().addAll(nameLabel, timeLabel, dateLabel);
+        card.setOnMouseClicked(_ -> this.openEditModal(activation));
+        card.setUserData(activation); // for sorting when an activation's time is changed.
+
+        return card;
+    }
 
     private void bindActivations() {
         // `activations` is the live list, the ViewModel passes it on from the ActivationClient
@@ -153,68 +196,11 @@ public class SimpleDashboardController {
                 }
 
                 // Activation time is altered -> Dashboard is resorted so Activations appear in chronological order
-                if (change.wasPermutated() || change.wasUpdated())
-                    sortActivations(activations);
+                if (change.wasPermutated() || change.wasUpdated()) {
+                    FXCollections.sort(scheduleContainer.getChildren(),
+                            Comparator.comparingInt(node -> activations.indexOf((ActivationModel) node.getUserData())));
+                }
             }
         });
-    }
-
-    private void sortActivations(SortedList<ActivationModel> activations) {
-        FXCollections.sort(scheduleContainer.getChildren(), (node1, node2) -> {
-            ActivationModel a1 = (ActivationModel) node1.getUserData();
-            ActivationModel a2 = (ActivationModel) node2.getUserData();
-
-            int index1 = activations.indexOf(a1);
-            int index2 = activations.indexOf(a2);
-
-            return Integer.compare(index1, index2);
-        });
-    }
-
-    @FXML private void onSchedule() {
-        Navigator.goTo("Schedule.fxml");
-    }
-
-    private Pane createActivationView(ActivationModel activation) {
-        VBox card = new VBox();
-        // card.setPrefSize(100, 150);
-        card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5");
-
-        Label nameLabel = new Label();
-        Label timeLabel = new Label();
-        Label dateLabel = new Label();
-
-        nameLabel.textProperty().bind(
-                activation.applianceProperty().flatMap(ApplianceModel::nameProperty)
-        );
-        timeLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                activation.activationTimeProperty()
-        ));
-        dateLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> {
-                    // This lambda runs whenever any dependency below changes
-                    var nextDateTime = activation.getNextActivationDateTime();
-                    return nextDateTime != null ? formatDay(nextDateTime) : "No Date";
-                },
-                // 2. List all properties that should trigger a recalculation
-                activation.recursMondayProperty(),
-                activation.recursTuesdayProperty(),
-                activation.recursWednesdayProperty(),
-                activation.recursThursdayProperty(),
-                activation.recursFridayProperty(),
-                activation.recursSaturdayProperty(),
-                activation.recursSundayProperty(),
-                activation.activationDateProperty(),
-                // Good practice: Include time property too, in case the date calculation rolls over based on time
-                activation.activationTimeProperty()
-        ));
-
-        card.getChildren().addAll(nameLabel, timeLabel, dateLabel);
-
-        card.setOnMouseClicked(_ -> this.openEditModal(activation));
-        card.setUserData(activation); // for sorting when an activation's time is changed.
-
-        return card;
     }
 }

@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;
 
 public class ActivationModel {
+    
     private final ObjectProperty<ApplianceModel> appliance;
     private final ObjectProperty<LocalTime> activationTime;
     private final ObjectProperty<LocalDate> activationDate;
@@ -24,6 +25,7 @@ public class ActivationModel {
     private final BooleanProperty recursFriday;
     private final BooleanProperty recursSaturday;
     private final BooleanProperty recursSunday;
+    private final BooleanProperty updateTrigger;
     private final ActivationDTO dto;
 
     public ActivationModel(ActivationDTO dto, ApplianceModel appliance) {
@@ -38,6 +40,7 @@ public class ActivationModel {
         this.recursFriday = new SimpleBooleanProperty(dto.isRecursFriday());
         this.recursSaturday = new SimpleBooleanProperty(dto.isRecursSaturday());
         this.recursSunday = new SimpleBooleanProperty(dto.isRecursSunday());
+        this.updateTrigger = new SimpleBooleanProperty(false);
     }
 
     public ActivationDTO commit() {
@@ -64,7 +67,6 @@ public class ActivationModel {
         updateIfChanged(isRecursFriday(), dto.isRecursFriday(), this::setRecursFriday);
         updateIfChanged(isRecursSaturday(), dto.isRecursSaturday(), this::setRecursSaturday);
         updateIfChanged(isRecursSunday(), dto.isRecursSunday(), this::setRecursSunday);
-
         if (!getAppliance().getId().equals(dto.getApplianceId()))
             setAppliance(appliance);
     }
@@ -146,4 +148,7 @@ public class ActivationModel {
 
         throw new IllegalStateException("Recurring activation must have at least one day selected");
     }
+
+    public BooleanProperty updateTriggerProperty() { return updateTrigger; }
+    public void triggerUpdate() { updateTrigger.set(!updateTrigger.get()); }
 }

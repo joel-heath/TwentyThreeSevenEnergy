@@ -64,6 +64,17 @@ public class Repository {
                 }
         );
 
+        preferences.activeHouseProperty().subscribe(newHouse -> {
+            if (newHouse == null) return;
+            userClient.findCurrentUserByHouseId(newHouse.getId()).ifPresent(meDTO ->
+                    Platform.runLater(() -> currentUser.updateFrom(meDTO, newHouse))
+            );
+        });
+        currentUser.houseProperty().subscribe(newHouse -> {
+            if (newHouse != null && !newHouse.equals(preferences.getActiveHouse()))
+                Platform.runLater(() -> preferences.setActiveHouse(newHouse));
+        });
+
         this.notificationService.setOnCleanupAction(this::deleteActivation);
 
         CompletableFuture.runAsync(() -> {
@@ -77,9 +88,6 @@ public class Repository {
             var houseModel = modelFactory.getHouseModel(houseDTO);
             preferencesDTO.setActiveHouseId(houseDTO.getId());
             Platform.runLater(() -> preferences.updateFrom(preferencesDTO, houseModel));
-
-            var meDTO = userClient.findCurrentUserByHouseId(houseDTO.getId()).orElseThrow();
-            Platform.runLater(() -> currentUser.updateFrom(meDTO, houseModel));
         });
     }
 
@@ -104,10 +112,10 @@ public class Repository {
         var housemateDTOs = userClient.findAllByHouseId(preferences.getActiveHouse().getId());
         buildAndSet(housemateDTOs, modelFactory::getHousemateModel, housemates);
 
-        var applianceDTOs = applianceClient.findAll();
+        var applianceDTOs = applianceClient.findAll(preferences.getActiveHouse().getId());
         buildAndSet(applianceDTOs, modelFactory::getApplianceModel, appliances);
 
-        var activationModels = activationClient.findAll();
+        var activationModels = activationClient.findAll(preferences.getActiveHouse().getId());
         buildAndSet(activationModels, modelFactory::getActivationModel, activations);
     }
 
@@ -152,4 +160,21 @@ public class Repository {
 
     // User client requires no caching of UserDTO objects so no need to wrap methods, just expose it as is.
     public UserClient getUserClient() { return userClient; }
+
+    public void leaveActiveHouse() {
+        // userClient.leaveHouse(preferences.getActiveHouse().getId());
+
+        var others = userClient.findHousesForCurrentUser();
+        var houseDTO = others.isEmpty()
+                ? userClient.createDefaultHouse()
+                : others.getFirst();
+        var houseModel = modelFactory.getHouseModel(houseDTO);
+        preferences.setActiveHouse(houseModel);
+    }
+
+    public void deleteActiveHouse() {
+        // userClient.deleteHouse(preferences.getActiveHouse().getId());
+
+        leaveActiveHouse();
+    }
 }

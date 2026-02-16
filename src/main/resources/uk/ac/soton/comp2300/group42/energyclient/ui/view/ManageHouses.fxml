@@ -20,8 +20,8 @@
 
                 <HBox alignment="CENTER" spacing="10">
                     <Button text="Edit House" onAction="#onEditHouse"/>
-                    <Button text="Delete House" onAction="#onDeleteHouse" visible="false" managed="false"/>
-                    <Button text="Leave House" onAction="#onLeaveHouse" visible="false" managed="false"/>
+                    <Button text="Delete House" onAction="#onDeleteHouse" visible="false" managed="false" fx:id="deleteHouseButton"/>
+                    <Button text="Leave House" onAction="#onLeaveHouse" visible="false" managed="false" fx:id="leaveHouseButton"/>
                 </HBox>
 
                 <ScrollPane>

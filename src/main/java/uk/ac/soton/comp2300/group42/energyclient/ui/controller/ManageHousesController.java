@@ -1,7 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
 import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -22,6 +21,8 @@ public class ManageHousesController {
     @FXML private TextField inviteHousemateField;
     @FXML private TextField newHouseNameField;
     @FXML private TextField newHouseAddressField;
+    @FXML private Button deleteHouseButton;
+    @FXML private Button leaveHouseButton;
 
     private final ManageHousesViewModel vm;
     public ManageHousesController(ManageHousesViewModel vm) { this.vm = vm; }
@@ -36,26 +37,32 @@ public class ManageHousesController {
                             .map(this::createHousemateView)
                             .toList())
                 .subscribe(housemates -> housematesContainer.getChildren().setAll(housemates));
+
+        deleteHouseButton.visibleProperty().bind(vm.currentRoleProperty().isEqualTo(Role.OWNER));
+        leaveHouseButton.visibleProperty().bind(vm.currentRoleProperty().map(_ -> vm.canLeaveHouse()));
     }
 
-    @FXML private void onEditHouse(ActionEvent actionEvent) {
-
-    }
-
-    @FXML private void onDeleteHouse(ActionEvent actionEvent) {
-
-    }
-
-    @FXML private void onLeaveHouse(ActionEvent actionEvent) {
+    @FXML private void onEditHouse() {
 
     }
 
-    @FXML private void onCreateNewHouse(ActionEvent actionEvent) {
+    @FXML private void onDeleteHouse() {
+        // worth a confirmation popup
+        vm.deleteActiveHouse();
+    }
+
+    @FXML private void onLeaveHouse() {
+        // worth a confirmation popup
+        vm.leaveActiveHouse();
+    }
+
+    @FXML private void onCreateNewHouse() {
         vm.createHouse(newHouseNameField.getText(), newHouseAddressField.getText());
+        activeHouseComboBox.getItems().setAll(vm.getHouseList());
     }
 
-    @FXML private void onInviteHousemate(ActionEvent actionEvent) {
-
+    @FXML private void onInviteHousemate() {
+        vm.inviteHousemate(inviteHousemateField.getText());
     }
 
     private Pane createHousemateView(HousemateModel housemate) {

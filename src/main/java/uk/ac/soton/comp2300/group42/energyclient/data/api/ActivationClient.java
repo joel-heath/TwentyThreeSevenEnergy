@@ -26,7 +26,7 @@ public class ActivationClient {
         return activations.stream().filter(a -> Objects.equals(a.getId(), id)).findFirst();
     }
 
-    public List<ActivationDTO> findAll() {
+    public List<ActivationDTO> findAll(Long houseId) {
         return activations;
     }
 

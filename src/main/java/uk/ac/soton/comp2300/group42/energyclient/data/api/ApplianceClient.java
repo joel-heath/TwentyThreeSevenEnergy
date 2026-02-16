@@ -37,7 +37,7 @@ public class ApplianceClient {
         return Optional.of(new ApplianceDTO(id, "Dishwasher"));
     }
 
-    public List<ApplianceDTO> findAll() {
+    public List<ApplianceDTO> findAll(Long houseId) {
         return List.of(
             new ApplianceDTO(1L, "Dishwasher"),
             new ApplianceDTO(2L, "Washing Machine"),

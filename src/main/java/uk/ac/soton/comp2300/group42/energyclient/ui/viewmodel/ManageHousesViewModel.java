@@ -27,6 +27,7 @@ public class ManageHousesViewModel {
     }
 
     public Role getCurrentUserRole() { return repository.getCurrentUser().getRole(); }
+    public ObjectProperty<Role> currentRoleProperty() { return repository.getCurrentUser().roleProperty(); }
 
     public ObservableList<HouseModel> getHouseList() { return houseList; }
     public ObservableList<HousemateModel> getHousemates() { return housemates; }
@@ -41,5 +42,23 @@ public class ManageHousesViewModel {
 
     public void kickHousemate(HousemateModel housemate) {
         //repository.removeHousemate(housemate);
+    }
+
+    public void inviteHousemate(String name) {
+        //repository.inviteHousemate(name);
+    }
+
+    public boolean canLeaveHouse() {
+        // cannot leave a house orphaned with no owner
+        return getCurrentUserRole() != Role.OWNER ||
+                housemates.stream().anyMatch(h -> h.getRole() == Role.OWNER && !h.getId().equals(repository.getCurrentUser().getId()));
+    }
+
+    public void leaveActiveHouse() {
+        repository.leaveActiveHouse();
+    }
+
+    public void deleteActiveHouse() {
+        repository.leaveActiveHouse();
     }
 }

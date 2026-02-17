@@ -1,12 +1,12 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.HouseDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.HousemateDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.UserDTO;
+import uk.ac.soton.comp2300.group42.energyclient.data.dto.*;
 
+import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,26 +21,66 @@ public class UserClient {
     }
 
     public void logout() {
-        httpClient.setAccessToken(null);
+        httpClient.setTokenPair(null, null);
     }
 
-    // POST /auth/login
     public boolean login(String email, String password) {
-        String token = "this-is-a-jwt-token-returned-by-the-api";
-        httpClient.setAccessToken(token);
+        LoginDTO dto = new LoginDTO(email, password);
+
+        String json;
+        try { json = mapper.writeValueAsString(dto); }
+        catch (JsonProcessingException e) { throw new RuntimeException("Failed to serialize user for login", e); }
+
+        HttpResponse<String> response;
+        try { response = httpClient.post("auth/login", json); }
+        catch (IOException e) { throw new RuntimeException("An I/O error occurred when sending or receiving, or the client shut down during login", e); }
+        catch (InterruptedException e) { throw new RuntimeException("The API call was interrupted during login", e); }
+
+        if (response.statusCode() != 200)
+            return false;
+
+        AuthResponseDTO auth;
+        try { auth = mapper.readValue(response.body(), AuthResponseDTO.class); }
+        catch (JsonProcessingException e) { throw new RuntimeException("Failed to deserialize auth response", e); }
+
+        httpClient.setTokenPair(auth.accessToken(), auth.refreshToken());
         return true;
     }
 
-    // POST /auth/signup
-    public boolean register(String email, String password) {
-        // do some registering...
+    public boolean register(String name, String email, String password) {
+        RegistrationDTO dto = new RegistrationDTO(name, email, password);
 
-        return login(email, password);
+        String json;
+        try { json = mapper.writeValueAsString(dto); }
+        catch (JsonProcessingException e) { throw new RuntimeException("Failed to serialize user for registration", e); }
+
+        HttpResponse<String> response;
+        try { response = httpClient.post("auth/register", json); }
+        catch (IOException e) { throw new RuntimeException("An I/O error occurred when sending or receiving, or the client shut down during registration", e); }
+        catch (InterruptedException e) { throw new RuntimeException("The API call was interrupted during registration", e); }
+
+        if (response.statusCode() == 200) {
+            login(email, password);
+            return true;
+        }
+
+        System.out.println(response.statusCode());
+
+        throw new RuntimeException("Signup failed: " + response.body());
     }
 
     // GET /users/me
     public UserDTO findCurrentUser() {
-        return new UserDTO(1L, "John", "Doe", "johndoe@soton.ac.uk");
+        HttpResponse<String> response;
+        try { response = httpClient.get("users/me"); }
+        catch (IOException e) { throw new RuntimeException("An I/O error occurred when sending or receiving, or the client shut down while fetching current user", e); }
+        catch (InterruptedException e) { throw new RuntimeException("The API call was interrupted while fetching current user", e); }
+
+        if (response.statusCode() != 200)
+            throw new RuntimeException("Failed to fetch current user: " + response.statusCode());
+
+        try { return mapper.readValue(response.body(), UserDTO.class); }
+        catch (JsonProcessingException e) { throw new RuntimeException("Failed to deserialize user", e); }
     }
 
     // GET /users/me/preferences

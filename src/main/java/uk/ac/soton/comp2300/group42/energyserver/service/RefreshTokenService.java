@@ -51,8 +51,7 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteByUserId(Long userId) {
-        userRepository.findById(userId)
-                .ifPresent(refreshTokenRepository::deleteByUser);
+        userRepository.findById(userId).ifPresent(refreshTokenRepository::deleteByUser);
     }
 
     @Transactional

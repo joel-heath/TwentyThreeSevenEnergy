@@ -12,7 +12,6 @@ import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Component

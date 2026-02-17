@@ -3,8 +3,9 @@ package uk.ac.soton.comp2300.group42.energyserver.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import uk.ac.soton.comp2300.group42.energyserver.dto.UserResponse;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
-import uk.ac.soton.comp2300.group42.energyserver.repository.UserRepository;
+import uk.ac.soton.comp2300.group42.energyserver.service.UserService;
 
 import java.util.List;
 
@@ -13,24 +14,19 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class UserController {
 
-    private final UserRepository repository;
+    private final UserService userService;
 
-    public UserController(UserRepository repository) {
-        this.repository = repository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return repository.findAll();
-    }
-
-    @PostMapping
-    public User createUser(@RequestBody User newUser) {
-        return repository.save(newUser);
+    public List<UserResponse> getAllUsers() {
+        return userService.findAll();
     }
 
     @GetMapping("/me")
-    public User getCurrentUser(@AuthenticationPrincipal User user) {
-        return user;
+    public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
+        return UserResponse.from(user);
     }
 }

@@ -54,6 +54,8 @@ public class ViewModelFactory {
                     -> new ManageHousesViewModel(repository);
             case Class<?> c when c == SettingsController.class
                     -> new SettingsViewModel(repository);
+            case Class<?> c when c == AccessibilityController.class
+                    -> new AccessibilitySettingsViewModel(repository);
             case Class<?> c when c == LoginController.class || c == SignupController.class
                     -> new LoginViewModel(repository);
             case Class<?> c when c == DashboardDebugController.class

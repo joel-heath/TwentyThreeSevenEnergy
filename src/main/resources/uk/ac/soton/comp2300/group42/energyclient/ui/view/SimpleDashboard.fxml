@@ -2,17 +2,19 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.effect.DropShadow?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ModalOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal?>
 
-<?import javafx.scene.effect.DropShadow?>
-<StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SimpleDashboardController">
+<ModalOverlayPane xmlns:fx="http://javafx.com/fxml"
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SimpleDashboardController">
 
     <SettingsOverlayPane>
-        <VBox spacing="20" alignment="CENTER" fillWidth="false" fx:id="mainContentArea" maxHeight="-Infinity" maxWidth="-Infinity">
+        <VBox spacing="20" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity">
             <VBox spacing="10"
                   alignment="CENTER"
                   fillWidth="false"
@@ -54,7 +56,7 @@
         </VBox>
     </SettingsOverlayPane>
 
-    <StackPane fx:id="editModalOverlay" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.5);">
+    <Modal fx:id="editModal">
         <VBox maxWidth="250" maxHeight="300" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
             <Label text="Edit Scheduled Reminder" style="-fx-padding: 0 0 20 0;"/>
             <ActivationSchedulePane fx:id="schedulePane" />
@@ -65,5 +67,5 @@
             </VBox>
             <Label fx:id="responseLabel"/>
         </VBox>
-    </StackPane>
-</StackPane>
+    </Modal>
+</ModalOverlayPane>

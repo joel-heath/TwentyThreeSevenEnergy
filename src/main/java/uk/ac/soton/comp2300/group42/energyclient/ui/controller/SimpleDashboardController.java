@@ -7,10 +7,8 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
@@ -19,6 +17,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
 
 import java.time.LocalDateTime;
@@ -30,12 +29,10 @@ import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.
 
 public class SimpleDashboardController {
 
-    @FXML private VBox mainContentArea;
-    @FXML private StackPane editModalOverlay;
+    @FXML private Modal editModal;
     @FXML private ActivationSchedulePane schedulePane;
     @FXML private Label responseLabel;
     private ActivationModel currentEditingActivation;
-    private final BoxBlur blur = new BoxBlur(10, 10, 3);
 
     @FXML private EnergyUsageRect energyUsageRect;
     @FXML private Label costLabel;
@@ -52,14 +49,8 @@ public class SimpleDashboardController {
         goalLabel.textProperty().bind(vm.goalMessageProperty());
         energyUsageRect.usageProperty().bind(vm.usageProperty());
         energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));
-        bindActivations();
-
         schedulePane.setApplianceList(vm.getAppliances());
-        editModalOverlay.setVisible(false);
-        editModalOverlay.setOnMouseClicked(e -> {
-            if (e.getTarget() == editModalOverlay)
-                onCloseEditModal();
-        });
+        bindActivations();
 
         vm.startAutoUpdateTest();
     }
@@ -80,13 +71,11 @@ public class SimpleDashboardController {
         schedulePane.setRecursSaturday(activation.isRecursSaturday());
         schedulePane.setRecursSunday(activation.isRecursSunday());
 
-        mainContentArea.setEffect(blur);
-        editModalOverlay.setVisible(true);
+        editModal.show();
     }
 
     @FXML private void onCloseEditModal() {
-        mainContentArea.setEffect(null);
-        editModalOverlay.setVisible(false);
+        editModal.close();
         this.currentEditingActivation = null;
     }
 

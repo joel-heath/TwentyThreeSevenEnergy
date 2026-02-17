@@ -5,6 +5,7 @@ module uk.ac.soton.comp2300.group42.energyclient {
     requires java.management;
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
+    requires jdk.javadoc;
 
     opens uk.ac.soton.comp2300.group42.energyclient.ui.controller to javafx.fxml;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug to javafx.fxml;

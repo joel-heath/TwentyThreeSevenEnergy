@@ -34,9 +34,9 @@ public class SimpleDashboardController {
     @FXML private Label responseLabel;
     private ActivationModel currentEditingActivation;
 
-    @FXML private EnergyUsageRect energyUsageRect;
-    @FXML private Label costLabel;
-    @FXML private Label goalLabel;
+    @FXML private EnergyUsageRect energyUsageRect;                                                                          //
+    @FXML private Label costLabel;                                                                                          //
+    @FXML private Label goalLabel;                                                                                          //
 
     @FXML private HBox scheduleContainer;
 
@@ -45,10 +45,10 @@ public class SimpleDashboardController {
     public SimpleDashboardController(SimpleDashboardViewModel vm) { this.vm = vm; }
 
     @FXML private void initialize() {
-        costLabel.textProperty().bind(vm.costMessageProperty());
-        goalLabel.textProperty().bind(vm.goalMessageProperty());
-        energyUsageRect.usageProperty().bind(vm.usageProperty());
-        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));
+        costLabel.textProperty().bind(vm.costMessageProperty());                                                            //
+        goalLabel.textProperty().bind(vm.goalMessageProperty());                                                            //
+        energyUsageRect.usageProperty().bind(vm.usageProperty());                                                           //
+        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));       //
         schedulePane.setApplianceList(vm.getAppliances());
         bindActivations();
 

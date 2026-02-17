@@ -58,6 +58,8 @@ public class ViewModelFactory {
                     -> new LoginViewModel(repository);
             case Class<?> c when c == DashboardDebugController.class
                     -> new DashboardDebugViewModel(repository, energyCalculator);
+            case Class<?> c when c == AdvancedDashboardController.class
+                    -> new AdvancedDashboardViewModel(repository);
             default -> null;
         };
     }

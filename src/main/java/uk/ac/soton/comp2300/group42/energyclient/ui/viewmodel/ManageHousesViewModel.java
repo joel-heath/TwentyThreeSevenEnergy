@@ -61,4 +61,12 @@ public class ManageHousesViewModel {
     public void deleteActiveHouse() {
         repository.leaveActiveHouse();
     }
+
+    public void editActiveHouse(String name, String address) {
+        activeHouse.get().setName(name);
+        activeHouse.get().setAddress(address);
+
+        // repository.saveActiveHouseEdits();
+
+    }
 }

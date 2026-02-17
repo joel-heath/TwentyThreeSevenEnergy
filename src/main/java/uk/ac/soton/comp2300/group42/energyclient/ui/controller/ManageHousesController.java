@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Role;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HousemateModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ManageHousesViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.createConverter;
@@ -23,6 +24,12 @@ public class ManageHousesController {
     @FXML private TextField newHouseAddressField;
     @FXML private Button deleteHouseButton;
     @FXML private Button leaveHouseButton;
+    @FXML private VBox inviteContainer;
+
+    @FXML private Modal editHouseModal;
+    @FXML private TextField editHouseNameField;
+    @FXML private TextField editAddressField;
+    @FXML private Label responseLabel;
 
     private final ManageHousesViewModel vm;
     public ManageHousesController(ManageHousesViewModel vm) { this.vm = vm; }
@@ -40,20 +47,35 @@ public class ManageHousesController {
 
         deleteHouseButton.visibleProperty().bind(vm.currentRoleProperty().isEqualTo(Role.OWNER));
         leaveHouseButton.visibleProperty().bind(vm.currentRoleProperty().map(_ -> vm.canLeaveHouse()));
+        inviteContainer.visibleProperty().bind(vm.currentRoleProperty().isNotEqualTo(Role.GUEST));
     }
 
     @FXML private void onEditHouse() {
+        editHouseModal.show();
+        editHouseNameField.setText(vm.getActiveHouse().getName());
+        editAddressField.setText(vm.getActiveHouse().getAddress());
+    }
 
+    @FXML private void onSaveHouseEdits() {
+        vm.editActiveHouse(editHouseNameField.getText(), editAddressField.getText());
+        activeHouseComboBox.getItems().setAll(vm.getHouseList());
+        editHouseModal.close();
     }
 
     @FXML private void onDeleteHouse() {
         // worth a confirmation popup
         vm.deleteActiveHouse();
+        editHouseModal.close();
     }
 
     @FXML private void onLeaveHouse() {
         // worth a confirmation popup
         vm.leaveActiveHouse();
+        editHouseModal.close();
+    }
+
+    @FXML private void onCloseEditModal() {
+        editHouseModal.close();
     }
 
     @FXML private void onCreateNewHouse() {

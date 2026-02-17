@@ -21,10 +21,6 @@ import java.util.concurrent.CompletableFuture;
 public class SimpleDashboardViewModel {
 
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
-    private final StringProperty costMessage = new SimpleStringProperty("£0.00");
-    private final DoubleProperty cost = new SimpleDoubleProperty(0);
-    private final StringProperty goalMessage = new SimpleStringProperty("Goal: £1.00");
-    private final DoubleProperty usage = new SimpleDoubleProperty(0);
 
     private final Repository repository;
     private final ObservableList<ApplianceModel> appliances;
@@ -40,46 +36,21 @@ public class SimpleDashboardViewModel {
         this.activations = new SortedList<>(repository.getActivations());
         this.activations.setComparator(Comparator.comparing(ActivationModel::getNextActivationDateTime));
 
-        goalMessage.bind(
-                repository.getPreferences().energyGoalProperty()
-                          .map(goal -> String.format("Goal: £%.2f", goal.doubleValue()))
-        );
-        usage.bind(Bindings.createDoubleBinding(
-                () -> {
-                    double currentCost = cost.get();
-                    double target = repository.getPreferences().getEnergyGoal();
-                    if (target == 0) return 0.0;
-                    double percentUsage = currentCost / target;
-                    return Math.max(0, Math.min(percentUsage, 1));
-                }, this.cost, repository.getPreferences().energyGoalProperty()
-        ));
-
         CompletableFuture.runAsync(repository::fetchAllData); // Run on a background thread so UI doesn't hang if the API is slow
     }
 
     public ObservableList<ApplianceModel> getAppliances() { return appliances; }
     public SortedList<ActivationModel> getActivations() { return activations; }
     public IntegerProperty counterProperty() { return counter; }
-    public DoubleProperty usageProperty() { return usage; }
-    public StringProperty costMessageProperty() { return costMessage; }
-    public StringProperty goalMessageProperty() { return goalMessage; }
 
     public void incrementCounter() {
         counter.set(counter.get() + 1);
-    }
-
-    public void recalculateCost() {
-        int joules = 1 + 5 * counter.get();
-        double pounds = calc.convertJoulesToPounds(joules);
-        cost.set(pounds);
-        costMessage.set(String.format("£%.2f", pounds));
     }
 
     public void startAutoUpdateTest() {
         Timeline testTimeline = new Timeline(
             new KeyFrame(Duration.seconds(1), _ -> {
                 counter.set(counter.get() + 1);
-                recalculateCost();
             })
         );
         testTimeline.setCycleCount(Timeline.INDEFINITE);

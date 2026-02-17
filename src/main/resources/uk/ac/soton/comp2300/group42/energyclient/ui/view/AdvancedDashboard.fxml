@@ -11,7 +11,7 @@
            fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.AdvancedDashboardController">
 
     <SettingsOverlayPane>
-        <VBox spacing="20" alignment="CENTER" fx:id="mainContentArea">
+        <VBox spacing="20" alignment="CENTER" fillWidth="false" fx:id="mainContentArea">
 
             <Label text="Advanced Dashboard" />
 

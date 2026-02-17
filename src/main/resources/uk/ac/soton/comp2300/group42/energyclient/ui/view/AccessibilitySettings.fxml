@@ -24,7 +24,5 @@
             <ComboBox fx:id="colorVisionComboBox" prefWidth="220"/>
         </VBox>
 
-        <Separator prefWidth="200" />
-        <Button text="Back to Settings" onAction="#onBack" prefWidth="150" />
     </VBox>
 </BackOverlayPane>

@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-
 @Component
 public class JwtUtils {
 
@@ -24,22 +23,13 @@ public class JwtUtils {
     private static final String SECRET = "5481ca00242289316679fc0ed90ee7eb3a635151cd22779a0a67f334f8e8208e";
 
     private static final long ACCESS_EXPIRATION = 1000 * 60 * 15;
-    private static final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24;
 
     public String generateAccessToken(User user) {
-        return buildToken(new HashMap<>(), String.valueOf(user.getId()), ACCESS_EXPIRATION);
-    }
-
-    public String generateRefreshToken(User user) {
-        return buildToken(new HashMap<>(), String.valueOf(user.getId()), REFRESH_EXPIRATION);
-    }
-
-    private String buildToken(Map<String, Object> extraClaims, String username, long expiration) {
         return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(username)
+                .setClaims(new HashMap<>())
+                .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + JwtUtils.ACCESS_EXPIRATION))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

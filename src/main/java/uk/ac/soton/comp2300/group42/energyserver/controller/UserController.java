@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyserver.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     private final UserRepository repository;

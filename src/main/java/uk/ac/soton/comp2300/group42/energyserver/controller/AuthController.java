@@ -1,15 +1,18 @@
 package uk.ac.soton.comp2300.group42.energyserver.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import uk.ac.soton.comp2300.group42.energyserver.dto.AuthResponse;
 import uk.ac.soton.comp2300.group42.energyserver.dto.LoginRequest;
 import uk.ac.soton.comp2300.group42.energyserver.dto.RegistrationRequest;
+import uk.ac.soton.comp2300.group42.energyserver.model.RefreshToken;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.repository.UserRepository;
 import uk.ac.soton.comp2300.group42.energyserver.security.JwtUtils;
+import uk.ac.soton.comp2300.group42.energyserver.service.RefreshTokenService;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,11 +22,16 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+    public AuthController(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          JwtUtils jwtUtils,
+                          RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/register")
@@ -43,32 +51,57 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<User> user = userRepository.findByEmail(request.email());
+        Optional<User> optionalUser = userRepository.findByEmail(request.email());
 
-        if (user.isPresent() && passwordEncoder.matches(request.password(), user.get().getPassword())) {
-            String accessToken = jwtUtils.generateAccessToken(user.get());
-            String refreshToken = jwtUtils.generateRefreshToken(user.get());
-            return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
-        }
-        return ResponseEntity.status(401).body("Invalid credentials");
+        if (optionalUser.isEmpty())
+            return ResponseEntity.status(401).body("Invalid credentials");
+
+        User user = optionalUser.get();
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword()))
+            return ResponseEntity.status(401).body("Invalid credentials");
+
+        String accessToken = jwtUtils.generateAccessToken(user);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken.getToken()));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
-        String refreshToken = request.get("refreshToken");
-        try {
-            Long id = jwtUtils.extractUserId(refreshToken);
-            User user = userRepository.findById(id).orElse(null);
-            if (user == null)
-                return ResponseEntity.status(401).body("Invalid refresh token");
-            // Should verify refresh token exists in DB to allow revocation
-            if (jwtUtils.isTokenValid(refreshToken, user)) {
-                String newAccessToken = jwtUtils.generateAccessToken(user);
-                return ResponseEntity.ok(Map.of("accessToken", newAccessToken, "refreshToken", refreshToken));
-            }
-        } catch (Exception e) {
-            // Token invalid
+    public ResponseEntity<?> refresh(@RequestBody AuthResponse request) {
+        final String requestRefreshToken = request.refreshToken();
+
+        var response = refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> ResponseEntity.ok(new AuthResponse(
+                        jwtUtils.generateAccessToken(user),
+                        requestRefreshToken)));
+
+        return response.isPresent() ? response.get() : ResponseEntity.status(401).body("Invalid refresh token");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody AuthResponse request) {
+        if (request.refreshToken() == null || request.refreshToken().isEmpty()) {
+            return ResponseEntity.ok("Log out successful");
         }
-        return ResponseEntity.status(401).body("Invalid refresh token");
+
+        refreshTokenService.deleteByToken(request.refreshToken());
+
+        return ResponseEntity.ok("Log out successful");
+    }
+
+    @PostMapping("/logout-all")
+    public ResponseEntity<?> logoutAll(@RequestBody AuthResponse request) {
+        if (request.refreshToken() == null || request.refreshToken().isEmpty()) {
+            return ResponseEntity.ok("Log out successful");
+        }
+
+        refreshTokenService.findByToken(request.refreshToken())
+                .map(RefreshToken::getUser)
+                .map(User::getId)
+                .ifPresent(refreshTokenService::deleteByUserId);
+
+        return ResponseEntity.ok("Log out successful");
     }
 }

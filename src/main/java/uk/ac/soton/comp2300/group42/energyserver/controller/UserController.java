@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyserver.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.repository.UserRepository;
@@ -24,5 +25,10 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User newUser) {
         return repository.save(newUser);
+    }
+
+    @GetMapping("/me")
+    public User getCurrentUser(@AuthenticationPrincipal User user) {
+        return user;
     }
 }

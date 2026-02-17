@@ -3,6 +3,7 @@ module uk.ac.soton.comp2300.group42.energyclient {
     requires javafx.fxml;
     requires javafx.graphics;
     requires com.fasterxml.jackson.databind;
+    requires jdk.javadoc;
     requires java.management;
     requires java.net.http;
 

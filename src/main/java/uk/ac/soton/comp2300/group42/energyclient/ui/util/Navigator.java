@@ -7,7 +7,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2300.group42.energyclient.ui.controller.AccessibilityController;
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.RootController;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.AccessibilitySettingsViewModel;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,7 @@ import java.util.Stack;
 import java.util.function.Consumer;
 
 public class Navigator {
+
     // Can't convert to a record class because of the unchecked Consumer<?>
     @SuppressWarnings("ClassCanBeRecord")
     public static class ViewContext {

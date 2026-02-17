@@ -17,7 +17,9 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageWidgetViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
 
 import java.time.LocalDateTime;
@@ -29,14 +31,12 @@ import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.
 
 public class SimpleDashboardController {
 
+    @FXML private VBox energyWidgetContainer;
+
     @FXML private Modal editModal;
     @FXML private ActivationSchedulePane schedulePane;
     @FXML private Label responseLabel;
     private ActivationModel currentEditingActivation;
-
-    @FXML private EnergyUsageRect energyUsageRect;
-    @FXML private Label costLabel;
-    @FXML private Label goalLabel;
 
     @FXML private HBox scheduleContainer;
 
@@ -45,10 +45,10 @@ public class SimpleDashboardController {
     public SimpleDashboardController(SimpleDashboardViewModel vm) { this.vm = vm; }
 
     @FXML private void initialize() {
-        costLabel.textProperty().bind(vm.costMessageProperty());
-        goalLabel.textProperty().bind(vm.goalMessageProperty());
-        energyUsageRect.usageProperty().bind(vm.usageProperty());
-        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));
+        EnergyUsageWidgetViewModel widgetVm = new EnergyUsageWidgetViewModel(vm.getPreferences());
+        EnergyUsageWidget widget = new EnergyUsageWidget(widgetVm);
+        energyWidgetContainer.getChildren().add(widget);
+
         schedulePane.setApplianceList(vm.getAppliances());
         bindActivations();
 

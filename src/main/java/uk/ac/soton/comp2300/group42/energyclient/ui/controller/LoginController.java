@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
@@ -9,6 +10,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.LoginViewModel;
 
 public class LoginController {
 
+    @FXML private Button accessibilityButton;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
 
@@ -45,5 +47,7 @@ public class LoginController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    @FXML private void onGoToAccessibility() {Navigator.goTo("AccessibilitySettings.fxml");
     }
 }

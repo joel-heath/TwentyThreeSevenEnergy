@@ -7,6 +7,8 @@
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.BackOverlayPane?>
 
 
+
+
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.LoginController"
@@ -26,5 +28,8 @@
         <Hyperlink text="Don't have an account? Sign up"
                    onAction="#goToSignUp"/>
 
+        <Button fx:id="accessibilityButton" text="Accessibility Settings"
+                onAction="#onGoToAccessibility"
+                prefWidth="220"/>
     </VBox>
 </BackOverlayPane>

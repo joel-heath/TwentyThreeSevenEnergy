@@ -19,10 +19,15 @@ public class LandingController {
             KeyCombination.CONTROL_DOWN,
             KeyCombination.SHIFT_DOWN);
 
-    @FXML private Parent mainContentArea;
-    @FXML private Button debugButton;
+    @FXML
+    private Parent mainContentArea;
+    @FXML
+    private Button debugButton;
+    @FXML
+    private Button accessibilityButton;
 
-    @FXML private void initialize() {
+    @FXML
+    private void initialize() {
         if (isDebugging()) {
             mainContentArea.sceneProperty().addListener((_, _, newScene) -> {
                 if (newScene != null) {
@@ -42,15 +47,24 @@ public class LandingController {
         });
     }
 
-    @FXML private void onLogin() {
+    @FXML
+    private void onLogin() {
         Navigator.goTo("Login.fxml");
     }
 
-    @FXML private void onDive() {
+    @FXML
+    private void onDive() {
         Navigator.goToIrreversible("Dashboard.fxml");
     }
 
-    @FXML private void onDebug() {
+    @FXML
+    private void onDebug() {
         Navigator.goTo("debug/DashboardDebug.fxml");
+    }
+
+    @FXML
+    private void onGoToAccessibility() {
+        Navigator.goTo("AccessibilitySettings.fxml");
+
     }
 }

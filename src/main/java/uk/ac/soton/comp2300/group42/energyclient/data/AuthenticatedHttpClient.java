@@ -1,27 +1,41 @@
 package uk.ac.soton.comp2300.group42.energyclient.data;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
+import uk.ac.soton.comp2300.group42.energyclient.data.dto.AuthResponseDTO;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticatedHttpClient {
 
     private String accessToken;
+    private String refreshToken;
+    private final ObjectMapper mapper;
     private final HttpClient client;
-    private static final String API_ROOT_URL = "https://localhost:8080/api/"; // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
+    private static final String API_ROOT_URL = "http://localhost:8080/api/"; // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
 
-    public AuthenticatedHttpClient() {
+    public AuthenticatedHttpClient(ObjectMapper mapper) {
         accessToken = null;
+        refreshToken = null;
+        this.mapper = mapper;
         client = HttpClient.newBuilder()
                            .version(HttpClient.Version.HTTP_2)
                            .connectTimeout(Duration.ofSeconds(10))
                            .build();
     }
 
-    public void setAccessToken(String accessToken) { this.accessToken = accessToken; }
+    public void setTokenPair(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 
     public HttpResponse<String> get(String url) throws IOException, InterruptedException {
         return getAbsolute(API_ROOT_URL + url);
@@ -42,12 +56,49 @@ public class AuthenticatedHttpClient {
 
     private HttpResponse<String> send(HttpRequest.Builder builder, String url) throws IOException, InterruptedException {
         builder.uri(URI.create(url));
-
-        if (accessToken != null && !accessToken.isEmpty()) {
+        if (accessToken != null && !accessToken.isEmpty())
             builder.header("Authorization", "Bearer " + accessToken);
+        HttpRequest request = builder.build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 401 && refreshToken != null) {
+            System.out.println("Access token expired. Attempting refresh...");
+
+            if (performRefresh()) {
+                builder.setHeader("Authorization", "Bearer " + accessToken);
+                response = client.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+            }
         }
 
-        HttpRequest request = builder.build();
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
+        return response;
+    }
+
+    private boolean performRefresh() {
+        try {
+            Map<String, String> body = new HashMap<>();
+            body.put("refreshToken", refreshToken);
+            String json = mapper.writeValueAsString(body);
+
+            HttpRequest refreshRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(API_ROOT_URL + "auth/refresh"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(refreshRequest, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                AuthResponseDTO authResponse = mapper.readValue(response.body(), AuthResponseDTO.class);
+                this.accessToken = authResponse.accessToken();
+                // If we choose to rotate refresh tokens, we'd update it here
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Refresh failed. User must log in again.");
+        Platform.runLater(() -> Navigator.goToIrreversible("Landing.fxml")); // Or switch to guest mode
+        return false;
     }
 }

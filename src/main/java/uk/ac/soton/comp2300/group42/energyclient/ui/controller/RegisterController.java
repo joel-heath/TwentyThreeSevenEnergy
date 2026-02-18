@@ -7,32 +7,37 @@ import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.LoginViewModel;
 
-public class SignupController {
+public class RegisterController {
 
-    @FXML private TextField usernameField;
+    @FXML private TextField nameField;
+    @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
 
     private final LoginViewModel vm;
-    public SignupController(LoginViewModel vm) { this.vm = vm; }
+    public RegisterController(LoginViewModel vm) { this.vm = vm; }
 
-    @FXML
-    private void onSignup() {
-        String username = usernameField.getText();
+    private boolean guard(boolean condition, String errorMessage) {
+        if (condition)
+            showError(errorMessage);
+
+        return condition;
+    }
+
+    @FXML private void onRegister() {
+        String name = nameField.getText();
+        String email = emailField.getText();
         String password = passwordField.getText();
         String confirm = confirmPasswordField.getText();
 
-        if (username.isBlank() || password.isBlank() || confirm.isBlank()) {
-            showError("All fields are required.");
+        if (guard(name.isBlank(), "Name is required") ||
+            guard(email.isBlank(), "Email is required") ||
+            guard(password.isBlank(), "Password is required") ||
+            guard(confirm.isBlank(), "Password confirmation is required") ||
+            guard(!password.equals(confirm), "Passwords do not match"))
             return;
-        }
 
-        if (!password.equals(confirm)) {
-            showError("Passwords do not match.");
-            return;
-        }
-
-        boolean success = vm.register(username, password);
+        boolean success = vm.register(name, email, password);
 
         if (!success) {
             showError("User already exists.");

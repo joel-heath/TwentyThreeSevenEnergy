@@ -23,8 +23,8 @@ public class ViewModelFactory {
     private final EnergyCalculator energyCalculator;
 
     public ViewModelFactory() {
-        AuthenticatedHttpClient httpClient = new AuthenticatedHttpClient();
         ObjectMapper objectMapper = new ObjectMapper();
+        AuthenticatedHttpClient httpClient = new AuthenticatedHttpClient(objectMapper);
         ApplianceClient applianceClient = new ApplianceClient(httpClient, objectMapper);
         ActivationClient activationClient = new ActivationClient(httpClient, objectMapper);
         UserClient userClient = new UserClient(httpClient, objectMapper);
@@ -56,7 +56,7 @@ public class ViewModelFactory {
                     -> new SettingsViewModel(repository);
             case Class<?> c when c == AccessibilityController.class
                     -> new AccessibilitySettingsViewModel(repository);
-            case Class<?> c when c == LoginController.class || c == SignupController.class
+            case Class<?> c when c == LoginController.class || c == RegisterController.class
                     -> new LoginViewModel(repository);
             case Class<?> c when c == DashboardDebugController.class
                     -> new DashboardDebugViewModel(repository, energyCalculator);

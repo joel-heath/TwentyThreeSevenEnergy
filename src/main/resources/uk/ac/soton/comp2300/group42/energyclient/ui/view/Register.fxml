@@ -9,7 +9,7 @@
 
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
-                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SignupController"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.RegisterController"
                  prefHeight="400.0" prefWidth="600.0">
 
 
@@ -21,17 +21,17 @@
 
         <Label text="Create Account" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
 
-        <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
+        <TextField fx:id="nameField" promptText="Name" maxWidth="250"/>
+
+        <TextField fx:id="emailField" promptText="Email" maxWidth="250"/>
 
         <PasswordField fx:id="passwordField" promptText="Password" maxWidth="250"/>
 
         <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" maxWidth="250"/>
 
-        <Button text="Sign Up" onAction="#onSignup" maxWidth="250"/>
-
+        <Button text="Sign Up" onAction="#onRegister" maxWidth="250"/>
 
         <Hyperlink text="Already have an account? Login"
                    onAction="#goToLogin"/>
-
     </VBox>
 </BackOverlayPane>

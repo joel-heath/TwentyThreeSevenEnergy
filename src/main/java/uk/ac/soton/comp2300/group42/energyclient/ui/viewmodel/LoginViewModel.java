@@ -15,8 +15,8 @@ public class LoginViewModel {
         return client.login(email, password);
     }
 
-    public boolean register(String email, String password) {
-        return client.register(email, password);
+    public boolean register(String name, String email, String password) {
+        return client.register(name, email, password);
     }
 
 }

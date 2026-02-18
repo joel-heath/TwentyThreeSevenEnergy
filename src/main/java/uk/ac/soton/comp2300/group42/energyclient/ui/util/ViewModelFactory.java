@@ -8,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug.DashboardDe
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
@@ -20,6 +21,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDeb
 public class ViewModelFactory {
 
     private final Repository repository;
+    private final PreferencesModel preferences;
     private final EnergyCalculator energyCalculator;
 
     public ViewModelFactory() {
@@ -33,6 +35,7 @@ public class ViewModelFactory {
         NotificationService notificationService = new NotificationService();
 
         this.repository = new Repository(applianceClient, activationClient, userClient, notificationService, modelFactory);
+        this.preferences = repository.getPreferences();
         this.energyCalculator = new EnergyCalculator();
     }
 
@@ -46,8 +49,8 @@ public class ViewModelFactory {
         return switch (controllerClass) {
             case Class<?> c when c == DashboardController.class
                     -> new DashboardViewModel(repository);
-            case Class<?> c when c == SimpleDashboardController.class
-                    -> new SimpleDashboardViewModel(repository, energyCalculator);
+            case Class<?> c when c == SimpleDashboardController.class || c == AdvancedDashboardController.class
+                    -> new SharedDashboardViewModel(repository, new EnergyUsageWidgetViewModel(energyCalculator, preferences));
             case Class<?> c when c == ScheduleController.class
                     -> new ScheduleViewModel(repository);
             case Class<?> c when c == ManageHousesController.class
@@ -60,8 +63,6 @@ public class ViewModelFactory {
                     -> new LoginViewModel(repository);
             case Class<?> c when c == DashboardDebugController.class
                     -> new DashboardDebugViewModel(repository, energyCalculator);
-            case Class<?> c when c == AdvancedDashboardController.class
-                    -> new AdvancedDashboardViewModel(repository);
             default -> null;
         };
     }

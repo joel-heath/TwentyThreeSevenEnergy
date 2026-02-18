@@ -14,11 +14,21 @@ public class EnergyUsageWidget extends VBox {
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
 
-    private final EnergyUsageWidgetViewModel vm;
+    public void bindComponents(EnergyUsageWidgetViewModel vm) {
+        costLabel.textProperty().unbind();
+        goalLabel.textProperty().unbind();
+        energyUsageRect.usageProperty().unbind();
+        energyUsageRect.fillProperty().unbind();
 
-    public EnergyUsageWidget(EnergyUsageWidgetViewModel vm) {
-        this.vm = vm;
+        costLabel.textProperty().bind(vm.costMessageProperty());
+        goalLabel.textProperty().bind(vm.goalMessageProperty());
+        energyUsageRect.usageProperty().bind(vm.usageProperty());
+        energyUsageRect.fillProperty().bind(
+                vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor)
+        );
+    }
 
+    public EnergyUsageWidget() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EnergyUsageWidget.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -28,14 +38,5 @@ public class EnergyUsageWidget extends VBox {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-    }
-
-    @FXML private void initialize() {
-        costLabel.textProperty().bind(vm.costMessageProperty());
-        goalLabel.textProperty().bind(vm.goalMessageProperty());
-        energyUsageRect.usageProperty().bind(vm.usageProperty());
-        energyUsageRect.fillProperty().bind(
-                vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor)
-        );
     }
 }

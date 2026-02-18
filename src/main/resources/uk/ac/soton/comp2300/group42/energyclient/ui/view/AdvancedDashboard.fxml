@@ -3,22 +3,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.shape.Rectangle?>
-
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ModalOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
 
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget?>
 <ModalOverlayPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.AdvancedDashboardController">
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.AdvancedDashboardController">
 
     <SettingsOverlayPane>
-        <VBox spacing="20" alignment="CENTER" fillWidth="false" fx:id="mainContentArea">
+        <VBox spacing="20" alignment="CENTER" fillWidth="false">
 
             <Label text="Advanced Dashboard" />
 
-            <VBox fx:id="energyWidgetContainer"/>
+            <EnergyUsageWidget fx:id="energyWidget"/>
 
             <VBox fx:id="scheduleApplianceWidgetContainer"/>
 

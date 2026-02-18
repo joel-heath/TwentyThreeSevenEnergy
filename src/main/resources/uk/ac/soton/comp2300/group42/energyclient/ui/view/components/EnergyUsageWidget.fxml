@@ -5,13 +5,15 @@
 <?import javafx.scene.effect.DropShadow?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget?>
 
-<fx:root type="VBox" xmlns:fx="http://javafx.com/fxml"
-      spacing="10"
-      alignment="CENTER"
-      fillWidth="false"
-      style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15; -fx-font-weight: bold">
-    <effect><DropShadow radius="15" offsetX="5" offsetY="5" color="#00000088"/></effect>
+<fx:root type="EnergyUsageWidget"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="10"
+         alignment="CENTER"
+         fillWidth="false"
+         style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15; -fx-font-weight: bold">
+         <effect><DropShadow radius="15" offsetX="5" offsetY="5" color="#00000088"/></effect>
 
     <EnergyUsageRect fx:id="energyUsageRect"/>
 

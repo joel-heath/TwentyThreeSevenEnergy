@@ -15,11 +15,11 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ScheduleApplianceWidget;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageWidgetViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleApplianceWidgetViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SharedDashboardViewModel;
 
 public class SimpleDashboardController {
 
-    @FXML private VBox energyWidgetContainer;
+    @FXML private EnergyUsageWidget energyWidget;
     @FXML private VBox scheduleApplianceWidgetContainer;
     @FXML private Modal editModal;
     @FXML private ActivationSchedulePane schedulePane;
@@ -28,23 +28,23 @@ public class SimpleDashboardController {
 
     private final EnergyPriceService service = new EnergyPriceService();
 
-    private final SimpleDashboardViewModel vm;
+    private final SharedDashboardViewModel vm;
     private ScheduleApplianceWidget scheduleApplianceWidget;
 
-    public SimpleDashboardController(SimpleDashboardViewModel vm) { this.vm = vm; }
+    public SimpleDashboardController(SharedDashboardViewModel vm) {
+        this.vm = vm;
+    }
 
     @FXML private void initialize() {
-        EnergyUsageWidgetViewModel widgetVm = new EnergyUsageWidgetViewModel(vm.getPreferences());
-        EnergyUsageWidget widget = new EnergyUsageWidget(widgetVm);
-        energyWidgetContainer.getChildren().add(widget);
+        EnergyUsageWidgetViewModel widgetVM = vm.getWidgetVM();
+        energyWidget.bindComponents(widgetVM);
+        widgetVM.startAutoUpdateTest();
 
         ScheduleApplianceWidgetViewModel scheduleApplianceWidgetVm = new ScheduleApplianceWidgetViewModel(vm.getRepository());
         scheduleApplianceWidget = new ScheduleApplianceWidget(scheduleApplianceWidgetVm, editModal, schedulePane, responseLabel);
         scheduleApplianceWidgetContainer.getChildren().add(scheduleApplianceWidget);
 
         loadPrice();
-
-        vm.startAutoUpdateTest();
     }
 
     @FXML private void onCloseEditModal() {
@@ -55,7 +55,7 @@ public class SimpleDashboardController {
         scheduleApplianceWidget.onSaveActivation();
     }
 
-    @FXML private void onCancelActivation() {
+    public void onCancelActivation() {
         scheduleApplianceWidget.onCancelActivation();
     }
 

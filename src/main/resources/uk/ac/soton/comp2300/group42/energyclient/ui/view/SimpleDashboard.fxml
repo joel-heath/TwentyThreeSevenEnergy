@@ -8,13 +8,14 @@
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ModalOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal?>
 
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget?>
 <ModalOverlayPane xmlns:fx="http://javafx.com/fxml"
                   fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SimpleDashboardController">
 
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity">
 
-            <VBox fx:id="energyWidgetContainer"/>
+            <EnergyUsageWidget fx:id="energyWidget"/>
 
             <VBox fx:id="scheduleApplianceWidgetContainer"/>
 

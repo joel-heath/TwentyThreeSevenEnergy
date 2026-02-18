@@ -6,37 +6,37 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSc
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ScheduleApplianceWidget;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.AdvancedDashboardViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageWidgetViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleApplianceWidgetViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 
 import javafx.scene.control.Label;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SharedDashboardViewModel;
 
 
 public class AdvancedDashboardController {
-    @FXML private VBox energyWidgetContainer;
+
+    @FXML private EnergyUsageWidget energyWidget;
     @FXML private VBox scheduleApplianceWidgetContainer;
     @FXML private Modal editModal;
     @FXML private ActivationSchedulePane schedulePane;
     @FXML private Label responseLabel;
 
-    private final AdvancedDashboardViewModel vm;
+    private final SharedDashboardViewModel vm;
     private ScheduleApplianceWidget scheduleApplianceWidget;
 
-    public AdvancedDashboardController(AdvancedDashboardViewModel vm) {
+    public AdvancedDashboardController(SharedDashboardViewModel vm) {
         this.vm = vm;
     }
 
     @FXML private void initialize() {
-        EnergyUsageWidgetViewModel widgetVm =
-                new EnergyUsageWidgetViewModel(vm.getRepository().getPreferences());
-        EnergyUsageWidget widget = new EnergyUsageWidget(widgetVm);
-        energyWidgetContainer.getChildren().add(widget);
+        EnergyUsageWidgetViewModel widgetVM = vm.getWidgetVM();
+        energyWidget.bindComponents(widgetVM);
+        widgetVM.startAutoUpdateTest();
 
         ScheduleApplianceWidgetViewModel scheduleApplianceWidgetVm =
                 new ScheduleApplianceWidgetViewModel(vm.getRepository());
-        ScheduleApplianceWidget scheduleApplianceWidget = new ScheduleApplianceWidget(scheduleApplianceWidgetVm, editModal, schedulePane, responseLabel);
+        scheduleApplianceWidget = new ScheduleApplianceWidget(scheduleApplianceWidgetVm, editModal, schedulePane, responseLabel);
         scheduleApplianceWidgetContainer.getChildren().add(scheduleApplianceWidget);
     }
 

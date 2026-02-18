@@ -15,11 +15,10 @@ import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SimpleDashboardViewModelTest {
+class SharedDashboardViewModelTest {
 
     @Mock EnergyCalculator mockCalc;
 
@@ -32,7 +31,7 @@ class SimpleDashboardViewModelTest {
     @Mock ApplianceModel mockAppliance;
     @Mock HouseModel mockHouse;
 
-    private SimpleDashboardViewModel viewModel;
+    private SharedDashboardViewModel viewModel;
 
     @BeforeEach void setUp() {
         preferences = new PreferencesModel(new PreferencesDTO(), mockHouse);
@@ -43,7 +42,7 @@ class SimpleDashboardViewModelTest {
         when(mockRepo.getActivations()).thenReturn(activations);
         when(mockRepo.getAppliances()).thenReturn(appliances);
 
-        viewModel = new SimpleDashboardViewModel(mockRepo, mockCalc);
+        viewModel = new SharedDashboardViewModel(mockRepo, mockCalc);
     }
 
     // == Initialization Tests ==

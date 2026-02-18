@@ -1,17 +1,21 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 
 import java.util.List;
 import java.util.Optional;
 
+@Singleton
 public class ApplianceClient {
 
     private final AuthenticatedHttpClient httpClient;
     private final ObjectMapper mapper;
 
+    @Inject
     public ApplianceClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
         this.httpClient = httpClient;
         this.mapper = mapper;

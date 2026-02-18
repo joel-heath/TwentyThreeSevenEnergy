@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -15,7 +16,7 @@ public class RegisterController {
     @FXML private PasswordField confirmPasswordField;
 
     private final LoginViewModel vm;
-    public RegisterController(LoginViewModel vm) { this.vm = vm; }
+    @Inject public RegisterController(LoginViewModel vm) { this.vm = vm; }
 
     private boolean guard(boolean condition, String errorMessage) {
         if (condition)

@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
+import com.google.inject.Inject;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 
@@ -17,7 +18,7 @@ public class ManageHousesViewModel {
     private final ObservableList<HousemateModel> housemates;
     private final ObjectProperty<HouseModel> activeHouse;
 
-    public ManageHousesViewModel(Repository repository) {
+    @Inject public ManageHousesViewModel(Repository repository) {
         this.repository = repository;
         this.houseList = repository.getHouses();
         this.housemates = repository.getHousemates();

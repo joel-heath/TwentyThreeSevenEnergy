@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
+import com.google.inject.Inject;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
@@ -11,11 +12,12 @@ import java.time.LocalTime;
 import java.util.Comparator;
 
 public class ScheduleApplianceWidgetViewModel {
+
     private final ObservableList<ApplianceModel> appliances;
     private final SortedList<ActivationModel> activations;
     private final Repository repository;
 
-    public ScheduleApplianceWidgetViewModel(Repository repository) {
+    @Inject public ScheduleApplianceWidgetViewModel(Repository repository) {
         this.repository = repository;
         this.appliances = repository.getAppliances();
         this.activations = new SortedList<>(repository.getActivations());

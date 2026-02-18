@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug;
 
+import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -34,7 +35,7 @@ public class DashboardDebugViewModel {
     private final Repository repository;
     private final PreferencesModel preferences;
 
-    public DashboardDebugViewModel(Repository repository, EnergyCalculator calc) {
+    @Inject public DashboardDebugViewModel(Repository repository, EnergyCalculator calc) {
         //costMessage.bind(Bindings.format("%£.2f", cost.get()));
         //goalMessage.bind(Bindings.format("%£.2f", goal.get()));
         this.repository = repository;

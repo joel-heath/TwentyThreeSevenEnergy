@@ -1,7 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ToggleSwitch;
@@ -15,19 +15,16 @@ import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.
 public class SettingsController {
     private final SettingsViewModel vm;
 
-    // largeFontToggle and colorVisionComboBox removed because they moved to Accessibility page
     @FXML private ToggleSwitch shareLocationToggle;
     @FXML private ComboBox<Theme> themeComboBox;
     @FXML private ComboBox<Mode> modeComboBox;
     @FXML private TextField costGoalField;
-    @FXML private Button accessibilityButton;
 
-    public SettingsController(SettingsViewModel vm) {
+    @Inject public SettingsController(SettingsViewModel vm) {
         this.vm = vm;
     }
 
     @FXML private void initialize() {
-        // Only bind components that actually exist in Settings.fxml
         shareLocationToggle.selectedProperty().bindBidirectional(vm.getPreferences().shareLocationProperty());
 
         themeComboBox.getItems().setAll(Theme.values());
@@ -39,13 +36,8 @@ public class SettingsController {
         modeComboBox.valueProperty().bindBidirectional(vm.getPreferences().modeProperty());
     }
 
-    @FXML
-    private void onGoToAccessibility() {
+    @FXML private void onGoToAccessibility() {
         Navigator.goTo("AccessibilitySettings.fxml");
-    }
-
-    @FXML private void toggleShareLocation() {
-        // Handled by binding
     }
 
     @FXML private void onSetCostGoal() {

@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import com.google.inject.Inject;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,7 +33,7 @@ public class ManageHousesController {
     @FXML private Label responseLabel;
 
     private final ManageHousesViewModel vm;
-    public ManageHousesController(ManageHousesViewModel vm) { this.vm = vm; }
+    @Inject public ManageHousesController(ManageHousesViewModel vm) { this.vm = vm; }
 
     @FXML private void initialize() {
         activeHouseComboBox.getItems().setAll(vm.getHouseList());

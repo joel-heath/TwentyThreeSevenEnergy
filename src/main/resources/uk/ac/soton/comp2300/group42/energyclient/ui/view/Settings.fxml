@@ -24,7 +24,7 @@
         <VBox spacing="5" alignment="CENTER">
             <HBox spacing="10" alignment="CENTER">
                 <Label text="Share Location"/>
-                <ToggleSwitch fx:id="shareLocationToggle" onAction="#toggleShareLocation"/>
+                <ToggleSwitch fx:id="shareLocationToggle"/>
             </HBox>
         </VBox>
 

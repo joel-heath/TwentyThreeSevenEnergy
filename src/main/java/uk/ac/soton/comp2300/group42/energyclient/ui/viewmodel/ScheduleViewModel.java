@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
+import com.google.inject.Inject;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
@@ -29,7 +30,7 @@ public class ScheduleViewModel {
     private final BooleanProperty recursSunday;
     private final BooleanProperty isRecurring;
 
-    public ScheduleViewModel(Repository repository) {
+    @Inject public ScheduleViewModel(Repository repository) {
         this.repository = repository;
         this.applianceList = repository.getAppliances();
         selectedAppliance = new SimpleObjectProperty<>();

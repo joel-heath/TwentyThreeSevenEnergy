@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -18,7 +19,7 @@ public class ScheduleController {
 
     private final ScheduleViewModel vm;
 
-    public ScheduleController(ScheduleViewModel vm) { this.vm = vm; }
+    @Inject public ScheduleController(ScheduleViewModel vm) { this.vm = vm; }
 
     @FXML private void initialize() {
         schedulePane.setApplianceList(vm.getApplianceList());

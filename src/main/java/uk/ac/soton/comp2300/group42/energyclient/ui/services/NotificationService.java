@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.services;
 
+import com.google.inject.Singleton;
 import javafx.application.Platform;
 
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
@@ -13,6 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
+@Singleton
 public class NotificationService {
 
     private final Timer timer = new Timer(true);

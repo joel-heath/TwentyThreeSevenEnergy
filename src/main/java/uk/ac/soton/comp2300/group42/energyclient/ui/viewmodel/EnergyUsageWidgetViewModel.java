@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
+import com.google.inject.Inject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
@@ -19,8 +20,7 @@ public class EnergyUsageWidgetViewModel {
     private final DoubleProperty cost = new SimpleDoubleProperty(0);
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
 
-
-    public EnergyUsageWidgetViewModel(EnergyCalculator calc, PreferencesModel preferences) {
+    @Inject public EnergyUsageWidgetViewModel(EnergyCalculator calc, PreferencesModel preferences) {
         this.calc = calc;
         this.preferences = preferences;
 

@@ -1,5 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -7,12 +9,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import uk.ac.soton.comp2300.group42.energyclient.ui.controller.AccessibilityController;
+import uk.ac.soton.comp2300.group42.energyclient.EnergyClientModule;
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.RootController;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.AccessibilitySettingsViewModel;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Stack;
@@ -35,11 +35,11 @@ public class Navigator {
             this.controllerSetup = (Consumer<Object>) setup;
         }
     }
-
     private static final Stack<ViewContext> backHistory = new Stack<>();
     private static final Stack<ViewContext> forwardHistory = new Stack<>();
     public static final String defaultPath = "/uk/ac/soton/comp2300/group42/energyclient/ui/view/";
-    private static final ViewModelFactory vmFactory = new ViewModelFactory();
+    // private static final ViewModelFactory vmFactory = new ViewModelFactory();
+    private static final Injector injector = Guice.createInjector(new EnergyClientModule());
 
     private static RootController rootController;
     private static StackPane contentArea;
@@ -51,20 +51,7 @@ public class Navigator {
         );
 
         FXMLLoader loader = new FXMLLoader(fxml);
-
-        loader.setControllerFactory(controllerClass -> {
-            Object viewModel = vmFactory.getViewModel(controllerClass);
-            try {
-                return viewModel != null
-                        ? controllerClass.getConstructor(viewModel.getClass()).newInstance(viewModel)
-                        : controllerClass.getDeclaredConstructor().newInstance();
-
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException("Failed to instantiate the ViewModel, maybe you need a constructing case in the ViewModelFactory.", e);
-            }
-        });
-
+        loader.setControllerFactory(injector::getInstance);
         Parent root = loader.load();
 
         T controller = loader.getController();
@@ -82,13 +69,7 @@ public class Navigator {
             System.out.println("Warning: You shouldn't call `initialise` more than once");
 
         FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(defaultPath + "Root.fxml"));
-        loader.setControllerFactory(_ -> {
-            try {
-                return new RootController(vmFactory.getRepository());
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to build RootController", e);
-            }
-        });
+        loader.setControllerFactory(injector::getInstance);
         Parent root = loader.load();
 
         rootController = loader.getController();

@@ -15,7 +15,7 @@
         <VBox spacing="5" alignment="CENTER">
             <HBox spacing="10" alignment="CENTER">
                 <Label text="Large Font Mode"/>
-                <ToggleSwitch fx:id="largeFontToggle" onAction="#toggleLargeFont"/>
+                <ToggleSwitch fx:id="largeFontToggle"/>
             </HBox>
         </VBox>
 

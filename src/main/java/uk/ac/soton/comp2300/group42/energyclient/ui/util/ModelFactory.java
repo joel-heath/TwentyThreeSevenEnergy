@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
+import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Role;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;
@@ -7,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Singleton
 public class ModelFactory {
     private final HousemateModel currentUser;
     private final PreferencesModel preferencesModel;

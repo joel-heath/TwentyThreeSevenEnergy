@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
+import com.google.inject.Inject;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 
@@ -7,7 +8,7 @@ public class LoginViewModel {
 
     private final UserClient client;
 
-    public LoginViewModel(Repository repository) {
+    @Inject public LoginViewModel(Repository repository) {
         this.client = repository.getUserClient();
     }
 

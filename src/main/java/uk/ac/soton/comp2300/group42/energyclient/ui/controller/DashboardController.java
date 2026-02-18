@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
@@ -28,7 +29,7 @@ public class DashboardController {
 
     private final DashboardViewModel vm;
 
-    public DashboardController(DashboardViewModel vm) {
+    @Inject public DashboardController(DashboardViewModel vm) {
         this.vm = vm;
     }
 }

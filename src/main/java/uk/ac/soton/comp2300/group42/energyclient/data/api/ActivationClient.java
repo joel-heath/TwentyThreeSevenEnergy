@@ -1,6 +1,8 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 
@@ -10,11 +12,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Singleton
 public class ActivationClient {
 
     private final AuthenticatedHttpClient httpClient;
     private final ObjectMapper mapper;
 
+    @Inject
     public ActivationClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
         this.httpClient = httpClient;
         this.mapper = mapper;

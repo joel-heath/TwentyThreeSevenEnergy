@@ -1,6 +1,8 @@
 package uk.ac.soton.comp2300.group42.energyclient.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.application.Platform;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.AuthResponseDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
@@ -14,6 +16,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+@Singleton
 public class AuthenticatedHttpClient {
 
     private String accessToken;
@@ -22,10 +25,11 @@ public class AuthenticatedHttpClient {
     private final HttpClient client;
     private static final String API_ROOT_URL = "http://localhost:8080/api/"; // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
 
+    @Inject
     public AuthenticatedHttpClient(ObjectMapper mapper) {
+        this.mapper = mapper;
         accessToken = null;
         refreshToken = null;
-        this.mapper = mapper;
         client = HttpClient.newBuilder()
                            .version(HttpClient.Version.HTTP_2)
                            .connectTimeout(Duration.ofSeconds(10))
@@ -48,6 +52,7 @@ public class AuthenticatedHttpClient {
     public HttpResponse<String> post(String url, String jsonBody) throws IOException, InterruptedException {
         return postAbsolute(API_ROOT_URL + url, jsonBody);
     }
+
     public HttpResponse<String> postAbsolute(String url, String jsonBody) throws IOException, InterruptedException {
         return send(HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")

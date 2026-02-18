@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
@@ -32,10 +33,9 @@ public class DashboardDebugController {
     @FXML private DatePicker datePicker;
     @FXML private Spinner<LocalTime> timeSpinner;
 
-    public DashboardDebugController(DashboardDebugViewModel vm) { this.vm = vm; }
+    @Inject public DashboardDebugController(DashboardDebugViewModel vm) { this.vm = vm; }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         energyUsageRect.usageProperty().bind(vm.usageProperty());
         energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));
         counterLabel.textProperty().bind(vm.counterProperty().asString());
@@ -69,13 +69,11 @@ public class DashboardDebugController {
     }
 
 
-    @FXML
-    private void onIncrement() {
+    @FXML private void onIncrement() {
         vm.incrementCounter();
     }
 
-    @FXML
-    private void onDecrement() {
+    @FXML private void onDecrement() {
         vm.decrementCounter();
     }
 
@@ -110,12 +108,7 @@ public class DashboardDebugController {
         vm.scheduleReset(resetTime);
     }
 
-
-
-    @FXML
-    private void onExit() {
-        Navigator.goTo("landing.fxml");
+    @FXML private void onExit() {
+        Navigator.goTo("Landing.fxml");
     }
-
-
 }

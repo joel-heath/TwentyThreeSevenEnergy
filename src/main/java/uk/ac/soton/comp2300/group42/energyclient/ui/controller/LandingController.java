@@ -14,20 +14,15 @@ import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.
 
 public class LandingController {
 
-    private static final KeyCodeCombination debugShortcut = new KeyCodeCombination(
+    private static final KeyCodeCombination DEBUG_SHORTCUT = new KeyCodeCombination(
             KeyCode.D,
             KeyCombination.CONTROL_DOWN,
             KeyCombination.SHIFT_DOWN);
 
-    @FXML
-    private Parent mainContentArea;
-    @FXML
-    private Button debugButton;
-    @FXML
-    private Button accessibilityButton;
+    @FXML private Parent mainContentArea;
+    @FXML private Button debugButton;
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         if (isDebugging()) {
             mainContentArea.sceneProperty().addListener((_, _, newScene) -> {
                 if (newScene != null) {
@@ -40,31 +35,26 @@ public class LandingController {
 
     private void registerDebugShortcut(Scene scene) {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (debugShortcut.match(e)) {
+            if (DEBUG_SHORTCUT.match(e)) {
                 onDebug();
                 e.consume();
             }
         });
     }
 
-    @FXML
-    private void onLogin() {
+    @FXML private void onLogin() {
         Navigator.goTo("Login.fxml");
     }
 
-    @FXML
-    private void onDive() {
+    @FXML private void onDive() {
         Navigator.goToIrreversible("Dashboard.fxml");
     }
 
-    @FXML
-    private void onDebug() {
+    @FXML private void onDebug() {
         Navigator.goTo("debug/DashboardDebug.fxml");
     }
 
-    @FXML
-    private void onGoToAccessibility() {
+    @FXML private void onGoToAccessibility() {
         Navigator.goTo("AccessibilitySettings.fxml");
-
     }
 }

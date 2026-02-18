@@ -1,5 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+@Singleton
 public class Repository {
 
     private final ApplianceClient applianceClient;
@@ -33,6 +36,7 @@ public class Repository {
     private final ObservableList<HouseModel> houses;
     private final ObservableList<HousemateModel> housemates;
 
+    @Inject
     public Repository(ApplianceClient applianceClient,
                       ActivationClient activationClient,
                       UserClient userClient,

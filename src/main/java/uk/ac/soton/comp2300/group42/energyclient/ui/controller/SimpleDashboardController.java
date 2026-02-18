@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -29,16 +30,18 @@ public class SimpleDashboardController {
     private final EnergyPriceService service = new EnergyPriceService();
 
     private final SharedDashboardViewModel vm;
+    private final EnergyUsageWidgetViewModel energyWidgetVM;
     private ScheduleApplianceWidget scheduleApplianceWidget;
 
-    public SimpleDashboardController(SharedDashboardViewModel vm) {
+    @Inject public SimpleDashboardController(SharedDashboardViewModel vm,
+                                             EnergyUsageWidgetViewModel energyWidgetVM) {
         this.vm = vm;
+        this.energyWidgetVM = energyWidgetVM;
     }
 
     @FXML private void initialize() {
-        EnergyUsageWidgetViewModel widgetVM = vm.getWidgetVM();
-        energyWidget.bindComponents(widgetVM);
-        widgetVM.startAutoUpdateTest();
+        energyWidget.bindComponents(energyWidgetVM);
+        energyWidgetVM.startAutoUpdateTest();
 
         ScheduleApplianceWidgetViewModel scheduleApplianceWidgetVm = new ScheduleApplianceWidgetViewModel(vm.getRepository());
         scheduleApplianceWidget = new ScheduleApplianceWidget(scheduleApplianceWidgetVm, editModal, schedulePane, responseLabel);

@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import com.google.inject.Inject;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -23,7 +24,7 @@ public class RootController {
     @FXML private ScrollPane reminderScroll;
     @FXML private VBox remindersArea;
 
-    public RootController(Repository repository) {
+    @Inject public RootController(Repository repository) {
         this.repository = repository;
     }
 

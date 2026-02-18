@@ -1,9 +1,13 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+import uk.ac.soton.comp2300.group42.energyclient.data.api.EnergyParser;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyPriceModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.services.EnergyPriceService;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget;
@@ -20,6 +24,9 @@ public class SimpleDashboardController {
     @FXML private Modal editModal;
     @FXML private ActivationSchedulePane schedulePane;
     @FXML private Label responseLabel;
+    @FXML private Label priceLabel;
+
+    private final EnergyPriceService service = new EnergyPriceService();
 
     private final SimpleDashboardViewModel vm;
     private ScheduleApplianceWidget scheduleApplianceWidget;
@@ -34,6 +41,8 @@ public class SimpleDashboardController {
         ScheduleApplianceWidgetViewModel scheduleApplianceWidgetVm = new ScheduleApplianceWidgetViewModel(vm.getRepository());
         scheduleApplianceWidget = new ScheduleApplianceWidget(scheduleApplianceWidgetVm, editModal, schedulePane, responseLabel);
         scheduleApplianceWidgetContainer.getChildren().add(scheduleApplianceWidget);
+
+        loadPrice();
 
         vm.startAutoUpdateTest();
     }
@@ -56,5 +65,22 @@ public class SimpleDashboardController {
 
     @FXML private void onManageHouses() {
         Navigator.goTo("ManageHouses.fxml");
+    }
+
+    private void loadPrice() {
+        new Thread(() -> {
+            try {
+                String json = service.fetchRawData();
+                EnergyPriceModel price = EnergyParser.parse(json);
+
+                Platform.runLater(() ->
+                        priceLabel.setText(
+                                String.format("%.2f p/kWh", price.getPrice())
+                        )
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

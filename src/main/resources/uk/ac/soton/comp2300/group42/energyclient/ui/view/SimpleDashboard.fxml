@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.effect.DropShadow?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
@@ -20,6 +19,11 @@
             <VBox fx:id="scheduleApplianceWidgetContainer"/>
 
             <Button text="Manage Houses" onAction="#onManageHouses"/>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Current Energy Price:"/>
+                <Label fx:id="priceLabel" text="Loading..."/>
+            </HBox>
         </VBox>
     </SettingsOverlayPane>
 
@@ -35,4 +39,8 @@
             <Label fx:id="responseLabel"/>
         </VBox>
     </Modal>
+
+
+
+
 </ModalOverlayPane>

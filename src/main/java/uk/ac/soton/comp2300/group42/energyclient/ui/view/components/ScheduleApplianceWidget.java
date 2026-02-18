@@ -1,26 +1,22 @@
-package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
+package uk.ac.soton.comp2300.group42.energyclient.ui.view.components;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageWidgetViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SimpleDashboardViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleApplianceWidgetViewModel;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -28,30 +24,40 @@ import java.util.Comparator;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.formatDay;
 
-public class SimpleDashboardController {
-
-    @FXML private VBox energyWidgetContainer;
-
-    @FXML private Modal editModal;
-    @FXML private ActivationSchedulePane schedulePane;
-    @FXML private Label responseLabel;
-    private ActivationModel currentEditingActivation;
-
+public class ScheduleApplianceWidget extends VBox {
     @FXML private HBox scheduleContainer;
 
-    private final SimpleDashboardViewModel vm;
+    private final ScheduleApplianceWidgetViewModel vm;
+    private final Modal editModal;
+    private final ActivationSchedulePane schedulePane;
+    private final Label responseLabel;
+    private ActivationModel currentEditingActivation;
 
-    public SimpleDashboardController(SimpleDashboardViewModel vm) { this.vm = vm; }
+    public ScheduleApplianceWidget(ScheduleApplianceWidgetViewModel vm, Modal editModal,
+                                   ActivationSchedulePane schedulePane, Label responseLabel) {
+        this.vm = vm;
+        this.editModal = editModal;
+        this.schedulePane = schedulePane;
+        this.responseLabel = responseLabel;
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ScheduleApplianceWidget.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+
+        try {
+            loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @FXML private void initialize() {
-        EnergyUsageWidgetViewModel widgetVm = new EnergyUsageWidgetViewModel(vm.getPreferences());
-        EnergyUsageWidget widget = new EnergyUsageWidget(widgetVm);
-        energyWidgetContainer.getChildren().add(widget);
-
         schedulePane.setApplianceList(vm.getAppliances());
         bindActivations();
+    }
 
-        vm.startAutoUpdateTest();
+    @FXML private void onSchedule() {
+        Navigator.goTo("Schedule.fxml");
     }
 
     private void openEditModal(ActivationModel activation) {
@@ -73,7 +79,7 @@ public class SimpleDashboardController {
         editModal.show();
     }
 
-    @FXML private void onCloseEditModal() {
+    @FXML public void onCloseEditModal() {
         editModal.close();
         this.currentEditingActivation = null;
     }
@@ -84,45 +90,39 @@ public class SimpleDashboardController {
         return condition;
     }
 
-    @FXML private void onSaveActivation() {
+    @FXML public void onSaveActivation() {
         ApplianceModel appliance = schedulePane.getSelectedAppliance();
         int hour = schedulePane.getHour();
         int minute = schedulePane.getMinute();
         boolean recurs = schedulePane.isRecurrenceRulesVisible();
 
         if (guard(appliance == null,
-                  "Failed to schedule, no appliance selected") ||
+                "Failed to schedule, no appliance selected") ||
             guard(recurs && !schedulePane.isRecursSet(),
-                  "Failed to schedule, no recurrence days selected") ||
+                    "Failed to schedule, no recurrence days selected") ||
             guard(!recurs && schedulePane.getDate().isBefore(LocalDateTime.now().toLocalDate()),
-                  "Failed to schedule, selected date is in the past")
+                    "Failed to schedule, selected date is in the past")
         ) return;
 
         vm.updateActivation(currentEditingActivation,
-                            appliance,
-                            LocalTime.of(hour, minute),
-                            schedulePane.getDate(),
-                            schedulePane.isRecursMonday(), schedulePane.isRecursTuesday(), schedulePane.isRecursWednesday(), schedulePane.isRecursThursday(), schedulePane.isRecursFriday(), schedulePane.isRecursSaturday(), schedulePane.isRecursSunday(),
-                            schedulePane.isRecurrenceRulesVisible());
+                appliance,
+                LocalTime.of(hour, minute),
+                schedulePane.getDate(),
+                schedulePane.isRecursMonday(), schedulePane.isRecursTuesday(),
+                schedulePane.isRecursWednesday(), schedulePane.isRecursThursday(),
+                schedulePane.isRecursFriday(), schedulePane.isRecursSaturday(),
+                schedulePane.isRecursSunday(),
+                schedulePane.isRecurrenceRulesVisible());
         onCloseEditModal();
     }
 
-    @FXML private void onCancelActivation() {
+    @FXML public void onCancelActivation() {
         vm.removeActivation(currentEditingActivation);
         onCloseEditModal();
     }
 
-    @FXML private void onSchedule() {
-        Navigator.goTo("Schedule.fxml");
-    }
-
-    @FXML private void onManageHouses() {
-        Navigator.goTo("ManageHouses.fxml");
-    }
-
     private Pane createActivationView(ActivationModel activation) {
         VBox card = new VBox();
-        // card.setPrefSize(100, 150);
         card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5");
 
         Label nameLabel = new Label();
@@ -134,7 +134,7 @@ public class SimpleDashboardController {
         );
         timeLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                activation.activationTimeProperty()
+                activation.activationDateProperty()
         ));
         dateLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> formatDay(activation.getNextActivationDateTime()),
@@ -150,13 +150,12 @@ public class SimpleDashboardController {
         ));
         card.getChildren().addAll(nameLabel, timeLabel, dateLabel);
         card.setOnMouseClicked(_ -> this.openEditModal(activation));
-        card.setUserData(activation); // for sorting when an activation's time is changed.
+        card.setUserData(activation);
 
         return card;
     }
 
     private void bindActivations() {
-        // `activations` is the live list, the ViewModel passes it on from the ActivationClient
         SortedList<ActivationModel> activations = vm.getActivations();
 
         scheduleContainer.getChildren().clear();
@@ -166,7 +165,6 @@ public class SimpleDashboardController {
 
         activations.addListener((ListChangeListener<ActivationModel>) change -> {
             while (change.next()) {
-                // Schedule reminder -> Activation appears on dashboard
                 if (change.wasAdded()) {
                     for (int i = 0; i < change.getAddedSize(); i++) {
                         ActivationModel addedItem = change.getAddedSubList().get(i);
@@ -175,7 +173,6 @@ public class SimpleDashboardController {
                     }
                 }
 
-                // Reminder alert appears and Activation is dismissed -> Activation disappears from dashboard
                 if (change.wasRemoved()) {
                     scheduleContainer.getChildren().remove(
                             change.getFrom(),
@@ -183,7 +180,6 @@ public class SimpleDashboardController {
                     );
                 }
 
-                // Activation time is altered -> Dashboard is resorted so Activations appear in chronological order
                 if (change.wasPermutated() || change.wasUpdated()) {
                     FXCollections.sort(scheduleContainer.getChildren(),
                             Comparator.comparingInt(node -> activations.indexOf((ActivationModel) node.getUserData())));

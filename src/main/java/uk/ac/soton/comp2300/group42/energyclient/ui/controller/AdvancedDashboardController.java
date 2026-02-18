@@ -2,62 +2,38 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ScheduleApplianceWidget;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageWidgetViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleApplianceWidgetViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.*;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.UpcomingActivationsViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
-
-import javafx.scene.control.Label;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SharedDashboardViewModel;
-
 
 public class AdvancedDashboardController {
 
     @FXML private EnergyUsageWidget energyWidget;
-    @FXML private VBox scheduleApplianceWidgetContainer;
-    @FXML private Modal editModal;
-    @FXML private ActivationSchedulePane schedulePane;
-    @FXML private Label responseLabel;
+    @FXML private UpcomingActivationsWidget upcomingActivationsWidget;
+    @FXML private ActivationEditModal activationEditModal;
 
-    private final SharedDashboardViewModel vm;
-    private final EnergyUsageWidgetViewModel energyWidgetVM;
-    private ScheduleApplianceWidget scheduleApplianceWidget;
+    private final EnergyUsageViewModel energyWidgetVM;
+    private final UpcomingActivationsViewModel activationsWidgetVM;
 
-    @Inject public AdvancedDashboardController(SharedDashboardViewModel vm,
-                                               EnergyUsageWidgetViewModel energyWidgetVM) {
-        this.vm = vm;
+    @Inject public AdvancedDashboardController(EnergyUsageViewModel energyWidgetVM,
+                                               UpcomingActivationsViewModel activationsWidgetVM) {
         this.energyWidgetVM = energyWidgetVM;
+        this.activationsWidgetVM = activationsWidgetVM;
     }
 
     @FXML private void initialize() {
         energyWidget.bindComponents(energyWidgetVM);
         energyWidgetVM.startAutoUpdateTest();
 
-        ScheduleApplianceWidgetViewModel scheduleApplianceWidgetVm =
-                new ScheduleApplianceWidgetViewModel(vm.getRepository());
-        scheduleApplianceWidget = new ScheduleApplianceWidget(scheduleApplianceWidgetVm, editModal, schedulePane, responseLabel);
-        scheduleApplianceWidgetContainer.getChildren().add(scheduleApplianceWidget);
-    }
-
-    @FXML private void onSaveActivation() {
-        scheduleApplianceWidget.onSaveActivation();
-    }
-
-    @FXML private void onCancelActivation() {
-        scheduleApplianceWidget.onCancelActivation();
-    }
-
-    @FXML private void onCloseEditModal() {
-        scheduleApplianceWidget.onCloseEditModal();
+        upcomingActivationsWidget.bindComponents(activationsWidgetVM, activationEditModal);
     }
 
     @FXML private void onManageHouses() {
         Navigator.goTo("ManageHouses.fxml");
     }
 
-    @FXML private void onProgressTracking() {}
+    @FXML private void onProgressTracking() {
+        // Navigator.goTo("ProgressTracking.fxml");
+    }
 }

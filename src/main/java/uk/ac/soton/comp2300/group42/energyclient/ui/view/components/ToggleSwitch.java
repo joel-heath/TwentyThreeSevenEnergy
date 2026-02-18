@@ -32,8 +32,7 @@ public class ToggleSwitch extends ToggleButton {
         setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
     }
 
-    @Override
-    protected Skin<?> createDefaultSkin() {
+    @Override protected Skin<?> createDefaultSkin() {
         return new ToggleSwitchSkin(this);
     }
 

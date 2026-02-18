@@ -3,13 +3,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.DropShadow?>
-<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
-<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.UpcomingActivationsWidget?>
 
-<fx:root type="VBox" xmlns:fx="http://javafx.com/fxml"
-        spacing="10"
-        prefWidth="280"
-        style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+<fx:root type="UpcomingActivationsWidget"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="10"
+         prefWidth="280"
+         style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
     <effect><DropShadow radius="15" offsetX="5" offsetY="5" color="#00000088"/></effect>
 
     <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">

@@ -3,21 +3,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationSchedulePane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.SettingsOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ModalOverlayPane?>
-<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationEditModal?>
+<?import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.UpcomingActivationsWidget?>
 <ModalOverlayPane xmlns:fx="http://javafx.com/fxml"
                   fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.controller.SimpleDashboardController">
-
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity">
 
             <EnergyUsageWidget fx:id="energyWidget"/>
 
-            <VBox fx:id="scheduleApplianceWidgetContainer"/>
+            <UpcomingActivationsWidget fx:id="activationsWidget"/>
 
             <Button text="Manage Houses" onAction="#onManageHouses"/>
 
@@ -25,23 +24,8 @@
                 <Label text="Current Energy Price:"/>
                 <Label fx:id="priceLabel" text="Loading..."/>
             </HBox>
+
         </VBox>
     </SettingsOverlayPane>
-
-    <Modal fx:id="editModal">
-        <VBox maxWidth="250" maxHeight="300" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
-            <Label text="Edit Scheduled Reminder" style="-fx-padding: 0 0 20 0;"/>
-            <ActivationSchedulePane fx:id="schedulePane" />
-            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
-                <Button text="Save Edits" onAction="#onSaveActivation"/>
-                <Button text="Remove Activation" onAction="#onCancelActivation"/>
-                <Button text="Exit Without Saving" onAction="#onCloseEditModal"/>
-            </VBox>
-            <Label fx:id="responseLabel"/>
-        </VBox>
-    </Modal>
-
-
-
-
+    <ActivationEditModal fx:id="activationEditModal"/>
 </ModalOverlayPane>

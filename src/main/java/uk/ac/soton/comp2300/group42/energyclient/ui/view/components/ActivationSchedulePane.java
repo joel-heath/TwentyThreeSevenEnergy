@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ActivationSchedulePane extends VBox {
+
     @FXML private ComboBox<ApplianceModel> applianceSelector;
     @FXML private Spinner<Integer> hourSpinner;
     @FXML private Spinner<Integer> minuteSpinner;
@@ -35,16 +36,11 @@ public class ActivationSchedulePane extends VBox {
     private IntegerProperty hourProperty;
     private IntegerProperty minuteProperty;
 
-    public ActivationSchedulePane()  {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ActivationSchedulePane.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+    public ActivationSchedulePane() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ActivationSchedulePane.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
     }
 
     @FXML private void initialize() {
@@ -88,8 +84,10 @@ public class ActivationSchedulePane extends VBox {
     }
 
     public void setApplianceList(ObservableList<ApplianceModel> appliances) { applianceSelector.setItems(appliances); }
-    public ObjectProperty<ApplianceModel> selectedApplianceProperty() { return applianceSelector.valueProperty(); }
+
     public ApplianceModel getSelectedAppliance() { return applianceSelector.getValue(); }
+    public void setSelectedAppliance(ApplianceModel appliance) { applianceSelector.setValue(appliance); }
+    public ObjectProperty<ApplianceModel> selectedApplianceProperty() { return applianceSelector.valueProperty(); }
 
     public int getHour() { return hourSpinner.getValue(); }
     public int getMinute() { return minuteSpinner.getValue(); }

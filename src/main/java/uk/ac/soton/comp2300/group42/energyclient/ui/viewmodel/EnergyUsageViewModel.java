@@ -9,7 +9,7 @@ import javafx.util.Duration;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 
-public class EnergyUsageWidgetViewModel {
+public class EnergyUsageViewModel {
 
     private final EnergyCalculator calc;
     private final PreferencesModel preferences;
@@ -20,7 +20,7 @@ public class EnergyUsageWidgetViewModel {
     private final DoubleProperty cost = new SimpleDoubleProperty(0);
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
 
-    @Inject public EnergyUsageWidgetViewModel(EnergyCalculator calc, PreferencesModel preferences) {
+    @Inject public EnergyUsageViewModel(EnergyCalculator calc, PreferencesModel preferences) {
         this.calc = calc;
         this.preferences = preferences;
 

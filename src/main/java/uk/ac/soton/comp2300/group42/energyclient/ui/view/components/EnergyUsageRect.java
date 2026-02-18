@@ -18,16 +18,11 @@ public class EnergyUsageRect extends StackPane {
     private final Rectangle clip = new Rectangle();
     private static final double MAX_WIDTH = 250;
 
-    public EnergyUsageRect() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EnergyUsageRect.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+    public EnergyUsageRect() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("EnergyUsageRect.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
     }
 
     @FXML private void initialize() {

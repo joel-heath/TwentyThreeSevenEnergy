@@ -14,111 +14,39 @@ import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
-import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ScheduleApplianceWidgetViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.UpcomingActivationsViewModel;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.formatDay;
 
-public class ScheduleApplianceWidget extends VBox {
+public class UpcomingActivationsWidget extends VBox {
+
     @FXML private HBox scheduleContainer;
 
-    private final ScheduleApplianceWidgetViewModel vm;
-    private final Modal editModal;
-    private final ActivationSchedulePane schedulePane;
-    private final Label responseLabel;
-    private ActivationModel currentEditingActivation;
+    private UpcomingActivationsViewModel vm;
+    private ActivationEditModal editModal;
 
-    public ScheduleApplianceWidget(ScheduleApplianceWidgetViewModel vm, Modal editModal,
-                                   ActivationSchedulePane schedulePane, Label responseLabel) {
+    public void bindComponents(UpcomingActivationsViewModel vm,
+                               ActivationEditModal editModal) {
         this.vm = vm;
         this.editModal = editModal;
-        this.schedulePane = schedulePane;
-        this.responseLabel = responseLabel;
 
+        editModal.bindComponents(vm);
+        bindActivations();
+    }
+
+    public UpcomingActivationsWidget() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ScheduleApplianceWidget.fxml"));
         loader.setRoot(this);
         loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML private void initialize() {
-        schedulePane.setApplianceList(vm.getAppliances());
-        bindActivations();
+        loader.load();
     }
 
     @FXML private void onSchedule() {
         Navigator.goTo("Schedule.fxml");
-    }
-
-    private void openEditModal(ActivationModel activation) {
-        this.currentEditingActivation = activation;
-
-        schedulePane.selectedApplianceProperty().setValue(activation.getAppliance());
-        schedulePane.setHour(activation.getActivationTime().getHour());
-        schedulePane.setMinute(activation.getActivationTime().getMinute());
-        schedulePane.setDate(activation.getActivationDate() == null ? LocalDateTime.now().toLocalDate() : activation.getActivationDate());
-        schedulePane.setRecurrenceRulesVisible(activation.isRecurring());
-        schedulePane.setRecursMonday(activation.isRecursMonday());
-        schedulePane.setRecursTuesday(activation.isRecursTuesday());
-        schedulePane.setRecursWednesday(activation.isRecursWednesday());
-        schedulePane.setRecursThursday(activation.isRecursThursday());
-        schedulePane.setRecursFriday(activation.isRecursFriday());
-        schedulePane.setRecursSaturday(activation.isRecursSaturday());
-        schedulePane.setRecursSunday(activation.isRecursSunday());
-
-        editModal.show();
-    }
-
-    @FXML public void onCloseEditModal() {
-        editModal.close();
-        this.currentEditingActivation = null;
-    }
-
-    private boolean guard(boolean condition, String errorMessage) {
-        if (condition)
-            responseLabel.setText(errorMessage);
-        return condition;
-    }
-
-    @FXML public void onSaveActivation() {
-        ApplianceModel appliance = schedulePane.getSelectedAppliance();
-        int hour = schedulePane.getHour();
-        int minute = schedulePane.getMinute();
-        boolean recurs = schedulePane.isRecurrenceRulesVisible();
-
-        if (guard(appliance == null,
-                "Failed to schedule, no appliance selected") ||
-            guard(recurs && !schedulePane.isRecursSet(),
-                    "Failed to schedule, no recurrence days selected") ||
-            guard(!recurs && schedulePane.getDate().isBefore(LocalDateTime.now().toLocalDate()),
-                    "Failed to schedule, selected date is in the past")
-        ) return;
-
-        vm.updateActivation(currentEditingActivation,
-                appliance,
-                LocalTime.of(hour, minute),
-                schedulePane.getDate(),
-                schedulePane.isRecursMonday(), schedulePane.isRecursTuesday(),
-                schedulePane.isRecursWednesday(), schedulePane.isRecursThursday(),
-                schedulePane.isRecursFriday(), schedulePane.isRecursSaturday(),
-                schedulePane.isRecursSunday(),
-                schedulePane.isRecurrenceRulesVisible());
-        onCloseEditModal();
-    }
-
-    @FXML public void onCancelActivation() {
-        vm.removeActivation(currentEditingActivation);
-        onCloseEditModal();
     }
 
     private Pane createActivationView(ActivationModel activation) {
@@ -149,7 +77,7 @@ public class ScheduleApplianceWidget extends VBox {
                 activation.recursSundayProperty()
         ));
         card.getChildren().addAll(nameLabel, timeLabel, dateLabel);
-        card.setOnMouseClicked(_ -> this.openEditModal(activation));
+        card.setOnMouseClicked(_ -> editModal.show(activation));
         card.setUserData(activation);
 
         return card;

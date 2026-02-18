@@ -10,18 +10,21 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
+import java.util.concurrent.CompletableFuture;
 
-public class ScheduleApplianceWidgetViewModel {
+public class UpcomingActivationsViewModel {
 
     private final ObservableList<ApplianceModel> appliances;
     private final SortedList<ActivationModel> activations;
     private final Repository repository;
 
-    @Inject public ScheduleApplianceWidgetViewModel(Repository repository) {
+    @Inject public UpcomingActivationsViewModel(Repository repository) {
         this.repository = repository;
         this.appliances = repository.getAppliances();
         this.activations = new SortedList<>(repository.getActivations());
         this.activations.setComparator(Comparator.comparing(ActivationModel::getNextActivationDateTime));
+
+        CompletableFuture.runAsync(repository::fetchAllData);
     }
 
     public ObservableList<ApplianceModel> getAppliances() { return appliances; }

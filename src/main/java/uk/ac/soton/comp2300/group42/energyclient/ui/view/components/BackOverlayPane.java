@@ -8,16 +8,12 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import java.io.IOException;
 
 public class BackOverlayPane extends StackPane {
-    public BackOverlayPane() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("BackOverlayPane.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
 
-        try {
-            fxmlLoader.load();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+    public BackOverlayPane() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("BackOverlayPane.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
     }
 
     @FXML private void onBack() {

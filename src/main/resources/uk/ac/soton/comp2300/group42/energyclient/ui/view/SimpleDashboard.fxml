@@ -25,6 +25,8 @@
                 <Label fx:id="priceLabel" text="Loading..."/>
             </HBox>
 
+            <Button text="Track Progress" onAction="#onProgressTracking"/>
+
         </VBox>
     </SettingsOverlayPane>
     <ActivationEditModal fx:id="activationEditModal"/>

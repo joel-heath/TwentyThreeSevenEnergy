@@ -60,4 +60,8 @@ public class SimpleDashboardController {
             }
         }).start();
     }
+
+    @FXML private void onProgressTracking() {
+        Navigator.goTo("ProgressTracking.fxml");
+    }
 }

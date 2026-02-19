@@ -6,6 +6,7 @@ import javafx.scene.chart.XYChart;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.EnergyPriceService;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ProgressTrackingViewModel {
@@ -21,6 +22,8 @@ public class ProgressTrackingViewModel {
     public void loadData() {
         try {
             List<UnitRate> rates = service.fetchPriceData();
+
+            Collections.reverse(rates);
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Price Trend (p/kWh)");

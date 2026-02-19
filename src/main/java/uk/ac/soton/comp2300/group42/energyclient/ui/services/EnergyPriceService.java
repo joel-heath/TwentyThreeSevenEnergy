@@ -17,8 +17,7 @@ import com.google.gson.JsonParser;
 public class EnergyPriceService {
 
     private static final String API_URL =
-            "https://api.octopus.energy/v1/products/AGILE-18-02-21/"
-                    + "electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/?page_size=1";
+            "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/?page_size=24";
 
     private final HttpClient client = HttpClient.newHttpClient();
 

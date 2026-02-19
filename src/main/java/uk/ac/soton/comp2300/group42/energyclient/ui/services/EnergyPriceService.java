@@ -36,14 +36,6 @@ public class EnergyPriceService {
         return response.body();
     }
 
-    public List<UnitRate> fetchPriceData() throws Exception {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL)).build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return parseJson(response.body());
-    }
 
     public List<UnitRate> parseJson(String jsonResponse) {
         Gson gson = new Gson();

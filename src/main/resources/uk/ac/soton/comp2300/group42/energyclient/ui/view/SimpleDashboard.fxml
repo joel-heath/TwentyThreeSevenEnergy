@@ -20,11 +20,6 @@
 
             <Button text="Manage Houses" onAction="#onManageHouses"/>
 
-            <HBox spacing="10" alignment="CENTER">
-                <Label text="Current Energy Price:"/>
-                <Label fx:id="priceLabel" text="Loading..."/>
-            </HBox>
-
             <Button text="Track Progress" onAction="#onProgressTracking"/>
 
         </VBox>

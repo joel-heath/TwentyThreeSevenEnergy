@@ -21,7 +21,7 @@ public class ProgressTrackingViewModel {
 
     public void loadData() {
         try {
-            List<UnitRate> rates = service.fetchPriceData();
+            List<UnitRate> rates = service.fetchNext12Hours();
 
             Collections.reverse(rates);
 

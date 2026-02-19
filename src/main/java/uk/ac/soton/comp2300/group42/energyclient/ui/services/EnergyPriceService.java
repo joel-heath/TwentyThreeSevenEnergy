@@ -8,6 +8,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -16,14 +19,14 @@ import com.google.gson.JsonParser;
 
 public class EnergyPriceService {
 
-    private static final String API_URL =
-            "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/?page_size=24";
+    private static final String BASE_URL =
+            "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/";
 
     private final HttpClient client = HttpClient.newHttpClient();
 
     public String fetchRawData() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(API_URL))
+                .uri(URI.create(BASE_URL))
                 .GET()
                 .build();
 
@@ -35,7 +38,7 @@ public class EnergyPriceService {
 
     public List<UnitRate> fetchPriceData() throws Exception {
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL)).build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL)).build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -45,14 +48,30 @@ public class EnergyPriceService {
     public List<UnitRate> parseJson(String jsonResponse) {
         Gson gson = new Gson();
 
-        // 1. Parse the string into a JSON Object
         JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
 
-        // 2. Extract the "results" array specifically
         var resultsArray = jsonObject.get("results");
 
-        // 3. Convert that array into a List of UnitRate objects
         Type listType = new TypeToken<List<UnitRate>>() {}.getType();
         return gson.fromJson(resultsArray, listType);
+    }
+
+    public List<UnitRate> fetchNext12Hours() throws Exception {
+
+        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        ZonedDateTime twelveHoursLater = now.plusHours(12);
+
+        String fromStr = now.format(DateTimeFormatter.ISO_INSTANT);
+        String toStr = twelveHoursLater.format(DateTimeFormatter.ISO_INSTANT);
+
+        // page_size=24 because there are 24 half-hour slots in 12 hours
+        String fullUrl = BASE_URL + "?period_from=" + fromStr + "&period_to=" + toStr + "&page_size=24";
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(fullUrl)).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return parseJson(response.body());
     }
 }

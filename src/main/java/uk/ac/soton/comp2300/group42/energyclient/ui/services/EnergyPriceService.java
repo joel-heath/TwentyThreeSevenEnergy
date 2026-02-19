@@ -1,7 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.services;
 
 import com.google.gson.reflect.TypeToken;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.UnitRate;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.UnitRate;
 
 import java.lang.reflect.Type;
 import java.net.URI;

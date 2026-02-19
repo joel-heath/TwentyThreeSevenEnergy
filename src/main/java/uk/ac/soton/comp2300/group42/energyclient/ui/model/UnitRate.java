@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.data.api;
+package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
 import com.google.gson.annotations.SerializedName;
 

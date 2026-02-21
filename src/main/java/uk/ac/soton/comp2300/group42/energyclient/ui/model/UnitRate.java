@@ -5,4 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public record UnitRate(
         @SerializedName("value_inc_vat") double valueIncVat,
         @SerializedName("valid_from") String validFrom
-) {}
+) {
+    public String getPriceStatus() {
+        if (valueIncVat < 10) return "CHEAP";
+        if (valueIncVat < 25) return "AVERAGE";
+        return "EXPENSIVE";
+    }
+}

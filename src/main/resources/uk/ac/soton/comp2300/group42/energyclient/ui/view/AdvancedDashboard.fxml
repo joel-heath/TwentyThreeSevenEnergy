@@ -14,7 +14,12 @@
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false">
 
-            <Label text="Advanced Mode" style="-fx-font-size: 24; -fx-font-weight: bold"/>
+
+            <ScrollPane prefWidth="300.0" minWidth="300.0" maxWidth="300.0"
+                        vbarPolicy="NEVER" hbarPolicy="ALWAYS" fitToHeight="true">
+                <HBox fx:id="statusRow" spacing="3" alignment="CENTER_LEFT">
+                </HBox>
+            </ScrollPane>
 
             <EnergyUsageWidget fx:id="energyWidget"/>
 

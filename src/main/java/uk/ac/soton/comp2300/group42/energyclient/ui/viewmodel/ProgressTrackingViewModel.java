@@ -37,7 +37,7 @@ public class ProgressTrackingViewModel {
             List<UnitRate> rates = service.fetchNext12Hours();
 
             if (!rates.isEmpty()) {
-                currentPrice.set(rates.getFirst().valueIncVat());
+                currentPrice.set(rates.getLast().valueIncVat());
             }
 
             Collections.reverse(rates);

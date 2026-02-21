@@ -34,6 +34,6 @@ public class AdvancedDashboardController {
     }
 
     @FXML private void onProgressTracking() {
-        // Navigator.goTo("ProgressTracking.fxml");
+        Navigator.goTo("ProgressTracking.fxml");
     }
 }

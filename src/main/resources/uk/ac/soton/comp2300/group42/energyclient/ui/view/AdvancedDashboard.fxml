@@ -14,6 +14,8 @@
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false">
 
+            <Label text="Advanced Mode" style="-fx-font-size: 24; -fx-font-weight: bold"/>
+
             <EnergyUsageWidget fx:id="energyWidget"/>
 
             <UpcomingActivationsWidget fx:id="upcomingActivationsWidget"/>

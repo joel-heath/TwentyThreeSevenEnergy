@@ -8,8 +8,10 @@ import javafx.scene.chart.XYChart;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.EnergyPriceService;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class ProgressTrackingViewModel {
     private final EnergyPriceService service = new EnergyPriceService();
@@ -19,6 +21,9 @@ public class ProgressTrackingViewModel {
 
     public ObservableList<XYChart.Series<String, Number>> getPriceSeriesData() {
         return priceSeriesData;
+    }
+    public ObservableList<XYChart.Series<String, Number>> getExpenseSeriesData() {
+        return expenseSeriesData;
     }
 
     private final DoubleProperty currentPrice = new SimpleDoubleProperty();
@@ -52,5 +57,24 @@ public class ProgressTrackingViewModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void loadMockExpenses() {
+        expenseSeriesData.clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Daily Spend (Mock)");
+
+        Random random = new Random();
+        LocalDate today = LocalDate.now();
+
+        // Generate random energy costs between £1.50 and £5.00 for seven days
+        for (int i = 6; i >= 0; i--) {
+            String dateLabel = today.minusDays(i).getDayOfWeek().toString().substring(0, 3);
+            double randomCost = 1.5 + (5.0 - 1.5) * random.nextDouble();
+
+            series.getData().add(new XYChart.Data<>(dateLabel, randomCost));
+        }
+
+        expenseSeriesData.add(series);
     }
 }

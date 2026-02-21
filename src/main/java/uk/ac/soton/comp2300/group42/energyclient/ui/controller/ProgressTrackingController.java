@@ -18,10 +18,12 @@ public class ProgressTrackingController {
     @FXML
     public void initialize() {
         priceChart.setData(vm.getPriceSeriesData());
+        expenseChart.setData(vm.getExpenseSeriesData());
         priceLabel.textProperty().bind(
             vm.currentPriceProperty().asString("%.2f p/kWh")
         );
         vm.loadData();
+        vm.loadMockExpenses();
     }
 
 

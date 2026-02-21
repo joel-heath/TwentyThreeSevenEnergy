@@ -18,6 +18,7 @@ module uk.ac.soton.comp2300.group42.energyclient {
     opens uk.ac.soton.comp2300.group42.energyclient.ui.util             to com.google.guice;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.view.components  to javafx.fxml;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel        to com.google.guice, com.google.gson;
+    opens uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug  to com.google.guice, com.google.gson;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.model to com.google.gson, com.google.guice;
 
     exports uk.ac.soton.comp2300.group42.energyclient;

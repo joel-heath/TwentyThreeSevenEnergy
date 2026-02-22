@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyserver.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.soton.comp2300.group42.energyserver.exception.TokenRefreshException;
 import uk.ac.soton.comp2300.group42.energyserver.model.RefreshToken;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.repository.RefreshTokenRepository;
@@ -28,12 +29,12 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByToken(token);
     }
 
+    @Transactional
     public RefreshToken createRefreshToken(Long userId) {
-        RefreshToken refreshToken = new RefreshToken();
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Cannot create token. User ID " + userId + " not found."));
 
+        RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_EXPIRATION));
         refreshToken.setToken(UUID.randomUUID().toString());
@@ -41,10 +42,11 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
+    @Transactional(noRollbackFor = TokenRefreshException.class)
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
-            throw new RuntimeException("Refresh token was expired. Please make a new sign in request");
+            throw new TokenRefreshException("Refresh token was expired. Please make a new sign in request");
         }
         return token;
     }

@@ -4,9 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.soton.comp2300.group42.energyserver.dto.AuthResponse;
-import uk.ac.soton.comp2300.group42.energyserver.dto.LoginRequest;
-import uk.ac.soton.comp2300.group42.energyserver.dto.RegistrationRequest;
+import uk.ac.soton.comp2300.group42.user.AuthResponse;
+import uk.ac.soton.comp2300.group42.user.LoginRequest;
+import uk.ac.soton.comp2300.group42.user.RegistrationRequest;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.service.AuthService;
 

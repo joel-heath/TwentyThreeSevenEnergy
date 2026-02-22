@@ -1,11 +1,11 @@
 package uk.ac.soton.comp2300.group42.energyserver.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uk.ac.soton.comp2300.group42.energyserver.dto.AuthResponse;
-import uk.ac.soton.comp2300.group42.energyserver.dto.LoginRequest;
-import uk.ac.soton.comp2300.group42.energyserver.dto.RegistrationRequest;
+import uk.ac.soton.comp2300.group42.user.AuthResponse;
+import uk.ac.soton.comp2300.group42.user.LoginRequest;
+import uk.ac.soton.comp2300.group42.user.RegistrationRequest;
 import uk.ac.soton.comp2300.group42.energyserver.exception.InvalidCredentialsException;
 import uk.ac.soton.comp2300.group42.energyserver.exception.TokenRefreshException;
 import uk.ac.soton.comp2300.group42.energyserver.exception.UserAlreadyExistsException;
@@ -29,6 +29,7 @@ public class AuthService {
         this.refreshTokenService = refreshTokenService;
     }
 
+    @Transactional
     public void register(RegistrationRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent())
             throw new UserAlreadyExistsException("Email already exists");
@@ -40,6 +41,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    @Transactional
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
@@ -51,6 +53,7 @@ public class AuthService {
         return new AuthResponse(accessToken, refreshToken.getToken());
     }
 
+    @Transactional(noRollbackFor = TokenRefreshException.class)
     public AuthResponse refresh(String requestRefreshToken) {
         return refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
@@ -62,12 +65,10 @@ public class AuthService {
                 .orElseThrow(() -> new TokenRefreshException("Refresh token is not in database"));
     }
 
-    @Transactional
     public void logout(String token) {
         refreshTokenService.deleteByToken(token);
     }
 
-    @Transactional
     public void logoutAll(Long userId) {
         refreshTokenService.deleteByUserId(userId);
     }

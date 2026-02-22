@@ -3,7 +3,7 @@ package uk.ac.soton.comp2300.group42.energyserver.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.soton.comp2300.group42.energyserver.dto.UserResponse;
+import uk.ac.soton.comp2300.group42.user.UserResponse;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.service.UserService;
 
@@ -27,6 +27,6 @@ public class UserController {
 
     @GetMapping("/me")
     public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
-        return UserResponse.from(user);
+        return userService.getCurrentUser(user);
     }
 }

@@ -4,11 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.activation.ActivationResponse;
-import uk.ac.soton.comp2300.group42.activation.UpdateActivationRequest;
-import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

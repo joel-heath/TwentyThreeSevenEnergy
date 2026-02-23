@@ -1,7 +1,5 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,7 +7,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import uk.ac.soton.comp2300.group42.energyclient.EnergyClientModule;
+import uk.ac.soton.comp2300.group42.energyclient.di.AppStateManager;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.RootController;
 
@@ -43,7 +41,6 @@ public class Navigator {
 
     private static final Stack<ViewContext> backHistory = new Stack<>();
     private static final Stack<ViewContext> forwardHistory = new Stack<>();
-    private static final Injector injector = Guice.createInjector(new EnergyClientModule());
 
     private static RootController rootController;
     private static StackPane contentArea;
@@ -55,7 +52,7 @@ public class Navigator {
         );
 
         FXMLLoader loader = new FXMLLoader(fxml);
-        loader.setControllerFactory(injector::getInstance);
+        loader.setControllerFactory(AppStateManager.getInjector()::getInstance);
         Parent root = loader.load();
 
         T controller = loader.getController();
@@ -72,7 +69,7 @@ public class Navigator {
             System.out.println("Warning: You shouldn't call `initialise` more than once");
 
         FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(DEFAULT_PATH + "Root.fxml"));
-        loader.setControllerFactory(injector::getInstance);
+        loader.setControllerFactory(AppStateManager.getInjector()::getInstance);
         Parent root = loader.load();
 
         rootController = loader.getController();
@@ -94,11 +91,11 @@ public class Navigator {
 
         mainStage.setScene(rootScene);
 
-        goToAbsoluteIrreversible(
-                injector.getInstance(UserClient.class)
-                        .isLoggedIn()
-                ? LOGGED_IN_LANDING_PATH
-                : LOGGED_OUT_LANDING_PATH);
+        if (AppStateManager.getInjector().getInstance(UserClient.class).isLoggedIn()) {
+            AppStateManager.buildOnlineGraph();
+            goToAbsoluteIrreversible(LOGGED_IN_LANDING_PATH);
+        }
+        else goToAbsoluteIrreversible(LOGGED_OUT_LANDING_PATH);
     }
 
     private static void switchView(ViewContext context) {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
 import uk.ac.soton.comp2300.group42.house.CreateHouseRequest;
 import uk.ac.soton.comp2300.group42.house.HouseResponse;
 import uk.ac.soton.comp2300.group42.housemate.HousemateResponse;

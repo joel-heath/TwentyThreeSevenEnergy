@@ -10,7 +10,7 @@ public class EnergyClient extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Navigator.initialize("Landing.fxml", stage);
+        Navigator.initialize(stage);
 
         stage.setWidth(337.5);
         stage.setHeight(600);

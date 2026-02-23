@@ -25,7 +25,17 @@ public class UserClient {
     }
 
     public void logout() {
-        httpClient.setTokenPair(null, null);
+        httpClient.clearTokenPair();
+    }
+
+    public boolean isLoggedIn() {
+        try {
+            HttpResponse<String> response = httpClient.get("users/me");
+            return response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Startup authentication check failed, server offline or I/O error: " + e.getMessage());
+            return false;
+        }
     }
 
     public boolean login(String email, String password) {

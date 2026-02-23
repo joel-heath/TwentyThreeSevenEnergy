@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2300.group42.energyclient.EnergyClientModule;
+import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.RootController;
 
 import java.io.IOException;
@@ -35,10 +36,13 @@ public class Navigator {
             this.controllerSetup = (Consumer<Object>) setup;
         }
     }
+
+    public static final String DEFAULT_PATH = "/uk/ac/soton/comp2300/group42/energyclient/ui/view/";
+    private static final String LOGGED_OUT_LANDING_PATH = DEFAULT_PATH + "Landing.fxml";
+    private static final String LOGGED_IN_LANDING_PATH = DEFAULT_PATH + "Dashboard.fxml";
+
     private static final Stack<ViewContext> backHistory = new Stack<>();
     private static final Stack<ViewContext> forwardHistory = new Stack<>();
-    public static final String defaultPath = "/uk/ac/soton/comp2300/group42/energyclient/ui/view/";
-    // private static final ViewModelFactory vmFactory = new ViewModelFactory();
     private static final Injector injector = Guice.createInjector(new EnergyClientModule());
 
     private static RootController rootController;
@@ -63,12 +67,11 @@ public class Navigator {
         return root;
     }
 
-    public static void initializeAbsolute(String fxmlPath, Stage mainStage) throws IOException { initializeAbsolute(fxmlPath, mainStage, null); }
-    public static <T> void initializeAbsolute(String fxmlPath, Stage mainStage, Consumer<T> controllerSetup) throws IOException {
+    public static void initialize(Stage mainStage) throws IOException {
         if (contentArea != null)
             System.out.println("Warning: You shouldn't call `initialise` more than once");
 
-        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(defaultPath + "Root.fxml"));
+        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(DEFAULT_PATH + "Root.fxml"));
         loader.setControllerFactory(injector::getInstance);
         Parent root = loader.load();
 
@@ -91,12 +94,11 @@ public class Navigator {
 
         mainStage.setScene(rootScene);
 
-        goToAbsoluteIrreversible(fxmlPath, controllerSetup);
-    }
-
-    public static void initialize(String fxmlPath, Stage mainStage) throws IOException { initialize(fxmlPath, mainStage, null); }
-    public static <T> void initialize(String fxmlPath, Stage mainStage, Consumer<T> controllerSetup) throws IOException {
-        initializeAbsolute(defaultPath + fxmlPath, mainStage, controllerSetup);
+        goToAbsoluteIrreversible(
+                injector.getInstance(UserClient.class)
+                        .isLoggedIn()
+                ? LOGGED_IN_LANDING_PATH
+                : LOGGED_OUT_LANDING_PATH);
     }
 
     private static void switchView(ViewContext context) {
@@ -127,12 +129,12 @@ public class Navigator {
 
     public static void goTo(String fxmlPath) { goTo(fxmlPath, null); }
     public static <T> void goTo(String fxmlPath, Consumer<T> controllerSetup) {
-        goToAbsolute(defaultPath + fxmlPath, controllerSetup);
+        goToAbsolute(DEFAULT_PATH + fxmlPath, controllerSetup);
     }
 
     public static void goToIrreversible(String fxmlPath) { goToIrreversible(fxmlPath, null); }
     public static <T> void goToIrreversible(String fxmlPath, Consumer<T> controllerSetup) {
-        goToAbsoluteIrreversible(defaultPath + fxmlPath, controllerSetup);
+        goToAbsoluteIrreversible(DEFAULT_PATH + fxmlPath, controllerSetup);
     }
 
     public static void goBack() {

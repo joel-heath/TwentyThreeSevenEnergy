@@ -20,7 +20,7 @@ public class DashboardController {
         };
 
         try {
-            Parent view = Navigator.loadFXML(new Navigator.ViewContext(Navigator.defaultPath + targetFxml, null));
+            Parent view = Navigator.loadFXML(new Navigator.ViewContext(Navigator.DEFAULT_PATH + targetFxml, null));
             container.getChildren().setAll(view);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load view: " + targetFxml, e);

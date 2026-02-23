@@ -2,16 +2,16 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
 import com.google.inject.Inject;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 public class AccessibilitySettingsViewModel {
 
-    private final Repository repository;
+    private final IDoEverything IDoEverything;
     private final PreferencesModel preferences;
 
-    @Inject public AccessibilitySettingsViewModel(Repository repository) {
-        this.repository = repository;
-        this.preferences = repository.getPreferences();
+    @Inject public AccessibilitySettingsViewModel(IDoEverything IDoEverything) {
+        this.IDoEverything = IDoEverything;
+        this.preferences = IDoEverything.getPreferences();
     }
 
     /**
@@ -25,6 +25,6 @@ public class AccessibilitySettingsViewModel {
      * Persists the preference changes to the repository.
      */
     public void save() {
-        repository.savePreferences();
+        IDoEverything.savePreferences();
     }
 }

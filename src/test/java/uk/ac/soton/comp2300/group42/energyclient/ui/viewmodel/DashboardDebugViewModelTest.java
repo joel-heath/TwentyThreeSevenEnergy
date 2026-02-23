@@ -10,7 +10,7 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +20,8 @@ import static org.mockito.Mockito.when;
 public class DashboardDebugViewModelTest {
 
 
-    @Mock Repository mockRepo;
+    @Mock
+    IDoEverything mockRepo;
     PreferencesModel preferences;
     @Mock EnergyCalculator calc;
     @Mock HouseModel mockHouse;

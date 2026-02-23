@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ActivationModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,22 +16,22 @@ public class UpcomingActivationsViewModel {
 
     private final ObservableList<ApplianceModel> appliances;
     private final SortedList<ActivationModel> activations;
-    private final Repository repository;
+    private final IDoEverything IDoEverything;
 
-    @Inject public UpcomingActivationsViewModel(Repository repository) {
-        this.repository = repository;
-        this.appliances = repository.getAppliances();
-        this.activations = new SortedList<>(repository.getActivations());
+    @Inject public UpcomingActivationsViewModel(IDoEverything IDoEverything) {
+        this.IDoEverything = IDoEverything;
+        this.appliances = IDoEverything.getAppliances();
+        this.activations = new SortedList<>(IDoEverything.getActivations());
         this.activations.setComparator(Comparator.comparing(ActivationModel::getNextActivationDateTime));
 
-        CompletableFuture.runAsync(repository::fetchAllData);
+        CompletableFuture.runAsync(IDoEverything::fetchAllData);
     }
 
     public ObservableList<ApplianceModel> getAppliances() { return appliances; }
     public SortedList<ActivationModel> getActivations() { return activations; }
 
     public void removeActivation(ActivationModel activation) {
-        repository.deleteActivation(activation);
+        IDoEverything.deleteActivation(activation);
     }
 
     public void updateActivation(ActivationModel act, ApplianceModel app, LocalTime time, LocalDate date,
@@ -67,6 +67,6 @@ public class UpcomingActivationsViewModel {
             act.setRecursSunday(false);
         }
 
-        repository.saveActivation(act);
+        IDoEverything.saveActivation(act);
     }
 }

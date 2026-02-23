@@ -10,6 +10,7 @@ module uk.ac.soton.comp2300.group42.energyclient {
     requires com.fasterxml.jackson.databind;
     requires com.google.guice;
     requires com.google.gson;
+    requires EnergyApiContracts;
 
     opens uk.ac.soton.comp2300.group42.energyclient.data                to com.google.guice;
     opens uk.ac.soton.comp2300.group42.energyclient.data.api            to com.google.guice, com.google.gson;

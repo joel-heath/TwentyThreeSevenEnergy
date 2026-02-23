@@ -20,8 +20,21 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+// Why has this been called "IDoEverything"?
+// As it stands this is a "God Object", an anti-pattern.
+// It was previously called Repository, but it also contains business logic and orchestration of notifications.
+// TODO: Separate Concerns and refactor into smaller classes with single responsibilities.
+// Concerns that should be separated:
+// - ActivationsViewModel that fetches all Appliances and Activations and exposes them as ObservableLists.
+// - CurrentUserViewModel that fetches the current user and their preferences and exposes them as properties
+// - HousesViewModel that fetches all houses and housemates for the active house, exposes them as ObservableLists
+// - Orchestrator of activations and notifications, that listens to changes in activations and preferences and updates notifications accordingly.
+//   this could alternatively be implemented with an event bus pattern.
+// Until we refactor this, use this as the single source of truth.
+// (i.e. IDoEverything).
+
 @Singleton
-public class Repository {
+public class IDoEverything {
 
     private final ApplianceClient applianceClient;
     private final ActivationClient activationClient;
@@ -37,11 +50,11 @@ public class Repository {
     private final ObservableList<HousemateModel> housemates;
 
     @Inject
-    public Repository(ApplianceClient applianceClient,
-                      ActivationClient activationClient,
-                      UserClient userClient,
-                      NotificationService notificationService,
-                      ModelFactory modelFactory) {
+    public IDoEverything(ApplianceClient applianceClient,
+                         ActivationClient activationClient,
+                         UserClient userClient,
+                         NotificationService notificationService,
+                         ModelFactory modelFactory) {
         this.applianceClient = applianceClient;
         this.activationClient = activationClient;
         this.userClient = userClient;
@@ -82,16 +95,16 @@ public class Repository {
         this.notificationService.setOnCleanupAction(this::deleteActivation);
 
         CompletableFuture.runAsync(() -> {
-            var preferencesDTO = userClient.findPreferences();
-            var houseDTO = userClient.findHouseById(preferencesDTO.getActiveHouseId()).orElseGet(() -> {
+            var preferencesResponse = userClient.findPreferences();
+            var houseResponse = userClient.findHouseById(preferencesResponse.activeHouseId()).orElseGet(() -> {
                 var others = userClient.findHousesForCurrentUser();
                 return others.isEmpty()
                         ? userClient.createDefaultHouse()
                         : others.getFirst();
             });
-            var houseModel = modelFactory.getHouseModel(houseDTO);
-            preferencesDTO.setActiveHouseId(houseDTO.getId());
-            Platform.runLater(() -> preferences.updateFrom(preferencesDTO, houseModel));
+            // var houseModel = modelFactory.getHouseModel(houseDTO);
+            // preferencesDTO.setActiveHouseId(houseDTO.getId());
+            // Platform.runLater(() -> preferences.updateFrom(preferencesResponse, houseModel));
         });
     }
 

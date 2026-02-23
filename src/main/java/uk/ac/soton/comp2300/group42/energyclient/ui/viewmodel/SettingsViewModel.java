@@ -3,17 +3,17 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 import com.google.inject.Inject;
 import javafx.beans.property.DoubleProperty;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 public class SettingsViewModel {
 
-    private final Repository repository;
+    private final IDoEverything IDoEverything;
     private final PreferencesModel preferences;
     private final DoubleProperty costGoal;
 
-    @Inject public SettingsViewModel(Repository repository) {
-        this.repository = repository;
-        this.preferences = repository.getPreferences();
+    @Inject public SettingsViewModel(IDoEverything IDoEverything) {
+        this.IDoEverything = IDoEverything;
+        this.preferences = IDoEverything.getPreferences();
         this.costGoal = preferences.energyGoalProperty();
     }
 
@@ -26,6 +26,6 @@ public class SettingsViewModel {
     }
 
     public void save() {
-        repository.savePreferences();
+        IDoEverything.savePreferences();
     }
 }

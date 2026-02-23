@@ -2,14 +2,14 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
 import com.google.inject.Inject;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 public class LoginViewModel {
 
     private final UserClient client;
 
-    @Inject public LoginViewModel(Repository repository) {
-        this.client = repository.getUserClient();
+    @Inject public LoginViewModel(IDoEverything IDoEverything) {
+        this.client = IDoEverything.getUserClient();
     }
 
     public boolean login(String email, String password) {

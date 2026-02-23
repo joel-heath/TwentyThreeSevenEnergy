@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,7 +24,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ScheduleViewModelTest {
 
-    @Mock Repository repo;
+    @Mock
+    IDoEverything repo;
     ObservableList<ApplianceModel> appliances;
     @Mock ApplianceModel appliance1;
     @Mock ApplianceModel appliance2;

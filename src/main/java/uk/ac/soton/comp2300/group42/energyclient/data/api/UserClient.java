@@ -5,10 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.*;
+import uk.ac.soton.comp2300.group42.house.CreateHouseRequest;
+import uk.ac.soton.comp2300.group42.house.HouseResponse;
+import uk.ac.soton.comp2300.group42.housemate.HousemateResponse;
+import uk.ac.soton.comp2300.group42.preferences.ColorVision;
+import uk.ac.soton.comp2300.group42.preferences.PreferencesResponse;
+import uk.ac.soton.comp2300.group42.preferences.Theme;
+import uk.ac.soton.comp2300.group42.preferences.Mode;
+import uk.ac.soton.comp2300.group42.common.Role;
+import uk.ac.soton.comp2300.group42.user.*;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +48,7 @@ public class UserClient {
     }
 
     public boolean login(String email, String password) {
-        LoginDTO dto = new LoginDTO(email, password);
+        LoginRequest dto = new LoginRequest(email, password);
 
         String json;
         try { json = mapper.writeValueAsString(dto); }
@@ -53,8 +62,8 @@ public class UserClient {
         if (response.statusCode() != 200)
             return false;
 
-        AuthResponseDTO auth;
-        try { auth = mapper.readValue(response.body(), AuthResponseDTO.class); }
+        AuthResponse auth;
+        try { auth = mapper.readValue(response.body(), AuthResponse.class); }
         catch (JsonProcessingException e) { throw new RuntimeException("Failed to deserialize auth response", e); }
 
         httpClient.setTokenPair(auth.accessToken(), auth.refreshToken());
@@ -62,7 +71,7 @@ public class UserClient {
     }
 
     public boolean register(String name, String email, String password) {
-        RegistrationDTO dto = new RegistrationDTO(name, email, password);
+        RegistrationRequest dto = new RegistrationRequest(name, email, password);
 
         String json;
         try { json = mapper.writeValueAsString(dto); }
@@ -84,7 +93,7 @@ public class UserClient {
     }
 
     // GET /users/me
-    public UserDTO findCurrentUser() {
+    public UserResponse findCurrentUser() {
         HttpResponse<String> response;
         try { response = httpClient.get("users/me"); }
         catch (IOException e) { throw new RuntimeException("An I/O error occurred when sending or receiving, or the client shut down while fetching current user", e); }
@@ -93,51 +102,66 @@ public class UserClient {
         if (response.statusCode() != 200)
             throw new RuntimeException("Failed to fetch current user: " + response.statusCode());
 
-        try { return mapper.readValue(response.body(), UserDTO.class); }
+        try { return mapper.readValue(response.body(), UserResponse.class); }
         catch (JsonProcessingException e) { throw new RuntimeException("Failed to deserialize user", e); }
     }
 
     // GET /users/me/preferences
-    public PreferencesDTO findPreferences() { return new PreferencesDTO(); }
+    public PreferencesResponse findPreferences() {
+        return new PreferencesResponse(
+            0L, false, ColorVision.TYPICAL, Theme.LIGHT, Mode.SIMPLE, false, 1.0, 0L
+        );
+    }
 
     // GET /users/me/houses
-    public List<HouseDTO> findHousesForCurrentUser() {
+    public List<HouseResponse> findHousesForCurrentUser() {
         return List.of(
-                new HouseDTO(1L, "House 1", "123 Main Street"),
-                new HouseDTO(2L, "House 2", "456 Oak Lane")
+                new HouseResponse(1L, "House 1", "123 Main Street", ZoneId.systemDefault(), Role.OWNER),
+                new HouseResponse(2L, "House 2", "456 Oak Lane", ZoneId.systemDefault(), Role.RESIDENT)
         );
     }
 
     // GET /houses/{houseId}
-    public Optional<HouseDTO> findHouseById(Long houseId) {
+    public Optional<HouseResponse> findHouseById(Long houseId) {
         return findHousesForCurrentUser().stream()
-                .filter(house -> house.getId().equals(houseId))
+                .filter(house -> house.id().equals(houseId))
                 .findFirst();
     }
 
     // GET /houses/{houseId}/users
     // Does NOT include the current user.
     // Current user is fetched separately by findCurrentUserByHouseId
-    public List<HousemateDTO> findAllByHouseId(Long houseId) {
+    public List<HousemateResponse> findAllByHouseId(Long houseId) {
         return List.of(
-                // new HousemateDTO(1L, "John", "Doe", "johndoe@soton.ac.uk", 1L, Role.OWNER),
-                new HousemateDTO(2L, "Jane", "Doe", "janedoe@soton.ac.uk", 2L, Role.RESIDENT)
+                new HousemateResponse(2L, 2L, "Jane Doe", "janedoe@soton.ac.uk", Role.RESIDENT)
         );
     }
 
     // GET /houses/{houseId}/me
-    public Optional<HousemateDTO> findCurrentUserByHouseId(Long houseId) {
-        return Optional.of(new HousemateDTO(1L, "John", "Doe", "johndoe@soton.ac.uk", 1L, Role.OWNER));
+    public Optional<HousemateResponse> findCurrentUserByHouseId(Long houseId) {
+        return Optional.of(new HousemateResponse(1L, 1L, "John Doe", "johndoe@soton.ac.uk", Role.OWNER));
     }
 
     // POST /houses
     // For new users and users whose only house was deleted
-    public HouseDTO createDefaultHouse() {
-        // in reality, we will create a new HouseDTO here,
-        // pass it to the server which will populate the ID field and return a new DTO
-        // then we will return that.
-        // this will assign the current user as the owner.
+    public HouseResponse createDefaultHouse() {
+        // return new HouseResponse(3L, "Primary House", "789 Pine Road", ZoneId.systemDefault(), Role.OWNER);
 
-        return new HouseDTO(3L, "Primary House", "789 Pine Road");
+        CreateHouseRequest request = new CreateHouseRequest("Primary House", "789 Pine Road", ZoneId.systemDefault());
+
+        String json;
+        try { json = mapper.writeValueAsString(request); }
+        catch (JsonProcessingException e) { throw new RuntimeException("Failed to serialize", e); }
+
+        HttpResponse<String> response;
+        try { response = httpClient.post("houses", json); }
+        catch (IOException e) { throw new RuntimeException("An I/O error occurred when sending or receiving, or the client shut down", e); }
+        catch (InterruptedException e) { throw new RuntimeException("The API call was interrupted", e); }
+
+        if (response.statusCode() != 201)
+            throw new RuntimeException("Failed to create house: " + response.statusCode());
+
+        try { return mapper.readValue(response.body(), HouseResponse.class); }
+        catch (JsonProcessingException e) { throw new RuntimeException("Failed to deserialize", e); }
     }
 }

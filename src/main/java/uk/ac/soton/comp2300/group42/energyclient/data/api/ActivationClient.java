@@ -3,6 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.data.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.activation.ActivationResponse;
+import uk.ac.soton.comp2300.group42.activation.UpdateActivationRequest;
 import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 
@@ -24,25 +26,26 @@ public class ActivationClient {
         this.mapper = mapper;
     }
 
-    private final List<ActivationDTO> activations = new ArrayList<>();
+    private final List<ActivationResponse> activations = new ArrayList<>();
 
-    public Optional<ActivationDTO> findById(Long id) {
-        return activations.stream().filter(a -> Objects.equals(a.getId(), id)).findFirst();
+    public Optional<ActivationResponse> findById(Long id) {
+        return activations.stream().filter(a -> Objects.equals(a.id(), id)).findFirst();
     }
 
-    public List<ActivationDTO> findAll(Long houseId) {
+    public List<ActivationResponse> findAll(Long houseId) {
         return activations;
     }
 
-    public ActivationDTO save(ActivationDTO activation) {
+    public ActivationResponse save(ActivationResponse activation) {
         // real implementation:
         // HttpRequest request = ...
         // return httpClient.sendAsync(...)
 
         // testing implementation:
-        if (activation.getId() == null) {
+        /*
+        if (activation.id() == null) {
             Long nextId = activations.stream()
-                    .mapToLong(ActivationDTO::getId)
+                    .mapToLong(Activation::id)
                     .max()
                     .orElse(0L) + 1;
 
@@ -58,11 +61,13 @@ public class ActivationClient {
         else delete(activation);
 
         activations.add(activation);
+        return activation;*/
+
         return activation;
     }
 
-    public void delete(ActivationDTO activation) {
-        Optional<ActivationDTO> existing = findById(activation.getId());
-        existing.ifPresent(activations::remove);
+    public void delete(Long activationid) {
+        //Optional<ActivationDTO> existing = findById(activation.getId());
+        //existing.ifPresent(activations::remove);
     }
 }

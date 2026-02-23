@@ -6,7 +6,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -32,15 +32,15 @@ public class DashboardDebugViewModel {
     private DoubleUnaryOperator formula = x -> x * 500 + 100;
 
     private final EnergyCalculator calc;
-    private final Repository repository;
+    private final IDoEverything IDoEverything;
     private final PreferencesModel preferences;
 
-    @Inject public DashboardDebugViewModel(Repository repository, EnergyCalculator calc) {
+    @Inject public DashboardDebugViewModel(IDoEverything IDoEverything, EnergyCalculator calc) {
         //costMessage.bind(Bindings.format("%£.2f", cost.get()));
         //goalMessage.bind(Bindings.format("%£.2f", goal.get()));
-        this.repository = repository;
+        this.IDoEverything = IDoEverything;
         this.calc = calc;
-        this.preferences = repository.getPreferences();
+        this.preferences = IDoEverything.getPreferences();
 
         usage.bind(Bindings.when(goal.isEqualTo(0))
                 .then(0.0)
@@ -112,6 +112,6 @@ public class DashboardDebugViewModel {
         return formula;
     }
 
-    public void save() { repository.savePreferences(); }
+    public void save() { IDoEverything.savePreferences(); }
 
 }

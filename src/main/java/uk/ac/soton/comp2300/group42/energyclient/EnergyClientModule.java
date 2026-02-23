@@ -5,7 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 public class EnergyClientModule extends AbstractModule {
 
@@ -22,7 +22,7 @@ public class EnergyClientModule extends AbstractModule {
 
     @Provides
     @Singleton
-    PreferencesModel providePreferences(Repository repository) {
-        return repository.getPreferences();
+    PreferencesModel providePreferences(IDoEverything IDoEverything) {
+        return IDoEverything.getPreferences();
     }
 }

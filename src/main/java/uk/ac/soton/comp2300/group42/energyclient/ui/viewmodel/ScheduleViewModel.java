@@ -6,7 +6,7 @@ import javafx.collections.ObservableList;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ScheduleViewModel {
 
-    private final Repository repository;
+    private final IDoEverything IDoEverything;
     private final ObservableList<ApplianceModel> applianceList;
     private final ObjectProperty<ApplianceModel> selectedAppliance;
     private final IntegerProperty hour;
@@ -30,9 +30,9 @@ public class ScheduleViewModel {
     private final BooleanProperty recursSunday;
     private final BooleanProperty isRecurring;
 
-    @Inject public ScheduleViewModel(Repository repository) {
-        this.repository = repository;
-        this.applianceList = repository.getAppliances();
+    @Inject public ScheduleViewModel(IDoEverything IDoEverything) {
+        this.IDoEverything = IDoEverything;
+        this.applianceList = IDoEverything.getAppliances();
         selectedAppliance = new SimpleObjectProperty<>();
         hour = new SimpleIntegerProperty(LocalDateTime.now().getHour());
         minute = new SimpleIntegerProperty(LocalDateTime.now().getMinute());
@@ -46,7 +46,7 @@ public class ScheduleViewModel {
         recursSunday = new SimpleBooleanProperty(false);
         isRecurring = new SimpleBooleanProperty(false);
 
-        CompletableFuture.runAsync(repository::fetchAllData);
+        CompletableFuture.runAsync(IDoEverything::fetchAllData);
     }
 
     public ObservableList<ApplianceModel> getApplianceList() { return applianceList; }
@@ -81,6 +81,6 @@ public class ScheduleViewModel {
                         LocalTime.of(hour.get(), minute.get()),
                         date.get());
 
-        return repository.createActivation(dto);
+        return IDoEverything.createActivation(dto);
     }
 }

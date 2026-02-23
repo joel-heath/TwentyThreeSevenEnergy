@@ -9,7 +9,7 @@ import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Repository;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -19,7 +19,8 @@ public class SettingsViewModelTest {
 
     SettingsViewModel vm;
     PreferencesModel preferences;
-    @Mock Repository mockRepo;
+    @Mock
+    IDoEverything mockRepo;
     @Mock HouseModel mockHouse;
 
     @BeforeEach

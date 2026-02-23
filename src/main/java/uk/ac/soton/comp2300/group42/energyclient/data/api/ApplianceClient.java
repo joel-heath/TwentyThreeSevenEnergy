@@ -3,8 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.data.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.appliance.ApplianceResponse;
 import uk.ac.soton.comp2300.group42.energyclient.data.AuthenticatedHttpClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public class ApplianceClient {
         this.mapper = mapper;
     }
 
-    public Optional<ApplianceDTO> findById(Long id) {
+    public Optional<ApplianceResponse> findById(Long id) {
         /* Actual implementation will look like this:
         try {
             var response = httpClient.get("appliance/" + id);
@@ -38,21 +38,21 @@ public class ApplianceClient {
         }
         */
 
-        return Optional.of(new ApplianceDTO(id, "Dishwasher"));
+        return Optional.of(new ApplianceResponse(id, "Dishwasher"));
     }
 
-    public List<ApplianceDTO> findAll(Long houseId) {
+    public List<ApplianceResponse> findAll(Long houseId) {
         return List.of(
-            new ApplianceDTO(1L, "Dishwasher"),
-            new ApplianceDTO(2L, "Washing Machine"),
-            new ApplianceDTO(3L, "Tumble Dryer"),
-            new ApplianceDTO(4L, "Oven"));
+            new ApplianceResponse(1L, "Dishwasher"),
+            new ApplianceResponse(2L, "Washing Machine"),
+            new ApplianceResponse(3L, "Tumble Dryer"),
+            new ApplianceResponse(4L, "Oven"));
     }
 
-    public ApplianceDTO save(ApplianceDTO appliance) {
+    public ApplianceResponse save(ApplianceResponse appliance) {
         return appliance;
     }
 
-    public void delete(ApplianceDTO appliance) { }
+    public void delete(Long applianceId) { }
 
 }

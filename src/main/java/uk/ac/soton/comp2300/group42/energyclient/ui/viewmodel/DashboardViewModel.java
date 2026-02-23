@@ -2,7 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
 import com.google.inject.Inject;
 import javafx.beans.property.ObjectProperty;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 

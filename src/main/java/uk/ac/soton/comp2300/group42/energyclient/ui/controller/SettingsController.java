@@ -5,8 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ToggleSwitch;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Mode;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Theme;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SettingsViewModel;
 

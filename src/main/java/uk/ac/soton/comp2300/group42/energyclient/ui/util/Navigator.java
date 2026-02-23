@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2300.group42.energyclient.di.AppStateManager;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.controller.RootController;
 
 import java.io.IOException;

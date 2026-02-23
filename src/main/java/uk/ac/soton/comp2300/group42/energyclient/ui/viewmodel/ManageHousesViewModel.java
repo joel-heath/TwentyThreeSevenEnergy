@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Role;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Role;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HousemateModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;

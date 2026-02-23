@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Mode;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Theme;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -3,7 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.AccessibilitySettingsViewModel;
 

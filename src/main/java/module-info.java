@@ -11,9 +11,10 @@ module uk.ac.soton.comp2300.group42.energyclient {
     requires com.google.guice;
     requires com.google.gson;
     requires EnergyApiContracts;
+    requires java.rmi;
 
     opens uk.ac.soton.comp2300.group42.energyclient.data                to com.google.guice;
-    opens uk.ac.soton.comp2300.group42.energyclient.data.api            to com.google.guice, com.google.gson;
+    opens uk.ac.soton.comp2300.group42.energyclient.data.backend to com.google.guice, com.google.gson;
     opens uk.ac.soton.comp2300.group42.energyclient.data.security       to com.google.guice;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.controller       to com.google.guice, javafx.fxml, com.google.gson;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug to com.google.guice, javafx.fxml;
@@ -26,5 +27,6 @@ module uk.ac.soton.comp2300.group42.energyclient {
 
     exports uk.ac.soton.comp2300.group42.energyclient;
     exports uk.ac.soton.comp2300.group42.energyclient.di;
+    opens uk.ac.soton.comp2300.group42.energyclient.data.external to com.google.gson, com.google.guice;
 
 }

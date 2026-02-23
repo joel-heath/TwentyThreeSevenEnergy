@@ -1,7 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.util;
 
 import com.google.inject.Singleton;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Role;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Role;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;
 

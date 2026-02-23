@@ -1,7 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel;
 
 import com.google.inject.Inject;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
 public class LoginViewModel {

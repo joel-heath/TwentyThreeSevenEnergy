@@ -11,9 +11,14 @@ public class LocalUserRepository implements UserRepository {
         this.client = client;
     }
 
+
     @Override
-    public User getUserByEmail(String email) {
-        // return client.queryUserByEmail(email);
+    public User getCurrentUser() {
+        return null;
+    }
+
+    @Override
+    public User getUserById(Long id) {
         return null;
     }
 

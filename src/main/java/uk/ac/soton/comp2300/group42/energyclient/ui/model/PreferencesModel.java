@@ -1,9 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
 import javafx.beans.property.*;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Mode;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Theme;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;

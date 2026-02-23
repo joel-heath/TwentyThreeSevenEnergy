@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.data.api;
+package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;

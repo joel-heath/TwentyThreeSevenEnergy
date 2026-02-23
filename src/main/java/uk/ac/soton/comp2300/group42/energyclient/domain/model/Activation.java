@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 public record Activation(
         Long id,
-        Appliance appliance,
+        Long applianceId,
         ActivationType type,
         LocalTime activationTime,
         LocalDate activationDate,

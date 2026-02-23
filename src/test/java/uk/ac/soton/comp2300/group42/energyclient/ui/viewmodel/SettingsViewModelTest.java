@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;

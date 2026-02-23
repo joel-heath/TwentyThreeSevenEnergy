@@ -12,5 +12,5 @@ public record Preferences(
         Mode mode,
         Boolean shareLocation,
         Double energyGoal,
-        House activeHouse
+        Long activeHouseId
 ) {}

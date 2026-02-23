@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.data.api;
+package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -62,21 +62,13 @@ public class AuthenticatedHttpClient {
     }
 
     public HttpResponse<String> get(String url) throws IOException, InterruptedException {
-        return getAbsolute(API_ROOT_URL + url);
-    }
-
-    public HttpResponse<String> getAbsolute(String url) throws IOException, InterruptedException {
-        return send(HttpRequest.newBuilder().GET(), url);
+        return send(HttpRequest.newBuilder().GET(), API_ROOT_URL + url);
     }
 
     public HttpResponse<String> post(String url, String jsonBody) throws IOException, InterruptedException {
-        return postAbsolute(API_ROOT_URL + url, jsonBody);
-    }
-
-    public HttpResponse<String> postAbsolute(String url, String jsonBody) throws IOException, InterruptedException {
         return send(HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody)), url);
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody)), API_ROOT_URL + url);
     }
 
     private HttpResponse<String> send(HttpRequest.Builder builder, String url) throws IOException, InterruptedException {

@@ -2,11 +2,9 @@ package uk.ac.soton.comp2300.group42.energyclient.data.dto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
-
-import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Mode;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.Theme;
 
 public class PreferencesDTOTest {
     PreferencesDTO defaults;

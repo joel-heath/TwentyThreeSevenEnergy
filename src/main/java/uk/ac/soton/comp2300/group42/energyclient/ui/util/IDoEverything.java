@@ -7,9 +7,9 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ActivationClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ApplianceClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.UserClient;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ActivationClient;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ApplianceClient;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.UserClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;

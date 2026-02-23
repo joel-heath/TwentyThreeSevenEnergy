@@ -1,7 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
 import javafx.scene.paint.*;
-import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
 
 public class ColorSettings {
 

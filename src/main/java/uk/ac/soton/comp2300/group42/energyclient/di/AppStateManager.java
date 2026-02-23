@@ -5,22 +5,9 @@ import com.google.inject.Injector;
 
 public class AppStateManager {
 
-    private static Injector currentInjector;
-
-    // Call this when the app starts offline or the user logs out
-    public static void buildOfflineGraph() {
-        currentInjector = Guice.createInjector(new CoreEnergyModule(), new LocalDataModule());
-    }
-
-    // Call this immediately after successful authentication
-    public static void buildOnlineGraph() {
-        currentInjector = Guice.createInjector(new CoreEnergyModule(), new RemoteDataModule());
-    }
+    private static final Injector currentInjector = Guice.createInjector(new CoreEnergyModule());
 
     public static Injector getInjector() {
-        if (currentInjector == null)
-            buildOfflineGraph();
-
         return currentInjector;
     }
 }

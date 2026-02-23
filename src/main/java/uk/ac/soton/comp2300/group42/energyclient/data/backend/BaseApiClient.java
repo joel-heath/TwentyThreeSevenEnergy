@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.NetworkException;
@@ -12,18 +13,22 @@ import java.net.http.HttpResponse;
 
 public abstract class BaseApiClient {
 
-    protected final AuthenticatedHttpClient httpClient;
-    protected final ObjectMapper mapper;
+    private final AuthenticatedHttpClient httpClient;
+    private final ObjectMapper mapper;
 
     protected BaseApiClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
         this.httpClient = httpClient;
         this.mapper = mapper;
     }
 
-    protected <T> T get(String path, Class<T> responseType) {
+    protected <T> T get(String path, TypeReference<T> responseType) {
+        HttpResponse<String> response = get(path);
+        return handleResponse(response, responseType);
+    }
+
+    protected HttpResponse<String> get(String path) {
         try {
-            HttpResponse<String> response = httpClient.get(path);
-            return handleResponse(response, responseType, path);
+            return httpClient.get(path);
         }
         catch (IOException e) {
             throw new NetworkException("Network error while accessing " + path, e);
@@ -34,11 +39,15 @@ public abstract class BaseApiClient {
         }
     }
 
-    protected <T> T post(String path, Object body, Class<T> responseType) {
+    protected <T> T post(String path, Object body, TypeReference<T> responseType) {
+        HttpResponse<String> response = post(path, body);
+        return handleResponse(response, responseType);
+    }
+
+    protected HttpResponse<String> post(String path, Object body) {
         try {
             String jsonBody = mapper.writeValueAsString(body);
-            HttpResponse<String> response = httpClient.post(path, jsonBody);
-            return handleResponse(response, responseType, path);
+            return httpClient.post(path, jsonBody);
         }
         catch (JsonProcessingException e) {
             throw new DataFetchException("Failed to serialize request body while accessing " + path, e);
@@ -52,22 +61,20 @@ public abstract class BaseApiClient {
         }
     }
 
-    // Centralized response handling
-    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseType, String path) {
+    protected <T> T handleResponse(HttpResponse<String> response,  TypeReference<T> responseType) {
         if (response.statusCode() == 401)
-            throw new UnauthorizedException("Unauthorized access to " + path);
+            throw new UnauthorizedException("Unauthorized access to " + response.uri());
 
         if (response.statusCode() < 200 || response.statusCode() >= 300)
-            throw new ApiException("HTTP " + response.statusCode() + " while accessing " + path, response.statusCode());
+            throw new ApiException("HTTP " + response.statusCode() + " while accessing " + response.uri(), response.statusCode());
 
         if (response.body() == null || response.body().trim().isEmpty()) // eg 204 No Content
             return null;
 
         try {
             return mapper.readValue(response.body(), responseType);
-        }
-        catch (JsonProcessingException e) {
-            throw new DataFetchException("Failed to deserialize response from " + path + " to " + responseType.getSimpleName(), e);
+        } catch (JsonProcessingException e) {
+            throw new DataFetchException("Failed to deserialize response from " + response.uri() + " to " + responseType.getType().getTypeName(), e);
         }
     }
 }

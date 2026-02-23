@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import uk.ac.soton.comp2300.group42.energyclient.di.AppStateManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.LoginViewModel;
 
@@ -39,7 +38,6 @@ public class LoginController {
             return;
         }
 
-        AppStateManager.buildOnlineGraph();
         Navigator.goToIrreversible("Dashboard.fxml");
     }
 

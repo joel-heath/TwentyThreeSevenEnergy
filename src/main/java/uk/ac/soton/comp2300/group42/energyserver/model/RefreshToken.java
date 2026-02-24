@@ -1,9 +1,12 @@
 package uk.ac.soton.comp2300.group42.energyserver.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.time.Instant;
 
-@Entity(name = "refreshtoken")
+@Entity
 public class RefreshToken {
 
     @Id
@@ -11,7 +14,8 @@ public class RefreshToken {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @Column(nullable = false, unique = true)

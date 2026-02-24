@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyserver.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,38 +15,38 @@ import uk.ac.soton.comp2300.group42.energyserver.service.AuthService;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthService service;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    public AuthController(AuthService service) {
+        this.service = service;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegistrationRequest request) {
-        authService.register(request);
+    public ResponseEntity<?> register(@Valid @RequestBody RegistrationRequest request) {
+        service.register(request);
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(service.login(request));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(@RequestBody AuthResponse request) {
-        return ResponseEntity.ok(authService.refresh(request.refreshToken()));
+    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody AuthResponse request) {
+        return ResponseEntity.ok(service.refresh(request.refreshToken()));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody AuthResponse request) {
-        authService.logout(request.refreshToken());
-        return ResponseEntity.ok("Log out successful");
+    public ResponseEntity<Void> logout(@Valid @RequestBody AuthResponse request) {
+        service.logout(request.refreshToken());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout-all")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> logoutAll(@AuthenticationPrincipal User user) {
-        authService.logoutAll(user.getId());
-        return ResponseEntity.ok("All devices logged out successfully");
+    public ResponseEntity<Void> logoutAll(@AuthenticationPrincipal User user) {
+        service.logoutAll(user.getId());
+        return ResponseEntity.noContent().build();
     }
 }

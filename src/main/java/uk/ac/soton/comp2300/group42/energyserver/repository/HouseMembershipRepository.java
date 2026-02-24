@@ -12,4 +12,5 @@ public interface HouseMembershipRepository extends JpaRepository<HouseMembership
     List<HouseMembership> findByUser(User user);
     List<HouseMembership> findByHouse(House house);
     Optional<HouseMembership> findByUserAndHouse(User user, House house);
+    List<HouseMembership> findByUserAndHouseNot(User user, House house);
 }

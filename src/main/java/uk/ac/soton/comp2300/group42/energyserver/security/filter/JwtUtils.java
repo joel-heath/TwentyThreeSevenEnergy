@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyserver.security;
+package uk.ac.soton.comp2300.group42.energyserver.security.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

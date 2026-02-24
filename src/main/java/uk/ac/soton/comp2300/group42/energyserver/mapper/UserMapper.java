@@ -7,6 +7,5 @@ import uk.ac.soton.comp2300.group42.user.UserResponse;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-
     UserResponse toUserResponse(User user);
 }

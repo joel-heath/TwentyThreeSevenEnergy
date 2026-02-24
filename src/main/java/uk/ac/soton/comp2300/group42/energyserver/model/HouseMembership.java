@@ -1,11 +1,12 @@
 package uk.ac.soton.comp2300.group42.energyserver.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyserver.model.converter.RoleConverter;
 
 @Entity
-@Table(name = "user_house_link")
 public class HouseMembership {
 
     @Id
@@ -13,11 +14,13 @@ public class HouseMembership {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "house_id", nullable = false)
+    @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private House house;
 
     @Convert(converter = RoleConverter.class)

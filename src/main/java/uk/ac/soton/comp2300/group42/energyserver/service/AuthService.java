@@ -12,7 +12,7 @@ import uk.ac.soton.comp2300.group42.energyserver.exception.UserAlreadyExistsExce
 import uk.ac.soton.comp2300.group42.energyserver.model.RefreshToken;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.repository.UserRepository;
-import uk.ac.soton.comp2300.group42.energyserver.security.JwtUtils;
+import uk.ac.soton.comp2300.group42.energyserver.security.filter.JwtUtils;
 
 @Service
 public class AuthService {

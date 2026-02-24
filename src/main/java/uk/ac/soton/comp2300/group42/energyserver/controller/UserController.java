@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyserver.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import uk.ac.soton.comp2300.group42.preferences.PreferencesResponse;
 import uk.ac.soton.comp2300.group42.user.UserResponse;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.service.UserService;
@@ -14,19 +15,24 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class UserController {
 
-    private final UserService userService;
+    private final UserService service;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
     @GetMapping
     public List<UserResponse> getAllUsers() {
-        return userService.findAll();
+        return service.findAll();
     }
 
     @GetMapping("/me")
     public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
-        return userService.getCurrentUser(user);
+        return service.getCurrentUser(user);
+    }
+
+    @GetMapping("/me/preferences")
+    public PreferencesResponse getCurrentUserPreferences(@AuthenticationPrincipal User user) {
+        return service.getCurrentUserPreferences(user);
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import uk.ac.soton.comp2300.group42.energyserver.mapper.UserMapper;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
+import uk.ac.soton.comp2300.group42.preferences.PreferencesResponse;
 import uk.ac.soton.comp2300.group42.user.UserResponse;
 import uk.ac.soton.comp2300.group42.energyserver.exception.ResourceNotFoundException;
 import uk.ac.soton.comp2300.group42.energyserver.repository.UserRepository;
@@ -35,5 +36,10 @@ public class UserService {
 
     public UserResponse getCurrentUser(User user) {
         return userMapper.toUserResponse(user);
+    }
+
+    public PreferencesResponse getCurrentUserPreferences(User user) {
+        // need to make model.Preferences
+        return null;
     }
 }

@@ -7,6 +7,7 @@ import java.time.LocalTime;
 
 public record CreateActivationRequest(
         Long applianceId,
+        Long houseId,
         ActivationType type,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")

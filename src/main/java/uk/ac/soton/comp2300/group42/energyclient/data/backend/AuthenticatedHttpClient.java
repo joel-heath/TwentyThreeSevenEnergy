@@ -71,10 +71,20 @@ public class AuthenticatedHttpClient {
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody)), API_ROOT_URL + url);
     }
 
+    public HttpResponse<String> put(String url, String jsonBody) throws IOException, InterruptedException {
+        return send(HttpRequest.newBuilder()
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody)), API_ROOT_URL + url);
+    }
+
+    public HttpResponse<String> delete(String url) throws IOException, InterruptedException {
+        return send(HttpRequest.newBuilder().DELETE(), API_ROOT_URL + url);
+    }
+
     private HttpResponse<String> send(HttpRequest.Builder builder, String url) throws IOException, InterruptedException {
         builder.uri(URI.create(url));
         if (accessToken != null && !accessToken.isEmpty())
-            builder.header("Authorization", "Bearer " + accessToken);
+            builder.setHeader("Authorization", "Bearer " + accessToken);
         HttpRequest request = builder.build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -84,7 +94,7 @@ public class AuthenticatedHttpClient {
 
             if (performRefresh()) {
                 HttpRequest retryRequest = builder
-                        .header("Authorization", "Bearer " + accessToken)
+                        .setHeader("Authorization", "Bearer " + accessToken)
                         .build();
                 response = client.send(retryRequest, HttpResponse.BodyHandlers.ofString());
             }

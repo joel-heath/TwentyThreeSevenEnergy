@@ -6,11 +6,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.house.CreateHouseRequest;
 import uk.ac.soton.comp2300.group42.house.HouseResponse;
+import uk.ac.soton.comp2300.group42.house.UpdateHouseRequest;
 import uk.ac.soton.comp2300.group42.housemate.HousemateResponse;
 
-import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 
 @Singleton
 public class HouseClient extends BaseApiClient {
@@ -20,24 +19,31 @@ public class HouseClient extends BaseApiClient {
         super(httpClient, mapper);
     }
 
-    public List<HouseResponse> findHousesForCurrentUser() {
-        return get("users/me/houses", new TypeReference<>() {});
+    public HouseResponse postHouse(CreateHouseRequest request) {
+        return post("houses", request, new TypeReference<>() {});
     }
 
-    public Optional<HouseResponse> findHouseById(Long houseId) {
+    public HouseResponse fetchHouse(Long houseId) {
         return get("houses/" + houseId, new TypeReference<>() {});
     }
 
-    public List<HousemateResponse> findAllByHouseId(Long houseId) {
-        return get("houses/" + houseId + "/users", new TypeReference<>() {});
+    public List<HouseResponse> fetchMyHouses() {
+        return get("houses/me", new TypeReference<>() {});
     }
 
-    public Optional<HousemateResponse> findCurrentUserByHouseId(Long houseId) {
+    public HouseResponse putHouse(Long houseId, UpdateHouseRequest request) {
+        return put("houses/" + houseId, request, new TypeReference<>() {});
+    }
+
+    public void deleteHouse(Long houseId) {
+        delete("houses/" + houseId);
+    }
+
+    public HousemateResponse fetchMeAsHousemate(Long houseId) {
         return get("houses/" + houseId + "/me", new TypeReference<>() {});
     }
 
-    public HouseResponse createDefaultHouse() {
-        CreateHouseRequest request = new CreateHouseRequest("Primary House", "No address set", ZoneId.systemDefault());
-        return post("houses", request, new TypeReference<>() {});
+    public List<HousemateResponse> fetchHousemates(Long houseId) {
+        return get("houses/" + houseId + "/housemates", new TypeReference<>() {});
     }
 }

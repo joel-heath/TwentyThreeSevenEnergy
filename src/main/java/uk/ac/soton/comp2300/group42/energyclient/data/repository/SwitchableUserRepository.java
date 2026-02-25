@@ -2,11 +2,10 @@ package uk.ac.soton.comp2300.group42.energyclient.data.repository;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
-
-import java.util.Optional;
 
 @Singleton
 public class SwitchableUserRepository implements UserRepository {
@@ -27,17 +26,27 @@ public class SwitchableUserRepository implements UserRepository {
     }
 
     @Override
-    public User getCurrentUser() {
-        return getActiveRepo().getCurrentUser();
+    public User getCurrent() {
+        return getActiveRepo().getCurrent();
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
-        return remoteRepository.getUserById(id);
+    public Preferences getCurrentPreferences() {
+        return getActiveRepo().getCurrentPreferences();
     }
 
     @Override
-    public void saveUser(User user) {
-        getActiveRepo().saveUser(user);
+    public User get(Long id) {
+        return remoteRepository.get(id);
+    }
+
+    @Override
+    public User update(User user) {
+        return getActiveRepo().update(user);
+    }
+
+    @Override
+    public void delete(Long id) {
+        getActiveRepo().delete(id);
     }
 }

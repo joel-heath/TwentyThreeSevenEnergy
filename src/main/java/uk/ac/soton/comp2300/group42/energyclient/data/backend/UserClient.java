@@ -15,11 +15,11 @@ public class UserClient extends BaseApiClient {
         super(httpClient, mapper);
     }
 
-    public UserResponse findCurrentUser() {
+    public UserResponse fetchMe() {
         return get("users/me", new TypeReference<>() {});
     }
 
-    public PreferencesResponse findPreferences() {
+    public PreferencesResponse fetchMyPreferences() {
         return get("users/me/preferences", new TypeReference<>() {});
     }
 }

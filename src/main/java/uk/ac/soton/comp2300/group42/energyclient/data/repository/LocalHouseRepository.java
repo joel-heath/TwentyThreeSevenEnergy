@@ -8,7 +8,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Singleton
 public class LocalHouseRepository implements HouseRepository {
@@ -21,27 +20,42 @@ public class LocalHouseRepository implements HouseRepository {
     }
 
     @Override
-    public List<House> findHousesForCurrentUser() {
-        return List.of();
-    }
-
-    @Override
-    public Optional<House> findHouseById(Long houseId) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Housemate> findAllByHouseId(Long houseId) {
-        return List.of();
-    }
-
-    @Override
-    public Optional<Housemate> findCurrentUserByHouseId(Long houseId) {
-        return Optional.empty();
-    }
-
-    @Override
-    public House createDefaultHouse() {
+    public House add() {
         return null;
+    }
+
+    @Override
+    public House add(House house) {
+        return null;
+    }
+
+    @Override
+    public House get(Long houseId) {
+        return null;
+    }
+
+    @Override
+    public List<House> getCurrentUserHouses() {
+        return List.of();
+    }
+
+    @Override
+    public House update(House house) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long houseId) {
+
+    }
+
+    @Override
+    public Housemate getCurrentUserAsHousemate(Long houseId) {
+        return null;
+    }
+
+    @Override
+    public List<Housemate> getHousemates(Long houseId) {
+        return List.of();
     }
 }

@@ -61,6 +61,46 @@ public abstract class BaseApiClient {
         }
     }
 
+    protected <T> T put(String path, Object body, TypeReference<T> responseType) {
+        HttpResponse<String> response = put(path, body);
+        return handleResponse(response, responseType);
+    }
+
+    protected HttpResponse<String> put(String path, Object body) {
+        try {
+            String jsonBody = mapper.writeValueAsString(body);
+            return httpClient.put(path, jsonBody);
+        }
+        catch (JsonProcessingException e) {
+            throw new DataFetchException("Failed to serialize request body while accessing " + path, e);
+        }
+        catch (IOException e) {
+            throw new NetworkException("Network error while accessing " + path, e);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new NetworkException("Interrupted while accessing " + path, e);
+        }
+    }
+
+    protected <T> T delete(String path, TypeReference<T> responseType) {
+        HttpResponse<String> response = delete(path);
+        return handleResponse(response, responseType);
+    }
+
+    protected HttpResponse<String> delete(String path) {
+        try {
+            return httpClient.delete(path);
+        }
+        catch (IOException e) {
+            throw new NetworkException("Network error while accessing " + path, e);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new NetworkException("Interrupted while accessing " + path, e);
+        }
+    }
+
     protected <T> T handleResponse(HttpResponse<String> response,  TypeReference<T> responseType) {
         if (response.statusCode() == 401)
             throw new UnauthorizedException("Unauthorized access to " + response.uri());

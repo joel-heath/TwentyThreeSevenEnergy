@@ -1,69 +1,41 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.activation.ActivationResponse;
+import uk.ac.soton.comp2300.group42.activation.CreateActivationRequest;
+import uk.ac.soton.comp2300.group42.activation.UpdateActivationRequest;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Singleton
-public class ActivationClient {
-
-    private final AuthenticatedHttpClient httpClient;
-    private final ObjectMapper mapper;
+public class ActivationClient extends BaseApiClient {
 
     @Inject
     public ActivationClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
-        this.httpClient = httpClient;
-        this.mapper = mapper;
+        super(httpClient, mapper);
     }
 
-    private final List<ActivationResponse> activations = new ArrayList<>();
-
-    public Optional<ActivationResponse> findById(Long id) {
-        return activations.stream().filter(a -> Objects.equals(a.id(), id)).findFirst();
+    public ActivationResponse postActivation(Long houseId, CreateActivationRequest request) {
+        return post("houses/" + houseId + "/activations", request, new TypeReference<>() {});
     }
 
-    public List<ActivationResponse> findAll(Long houseId) {
-        return activations;
+    public ActivationResponse fetchActivation(Long houseId, Long activationId) {
+        return get("houses/" + houseId + "/activations/" + activationId, new TypeReference<>() {});
     }
 
-    public ActivationResponse save(ActivationResponse activation) {
-        // real implementation:
-        // HttpRequest request = ...
-        // return httpClient.sendAsync(...)
-
-        // testing implementation:
-        /*
-        if (activation.id() == null) {
-            Long nextId = activations.stream()
-                    .mapToLong(Activation::id)
-                    .max()
-                    .orElse(0L) + 1;
-
-            try {
-                Field idField = ActivationDTO.class.getDeclaredField("id");
-                idField.setAccessible(true);
-                idField.set(activation, nextId);
-            }
-            catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException("Failed to set id via reflection", e);
-            }
-        }
-        else delete(activation);
-
-        activations.add(activation);
-        return activation;*/
-
-        return activation;
+    public List<ActivationResponse> fetchAllActivations(Long houseId) {
+        return get("houses/" + houseId + "/activations", new TypeReference<>() {});
     }
 
-    public void delete(Long activationid) {
-        //Optional<ActivationDTO> existing = findById(activation.getId());
-        //existing.ifPresent(activations::remove);
+    public ActivationResponse putActivation(Long houseId, Long activationId, UpdateActivationRequest request) {
+        return put("houses/" + houseId + "/activations/" + activationId, request, new TypeReference<>() {});
     }
+
+    public void deleteActivation(Long houseId, Long activationId) {
+        delete("houses/" + houseId + "/activations/" + activationId);
+    }
+
 }

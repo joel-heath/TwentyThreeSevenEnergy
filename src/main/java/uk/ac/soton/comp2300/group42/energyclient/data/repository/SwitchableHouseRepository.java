@@ -8,7 +8,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseReposito
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 
 import java.util.List;
-import java.util.Optional;
 
 @Singleton
 public class SwitchableHouseRepository implements HouseRepository {
@@ -29,27 +28,42 @@ public class SwitchableHouseRepository implements HouseRepository {
     }
 
     @Override
-    public List<House> findHousesForCurrentUser() {
-        return getActiveRepo().findHousesForCurrentUser();
+    public House add() {
+        return getActiveRepo().add();
     }
 
     @Override
-    public Optional<House> findHouseById(Long houseId) {
-        return getActiveRepo().findHouseById(houseId);
+    public House add(House house) {
+        return getActiveRepo().add(house);
     }
 
     @Override
-    public List<Housemate> findAllByHouseId(Long houseId) {
-        return getActiveRepo().findAllByHouseId(houseId);
+    public House get(Long houseId) {
+        return getActiveRepo().get(houseId);
     }
 
     @Override
-    public Optional<Housemate> findCurrentUserByHouseId(Long houseId) {
-        return getActiveRepo().findCurrentUserByHouseId(houseId);
+    public List<House> getCurrentUserHouses() {
+        return getActiveRepo().getCurrentUserHouses();
     }
 
     @Override
-    public House createDefaultHouse() {
-        return getActiveRepo().createDefaultHouse();
+    public House update(House house) {
+        return getActiveRepo().update(house);
+    }
+
+    @Override
+    public void delete(Long houseId) {
+        getActiveRepo().delete(houseId);
+    }
+
+    @Override
+    public List<Housemate> getHousemates(Long houseId) {
+        return getActiveRepo().getHousemates(houseId);
+    }
+
+    @Override
+    public Housemate getCurrentUserAsHousemate(Long houseId) {
+        return getActiveRepo().getCurrentUserAsHousemate(houseId);
     }
 }

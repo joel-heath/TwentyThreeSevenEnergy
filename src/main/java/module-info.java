@@ -12,9 +12,12 @@ module uk.ac.soton.comp2300.group42.energyclient {
     requires com.google.gson;
     requires EnergyApiContracts;
     requires java.rmi;
+    requires com.fasterxml.jackson.datatype.jsr310;
+    requires org.mapstruct;
 
-    opens uk.ac.soton.comp2300.group42.energyclient.data                to com.google.guice;
-    opens uk.ac.soton.comp2300.group42.energyclient.data.backend to com.google.guice, com.google.gson;
+    opens uk.ac.soton.comp2300.group42.energyclient.data.backend        to com.google.guice, com.google.gson;
+    opens uk.ac.soton.comp2300.group42.energyclient.data.external       to com.google.guice, com.google.gson;
+    opens uk.ac.soton.comp2300.group42.energyclient.data.mapper         to com.google.guice, org.mapstruct;
     opens uk.ac.soton.comp2300.group42.energyclient.data.security       to com.google.guice;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.controller       to com.google.guice, javafx.fxml, com.google.gson;
     opens uk.ac.soton.comp2300.group42.energyclient.ui.controller.debug to com.google.guice, javafx.fxml;
@@ -27,6 +30,7 @@ module uk.ac.soton.comp2300.group42.energyclient {
 
     exports uk.ac.soton.comp2300.group42.energyclient;
     exports uk.ac.soton.comp2300.group42.energyclient.di;
-    opens uk.ac.soton.comp2300.group42.energyclient.data.external to com.google.gson, com.google.guice;
+    exports uk.ac.soton.comp2300.group42.energyclient.data.mapper       to com.google.guice, org.mapstruct;
+    exports uk.ac.soton.comp2300.group42.energyclient.domain.model      to com.google.guice, org.mapstruct;
 
 }

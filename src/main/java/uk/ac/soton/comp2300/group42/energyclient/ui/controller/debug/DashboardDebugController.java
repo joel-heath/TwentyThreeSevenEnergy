@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect;
@@ -38,7 +37,7 @@ public class DashboardDebugController {
 
     @FXML private void initialize() {
         energyUsageRect.usageProperty().bind(vm.usageProperty());
-        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor));
+        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorVisionManager::getGradientFor));
         counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());

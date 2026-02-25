@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageViewModel;
 
@@ -29,7 +28,7 @@ public class EnergyUsageWidget extends VBox {
         goalLabel.textProperty().bind(vm.goalMessageProperty());
         energyUsageRect.usageProperty().bind(vm.usageProperty());
         energyUsageRect.fillProperty().bind(
-                vm.getPreferences().visionProperty().map(ColorSettings::getGradientFor)
+                vm.getPreferences().visionProperty().map(ColorVisionManager::getGradientFor)
         );
     }
 

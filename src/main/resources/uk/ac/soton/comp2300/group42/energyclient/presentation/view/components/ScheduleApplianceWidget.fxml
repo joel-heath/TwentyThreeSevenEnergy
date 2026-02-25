@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget?>
+
+<fx:root type="UpcomingActivationsWidget"
+         xmlns:fx="http://javafx.com/fxml"
+         fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget"
+         spacing="10"
+         prefWidth="280"
+         style="-fx-background-radius: 10; -fx-padding: 15;">
+    <effect><DropShadow radius="15" offsetX="5" offsetY="5" color="#00000088"/></effect>
+
+    <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">
+        <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
+            <Label text="Upcoming Device Schedules"/>
+            <HBox fx:id="scheduleContainer" spacing="15"/>
+        </VBox>
+    </ScrollPane>
+
+    <Button text="Schedule Appliance" onAction="#onSchedule"/>
+</fx:root>

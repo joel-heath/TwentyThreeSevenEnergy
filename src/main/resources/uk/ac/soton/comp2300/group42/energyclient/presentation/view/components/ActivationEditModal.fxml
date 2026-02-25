@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationSchedulePane?>
+
+<fx:root type="ActivationEditModal"
+         xmlns:fx="http://javafx.com/fxml">
+    <VBox maxWidth="250" maxHeight="300" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
+        <Label text="Edit Scheduled Reminder" style="-fx-padding: 0 0 20 0;"/>
+        <ActivationSchedulePane fx:id="schedulePane"/>
+        <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
+            <Button text="Save Edits" onAction="#onSaveActivation"/>
+            <Button text="Remove Activation" onAction="#onCancelActivation"/>
+            <Button text="Exit Without Saving" onAction="#close"/>
+        </VBox>
+        <Label fx:id="responseLabel"/>
+    </VBox>
+</fx:root>

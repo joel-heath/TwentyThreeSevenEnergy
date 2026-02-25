@@ -13,8 +13,8 @@ import uk.ac.soton.comp2300.group42.energyclient.data.mapper.HouseMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.mapper.UserMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.repository.*;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.*;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
 
 public class CoreEnergyModule extends AbstractModule {
     @Override

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ScrollPane?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal?>
+
+<ModalOverlayPane xmlns="http://javafx.com/javafx"
+                  xmlns:fx="http://javafx.com/fxml"
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.RootController"
+                  prefHeight="400.0" prefWidth="600.0">
+
+    <StackPane fx:id="contentArea" />
+
+    <Modal fx:id="modal" onClose="#clearReminders">
+        <ScrollPane fx:id="reminderScroll" maxWidth="250" prefHeight="-Infinity"
+                    style="-fx-background-color: white;-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: transparent;"
+                    vbarPolicy="NEVER" hbarPolicy="NEVER" pannable="true">
+            <StackPane style="-fx-padding: 20;">
+                <VBox fx:id="remindersArea" alignment="TOP_CENTER" prefHeight="-Infinity"/>
+            </StackPane>
+        </ScrollPane>
+    </Modal>
+</ModalOverlayPane>

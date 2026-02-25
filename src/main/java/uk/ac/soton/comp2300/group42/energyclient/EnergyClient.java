@@ -1,6 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient;
 
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

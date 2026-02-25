@@ -2,7 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.data.external;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import uk.ac.soton.comp2300.group42.energyclient.ui.model.EnergyPriceModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.model.EnergyPriceModel;
 
 public class EnergyParser {
 

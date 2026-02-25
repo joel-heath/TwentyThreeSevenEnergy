@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.repository;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.backend.ActivationClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.mapper.ActivationMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
@@ -8,6 +9,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ActivationRep
 
 import java.util.List;
 
+@Singleton
 public class RemoteActivationRepository implements ActivationRepository {
 
     private final ActivationClient client;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.security.TokenStorageService;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
 
 import java.io.IOException;
@@ -23,14 +22,12 @@ public class AuthenticatedHttpClient {
     private String refreshToken;
     private final ObjectMapper mapper;
     private final HttpClient client;
-    private final SessionManager sessionManager;
     private final TokenStorageService tokenStorage;
     private static final String API_ROOT_URL = "http://localhost:8080/api/"; // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
 
     @Inject
-    public AuthenticatedHttpClient(ObjectMapper mapper, SessionManager sessionManager, TokenStorageService tokenStorage) {
+    public AuthenticatedHttpClient(ObjectMapper mapper, TokenStorageService tokenStorage) {
         this.mapper = mapper;
-        this.sessionManager = sessionManager;
         this.tokenStorage = tokenStorage;
         this.refreshToken = tokenStorage.getRefreshToken();
         this.accessToken = null;
@@ -38,10 +35,6 @@ public class AuthenticatedHttpClient {
                                 .version(HttpClient.Version.HTTP_2)
                                 .connectTimeout(Duration.ofSeconds(10))
                                 .build();
-
-        if (this.refreshToken != null && !this.refreshToken.isEmpty()) {
-            this.sessionManager.setLoggedIn(true);
-        }
     }
 
     public void setTokenPair(String accessToken, String refreshToken) {
@@ -50,15 +43,12 @@ public class AuthenticatedHttpClient {
 
         if (this.refreshToken != null && !this.refreshToken.isEmpty())
             tokenStorage.saveRefreshToken(refreshToken);
-
-        sessionManager.setLoggedIn(true);
     }
 
     public void clearTokenPair() {
         this.accessToken = null;
         this.refreshToken = null;
         tokenStorage.clearRefreshToken();
-        sessionManager.setLoggedIn(false);
     }
 
     public HttpResponse<String> get(String url) throws IOException, InterruptedException {

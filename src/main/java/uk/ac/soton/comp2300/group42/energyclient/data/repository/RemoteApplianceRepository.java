@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.repository;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.backend.ApplianceClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.mapper.ApplianceMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
@@ -8,6 +9,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ApplianceRepo
 
 import java.util.List;
 
+@Singleton
 public class RemoteApplianceRepository implements ApplianceRepository {
 
     private final ApplianceClient client;

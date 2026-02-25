@@ -66,7 +66,7 @@ public class Navigator {
 
     public static void initialize(Stage mainStage) throws IOException {
         if (contentArea != null)
-            System.out.println("Warning: You shouldn't call `initialise` more than once");
+            System.out.println("Warning: You shouldn't call `initialize` more than once");
 
         FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(DEFAULT_PATH + "Root.fxml"));
         loader.setControllerFactory(AppStateManager.getInjector()::getInstance);
@@ -91,7 +91,7 @@ public class Navigator {
 
         mainStage.setScene(rootScene);
 
-        if (AppStateManager.getInjector().getInstance(AuthRepository.class).isLoggedIn()) {
+        if (AppStateManager.getInjector().getInstance(AuthRepository.class).verifyLoggedIn()) {
             goToAbsoluteIrreversible(LOGGED_IN_LANDING_PATH);
         }
         else goToAbsoluteIrreversible(LOGGED_OUT_LANDING_PATH);

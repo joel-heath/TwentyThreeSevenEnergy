@@ -7,16 +7,21 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.ActivationClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.ApplianceClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.UserClient;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
+import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
+import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ActivationRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ApplianceRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.*;
 import uk.ac.soton.comp2300.group42.energyclient.ui.services.NotificationService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -36,9 +41,10 @@ import java.util.function.Function;
 @Singleton
 public class IDoEverything {
 
-    private final ApplianceClient applianceClient;
-    private final ActivationClient activationClient;
-    private final UserClient userClient;
+    private final ApplianceRepository applianceRepo;
+    private final ActivationRepository activationRepo;
+    private final UserRepository userRepo;
+    private final HouseRepository houseRepo;
     private final NotificationService notificationService;
     private final ModelFactory modelFactory;
     private final PreferencesModel preferences;
@@ -50,14 +56,16 @@ public class IDoEverything {
     private final ObservableList<HousemateModel> housemates;
 
     @Inject
-    public IDoEverything(ApplianceClient applianceClient,
-                         ActivationClient activationClient,
-                         UserClient userClient,
+    public IDoEverything(ApplianceRepository applianceRepo,
+                         ActivationRepository activationRepo,
+                         UserRepository userRepo,
+                         HouseRepository houseRepo,
                          NotificationService notificationService,
                          ModelFactory modelFactory) {
-        this.applianceClient = applianceClient;
-        this.activationClient = activationClient;
-        this.userClient = userClient;
+        this.applianceRepo = applianceRepo;
+        this.activationRepo = activationRepo;
+        this.userRepo = userRepo;
+        this.houseRepo = houseRepo;
         this.notificationService = notificationService;
         this.modelFactory = modelFactory;
         this.preferences = modelFactory.getPreferencesModel();
@@ -83,9 +91,8 @@ public class IDoEverything {
 
         preferences.activeHouseProperty().subscribe(newHouse -> {
             if (newHouse == null) return;
-            userClient.findCurrentUserByHouseId(newHouse.getId()).ifPresent(meDTO ->
-                    Platform.runLater(() -> currentUser.updateFrom(meDTO, newHouse))
-            );
+            Housemate me = houseRepo.getCurrentUserAsHousemate(newHouse.getId());
+            Platform.runLater(() -> currentUser.updateFrom(me, newHouse));
         });
         currentUser.houseProperty().subscribe(newHouse -> {
             if (newHouse != null && !newHouse.equals(preferences.getActiveHouse()))
@@ -95,16 +102,17 @@ public class IDoEverything {
         this.notificationService.setOnCleanupAction(this::deleteActivation);
 
         CompletableFuture.runAsync(() -> {
-            var preferencesResponse = userClient.findPreferences();
-            var houseResponse = userClient.findHouseById(preferencesResponse.activeHouseId()).orElseGet(() -> {
-                var others = userClient.findHousesForCurrentUser();
-                return others.isEmpty()
-                        ? userClient.createDefaultHouse()
+            var preferencesResponse = userRepo.getCurrentPreferences();
+            House houseEntity;
+            try { houseEntity = houseRepo.get(preferencesResponse.activeHouseId()); }
+            catch (ApiException e) {
+                var others = houseRepo.getCurrentUserHouses();
+                houseEntity = others.isEmpty()
+                        ? houseRepo.add()
                         : others.getFirst();
-            });
-            // var houseModel = modelFactory.getHouseModel(houseDTO);
-            // preferencesDTO.setActiveHouseId(houseDTO.getId());
-            // Platform.runLater(() -> preferences.updateFrom(preferencesResponse, houseModel));
+            }
+            var houseModel = modelFactory.getHouseModel(houseEntity);
+            Platform.runLater(() -> preferences.updateFrom(preferencesResponse, houseModel));
         });
     }
 
@@ -123,16 +131,25 @@ public class IDoEverything {
      * 2. Housemates   Activations
      */
     public void fetchAllData() {
-        var houseDTOs = userClient.findHousesForCurrentUser();
+        var houseDTOs = houseRepo.getCurrentUserHouses();
         buildAndSet(houseDTOs, modelFactory::getHouseModel, houses);
 
-        var housemateDTOs = userClient.findAllByHouseId(preferences.getActiveHouse().getId());
+        var preferencesDomainModel = userRepo.getCurrentPreferences();
+        Platform.runLater(() -> {
+            HouseModel activeHouse = houses.stream()
+                    .filter(h -> Objects.equals(h.getId(), preferencesDomainModel.activeHouseId()))
+                    .findFirst().orElse(null);
+            assert activeHouse != null;
+            this.preferences.updateFrom(preferencesDomainModel, activeHouse);
+        });
+
+        var housemateDTOs = houseRepo.getHousemates(preferences.getActiveHouse().getId());
         buildAndSet(housemateDTOs, modelFactory::getHousemateModel, housemates);
 
-        var applianceDTOs = applianceClient.findAll(preferences.getActiveHouse().getId());
+        var applianceDTOs = applianceRepo.getAll(preferences.getActiveHouse().getId());
         buildAndSet(applianceDTOs, modelFactory::getApplianceModel, appliances);
 
-        var activationModels = activationClient.findAll(preferences.getActiveHouse().getId());
+        var activationModels = activationRepo.getAll(preferences.getActiveHouse().getId());
         buildAndSet(activationModels, modelFactory::getActivationModel, activations);
     }
 
@@ -148,13 +165,13 @@ public class IDoEverything {
     // --- Business Logic / Write Operations ---
 
     public void deleteActivation(ActivationModel activation) {
-        activationClient.delete(activation.commit());
+        activationRepo.delete(activation.getAppliance().getHouse().getId(), activation.getId());
         notificationService.cancelNotification(activation);
         activations.remove(activation);
     }
 
-    public LocalDateTime createActivation(ActivationDTO dto) {
-        ActivationDTO savedDto = activationClient.save(dto);
+    public LocalDateTime createActivation(Activation domainModel) {
+        Activation savedDto = activationRepo.add(domainModel);
         ActivationModel newModel = modelFactory.getActivationModel(savedDto);
         LocalDateTime activationTime = notificationService.scheduleNotification(newModel);
         if (!activations.contains(newModel))
@@ -163,35 +180,34 @@ public class IDoEverything {
     }
 
     public void saveActivation(ActivationModel activation) {
-        ActivationDTO dto = activation.commit();
-        activationClient.save(dto);
+        Activation domainModel = activation.commit();
+        activationRepo.update(domainModel);
         notificationService.rescheduleNotification(activation);
         if (!activations.contains(activation))
             activations.add(activation);
     }
 
     public void savePreferences() {
-        PreferencesDTO dto = preferences.commit();
-        // call preferencesClient save
+        Preferences domainModel = preferences.commit(currentUser.getId());
+        // TODO: call preferencesClient save
     }
 
-    // User client requires no caching of UserDTO objects so no need to wrap methods, just expose it as is.
-    public UserClient getUserClient() { return userClient; }
+    // User repo requires no caching of UserDTO objects so no need to wrap methods, just expose it as is.
+    public UserRepository getUserRepo() { return userRepo; }
 
     public void leaveActiveHouse() {
-        // userClient.leaveHouse(preferences.getActiveHouse().getId());
+        // TODO: houseRepo.leaveHouse(preferences.getActiveHouse().getId());
 
-        var others = userClient.findHousesForCurrentUser();
-        var houseDTO = others.isEmpty()
-                ? userClient.createDefaultHouse()
-                : others.getFirst();
-        var houseModel = modelFactory.getHouseModel(houseDTO);
+        var nextHouse = houseRepo.getCurrentUserHouses().getFirst();
+        var houseModel = modelFactory.getHouseModel(nextHouse);
         preferences.setActiveHouse(houseModel);
     }
 
     public void deleteActiveHouse() {
-        // userClient.deleteHouse(preferences.getActiveHouse().getId());
+        houseRepo.delete(preferences.getActiveHouse().getId());
 
-        leaveActiveHouse();
+        var nextHouse = houseRepo.getCurrentUserHouses().getFirst();
+        var houseModel = modelFactory.getHouseModel(nextHouse);
+        preferences.setActiveHouse(houseModel);
     }
 }

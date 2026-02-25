@@ -1,16 +1,15 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
 import javafx.beans.property.*;
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.Mode;
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.Theme;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
+import uk.ac.soton.comp2300.group42.preferences.ColorVision;
+import uk.ac.soton.comp2300.group42.preferences.Mode;
+import uk.ac.soton.comp2300.group42.preferences.Theme;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;
 
 public class PreferencesModel {
-    
-    private final PreferencesDTO dto;
+
     private final BooleanProperty largeFont;
     private final ObjectProperty<ColorVision> vision;
     private final ObjectProperty<Theme> theme;
@@ -19,44 +18,44 @@ public class PreferencesModel {
     private final DoubleProperty energyGoal;
     private final ObjectProperty<HouseModel> activeHouse;
 
-    public PreferencesModel(PreferencesDTO dto, HouseModel activeHouse) {
-        this.dto = dto;
-        this.largeFont = new SimpleBooleanProperty(dto.getLargeFont());
-        this.vision = new SimpleObjectProperty<>(dto.getVision());
-        this.theme = new SimpleObjectProperty<>(dto.getTheme());
-        this.mode = new SimpleObjectProperty<>(dto.getMode());
-        this.shareLocation = new SimpleBooleanProperty(dto.getShareLocation());
-        this.energyGoal = new SimpleDoubleProperty(dto.getEnergyGoal());
+    public PreferencesModel(Preferences entity, HouseModel activeHouse) {
+        this.largeFont = new SimpleBooleanProperty(entity.largeFont());
+        this.vision = new SimpleObjectProperty<>(entity.vision());
+        this.theme = new SimpleObjectProperty<>(entity.theme());
+        this.mode = new SimpleObjectProperty<>(entity.mode());
+        this.shareLocation = new SimpleBooleanProperty(entity.shareLocation());
+        this.energyGoal = new SimpleDoubleProperty(entity.energyGoal());
         this.activeHouse = new SimpleObjectProperty<>(activeHouse);
     }
 
-    public PreferencesDTO commit() {
-        dto.setLargeFont(largeFont.get());
-        dto.setVision(vision.get());
-        dto.setTheme(theme.get());
-        dto.setMode(mode.get());
-        dto.setShareLocation(shareLocation.get());
-        dto.setEnergyGoal(energyGoal.get());
-        dto.setActiveHouseId(activeHouse.get().getId());
-        return dto;
+    public Preferences commit(Long userId) {
+        return new Preferences(
+            userId,
+            getLargeFont(),
+            getVision(),
+            getTheme(),
+            getMode(),
+            getShareLocation(),
+            getEnergyGoal(),
+            getActiveHouse().getId()
+        );
     }
 
-    public void updateFrom(PreferencesDTO dto, HouseModel house) {
-        updateIfChanged(getLargeFont(), dto.getLargeFont(), this::setLargeFont);
-        updateIfChanged(getVision(), dto.getVision(), this::setVision);
-        updateIfChanged(getTheme(), dto.getTheme(), this::setTheme);
-        updateIfChanged(getMode(), dto.getMode(), this::setMode);
-        updateIfChanged(getShareLocation(), dto.getShareLocation(), this::setShareLocation);
-        updateIfChanged(getEnergyGoal(), dto.getEnergyGoal(), this::setEnergyGoal);
-        if (!getActiveHouse().getId().equals(dto.getActiveHouseId()))
-            setActiveHouse(house);
+    public void updateFrom(Preferences entity, HouseModel house) {
+        updateIfChanged(getLargeFont(), entity.largeFont(), this::setLargeFont);
+        updateIfChanged(getVision(), entity.vision(), this::setVision);
+        updateIfChanged(getTheme(), entity.theme(), this::setTheme);
+        updateIfChanged(getMode(), entity.mode(), this::setMode);
+        updateIfChanged(getShareLocation(), entity.shareLocation(), this::setShareLocation);
+        updateIfChanged(getEnergyGoal(), entity.energyGoal(), this::setEnergyGoal);
+        updateIfChanged(getActiveHouse(), house, this::setActiveHouse);
     }
 
     public boolean getLargeFont() { return largeFont.get(); }
     public void setLargeFont(boolean largeFont) { this.largeFont.set(largeFont); }
     public BooleanProperty largeFontProperty() { return largeFont; }
 
-    public  ColorVision getVision() { return vision.get(); }
+    public ColorVision getVision() { return vision.get(); }
     public void setVision(ColorVision vision) { this.vision.set(vision); }
     public ObjectProperty<ColorVision> visionProperty() { return vision; }
 

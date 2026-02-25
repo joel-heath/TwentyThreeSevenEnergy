@@ -4,7 +4,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
+import uk.ac.soton.comp2300.group42.activation.ActivationType;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -14,10 +15,12 @@ import java.time.LocalTime;
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;
 
 public class ActivationModel {
-    
+
+    private final Long id;
     private final ObjectProperty<ApplianceModel> appliance;
     private final ObjectProperty<LocalTime> activationTime;
     private final ObjectProperty<LocalDate> activationDate;
+    private final ObjectProperty<ActivationType> type;
     private final BooleanProperty recursMonday;
     private final BooleanProperty recursTuesday;
     private final BooleanProperty recursWednesday;
@@ -26,52 +29,55 @@ public class ActivationModel {
     private final BooleanProperty recursSaturday;
     private final BooleanProperty recursSunday;
     private final BooleanProperty updateTrigger;
-    private final ActivationDTO dto;
 
-    public ActivationModel(ActivationDTO dto, ApplianceModel appliance) {
-        this.dto = dto;
+    public ActivationModel(Activation entity, ApplianceModel appliance) {
+        this.id = entity.id();
         this.appliance = new SimpleObjectProperty<>(appliance);
-        this.activationTime = new SimpleObjectProperty<>(dto.getActivationTime());
-        this.activationDate = new SimpleObjectProperty<>(dto.getActivationDate());
-        this.recursMonday = new SimpleBooleanProperty(dto.isRecursMonday());
-        this.recursTuesday = new SimpleBooleanProperty(dto.isRecursTuesday());
-        this.recursWednesday = new SimpleBooleanProperty(dto.isRecursWednesday());
-        this.recursThursday = new SimpleBooleanProperty(dto.isRecursThursday());
-        this.recursFriday = new SimpleBooleanProperty(dto.isRecursFriday());
-        this.recursSaturday = new SimpleBooleanProperty(dto.isRecursSaturday());
-        this.recursSunday = new SimpleBooleanProperty(dto.isRecursSunday());
+        this.activationTime = new SimpleObjectProperty<>(entity.activationTime());
+        this.activationDate = new SimpleObjectProperty<>(entity.activationDate());
+        this.type = new SimpleObjectProperty<>(entity.type());
+        this.recursMonday = new SimpleBooleanProperty(entity.recursMonday());
+        this.recursTuesday = new SimpleBooleanProperty(entity.recursTuesday());
+        this.recursWednesday = new SimpleBooleanProperty(entity.recursWednesday());
+        this.recursThursday = new SimpleBooleanProperty(entity.recursThursday());
+        this.recursFriday = new SimpleBooleanProperty(entity.recursFriday());
+        this.recursSaturday = new SimpleBooleanProperty(entity.recursSaturday());
+        this.recursSunday = new SimpleBooleanProperty(entity.recursSunday());
         this.updateTrigger = new SimpleBooleanProperty(false);
     }
 
-    public ActivationDTO commit() {
-        dto.setApplianceId(appliance.get().getId());
-        dto.setActivationTime(activationTime.get());
-        dto.setActivationDate(activationDate.get());
-        dto.setRecursMonday(recursMonday.get());
-        dto.setRecursTuesday(recursTuesday.get());
-        dto.setRecursWednesday(recursWednesday.get());
-        dto.setRecursThursday(recursThursday.get());
-        dto.setRecursFriday(recursFriday.get());
-        dto.setRecursSaturday(recursSaturday.get());
-        dto.setRecursSunday(recursSunday.get());
-        return dto;
+    public Activation commit() {
+        return new Activation(
+                getId(),
+                getAppliance().getId(),
+                getAppliance().getHouse().getId(),
+                type.get(),
+                getActivationTime(),
+                getActivationDate(),
+                isRecursMonday(),
+                isRecursTuesday(),
+                isRecursWednesday(),
+                isRecursThursday(),
+                isRecursFriday(),
+                isRecursSaturday(),
+                isRecursSunday()
+        );
     }
 
-    public void updateFrom(ActivationDTO dto, ApplianceModel appliance) {
-        updateIfChanged(getActivationTime(), dto.getActivationTime(), this::setActivationTime);
-        updateIfChanged(getActivationDate(), dto.getActivationDate(), this::setActivationDate);
-        updateIfChanged(isRecursMonday(), dto.isRecursMonday(), this::setRecursMonday);
-        updateIfChanged(isRecursTuesday(), dto.isRecursTuesday(), this::setRecursTuesday);
-        updateIfChanged(isRecursWednesday(), dto.isRecursWednesday(), this::setRecursWednesday);
-        updateIfChanged(isRecursThursday(), dto.isRecursThursday(), this::setRecursThursday);
-        updateIfChanged(isRecursFriday(), dto.isRecursFriday(), this::setRecursFriday);
-        updateIfChanged(isRecursSaturday(), dto.isRecursSaturday(), this::setRecursSaturday);
-        updateIfChanged(isRecursSunday(), dto.isRecursSunday(), this::setRecursSunday);
-        if (!getAppliance().getId().equals(dto.getApplianceId()))
-            setAppliance(appliance);
+    public void updateFrom(Activation entity, ApplianceModel appliance) {
+        updateIfChanged(getActivationTime(), entity.activationTime(), this::setActivationTime);
+        updateIfChanged(getActivationDate(), entity.activationDate(), this::setActivationDate);
+        updateIfChanged(isRecursMonday(), entity.recursMonday(), this::setRecursMonday);
+        updateIfChanged(isRecursTuesday(), entity.recursTuesday(), this::setRecursTuesday);
+        updateIfChanged(isRecursWednesday(), entity.recursWednesday(), this::setRecursWednesday);
+        updateIfChanged(isRecursThursday(), entity.recursThursday(), this::setRecursThursday);
+        updateIfChanged(isRecursFriday(), entity.recursFriday(), this::setRecursFriday);
+        updateIfChanged(isRecursSaturday(), entity.recursSaturday(), this::setRecursSaturday);
+        updateIfChanged(isRecursSunday(), entity.recursSunday(), this::setRecursSunday);
+        updateIfChanged(getAppliance(), appliance, this::setAppliance);
     }
 
-    public Long getId() { return dto.getId(); }
+    public Long getId() { return id; }
 
     public ApplianceModel getAppliance() { return appliance.get(); }
     public void setAppliance(ApplianceModel appliance) { this.appliance.set(appliance); }

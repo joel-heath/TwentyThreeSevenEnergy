@@ -19,4 +19,17 @@ public record Activation(
         Boolean recursFriday,
         Boolean recursSaturday,
         Boolean recursSunday
-) {}
+) {
+    public Activation(Long applianceId, Long houseId, LocalTime activationTime, LocalDate activationDate) {
+        this(null, applianceId, houseId, ActivationType.NON_RECURRING, activationTime, activationDate,
+             false, false, false, false, false, false, false);
+    }
+
+    public Activation(Long applianceId, Long houseId, LocalTime activationTime,
+                      Boolean recursMonday, Boolean recursTuesday, Boolean recursWednesday, Boolean recursThursday,
+                      Boolean recursFriday, Boolean recursSaturday, Boolean recursSunday) {
+        this(null, applianceId, houseId, ActivationType.RECURRING, activationTime, null,
+             recursMonday, recursTuesday, recursWednesday, recursThursday,
+             recursFriday, recursSaturday, recursSunday);
+    }
+}

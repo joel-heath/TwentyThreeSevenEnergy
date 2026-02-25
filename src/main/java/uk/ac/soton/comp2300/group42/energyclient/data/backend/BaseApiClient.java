@@ -21,6 +21,10 @@ public abstract class BaseApiClient {
         this.mapper = mapper;
     }
 
+    protected boolean isSuccess(HttpResponse<String> response) {
+        return response.statusCode() >= 200 && response.statusCode() < 300;
+    }
+
     protected <T> T get(String path, TypeReference<T> responseType) {
         HttpResponse<String> response = get(path);
         return handleResponse(response, responseType);
@@ -105,11 +109,11 @@ public abstract class BaseApiClient {
         if (response.statusCode() == 401)
             throw new UnauthorizedException("Unauthorized access to " + response.uri());
 
-        if (response.statusCode() < 200 || response.statusCode() >= 300)
+        if (!isSuccess(response))
             throw new ApiException("HTTP " + response.statusCode() + " while accessing " + response.uri(), response.statusCode());
 
-        if (response.body() == null || response.body().trim().isEmpty()) // eg 204 No Content
-            return null;
+        if (response.body() == null || response.body().trim().isEmpty())
+            throw new DataFetchException("Empty response body from " + response.uri() + " when deserializing to " + responseType.getType().getTypeName());
 
         try {
             return mapper.readValue(response.body(), responseType);

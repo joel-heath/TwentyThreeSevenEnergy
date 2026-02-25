@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ApplianceModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.IDoEverything;
 
@@ -65,9 +65,10 @@ public class ScheduleViewModel {
     public BooleanProperty isRecurringProperty() { return isRecurring; }
 
     public LocalDateTime scheduleActivation() {
-        ActivationDTO dto = isRecurring.get()
-                ? new ActivationDTO(
+        Activation dto = isRecurring.get()
+                ? new Activation(
                         selectedAppliance.get().getId(),
+                        IDoEverything.getPreferences().getActiveHouse().getId(),
                         LocalTime.of(hour.get(), minute.get()),
                         recursMonday.get(),
                         recursTuesday.get(),
@@ -76,8 +77,9 @@ public class ScheduleViewModel {
                         recursFriday.get(),
                         recursSaturday.get(),
                         recursSunday.get())
-                : new ActivationDTO(
+                : new Activation(
                         selectedAppliance.get().getId(),
+                        IDoEverything.getPreferences().getActiveHouse().getId(),
                         LocalTime.of(hour.get(), minute.get()),
                         date.get());
 

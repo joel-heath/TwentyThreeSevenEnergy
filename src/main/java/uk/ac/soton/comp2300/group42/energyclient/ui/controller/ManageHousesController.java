@@ -1,7 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.controller;
 
 import com.google.inject.Inject;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -9,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.Role;
+import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HousemateModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
@@ -95,7 +94,7 @@ public class ManageHousesController {
 
         Label name = new Label();
         Label email = new Label();
-        name.textProperty().bind(Bindings.concat(housemate.getForename()).concat(" ").concat(housemate.getSurname()));
+        name.textProperty().bind(housemate.nameProperty());
         email.textProperty().bind(housemate.emailProperty());
         card.getChildren().addAll(name, email);
 

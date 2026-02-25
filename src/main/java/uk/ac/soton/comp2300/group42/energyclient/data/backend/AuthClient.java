@@ -27,7 +27,7 @@ public class AuthClient extends BaseApiClient {
         LoginRequest request = new LoginRequest(email, password);
 
         HttpResponse<String> response = post("auth/login", request);
-        if (response.statusCode() != 200)
+        if (!isSuccess(response))
             return Optional.empty();
 
         AuthResponse auth = handleResponse(response, new TypeReference<>() {});
@@ -38,7 +38,7 @@ public class AuthClient extends BaseApiClient {
         RegistrationRequest request = new RegistrationRequest(name, email, password);
 
         HttpResponse<String> response = post("auth/register", request);
-        if (response.statusCode() != 200)
+        if (!isSuccess(response))
             return Optional.empty();
 
         AuthResponse auth = handleResponse(response, new TypeReference<>() {});

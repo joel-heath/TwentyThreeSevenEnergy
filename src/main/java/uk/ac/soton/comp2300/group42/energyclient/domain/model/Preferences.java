@@ -13,4 +13,8 @@ public record Preferences(
         Boolean shareLocation,
         Double energyGoal,
         Long activeHouseId
-) {}
+) {
+    public Preferences() {
+        this(null, false, ColorVision.TYPICAL, Theme.LIGHT, Mode.SIMPLE, false, 1.0, null);
+    }
+}

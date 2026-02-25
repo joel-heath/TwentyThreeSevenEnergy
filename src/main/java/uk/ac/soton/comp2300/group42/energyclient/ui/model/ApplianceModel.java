@@ -1,35 +1,46 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;
 
 public class ApplianceModel {
-    
-    private final ApplianceDTO dto;
+
+    private final Long id;
+    private final ObjectProperty<HouseModel> house;
     private final StringProperty name;
 
-    public ApplianceModel(ApplianceDTO dto) {
-        this.dto = dto;
-        this.name = new SimpleStringProperty(dto.getName());
+    public ApplianceModel(Appliance entity, HouseModel house) {
+        this.id = entity.id();
+        this.name = new SimpleStringProperty(entity.name());
+        this.house = new SimpleObjectProperty<>(house);
     }
 
-    public ApplianceDTO commit() {
-        dto.setName(name.get());
-        return dto;
+    public Appliance commit() {
+        return new Appliance(
+                getId(),
+                getHouse().getId(),
+                getName()
+        );
     }
 
-    public void updateFrom(ApplianceDTO dto) {
-        updateIfChanged(getName(), dto.getName(), this::setName);
+    public void updateFrom(Appliance entity) {
+        updateIfChanged(getName(), entity.name(), this::setName);
     }
 
-    public Long getId() { return dto.getId(); }
+    public Long getId() { return id; }
 
     public String getName() { return name.get(); }
     public void setName(String value) { name.set(value); }
     public StringProperty nameProperty() { return name; }
+
+    public HouseModel getHouse() { return house.get(); }
+    public void setHouse(HouseModel value) { house.set(value); }
+    public ObjectProperty<HouseModel> houseProperty() { return house; }
 
     @Override public String toString() { return name.get(); }
 }

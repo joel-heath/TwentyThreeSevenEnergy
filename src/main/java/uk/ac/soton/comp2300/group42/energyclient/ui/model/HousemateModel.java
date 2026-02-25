@@ -1,55 +1,49 @@
 package uk.ac.soton.comp2300.group42.energyclient.ui.model;
 
 import javafx.beans.property.*;
-import uk.ac.soton.comp2300.group42.energyclient.data.backend.Role;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.HousemateDTO;
+import uk.ac.soton.comp2300.group42.common.Role;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ModelUtils.updateIfChanged;
 
 public class HousemateModel {
 
-    private final HousemateDTO dto;
-    private final StringProperty forename;
-    private final StringProperty surname;
+    private final Long id;
+    private final StringProperty name;
     private final StringProperty email;
     private final ObjectProperty<HouseModel> house;
     private final ObjectProperty<Role> role;
 
-    public HousemateModel(HousemateDTO dto, HouseModel house) {
-        this.dto = dto;
+    public HousemateModel(Housemate housemate, HouseModel house) {
+        this.id = housemate.userId();
         this.house = new SimpleObjectProperty<>(house);
-        this.forename = new SimpleStringProperty(dto.getForename());
-        this.surname = new SimpleStringProperty(dto.getSurname());
-        this.email = new SimpleStringProperty(dto.getEmail());
-        this.role = new SimpleObjectProperty<>(dto.getRole());
+        this.name = new SimpleStringProperty(housemate.name());
+        this.email = new SimpleStringProperty(housemate.email());
+        this.role = new SimpleObjectProperty<>(housemate.role());
     }
 
-    public HousemateDTO commit() {
-        dto.setForename(forename.get());
-        dto.setSurname(surname.get());
-        dto.setEmail(email.get());
-        dto.setRole(role.get());
-        return dto;
+    public Housemate commit() {
+        return new Housemate(
+                getId(),
+                getHouse().getId(),
+                getName(),
+                getEmail(),
+                getRole()
+        );
     }
 
-    public void updateFrom(HousemateDTO dto, HouseModel house) {
-        updateIfChanged(getForename(), dto.getForename(), this::setForename);
-        updateIfChanged(getSurname(), dto.getSurname(), this::setSurname);
-        updateIfChanged(getEmail(), dto.getEmail(), this::setEmail);
-        updateIfChanged(getRole(), dto.getRole(), this::setRole);
+    public void updateFrom(Housemate housemate, HouseModel house) {
+        updateIfChanged(getName(), housemate.name(), this::setName);
+        updateIfChanged(getEmail(), housemate.email(), this::setEmail);
+        updateIfChanged(getRole(), housemate.role(), this::setRole);
         updateIfChanged(getHouse(), house, this::setHouse);
     }
 
-    public Long getId() { return dto.getId(); }
-    public Long getHouseId() { return dto.getHouseId(); }
+    public Long getId() { return id; }
 
-    public String getForename() { return forename.get(); }
-    public void setForename(String value) { forename.set(value); }
-    public StringProperty forenameProperty() { return forename; }
-
-    public String getSurname() { return surname.get(); }
-    public void setSurname(String value) { surname.set(value); }
-    public StringProperty surnameProperty() { return surname; }
+    public String getName() { return name.get(); }
+    public void setName(String value) { name.set(value); }
+    public StringProperty nameProperty() { return name; }
 
     public String getEmail() { return email.get(); }
     public void setEmail(String value) { email.set(value); }
@@ -63,5 +57,5 @@ public class HousemateModel {
     public void setRole(Role role) { this.role.set(role); }
     public ObjectProperty<Role> roleProperty() { return role; }
 
-    @Override public String toString() { return forename.get() + " " + surname.get(); }
+    @Override public String toString() { return getName(); }
 }

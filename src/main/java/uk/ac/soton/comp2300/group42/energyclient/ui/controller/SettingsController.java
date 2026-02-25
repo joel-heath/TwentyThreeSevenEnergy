@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Mode;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Theme;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.SettingsViewModel;
 
@@ -50,7 +51,9 @@ public class SettingsController {
             costGoalField.clear();
             costGoalField.setStyle("");
         } catch (NumberFormatException e) {
-            costGoalField.setStyle("-fx-border-color: red;");
+            costGoalField.setStyle(
+                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+            );
         }
     }
 }

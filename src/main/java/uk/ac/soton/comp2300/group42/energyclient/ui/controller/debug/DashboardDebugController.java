@@ -7,6 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.debug.DashboardDebugViewModel;
@@ -89,7 +90,9 @@ public class DashboardDebugController {
             costGoalField.setStyle("");
 
         } catch (NumberFormatException e) {
-            costGoalField.setStyle("-fx-border-color: red;");
+            costGoalField.setStyle(
+                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+            );
         }
     }
 

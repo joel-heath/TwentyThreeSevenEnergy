@@ -7,14 +7,19 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.UnitRate;
-import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.*;
+import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.ActivationEditModal;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.EnergyUsageWidget;
+import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.UpcomingActivationsWidget;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.AdvancedDashboardViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.UpcomingActivationsViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.ui.util.Navigator;
 
 public class AdvancedDashboardController {
+    private static final String STATUS_CARD_BASE_STYLE =
+            "-fx-alignment: center; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 5;";
 
     @FXML private EnergyUsageWidget energyWidget;
     @FXML private UpcomingActivationsWidget upcomingActivationsWidget;
@@ -39,7 +44,7 @@ public class AdvancedDashboardController {
 
         upcomingActivationsWidget.bindComponents(activationsWidgetVM, activationEditModal);
 
-        vm.getHourlyForecast().addListener((ListChangeListener<UnitRate>) c -> {
+        vm.getHourlyForecast().addListener((ListChangeListener<UnitRate>) _ -> {
             statusRow.getChildren().clear();
             for (UnitRate rate : vm.getHourlyForecast()) {
                 statusRow.getChildren().add(createStatusCard(rate));
@@ -58,30 +63,33 @@ public class AdvancedDashboardController {
 
     private VBox createStatusCard(UnitRate rate) {
         VBox card = new VBox(0);
-        card.setStyle("-fx-alignment: center; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 5;");
         card.setPrefHeight(40);
-
         card.setPadding(new Insets(2, 5, 2, 5));
 
-        Label emojiLabel = new Label();
+        Label statusLabel = new Label();
         String status = rate.getPriceStatus();
+        ColorVisionManager.ColorRole colorRole;
 
-        if (status.equals("CHEAP")) {
-            emojiLabel.setText("😊");
-            card.setStyle(card.getStyle() + "-fx-background-color: #d4edda;"); // Green - change colours according to colourblind mode
-        } else if (status.equals("AVERAGE")) {
-            emojiLabel.setText("😐");
-            card.setStyle(card.getStyle() + "-fx-background-color: #fff3cd;"); // Yellow
+        if ("CHEAP".equals(status)) {
+            statusLabel.setText("\uD83D\uDE0A");
+            colorRole = ColorVisionManager.ColorRole.STATUS_CHEAP;
+        } else if ("AVERAGE".equals(status)) {
+            statusLabel.setText("\uD83D\uDE10");
+            colorRole = ColorVisionManager.ColorRole.STATUS_AVERAGE;
         } else {
-            emojiLabel.setText("⚠️");
-            card.setStyle(card.getStyle() + "-fx-background-color: #f8d7da;"); // Red
+            statusLabel.setText("\u26A0\uFE0F");
+            colorRole = ColorVisionManager.ColorRole.STATUS_EXPENSIVE;
         }
+
+        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> STATUS_CARD_BASE_STYLE + "-fx-background-color: " + ColorVisionManager.getWebColor(vision, colorRole) + ";"
+        ));
 
         String time = rate.validFrom().substring(11, 16);
         Label timeLabel = new Label(time);
         timeLabel.setStyle("-fx-font-size: 9px;");
 
-        card.getChildren().addAll(emojiLabel, timeLabel);
+        card.getChildren().addAll(statusLabel, timeLabel);
         return card;
     }
 }

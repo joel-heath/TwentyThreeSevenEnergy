@@ -7,9 +7,10 @@
 
 <fx:root type="UpcomingActivationsWidget"
          xmlns:fx="http://javafx.com/fxml"
+         fx:controller="uk.ac.soton.comp2300.group42.energyclient.ui.view.components.UpcomingActivationsWidget"
          spacing="10"
          prefWidth="280"
-         style="-fx-background-color: #b0ace3; -fx-background-radius: 10; -fx-padding: 15;">
+         style="-fx-background-radius: 10; -fx-padding: 15;">
     <effect><DropShadow radius="15" offsetX="5" offsetY="5" color="#00000088"/></effect>
 
     <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">

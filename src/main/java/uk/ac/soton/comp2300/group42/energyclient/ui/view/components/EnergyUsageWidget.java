@@ -5,13 +5,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorSettings;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.EnergyUsageViewModel;
 
 import java.io.IOException;
 
 public class EnergyUsageWidget extends VBox {
+    private static final String WIDGET_STYLE =
+            "-fx-background-radius: 10; -fx-padding: 15; -fx-font-weight: bold";
 
     @FXML private EnergyUsageRect energyUsageRect;
+    @FXML private Label totalSpentLabel;
     @FXML private Label costLabel;
     @FXML private Label goalLabel;
 
@@ -34,5 +38,24 @@ public class EnergyUsageWidget extends VBox {
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
+        bindWidgetStyles();
+    }
+
+    private void bindWidgetStyles() {
+        styleProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
+                        vision, ColorVisionManager.ColorRole.WIDGET_SURFACE
+                ) + "; " + WIDGET_STYLE
+        ));
+
+        totalSpentLabel.textFillProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.WIDGET_TEXT)
+        ));
+        costLabel.textFillProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.WIDGET_TEXT)
+        ));
+        goalLabel.textFillProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.WIDGET_TEXT)
+        ));
     }
 }

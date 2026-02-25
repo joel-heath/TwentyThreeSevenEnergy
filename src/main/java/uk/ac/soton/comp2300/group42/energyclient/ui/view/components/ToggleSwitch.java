@@ -13,13 +13,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 
 public class ToggleSwitch extends ToggleButton {
 
     private static final int THUMB_RADIUS = 10;
     private static final int WIDTH = 54;
     private static final int HEIGHT = 26;
-    private static final Color ENABLED = Color.web("#3797ef");
     private static final Color DISABLED = Color.web("#b0b0b0");
     private static final int DISTANCE = WIDTH / 2 - THUMB_RADIUS - 3;
 
@@ -50,7 +50,9 @@ public class ToggleSwitch extends ToggleButton {
 
             track.setArcWidth(HEIGHT);
             track.setArcHeight(HEIGHT);
-            track.setFill(control.isSelected() ? ENABLED : DISABLED);
+            track.setFill(control.isSelected()
+                    ? ColorVisionManager.getColor(ColorVisionManager.ColorRole.TOGGLE_ENABLED)
+                    : DISABLED);
 
             thumb.setFill(Color.WHITE);
             thumb.setTranslateX(control.isSelected() ? DISTANCE : -DISTANCE);
@@ -66,6 +68,10 @@ public class ToggleSwitch extends ToggleButton {
             getChildren().add(container);
 
             control.selectedProperty().addListener((_, _, newVal) -> playAnimation(newVal));
+            ColorVisionManager.visionProperty().addListener((_, _, _) -> {
+                if (control.isSelected())
+                    track.setFill(ColorVisionManager.getColor(ColorVisionManager.ColorRole.TOGGLE_ENABLED));
+            });
         }
 
         private void playAnimation(boolean selected) {
@@ -73,7 +79,9 @@ public class ToggleSwitch extends ToggleButton {
 
             translate.setToX(selected ? DISTANCE : -DISTANCE);
             fill.setFromValue((Color) track.getFill());
-            fill.setToValue(selected ? ENABLED : DISABLED);
+            fill.setToValue(selected
+                    ? ColorVisionManager.getColor(ColorVisionManager.ColorRole.TOGGLE_ENABLED)
+                    : DISABLED);
 
             animation.play();
         }

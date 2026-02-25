@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.data.api.Role;
+import uk.ac.soton.comp2300.group42.energyclient.ui.model.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HouseModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.model.HousemateModel;
 import uk.ac.soton.comp2300.group42.energyclient.ui.view.components.Modal;
@@ -18,6 +19,9 @@ import uk.ac.soton.comp2300.group42.energyclient.ui.viewmodel.ManageHousesViewMo
 import static uk.ac.soton.comp2300.group42.energyclient.ui.util.ControllerUtils.createConverter;
 
 public class ManageHousesController {
+    private static final String HOUSEMATE_CARD_STYLE =
+            "-fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5";
+
     @FXML private ComboBox<HouseModel> activeHouseComboBox;
     @FXML private VBox housematesContainer;
     @FXML private TextField inviteHousemateField;
@@ -90,8 +94,11 @@ public class ManageHousesController {
 
     private Pane createHousemateView(HousemateModel housemate) {
         VBox card = new VBox();
-        // card.setPrefSize(100, 150);
-        card.setStyle("-fx-background-color: lightblue; -fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5");
+        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
+                        vision, ColorVisionManager.ColorRole.CARD_SURFACE
+                ) + "; " + HOUSEMATE_CARD_STYLE
+        ));
 
         Label name = new Label();
         Label email = new Label();

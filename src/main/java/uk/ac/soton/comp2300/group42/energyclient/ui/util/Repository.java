@@ -49,6 +49,7 @@ public class Repository {
         this.modelFactory = modelFactory;
         this.preferences = modelFactory.getPreferencesModel();
         this.currentUser = modelFactory.getCurrentUser();
+        ColorVisionManager.bind(preferences.visionProperty());
 
         appliances = FXCollections.observableArrayList();
         houses = FXCollections.observableArrayList();

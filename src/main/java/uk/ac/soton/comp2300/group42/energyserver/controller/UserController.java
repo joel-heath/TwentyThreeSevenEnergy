@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyserver.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,17 +23,17 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> getAllUsers() {
-        return service.findAll();
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/me")
-    public UserResponse getCurrentUser(@AuthenticationPrincipal User user) {
-        return service.getCurrentUser(user);
+    public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(service.getCurrentUser(user));
     }
 
     @GetMapping("/me/preferences")
-    public PreferencesResponse getCurrentUserPreferences(@AuthenticationPrincipal User user) {
-        return service.getCurrentUserPreferences(user);
+    public ResponseEntity<PreferencesResponse> getCurrentUserPreferences(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(service.getCurrentUserPreferences(user));
     }
 }

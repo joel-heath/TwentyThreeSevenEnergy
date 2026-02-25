@@ -8,5 +8,6 @@ import uk.ac.soton.comp2300.group42.energyserver.model.Activation;
 @Mapper(componentModel = "spring")
 public interface ActivationMapper {
     @Mapping(source = "appliance.id", target = "applianceId")
+    @Mapping(source = "appliance.house.id", target = "houseId")
     ActivationResponse toActivationResponse(Activation activation);
 }

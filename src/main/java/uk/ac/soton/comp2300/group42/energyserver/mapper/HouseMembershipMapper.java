@@ -15,8 +15,8 @@ public interface HouseMembershipMapper {
     HousemateResponse toHousemateResponse(HouseMembership membership);
 
     @Mapping(source = "house.id", target = "id")
-    @Mapping(source = "house.name", target = "name")
     @Mapping(source = "house.address", target = "address")
     @Mapping(source = "house.timezone", target = "timezone")
+    @Mapping(source = "houseNickname", target = "name")
     HouseResponse toHouseResponse(HouseMembership membership);
 }

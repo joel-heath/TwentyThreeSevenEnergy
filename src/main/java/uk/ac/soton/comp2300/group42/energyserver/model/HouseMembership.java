@@ -26,7 +26,8 @@ public class HouseMembership {
     @Convert(converter = RoleConverter.class)
     private Role role;
 
-    private String houseName;
+    @Column(nullable = false)
+    private String houseNickname;
 
     public Long getId() { return id; }
 
@@ -39,6 +40,6 @@ public class HouseMembership {
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
 
-    public String getHouseName() { return houseName; }
-    public void setHouseName(String houseName) { this.houseName = houseName; }
+    public String getHouseNickname() { return houseNickname; }
+    public void setHouseNickname(String houseName) { this.houseNickname = houseName; }
 }

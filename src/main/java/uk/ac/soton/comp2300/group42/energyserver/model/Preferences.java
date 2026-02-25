@@ -20,14 +20,26 @@ public class Preferences {
     private User user;
 
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(nullable = false)
+    // @OnDelete(action = OnDeleteAction.SET_NULL) // On Delete is managed by HouseService, it should never be null.
     private House activeHouse;
 
+    @Column(nullable = false)
     private Boolean largeFont;
+
+    @Column(nullable = false)
     private ColorVision colorVision;
+
+    @Column(nullable = false)
     private Theme theme;
+
+    @Column(nullable = false)
     private Mode mode;
+
+    @Column(nullable = false)
     private Boolean shareLocation;
+
+    @Column(nullable = false)
     private Double energyGoal;
 
     public Long getId() { return id; }

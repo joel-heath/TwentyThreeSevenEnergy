@@ -2,8 +2,10 @@ package uk.ac.soton.comp2300.group42.energyserver.service;
 
 import org.springframework.stereotype.Service;
 
+import uk.ac.soton.comp2300.group42.energyserver.mapper.PreferencesMapper;
 import uk.ac.soton.comp2300.group42.energyserver.mapper.UserMapper;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
+import uk.ac.soton.comp2300.group42.energyserver.repository.PreferencesRepository;
 import uk.ac.soton.comp2300.group42.preferences.PreferencesResponse;
 import uk.ac.soton.comp2300.group42.user.UserResponse;
 import uk.ac.soton.comp2300.group42.energyserver.exception.ResourceNotFoundException;
@@ -15,11 +17,15 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PreferencesRepository preferencesRepository;
     private final UserMapper userMapper;
+    private final PreferencesMapper preferencesMapper;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, PreferencesRepository preferencesRepository, UserMapper userMapper, PreferencesMapper preferencesMapper) {
         this.userRepository = userRepository;
+        this.preferencesRepository = preferencesRepository;
         this.userMapper = userMapper;
+        this.preferencesMapper = preferencesMapper;
     }
 
     public List<UserResponse> findAll() {
@@ -39,7 +45,6 @@ public class UserService {
     }
 
     public PreferencesResponse getCurrentUserPreferences(User user) {
-        // need to make model.Preferences
-        return null;
+        return preferencesMapper.toPreferencesResponse(preferencesRepository.findByUser(user));
     }
 }

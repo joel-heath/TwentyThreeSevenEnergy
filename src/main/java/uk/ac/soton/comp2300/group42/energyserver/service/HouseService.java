@@ -52,7 +52,7 @@ public class HouseService {
         membership.setUser(owner);
         membership.setHouse(house);
         membership.setRole(Role.OWNER);
-        membership.setHouseName(request.name());
+        membership.setHouseNickname(request.name());
         membershipRepo.save(membership);
 
         return mapper.toHouseResponse(membership);
@@ -75,7 +75,7 @@ public class HouseService {
             house.setTimezone(request.timezone());
         }
 
-        membership.setHouseName(request.name());
+        membership.setHouseNickname(request.name());
 
         return mapper.toHouseResponse(membership);
     }
@@ -100,7 +100,7 @@ public class HouseService {
                 newMembership.setUser(affectedUser);
                 newMembership.setHouse(newDefaultHouse);
                 newMembership.setRole(Role.OWNER);
-                newMembership.setHouseName("Default House");
+                newMembership.setHouseNickname("Default House");
                 membershipRepo.save(newMembership);
 
                 prefs.setActiveHouse(newDefaultHouse);

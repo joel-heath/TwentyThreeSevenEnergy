@@ -30,7 +30,7 @@ public class HouseAuthorizationManager {
         HouseMembership membership = membershipRepo.findByUserAndHouse(user, house)
                 .orElseThrow(() -> new AccessDeniedException("User is not a member of this house"));
 
-        if (membership.getRole().ordinal() > minimumRole.ordinal())
+        if (membership.getRole().getLevel() < minimumRole.getLevel())
             throw new AccessDeniedException("User does not have required permissions to access this resource");
 
         return membership;

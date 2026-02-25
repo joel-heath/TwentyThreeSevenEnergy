@@ -16,6 +16,7 @@ public class Appliance {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private House house;
 
+    @Column(nullable = false)
     private String name;
 
     public Long getId() { return id; }

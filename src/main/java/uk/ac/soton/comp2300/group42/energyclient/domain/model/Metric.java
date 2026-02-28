@@ -1,9 +1,10 @@
 package uk.ac.soton.comp2300.group42.energyclient.domain.model;
 
-import java.util.List;
+import java.time.LocalDate;
 
-public record Metrics(
+public record Metric(
     Long id,
     Long houseID,
-    List<Double> metrics
+    LocalDate date,
+    Double energyUsed
 ) {}

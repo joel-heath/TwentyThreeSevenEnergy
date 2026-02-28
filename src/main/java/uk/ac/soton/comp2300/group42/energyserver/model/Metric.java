@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
-public class Metrics {
+public class Metric {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,13 +19,21 @@ public class Metrics {
     private House house;
 
     @Column(nullable = false)
-    private List<Double> metrics;
+    private LocalDate date;
+
+    @Column(nullable = false)
+    private Double energyUsed;
 
     public Long getId() { return id; }
 
-    public List<Double> getMetrics() { return metrics; }
-    public void setMetrics(List<Double> metrics) { this.metrics = metrics; }
-
     public House getHouse() { return house; }
     public void setHouse(House house) { this.house = house; }
+
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
+
+    public Double getEnergyUsed() { return energyUsed; }
+    public void setEnergyUsed(Double energyUsed) { this.energyUsed = energyUsed; }
+
+
 }

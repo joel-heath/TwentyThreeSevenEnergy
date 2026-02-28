@@ -90,12 +90,12 @@ public class IDoEverything {
                 }
         );
 
-        preferences.activeHouseProperty().subscribe(newHouse -> {
+        preferences.activeHouseProperty().subscribe((_, newHouse) -> {
             if (newHouse == null) return;
             Housemate me = houseRepo.getCurrentUserAsHousemate(newHouse.getId());
             Platform.runLater(() -> currentUser.updateFrom(me, newHouse));
         });
-        currentUser.houseProperty().subscribe(newHouse -> {
+        currentUser.houseProperty().subscribe((_, newHouse) -> {
             if (newHouse != null && !newHouse.equals(preferences.getActiveHouse()))
                 Platform.runLater(() -> preferences.setActiveHouse(newHouse));
         });

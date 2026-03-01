@@ -7,10 +7,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 import org.mapstruct.factory.Mappers;
-import uk.ac.soton.comp2300.group42.energyclient.data.mapper.ActivationMapper;
-import uk.ac.soton.comp2300.group42.energyclient.data.mapper.ApplianceMapper;
-import uk.ac.soton.comp2300.group42.energyclient.data.mapper.HouseMapper;
-import uk.ac.soton.comp2300.group42.energyclient.data.mapper.UserMapper;
+import uk.ac.soton.comp2300.group42.energyclient.data.mapper.*;
 import uk.ac.soton.comp2300.group42.energyclient.data.repository.*;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.*;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
@@ -24,6 +21,7 @@ public class CoreEnergyModule extends AbstractModule {
         bind(HouseRepository.class).to(SwitchableHouseRepository.class);
         bind(ApplianceRepository.class).to(SwitchableApplianceRepository.class);
         bind(ActivationRepository.class).to(SwitchableActivationRepository.class);
+        bind(MetricRepository.class).to(SwitchableMetricRepository.class);
     }
 
     @Provides
@@ -57,6 +55,10 @@ public class CoreEnergyModule extends AbstractModule {
     public ActivationMapper provideActivationMapper() {
         return Mappers.getMapper(ActivationMapper.class);
     }
+
+    @Provides
+    @Singleton
+    public MetricMapper provideMetricMapper() { return Mappers.getMapper(MetricMapper.class); }
 
     @Provides
     @Singleton

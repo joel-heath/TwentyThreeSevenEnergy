@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public record Metric(
     Long id,
-    Long houseID,
+    Long houseId,
     LocalDate date,
     Double energyUsed
 ) {}

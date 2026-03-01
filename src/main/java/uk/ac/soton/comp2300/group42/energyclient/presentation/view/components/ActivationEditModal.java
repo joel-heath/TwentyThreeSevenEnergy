@@ -21,7 +21,6 @@ public class ActivationEditModal extends Modal {
 
     public void bindComponents(UpcomingActivationsViewModel vm) {
         this.vm = vm;
-
         schedulePane.setApplianceList(vm.getAppliances());
     }
 

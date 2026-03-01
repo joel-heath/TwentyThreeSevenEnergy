@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.domain.service.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug.DashboardDebugViewModel;

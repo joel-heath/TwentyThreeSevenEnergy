@@ -5,7 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.setIfNew;
@@ -30,7 +30,7 @@ public class AccountSettingsController {
         editNameField.setDisable(true);
         editEmailField.setDisable(true);
 
-        vm.refreshDataAsync().thenAccept(_ ->
+        vm.refreshDataAsync().thenRunAsync(() ->
                 Platform.runLater(() -> {
                     setIfNew(editNameField, vm.getUser().getName());
                     setIfNew(editEmailField, vm.getUser().getEmail());

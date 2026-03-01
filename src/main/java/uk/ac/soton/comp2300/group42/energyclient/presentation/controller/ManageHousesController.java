@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.common.Role;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;

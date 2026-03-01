@@ -11,7 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
 

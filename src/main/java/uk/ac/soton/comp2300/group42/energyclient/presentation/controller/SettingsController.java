@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.SettingsViewModel;
 

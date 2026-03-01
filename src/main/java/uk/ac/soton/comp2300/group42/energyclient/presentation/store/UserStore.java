@@ -9,7 +9,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;

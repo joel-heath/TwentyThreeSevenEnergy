@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
+import uk.ac.soton.comp2300.group42.energyclient.domain.service.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.*;
 
 import static org.mockito.Mockito.*;
@@ -19,7 +20,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SharedDashboardViewModelTest {
 
-    @Mock EnergyCalculator mockCalc;
+    @Mock
+    EnergyCalculator mockCalc;
 
     @Mock
     IDoEverything mockRepo;

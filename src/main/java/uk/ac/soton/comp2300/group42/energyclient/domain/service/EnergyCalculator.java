@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
+package uk.ac.soton.comp2300.group42.energyclient.domain.service;
 
 import com.google.inject.Singleton;
 

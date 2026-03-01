@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug.DashboardDebugViewModel;

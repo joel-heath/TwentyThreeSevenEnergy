@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import org.junit.jupiter.api.Test;
+import uk.ac.soton.comp2300.group42.energyclient.domain.service.EnergyCalculator;
 
 import static org.junit.jupiter.api.Assertions.*;
 

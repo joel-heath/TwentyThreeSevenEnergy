@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.PriceStatus;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget;

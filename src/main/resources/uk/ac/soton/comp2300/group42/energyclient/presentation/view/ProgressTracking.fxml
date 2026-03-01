@@ -20,21 +20,21 @@
                 <Label fx:id="priceLabel" text="Loading..."/>
             </HBox>
 
-            <LineChart fx:id="priceChart" title="Upcoming Energy Prices (p/kWh)" prefHeight="200" prefWidth="200">
+            <LineChart fx:id="priceChart" title="Upcoming Energy Prices (p/kWh)" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
-                    <CategoryAxis label="Time (30m windows)" side="BOTTOM" />
+                    <CategoryAxis label="Time (30m windows)" side="BOTTOM" animated="false"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Pence / kWh" side="LEFT" />
+                    <NumberAxis label="Pence / kWh" side="LEFT" animated="false"/>
                 </yAxis>
             </LineChart>
 
-            <BarChart fx:id="expenseChart" title="Daily Energy Expenses" prefHeight="200" prefWidth="200">
+            <BarChart fx:id="expenseChart" title="Daily Energy Expenses" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
-                    <CategoryAxis label="Date" side="BOTTOM" />
+                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Total Cost (p)" side="LEFT" />
+                    <NumberAxis label="Total Cost (p)" side="LEFT" animated="false"/>
                 </yAxis>
             </BarChart>
 

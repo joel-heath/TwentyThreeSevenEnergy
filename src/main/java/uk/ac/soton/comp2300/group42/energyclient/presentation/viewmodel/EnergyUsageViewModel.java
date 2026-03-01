@@ -6,7 +6,7 @@ import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.util.Duration;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.domain.service.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
 public class EnergyUsageViewModel {

@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.domain.service.EnergyCalculator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 

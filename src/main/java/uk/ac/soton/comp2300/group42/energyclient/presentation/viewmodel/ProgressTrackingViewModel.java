@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
 import com.google.inject.Inject;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public class ProgressTrackingViewModel {
 
@@ -45,20 +47,24 @@ public class ProgressTrackingViewModel {
         return currentPrice;
     }
 
-    public void loadData() {
-        List<UnitRate> rates = repository.fetchNext12Hours();
-        currentPrice.set(rates.getFirst().valueIncVat());
+    public CompletableFuture<Void> loadDataAsync() {
+        return CompletableFuture.runAsync(() -> {
+            List<UnitRate> rates = repository.fetchNext12Hours();
 
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Price Trend (p/kWh)");
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Price Trend (p/kWh)");
 
-        for (UnitRate rate : rates) {
-            String timeLabel = rate.validFrom().format(TIME_FORMATTER);
-            series.getData().add(new XYChart.Data<>(timeLabel, rate.valueIncVat()));
-        }
+            for (UnitRate rate : rates) {
+                String timeLabel = rate.validFrom().format(TIME_FORMATTER);
+                series.getData().add(new XYChart.Data<>(timeLabel, rate.valueIncVat()));
+            }
 
-        priceSeriesData.clear();
-        priceSeriesData.add(series);
+            Platform.runLater(() -> {
+                currentPrice.set(rates.getFirst().valueIncVat());
+                priceSeriesData.clear();
+                priceSeriesData.add(series);
+            });
+        });
     }
 
     public void loadMockExpenses() {

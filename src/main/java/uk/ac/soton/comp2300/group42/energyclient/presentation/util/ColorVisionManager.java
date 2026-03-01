@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.util;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;

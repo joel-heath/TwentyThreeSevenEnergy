@@ -1,42 +1,57 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
 import com.google.inject.Inject;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 
-public class SettingsViewModel {
+import java.util.concurrent.CompletableFuture;
+
+public class AccountSettingsViewModel {
 
     private final UserStore userStore;
     private final AuthRepository authRepo;
-    private final SessionManager sessionManager;
     private final ObservablePreferences preferences;
-    private final DoubleProperty costGoal;
+    private final ObservableHousemate user;
 
-    @Inject public SettingsViewModel(UserStore userStore, AuthRepository authRepo, SessionManager sessionManager) {
+    @Inject public AccountSettingsViewModel(UserStore userStore, AuthRepository authRepo) {
         this.userStore = userStore;
         this.authRepo = authRepo;
-        this.sessionManager = sessionManager;
         this.preferences = userStore.getPreferences();
-        this.costGoal = preferences.energyGoalProperty();
+        this.user = userStore.getCurrent();
     }
 
-    public boolean isLoggedIn() {
-        return sessionManager.isLoggedIn();
+    public CompletableFuture<Void> refreshDataAsync() {
+        return CompletableFuture.runAsync(userStore::refresh);
     }
 
     public ObservablePreferences getPreferences() {
         return preferences;
     }
 
-    public void setCostGoal(double goal) {
-        costGoal.set(goal);
+    public ObservableHousemate getUser() {
+        return user;
+    }
+
+    public void logout() {
+        authRepo.logout();
+        Navigator.goToIrreversible("Dashboard.fxml");
     }
 
     public void save() {
-        userStore.savePreferences();
+        userStore.saveUser();
+    }
+
+    public void deleteAccount() {
+        // userStore.deleteUser();
+    }
+
+    public void setPassword(String password) {
+        // authRepo.changePassword(password);
     }
 }

@@ -51,7 +51,9 @@ public class UserStore {
         // all other stores are guaranteed to have the correct user and preferences
         var prefs = userRepo.getCurrentPreferences();
         var house = houseStore.get(prefs.activeHouseId());
+        var me = houseRepo.getCurrentUserAsHousemate(house.getId());
         preferences.updateFrom(prefs, house);
+        currentUser.updateFrom(me, house);
     }
 
     public ObservableHousemate getCurrent() { return currentUser; }
@@ -63,6 +65,16 @@ public class UserStore {
 
     public void saveUser() {
         //userRepo.saveCurrentUser(currentUser.commit());
+    }
+
+    public void refresh() {
+        var prefs = userRepo.getCurrentPreferences();
+        var house = houseStore.get(prefs.activeHouseId());
+        var me = houseRepo.getCurrentUserAsHousemate(house.getId());
+        Platform.runLater(() -> {
+            preferences.updateFrom(prefs, house);
+            currentUser.updateFrom(me, house);
+        });
     }
 
     // TODO: login/out, which calls AuthRepo and updates the current user and preferences accordingly

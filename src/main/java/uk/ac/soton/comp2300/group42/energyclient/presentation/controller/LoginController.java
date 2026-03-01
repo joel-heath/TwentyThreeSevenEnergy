@@ -31,10 +31,12 @@ public class LoginController {
             guard(password.isBlank(), "Password is required"))
             return;
 
-        boolean authenticated = vm.login(email, password);
-
-        if (!authenticated) {
-            showError("Invalid email or password.");
+        try {
+            vm.login(email, password);
+        }
+        catch (Exception e) {
+            // invalid email or password ?
+            showError("An error occurred during registration: " + e.getMessage());
             return;
         }
 

@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch;
@@ -14,8 +15,10 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.Settings
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;
 
 public class SettingsController {
+
     private final SettingsViewModel vm;
 
+    @FXML private Button accountSettingsButton;
     @FXML private ToggleSwitch shareLocationToggle;
     @FXML private ComboBox<Theme> themeComboBox;
     @FXML private ComboBox<Mode> modeComboBox;
@@ -35,10 +38,16 @@ public class SettingsController {
         modeComboBox.getItems().setAll(Mode.values());
         modeComboBox.setConverter(createConverter(Mode::getName));
         modeComboBox.valueProperty().bindBidirectional(vm.getPreferences().modeProperty());
+
+        accountSettingsButton.setText(vm.isLoggedIn() ? "Account Settings" : "Login");
     }
 
     @FXML private void onGoToAccessibility() {
         Navigator.goTo("AccessibilitySettings.fxml");
+    }
+
+    @FXML private void onAccountSettings() {
+        Navigator.goTo(vm.isLoggedIn() ? "AccountSettings.fxml" : "Login.fxml");
     }
 
     @FXML private void onSetCostGoal() {
@@ -55,13 +64,5 @@ public class SettingsController {
                     "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
             );
         }
-    }
-
-    @FXML private void onLogout() {
-        vm.logout();
-    }
-
-    @FXML private void onLoginOrRegister() {
-        vm.login();
     }
 }

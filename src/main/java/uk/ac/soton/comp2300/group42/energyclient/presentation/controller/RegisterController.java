@@ -38,10 +38,11 @@ public class RegisterController {
             guard(!password.equals(confirm), "Passwords do not match"))
             return;
 
-        boolean success = vm.register(name, email, password);
-
-        if (!success) {
-            showError("User already exists.");
+        try {
+            vm.register(name, email, password);
+        }
+        catch (Exception e) {
+            showError("An error occurred during registration: " + e.getMessage());
             return;
         }
 

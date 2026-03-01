@@ -2,13 +2,23 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch?>
 
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
-                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.SettingsController"
-                 prefHeight="400.0" prefWidth="600.0">
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.SettingsController">
+
+    <Button fx:id="accountSettingsButton"
+            onAction="#onAccountSettings"
+            StackPane.alignment="TOP_RIGHT"
+            viewOrder="-1.0">
+        <StackPane.margin>
+            <Insets top="15" right="15"/>
+        </StackPane.margin>
+    </Button>
+
     <VBox spacing="20" alignment="CENTER">
 
         <VBox spacing="5" alignment="CENTER">
@@ -37,9 +47,5 @@
                 text="Accessibility Settings"
                 onAction="#onGoToAccessibility"
                 prefWidth="220"/>
-
-        <Button onAction="#onLogout" text="Logout"/>
-        <Button onAction="#onLoginOrRegister" text="Login / Register"/>
-
     </VBox>
 </BackOverlayPane>

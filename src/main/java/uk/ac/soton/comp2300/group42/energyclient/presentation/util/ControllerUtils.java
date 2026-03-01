@@ -1,5 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.util;
 
+import javafx.scene.control.Label;
+import javafx.scene.control.TextInputControl;
 import javafx.util.StringConverter;
 
 import java.lang.management.ManagementFactory;
@@ -61,5 +63,17 @@ public class ControllerUtils {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return targetDateTime.format(formatter);
+    }
+
+    public static void setIfNew(TextInputControl input, String newValue) {
+        if (newValue != null && !newValue.equals(input.getText())) {
+            input.setText(newValue);
+        }
+    }
+
+    public static void setIfNew(Label label, String newValue) {
+        if (newValue != null && !newValue.equals(label.getText())) {
+            label.setText(newValue);
+        }
     }
 }

@@ -27,7 +27,7 @@
 
         <PasswordField fx:id="passwordField" promptText="Password" maxWidth="250"/>
 
-        <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" maxWidth="250"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" onAction="#onRegister" maxWidth="250"/>
 
         <Button text="Sign Up" onAction="#onRegister" maxWidth="250"/>
 

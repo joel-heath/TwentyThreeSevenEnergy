@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.data.local;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class LocalStorageClient {
     private final LocalStorageData data;
 
     @Inject
-    public LocalStorageClient(ObjectMapper mapper) {
+    public LocalStorageClient(@BackendMapper ObjectMapper mapper) {
         this.mapper = mapper;
         this.executor = Executors.newSingleThreadExecutor();
         this.data = new LocalStorageData();

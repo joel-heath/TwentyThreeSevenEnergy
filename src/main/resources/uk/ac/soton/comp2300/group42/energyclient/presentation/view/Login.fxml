@@ -26,6 +26,6 @@
         <Hyperlink text="Don't have an account? Sign up"
                    onAction="#goToSignUp"/>
 
-        <Button text="Accessibility Settings" onAction="#onGoToAccessibility" prefWidth="220"/>
+        <Button text="Accessibility Settings" onAction="#onAccessibilitySettings" prefWidth="220"/>
     </VBox>
 </BackOverlayPane>

@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.appliance.ApplianceResponse;
 import uk.ac.soton.comp2300.group42.appliance.CreateApplianceRequest;
 import uk.ac.soton.comp2300.group42.appliance.UpdateApplianceRequest;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class ApplianceClient extends BaseApiClient {
 
     @Inject
-    public ApplianceClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
+    public ApplianceClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
         super(httpClient, mapper);
     }
 

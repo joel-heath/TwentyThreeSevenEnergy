@@ -15,9 +15,10 @@ module uk.ac.soton.comp2300.group42.energyclient {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.annotation;
     requires org.mapstruct;
+    requires jakarta.inject;
 
     opens uk.ac.soton.comp2300.group42.energyclient.data.backend                  to com.google.guice, com.google.gson;
-    opens uk.ac.soton.comp2300.group42.energyclient.data.external                 to com.google.guice, com.google.gson;
+    opens uk.ac.soton.comp2300.group42.energyclient.data.external                 to com.google.guice, com.google.gson, org.mapstruct, com.fasterxml.jackson.databind;
     opens uk.ac.soton.comp2300.group42.energyclient.data.local                    to com.google.guice, com.fasterxml.jackson.databind;
     opens uk.ac.soton.comp2300.group42.energyclient.data.mapper                   to com.google.guice, org.mapstruct;
     opens uk.ac.soton.comp2300.group42.energyclient.data.repository               to com.google.guice;
@@ -32,11 +33,12 @@ module uk.ac.soton.comp2300.group42.energyclient {
     opens uk.ac.soton.comp2300.group42.energyclient.presentation.view.components  to javafx.fxml;
     opens uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel        to com.google.guice, com.google.gson;
     opens uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug  to com.google.guice, com.google.gson;
-    opens uk.ac.soton.comp2300.group42.energyclient.presentation.observable to com.google.guice, com.google.gson;
+    opens uk.ac.soton.comp2300.group42.energyclient.presentation.observable       to com.google.guice, com.google.gson;
 
     exports uk.ac.soton.comp2300.group42.energyclient;
     exports uk.ac.soton.comp2300.group42.energyclient.di;
     exports uk.ac.soton.comp2300.group42.energyclient.data.mapper                 to com.google.guice, org.mapstruct;
+    exports uk.ac.soton.comp2300.group42.energyclient.data.external               to org.mapstruct;
     exports uk.ac.soton.comp2300.group42.energyclient.domain.model                to com.google.guice, org.mapstruct;
 
 

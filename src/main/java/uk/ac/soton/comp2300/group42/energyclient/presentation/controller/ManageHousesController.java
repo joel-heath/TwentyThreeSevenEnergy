@@ -67,7 +67,7 @@ public class ManageHousesController {
     }
 
     @FXML private void onDeleteHouse() {
-        // worth a confirmation popup
+        // TODO: worth a confirmation popup
         vm.deleteActiveHouse();
         editHouseModal.close();
     }

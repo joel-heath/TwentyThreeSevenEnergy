@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.NetworkException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.DataFetchException;
@@ -16,7 +17,7 @@ public abstract class BaseApiClient {
     private final AuthenticatedHttpClient httpClient;
     private final ObjectMapper mapper;
 
-    protected BaseApiClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
+    protected BaseApiClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
         this.httpClient = httpClient;
         this.mapper = mapper;
     }
@@ -117,7 +118,8 @@ public abstract class BaseApiClient {
 
         try {
             return mapper.readValue(response.body(), responseType);
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             throw new DataFetchException("Failed to deserialize response from " + response.uri() + " to " + responseType.getType().getTypeName(), e);
         }
     }

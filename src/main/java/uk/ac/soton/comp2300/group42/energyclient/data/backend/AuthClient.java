@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
 import uk.ac.soton.comp2300.group42.user.LoginRequest;
 import uk.ac.soton.comp2300.group42.user.RegistrationRequest;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class AuthClient extends BaseApiClient {
 
     @Inject
-    public AuthClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
+    public AuthClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
         super(httpClient, mapper);
     }
 

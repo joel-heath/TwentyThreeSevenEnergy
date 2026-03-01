@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.security.TokenStorageService;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class AuthenticatedHttpClient {
     private static final String API_ROOT_URL = "http://localhost:8080/api/"; // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
 
     @Inject
-    public AuthenticatedHttpClient(ObjectMapper mapper, TokenStorageService tokenStorage) {
+    public AuthenticatedHttpClient(@BackendMapper ObjectMapper mapper, TokenStorageService tokenStorage) {
         this.mapper = mapper;
         this.tokenStorage = tokenStorage;
         this.refreshToken = tokenStorage.getRefreshToken();
@@ -121,8 +122,9 @@ public class AuthenticatedHttpClient {
                 clearTokenPair();
                 tokenStorage.clearRefreshToken();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (IOException | InterruptedException e) {
+            System.out.println("Error during token refresh: " + e.getMessage());
         }
         System.out.println("Refresh failed. User must log in again.");
         return false;

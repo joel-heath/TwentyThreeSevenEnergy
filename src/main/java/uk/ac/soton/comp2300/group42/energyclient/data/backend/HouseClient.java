@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.house.CreateHouseRequest;
 import uk.ac.soton.comp2300.group42.house.HouseResponse;
 import uk.ac.soton.comp2300.group42.house.UpdateHouseRequest;
@@ -15,7 +16,7 @@ import java.util.List;
 public class HouseClient extends BaseApiClient {
 
     @Inject
-    public HouseClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
+    public HouseClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
         super(httpClient, mapper);
     }
 

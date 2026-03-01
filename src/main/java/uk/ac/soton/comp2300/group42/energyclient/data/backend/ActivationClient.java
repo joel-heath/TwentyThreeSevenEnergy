@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.activation.ActivationResponse;
 import uk.ac.soton.comp2300.group42.activation.CreateActivationRequest;
 import uk.ac.soton.comp2300.group42.activation.UpdateActivationRequest;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class ActivationClient extends BaseApiClient {
 
     @Inject
-    public ActivationClient(AuthenticatedHttpClient httpClient, ObjectMapper mapper) {
+    public ActivationClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
         super(httpClient, mapper);
     }
 

@@ -7,8 +7,9 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.PriceStatus;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget;
@@ -17,7 +18,11 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.Advanced
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUsageViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
 
+import java.time.format.DateTimeFormatter;
+
 public class AdvancedDashboardController {
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final String STATUS_CARD_BASE_STYLE =
             "-fx-alignment: center; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 5;";
 
@@ -27,13 +32,14 @@ public class AdvancedDashboardController {
 
     @FXML private HBox statusRow;
 
-    private final AdvancedDashboardViewModel vm = new AdvancedDashboardViewModel();
-
+    private final AdvancedDashboardViewModel vm;
     private final EnergyUsageViewModel energyWidgetVM;
     private final UpcomingActivationsViewModel activationsWidgetVM;
 
-    @Inject public AdvancedDashboardController(EnergyUsageViewModel energyWidgetVM,
+    @Inject public AdvancedDashboardController(AdvancedDashboardViewModel vm,
+                                               EnergyUsageViewModel energyWidgetVM,
                                                UpcomingActivationsViewModel activationsWidgetVM) {
+        this.vm = vm;
         this.energyWidgetVM = energyWidgetVM;
         this.activationsWidgetVM = activationsWidgetVM;
     }
@@ -67,17 +73,19 @@ public class AdvancedDashboardController {
         card.setPadding(new Insets(2, 5, 2, 5));
 
         Label statusLabel = new Label();
-        String status = rate.getPriceStatus();
+        PriceStatus status = rate.getPriceStatus();
         ColorVisionManager.ColorRole colorRole;
 
-        if ("CHEAP".equals(status)) {
+        if (status == PriceStatus.CHEAP) {
             statusLabel.setText("\uD83D\uDE0A");
             colorRole = ColorVisionManager.ColorRole.STATUS_CHEAP;
-        } else if ("AVERAGE".equals(status)) {
+        }
+        else if (status == PriceStatus.AVERAGE) {
             statusLabel.setText("\uD83D\uDE10");
             colorRole = ColorVisionManager.ColorRole.STATUS_AVERAGE;
-        } else {
-            statusLabel.setText("\u26A0\uFE0F");
+        }
+        else {
+            statusLabel.setText("⚠️");
             colorRole = ColorVisionManager.ColorRole.STATUS_EXPENSIVE;
         }
 
@@ -85,8 +93,7 @@ public class AdvancedDashboardController {
                 vision -> STATUS_CARD_BASE_STYLE + "-fx-background-color: " + ColorVisionManager.getWebColor(vision, colorRole) + ";"
         ));
 
-        String time = rate.validFrom().substring(11, 16);
-        Label timeLabel = new Label(time);
+        Label timeLabel = new Label(rate.validFrom().format(TIME_FORMATTER));
         timeLabel.setStyle("-fx-font-size: 9px;");
 
         card.getChildren().addAll(statusLabel, timeLabel);

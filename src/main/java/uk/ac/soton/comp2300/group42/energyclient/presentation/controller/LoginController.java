@@ -47,7 +47,7 @@ public class LoginController {
         Navigator.goTo("Register.fxml");
     }
 
-    @FXML private void onGoToAccessibility() {
+    @FXML private void onAccessibilitySettings() {
         Navigator.goTo("AccessibilitySettings.fxml");
     }
 

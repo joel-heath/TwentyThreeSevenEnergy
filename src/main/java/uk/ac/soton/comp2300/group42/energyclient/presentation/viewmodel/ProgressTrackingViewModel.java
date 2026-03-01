@@ -1,63 +1,64 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
+import com.google.inject.Inject;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.UnitRate;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.services.EnergyPriceService;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
+import uk.ac.soton.comp2300.group42.energyclient.domain.repository.EnergyPriceRepository;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
 public class ProgressTrackingViewModel {
 
-    private final EnergyPriceService service = new EnergyPriceService();
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    private final ObservableList<XYChart.Series<String, Number>> priceSeriesData = FXCollections.observableArrayList();
-    private final ObservableList<XYChart.Series<String, Number>> expenseSeriesData = FXCollections.observableArrayList();
+    private final EnergyPriceRepository repository;
+
+    private final ObservableList<XYChart.Series<String, Number>> priceSeriesData;
+    private final ObservableList<XYChart.Series<String, Number>> expenseSeriesData;
+
+    private final DoubleProperty currentPrice;
+
+    @Inject
+    public ProgressTrackingViewModel(EnergyPriceRepository repository) {
+        this.repository = repository;
+        this.priceSeriesData = FXCollections.observableArrayList();
+        this.expenseSeriesData = FXCollections.observableArrayList();
+        this.currentPrice = new SimpleDoubleProperty(0.0);
+    }
 
     public ObservableList<XYChart.Series<String, Number>> getPriceSeriesData() {
         return priceSeriesData;
     }
+
     public ObservableList<XYChart.Series<String, Number>> getExpenseSeriesData() {
         return expenseSeriesData;
     }
-
-    private final DoubleProperty currentPrice = new SimpleDoubleProperty();
 
     public DoubleProperty currentPriceProperty() {
         return currentPrice;
     }
 
     public void loadData() {
-        try {
-            List<UnitRate> rates = service.fetchNext12Hours();
+        List<UnitRate> rates = repository.fetchNext12Hours();
+        currentPrice.set(rates.getFirst().valueIncVat());
 
-            if (!rates.isEmpty()) {
-                currentPrice.set(rates.getLast().valueIncVat());
-            }
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Price Trend (p/kWh)");
 
-            Collections.reverse(rates);
-
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName("Price Trend (p/kWh)");
-
-            for (UnitRate rate : rates) {
-                // Formatting time from "2025-02-19T14:00:00Z" to "14:00"
-                String timeLabel = rate.validFrom().substring(11, 16);
-                series.getData().add(new XYChart.Data<>(timeLabel, rate.valueIncVat()));
-            }
-
-            priceSeriesData.clear();
-            priceSeriesData.add(series);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (UnitRate rate : rates) {
+            String timeLabel = rate.validFrom().format(TIME_FORMATTER);
+            series.getData().add(new XYChart.Data<>(timeLabel, rate.valueIncVat()));
         }
+
+        priceSeriesData.clear();
+        priceSeriesData.add(series);
     }
 
     public void loadMockExpenses() {

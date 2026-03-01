@@ -3,10 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
 
@@ -20,7 +18,6 @@ public class AccountSettingsController {
     @FXML private TextField editEmailField;
     @FXML private TextField passwordField;
     @FXML private TextField confirmPasswordField;
-    @FXML private Button logoutButton;
     @FXML private Label responseLabel;
 
     @Inject public AccountSettingsController(AccountSettingsViewModel vm) {
@@ -89,5 +86,9 @@ public class AccountSettingsController {
 
     @FXML private void onLogout() {
         vm.logout();
+    }
+
+    @FXML private void onDeleteAccount() {
+        vm.deleteAccount();
     }
 }

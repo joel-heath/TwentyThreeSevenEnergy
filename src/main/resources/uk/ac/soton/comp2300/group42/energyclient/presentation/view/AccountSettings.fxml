@@ -25,7 +25,9 @@
 
         <Button onAction="#onUpdateAccount" text="Update Account"/>
 
-        <Button fx:id="logoutButton" onAction="#onLogout" text="Logout"/>
+        <Button onAction="#onLogout" text="Logout"/>
+
+        <Button onAction="#onDeleteAccount" text="Delete Account" style="-fx-background-color: #ff4d4d; -fx-text-fill: white;"/>
 
         <Label fx:id="responseLabel"/>
     </VBox>

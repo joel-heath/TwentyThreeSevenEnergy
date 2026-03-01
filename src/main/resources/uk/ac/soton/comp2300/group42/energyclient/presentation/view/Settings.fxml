@@ -43,8 +43,7 @@
             <Button text="Set Goal" onAction="#onSetCostGoal"/>
         </HBox>
 
-        <Button fx:id="accessibilityButton"
-                text="Accessibility Settings"
+        <Button text="Accessibility Settings"
                 onAction="#onGoToAccessibility"
                 prefWidth="220"/>
     </VBox>

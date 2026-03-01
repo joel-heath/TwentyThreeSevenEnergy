@@ -29,6 +29,7 @@ public class LandingController {
                     registerDebugShortcut(newScene);
                 }
             });
+            debugButton.setManaged(true);
             debugButton.setVisible(true);
         }
     }
@@ -50,11 +51,11 @@ public class LandingController {
         Navigator.goToIrreversible("Dashboard.fxml");
     }
 
-    @FXML private void onDebug() {
-        Navigator.goTo("debug/DashboardDebug.fxml");
+    @FXML private void onAccessibilitySettings() {
+        Navigator.goTo("AccessibilitySettings.fxml");
     }
 
-    @FXML private void onGoToAccessibility() {
-        Navigator.goTo("AccessibilitySettings.fxml");
+    @FXML private void onDebug() {
+        Navigator.goTo("debug/DashboardDebug.fxml");
     }
 }

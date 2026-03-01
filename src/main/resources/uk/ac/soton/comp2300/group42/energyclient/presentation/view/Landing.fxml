@@ -18,8 +18,8 @@
 
     <Button text="Log In" onAction="#onLogin"/>
     <Button text="Dive Straight In" onAction="#onDive"/>
-    <Button text="Debug Dashboard" onAction="#onDebug" visible="false" fx:id="debugButton"/>
-    <Button text="Accessibility Settings" onAction="#onGoToAccessibility" prefWidth="220"/>
+    <Button text="Accessibility Settings" onAction="#onAccessibilitySettings"/>
+    <Button text="Debug Dashboard" onAction="#onDebug" visible="false" managed="false" fx:id="debugButton"/>
 </VBox>
 
 

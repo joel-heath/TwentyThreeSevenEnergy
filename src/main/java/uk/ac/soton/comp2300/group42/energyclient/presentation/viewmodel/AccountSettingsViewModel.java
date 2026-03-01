@@ -1,10 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
 import com.google.inject.Inject;
-import javafx.beans.Observable;
-import javafx.beans.property.DoubleProperty;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
@@ -49,6 +46,8 @@ public class AccountSettingsViewModel {
 
     public void deleteAccount() {
         // userStore.deleteUser();
+        authRepo.logout();
+        Navigator.goToIrreversible("Landing.fxml");
     }
 
     public void setPassword(String password) {

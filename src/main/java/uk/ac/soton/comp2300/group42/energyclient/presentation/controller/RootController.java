@@ -10,22 +10,23 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class RootController {
-    private final IDoEverything IDoEverything;
+
+    private final ObservablePreferences preferences;
 
     @FXML private Modal modal;
     @FXML private StackPane contentArea;
     @FXML private ScrollPane reminderScroll;
     @FXML private VBox remindersArea;
 
-    @Inject public RootController(IDoEverything IDoEverything) {
-        this.IDoEverything = IDoEverything;
+    @Inject public RootController(ObservablePreferences preferences) {
+        this.preferences = preferences;
     }
 
     @FXML private void initialize() {
@@ -33,9 +34,9 @@ public class RootController {
                 Bindings.min(500, remindersArea.heightProperty().add(40))
         );
 
-        IDoEverything.getPreferences().themeProperty().addListener((obs, oldVal, newVal) -> {
+        preferences.themeProperty().subscribe((oldTheme, newTheme) -> {
             // Logic to switch CSS files on contentArea or Scene
-            System.out.println("Theme changed to: " + newVal);
+            System.out.println("Theme changed to: " + newTheme);
             // applyTheme(newVal);
         });
     }

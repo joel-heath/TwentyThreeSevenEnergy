@@ -3,9 +3,10 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 import com.google.inject.Inject;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ActivationModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.services.ActivationService;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,27 +15,27 @@ import java.util.concurrent.CompletableFuture;
 
 public class UpcomingActivationsViewModel {
 
-    private final ObservableList<ApplianceModel> appliances;
-    private final SortedList<ActivationModel> activations;
-    private final IDoEverything IDoEverything;
+    private final ObservableList<ObservableAppliance> appliances;
+    private final SortedList<ObservableActivation> activations;
+    private final ActivationService activationService;
 
-    @Inject public UpcomingActivationsViewModel(IDoEverything IDoEverything) {
-        this.IDoEverything = IDoEverything;
-        this.appliances = IDoEverything.getAppliances();
-        this.activations = new SortedList<>(IDoEverything.getActivations());
-        this.activations.setComparator(Comparator.comparing(ActivationModel::getNextActivationDateTime));
+    @Inject public UpcomingActivationsViewModel(ActivationService activationService, ApplianceStore applianceStore) {
+        this.activationService = activationService;
+        this.appliances = applianceStore.getAll();
+        this.activations = new SortedList<>(activationService.getAll());
+        this.activations.setComparator(Comparator.comparing(ObservableActivation::getNextActivationDateTime));
 
-        CompletableFuture.runAsync(IDoEverything::fetchAllData);
+        CompletableFuture.runAsync(activationService::refreshAll);
     }
 
-    public ObservableList<ApplianceModel> getAppliances() { return appliances; }
-    public SortedList<ActivationModel> getActivations() { return activations; }
+    public ObservableList<ObservableAppliance> getAppliances() { return appliances; }
+    public SortedList<ObservableActivation> getActivations() { return activations; }
 
-    public void removeActivation(ActivationModel activation) {
-        IDoEverything.deleteActivation(activation);
+    public void removeActivation(ObservableActivation activation) {
+        activationService.delete(activation);
     }
 
-    public void updateActivation(ActivationModel act, ApplianceModel app, LocalTime time, LocalDate date,
+    public void updateActivation(ObservableActivation act, ObservableAppliance app, LocalTime time, LocalDate date,
                                  boolean recursMonday,
                                  boolean recursTuesday,
                                  boolean recursWednesday,
@@ -67,6 +68,6 @@ public class UpcomingActivationsViewModel {
             act.setRecursSunday(false);
         }
 
-        IDoEverything.saveActivation(act);
+        activationService.save(act);
     }
 }

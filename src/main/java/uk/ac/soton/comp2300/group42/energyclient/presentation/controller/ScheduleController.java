@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ScheduleViewModel;
 
@@ -44,7 +44,7 @@ public class ScheduleController {
     }
 
     @FXML private void onSchedule() {
-        ApplianceModel appliance = schedulePane.getSelectedAppliance();
+        ObservableAppliance appliance = schedulePane.getSelectedAppliance();
         int hour = schedulePane.getHour();
         int minute = schedulePane.getMinute();
         boolean recurs = schedulePane.isRecurrenceRulesVisible();

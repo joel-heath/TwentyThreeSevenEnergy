@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,13 +6,13 @@ import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ApplianceModelTest {
+public class ObservableApplianceTest {
     ApplianceDTO dto;
-    ApplianceModel model;
+    ObservableAppliance model;
 
     @BeforeEach void setUp() {
         dto = new ApplianceDTO(1L, "Washing Machine");
-        model = new ApplianceModel(dto);
+        model = new ObservableAppliance(dto);
     }
 
     @Test void testGetters() {

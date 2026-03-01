@@ -7,7 +7,8 @@ public class LoginViewModel {
 
     private final AuthRepository repo;
 
-    @Inject public LoginViewModel(AuthRepository repo) {
+    @Inject
+    public LoginViewModel(AuthRepository repo) {
         this.repo = repo;
     }
 

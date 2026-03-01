@@ -76,7 +76,7 @@ public class LocalApplianceRepository implements ApplianceRepository {
             throw new ApiException("House ID is required", 400);
 
         if (!data.houses.containsKey(houseId))
-            throw new ApiException("House not found", 404);
+            throw new ApiException("House with id " + houseId + " not found", 404);
     }
 
     private Appliance validateRequestExists(Long houseId, Long applianceId) {

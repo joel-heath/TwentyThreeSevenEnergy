@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ActivationModelTest {
+public class ObservableActivationTest {
     final LocalDate christmas = LocalDate.of(2025, 12, 25);
     final LocalDate easter = LocalDate.of(2026, 4, 5);
 
@@ -26,14 +26,16 @@ public class ActivationModelTest {
     ActivationDTO nonRecurringDto;
     ActivationDTO recurringDto;
 
-    ActivationModel nonRecurring;
-    ActivationModel recurring;
+    ObservableActivation nonRecurring;
+    ObservableActivation recurring;
 
     final Long dishwasherId = 2L;
     final Long washingMachineId = 1L;
 
-    @Mock ApplianceModel dishwasher;
-    @Mock ApplianceModel washingMachine;
+    @Mock
+    ObservableAppliance dishwasher;
+    @Mock
+    ObservableAppliance washingMachine;
 
     @BeforeEach void setUp() {
         nonRecurringDto = new ActivationDTO(dishwasherId, morning, christmas);
@@ -46,8 +48,8 @@ public class ActivationModelTest {
                 false,
                 true
         );
-        nonRecurring = new ActivationModel(nonRecurringDto, dishwasher);
-        recurring = new ActivationModel(recurringDto, washingMachine);
+        nonRecurring = new ObservableActivation(nonRecurringDto, dishwasher);
+        recurring = new ObservableActivation(recurringDto, washingMachine);
     }
 
     @Test void testGetters_nonRecurring() {

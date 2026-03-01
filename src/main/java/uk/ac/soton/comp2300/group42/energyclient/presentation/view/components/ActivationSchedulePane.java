@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ import java.time.LocalTime;
 
 public class ActivationSchedulePane extends VBox {
 
-    @FXML private ComboBox<ApplianceModel> applianceSelector;
+    @FXML private ComboBox<ObservableAppliance> applianceSelector;
     @FXML private Spinner<Integer> hourSpinner;
     @FXML private Spinner<Integer> minuteSpinner;
 
@@ -83,11 +83,11 @@ public class ActivationSchedulePane extends VBox {
         spinner.setValueFactory(factory);
     }
 
-    public void setApplianceList(ObservableList<ApplianceModel> appliances) { applianceSelector.setItems(appliances); }
+    public void setApplianceList(ObservableList<ObservableAppliance> appliances) { applianceSelector.setItems(appliances); }
 
-    public ApplianceModel getSelectedAppliance() { return applianceSelector.getValue(); }
-    public void setSelectedAppliance(ApplianceModel appliance) { applianceSelector.setValue(appliance); }
-    public ObjectProperty<ApplianceModel> selectedApplianceProperty() { return applianceSelector.valueProperty(); }
+    public ObservableAppliance getSelectedAppliance() { return applianceSelector.getValue(); }
+    public void setSelectedAppliance(ObservableAppliance appliance) { applianceSelector.setValue(appliance); }
+    public ObjectProperty<ObservableAppliance> selectedApplianceProperty() { return applianceSelector.valueProperty(); }
 
     public int getHour() { return hourSpinner.getValue(); }
     public int getMinute() { return minuteSpinner.getValue(); }

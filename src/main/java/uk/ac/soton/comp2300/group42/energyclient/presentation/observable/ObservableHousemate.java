@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import javafx.beans.property.*;
 import uk.ac.soton.comp2300.group42.common.Role;
@@ -6,15 +6,15 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ModelUtils.updateIfChanged;
 
-public class HousemateModel {
+public class ObservableHousemate {
 
     private final Long id;
     private final StringProperty name;
     private final StringProperty email;
-    private final ObjectProperty<HouseModel> house;
+    private final ObjectProperty<ObservableHouse> house;
     private final ObjectProperty<Role> role;
 
-    public HousemateModel(Housemate housemate, HouseModel house) {
+    public ObservableHousemate(Housemate housemate, ObservableHouse house) {
         this.id = housemate.userId();
         this.house = new SimpleObjectProperty<>(house);
         this.name = new SimpleStringProperty(housemate.name());
@@ -32,7 +32,7 @@ public class HousemateModel {
         );
     }
 
-    public void updateFrom(Housemate housemate, HouseModel house) {
+    public void updateFrom(Housemate housemate, ObservableHouse house) {
         updateIfChanged(getName(), housemate.name(), this::setName);
         updateIfChanged(getEmail(), housemate.email(), this::setEmail);
         updateIfChanged(getRole(), housemate.role(), this::setRole);
@@ -49,9 +49,9 @@ public class HousemateModel {
     public void setEmail(String value) { email.set(value); }
     public StringProperty emailProperty() { return email; }
 
-    public HouseModel getHouse() { return house.get(); }
-    public void setHouse(HouseModel house) { this.house.set(house); }
-    public ObjectProperty<HouseModel> houseProperty() { return house; }
+    public ObservableHouse getHouse() { return house.get(); }
+    public void setHouse(ObservableHouse house) { this.house.set(house); }
+    public ObjectProperty<ObservableHouse> houseProperty() { return house; }
 
     public Role getRole() { return role.get(); }
     public void setRole(Role role) { this.role.set(role); }

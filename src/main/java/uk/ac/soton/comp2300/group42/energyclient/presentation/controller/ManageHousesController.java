@@ -9,9 +9,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.common.Role;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ColorVisionManager;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.HouseModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.HousemateModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ManageHousesViewModel;
 
@@ -21,7 +21,7 @@ public class ManageHousesController {
     private static final String HOUSEMATE_CARD_STYLE =
             "-fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5";
 
-    @FXML private ComboBox<HouseModel> activeHouseComboBox;
+    @FXML private ComboBox<ObservableHouse> activeHouseComboBox;
     @FXML private VBox housematesContainer;
     @FXML private TextField inviteHousemateField;
     @FXML private TextField newHouseNameField;
@@ -40,7 +40,7 @@ public class ManageHousesController {
 
     @FXML private void initialize() {
         activeHouseComboBox.getItems().setAll(vm.getHouseList());
-        activeHouseComboBox.setConverter(createConverter(HouseModel::getName));
+        activeHouseComboBox.setConverter(createConverter(ObservableHouse::getName));
         activeHouseComboBox.valueProperty().bindBidirectional(vm.activeHouseProperty());
         activeHouseComboBox.valueProperty()
                 .map(_ -> vm.getHousemates()
@@ -91,7 +91,7 @@ public class ManageHousesController {
         vm.inviteHousemate(inviteHousemateField.getText());
     }
 
-    private Pane createHousemateView(HousemateModel housemate) {
+    private Pane createHousemateView(ObservableHousemate housemate) {
         VBox card = new VBox();
         card.styleProperty().bind(ColorVisionManager.visionProperty().map(
                 vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(

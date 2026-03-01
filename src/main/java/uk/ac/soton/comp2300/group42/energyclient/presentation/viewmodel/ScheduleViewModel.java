@@ -5,19 +5,21 @@ import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.services.ActivationService;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.concurrent.CompletableFuture;
 
 public class ScheduleViewModel {
 
-    private final IDoEverything IDoEverything;
-    private final ObservableList<ApplianceModel> applianceList;
-    private final ObjectProperty<ApplianceModel> selectedAppliance;
+    private final ActivationService activationService;
+    private final ObservablePreferences preferences;
+    private final ObservableList<ObservableAppliance> applianceList;
+    private final ObjectProperty<ObservableAppliance> selectedAppliance;
     private final IntegerProperty hour;
     private final IntegerProperty minute;
     private final ObjectProperty<LocalDate> date;
@@ -30,9 +32,10 @@ public class ScheduleViewModel {
     private final BooleanProperty recursSunday;
     private final BooleanProperty isRecurring;
 
-    @Inject public ScheduleViewModel(IDoEverything IDoEverything) {
-        this.IDoEverything = IDoEverything;
-        this.applianceList = IDoEverything.getAppliances();
+    @Inject public ScheduleViewModel(ActivationService activationService, ApplianceStore applianceStore, ObservablePreferences preferences) {
+        this.activationService = activationService;
+        this.applianceList = applianceStore.getAll();
+        this.preferences = preferences;
         selectedAppliance = new SimpleObjectProperty<>();
         hour = new SimpleIntegerProperty(LocalDateTime.now().getHour());
         minute = new SimpleIntegerProperty(LocalDateTime.now().getMinute());
@@ -46,12 +49,11 @@ public class ScheduleViewModel {
         recursSunday = new SimpleBooleanProperty(false);
         isRecurring = new SimpleBooleanProperty(false);
 
-        CompletableFuture.runAsync(IDoEverything::fetchAllData);
+        // CompletableFuture.runAsync(fetchAllData);
     }
 
-    public ObservableList<ApplianceModel> getApplianceList() { return applianceList; }
-
-    public ObjectProperty<ApplianceModel> selectedApplianceProperty() { return selectedAppliance; }
+    public ObservableList<ObservableAppliance> getApplianceList() { return applianceList; }
+    public ObjectProperty<ObservableAppliance> selectedApplianceProperty() { return selectedAppliance; }
     public IntegerProperty hourProperty() { return hour; }
     public IntegerProperty minuteProperty() { return minute; }
     public ObjectProperty<LocalDate> dateProperty() { return date; }
@@ -65,10 +67,10 @@ public class ScheduleViewModel {
     public BooleanProperty isRecurringProperty() { return isRecurring; }
 
     public LocalDateTime scheduleActivation() {
-        Activation dto = isRecurring.get()
+        Activation pojo = isRecurring.get()
                 ? new Activation(
                         selectedAppliance.get().getId(),
-                        IDoEverything.getPreferences().getActiveHouse().getId(),
+                        preferences.getActiveHouse().getId(),
                         LocalTime.of(hour.get(), minute.get()),
                         recursMonday.get(),
                         recursTuesday.get(),
@@ -79,10 +81,10 @@ public class ScheduleViewModel {
                         recursSunday.get())
                 : new Activation(
                         selectedAppliance.get().getId(),
-                        IDoEverything.getPreferences().getActiveHouse().getId(),
+                        preferences.getActiveHouse().getId(),
                         LocalTime.of(hour.get(), minute.get()),
                         date.get());
 
-        return IDoEverything.createActivation(dto);
+        return activationService.create(pojo);
     }
 }

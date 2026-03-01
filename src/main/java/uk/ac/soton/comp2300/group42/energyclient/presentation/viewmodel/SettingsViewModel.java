@@ -3,25 +3,25 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 import com.google.inject.Inject;
 import javafx.beans.property.DoubleProperty;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 
 public class SettingsViewModel {
 
-    private final IDoEverything IDoEverything;
+    private final UserStore userStore;
     private final AuthRepository authRepo;
-    private final PreferencesModel preferences;
+    private final ObservablePreferences preferences;
     private final DoubleProperty costGoal;
 
-    @Inject public SettingsViewModel(IDoEverything IDoEverything, AuthRepository authRepo) {
-        this.IDoEverything = IDoEverything;
+    @Inject public SettingsViewModel(UserStore userStore, AuthRepository authRepo) {
+        this.userStore = userStore;
         this.authRepo = authRepo;
-        this.preferences = IDoEverything.getPreferences();
+        this.preferences = userStore.getPreferences();
         this.costGoal = preferences.energyGoalProperty();
     }
 
-    public PreferencesModel getPreferences() {
+    public ObservablePreferences getPreferences() {
         return preferences;
     }
 
@@ -30,7 +30,7 @@ public class SettingsViewModel {
     }
 
     public void save() {
-        IDoEverything.savePreferences();
+        userStore.savePreferences();
     }
 
     public void logout() {

@@ -6,13 +6,13 @@ import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.util.Duration;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.EnergyCalculator;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
 public class EnergyUsageViewModel {
 
     private final EnergyCalculator calc;
-    private final PreferencesModel preferences;
+    private final ObservablePreferences preferences;
 
     private final StringProperty costMessage = new SimpleStringProperty("£0.00");
     private final StringProperty goalMessage = new SimpleStringProperty("Goal: £1.00");
@@ -20,7 +20,8 @@ public class EnergyUsageViewModel {
     private final DoubleProperty cost = new SimpleDoubleProperty(0);
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
 
-    @Inject public EnergyUsageViewModel(EnergyCalculator calc, PreferencesModel preferences) {
+    @Inject
+    public EnergyUsageViewModel(EnergyCalculator calc, ObservablePreferences preferences) {
         this.calc = calc;
         this.preferences = preferences;
 
@@ -63,5 +64,5 @@ public class EnergyUsageViewModel {
     public DoubleProperty usageProperty() {return usage;}
     public StringProperty costMessageProperty() {return costMessage;}
     public StringProperty goalMessageProperty() {return goalMessage;}
-    public PreferencesModel getPreferences() {return preferences;}
+    public ObservablePreferences getPreferences() {return preferences;}
 }

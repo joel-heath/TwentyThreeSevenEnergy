@@ -7,9 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.energyclient.data.backend.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.HouseModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -18,14 +17,15 @@ import static org.mockito.Mockito.when;
 public class SettingsViewModelTest {
 
     SettingsViewModel vm;
-    PreferencesModel preferences;
+    ObservablePreferences preferences;
     @Mock
     IDoEverything mockRepo;
-    @Mock HouseModel mockHouse;
+    @Mock
+    ObservableHouse mockHouse;
 
     @BeforeEach
     void setUp() {
-        preferences = new PreferencesModel(new PreferencesDTO(), mockHouse);
+        preferences = new ObservablePreferences(new PreferencesDTO(), mockHouse);
         //preferences.setVision(ColorVision.TYPICAL);
 
         when(mockRepo.getPreferences()).thenReturn(preferences);

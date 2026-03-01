@@ -12,8 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.*;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.*;
 
 import static org.mockito.Mockito.*;
 
@@ -24,18 +23,21 @@ class SharedDashboardViewModelTest {
 
     @Mock
     IDoEverything mockRepo;
-    PreferencesModel preferences;
-    ObservableList<ActivationModel> activations;
-    ObservableList<ApplianceModel> appliances;
+    ObservablePreferences preferences;
+    ObservableList<ObservableActivation> activations;
+    ObservableList<ObservableAppliance> appliances;
 
-    @Mock ActivationModel activation;
-    @Mock ApplianceModel mockAppliance;
-    @Mock HouseModel mockHouse;
+    @Mock
+    ObservableActivation activation;
+    @Mock
+    ObservableAppliance mockAppliance;
+    @Mock
+    ObservableHouse mockHouse;
 
     private SharedDashboardViewModel viewModel;
 
     @BeforeEach void setUp() {
-        preferences = new PreferencesModel(new PreferencesDTO(), mockHouse);
+        preferences = new ObservablePreferences(new PreferencesDTO(), mockHouse);
         activations = FXCollections.observableArrayList(activation);
         appliances =  FXCollections.observableArrayList(mockAppliance);
 

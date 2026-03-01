@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -8,13 +8,13 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ModelUtils.updateIfChanged;
 
-public class ApplianceModel {
+public class ObservableAppliance {
 
     private final Long id;
-    private final ObjectProperty<HouseModel> house;
+    private final ObjectProperty<ObservableHouse> house;
     private final StringProperty name;
 
-    public ApplianceModel(Appliance entity, HouseModel house) {
+    public ObservableAppliance(Appliance entity, ObservableHouse house) {
         this.id = entity.id();
         this.name = new SimpleStringProperty(entity.name());
         this.house = new SimpleObjectProperty<>(house);
@@ -38,9 +38,9 @@ public class ApplianceModel {
     public void setName(String value) { name.set(value); }
     public StringProperty nameProperty() { return name; }
 
-    public HouseModel getHouse() { return house.get(); }
-    public void setHouse(HouseModel value) { house.set(value); }
-    public ObjectProperty<HouseModel> houseProperty() { return house; }
+    public ObservableHouse getHouse() { return house.get(); }
+    public void setHouse(ObservableHouse value) { house.set(value); }
+    public ObjectProperty<ObservableHouse> houseProperty() { return house; }
 
     @Override public String toString() { return name.get(); }
 }

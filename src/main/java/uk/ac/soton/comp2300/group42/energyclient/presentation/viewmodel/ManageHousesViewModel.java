@@ -5,69 +5,94 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 
 import uk.ac.soton.comp2300.group42.common.Role;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.HouseModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.HousemateModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.HouseStore;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.HousemateStore;
 
+import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
 
 public class ManageHousesViewModel {
 
-    private final IDoEverything IDoEverything;
-    private final ObservableList<HouseModel> houseList;
-    private final ObservableList<HousemateModel> housemates;
-    private final ObjectProperty<HouseModel> activeHouse;
+    private final HouseStore houseStore;
+    private final HousemateStore housemateStore;
+    private final ObservableList<ObservableHouse> houseList;
+    private final ObservableList<ObservableHousemate> housemates;
+    private final ObjectProperty<ObservableHouse> activeHouse;
+    private final ObservableHousemate currentUser;
+    private final ObservablePreferences preferences;
 
-    @Inject public ManageHousesViewModel(IDoEverything IDoEverything) {
-        this.IDoEverything = IDoEverything;
-        this.houseList = IDoEverything.getHouses();
-        this.housemates = IDoEverything.getHousemates();
-        activeHouse = IDoEverything.getPreferences().activeHouseProperty();
+    @Inject
+    public ManageHousesViewModel(HouseStore houseStore, HousemateStore housemateStore, ObservableHousemate currentUser, ObservablePreferences preferences) {
+        this.houseStore = houseStore;
+        this.housemateStore = housemateStore;
+        this.houseList = houseStore.getAll();
+        this.housemates = housemateStore.getAll();
+        this.activeHouse = preferences.activeHouseProperty();
+        this.currentUser = currentUser;
+        this.preferences = preferences;
 
-        CompletableFuture.runAsync(IDoEverything::fetchAllData);
+        CompletableFuture.runAsync(() -> {
+            houseStore.refreshAll();
+            housemateStore.refreshAll();
+        });
     }
 
-    public Role getCurrentUserRole() { return IDoEverything.getCurrentUser().getRole(); }
-    public ObjectProperty<Role> currentRoleProperty() { return IDoEverything.getCurrentUser().roleProperty(); }
+    public Role getCurrentUserRole() { return currentUser.getRole(); }
+    public ObjectProperty<Role> currentRoleProperty() { return currentUser.roleProperty(); }
 
-    public ObservableList<HouseModel> getHouseList() { return houseList; }
-    public ObservableList<HousemateModel> getHousemates() { return housemates; }
+    public ObservableList<ObservableHouse> getHouseList() { return houseList; }
+    public ObservableList<ObservableHousemate> getHousemates() { return housemates; }
 
-    public HouseModel getActiveHouse() { return activeHouse.get(); }
-    public void setActiveHouse(HouseModel house) { activeHouse.set(house); }
-    public ObjectProperty<HouseModel> activeHouseProperty() { return activeHouse; }
+    public ObservableHouse getActiveHouse() { return activeHouse.get(); }
+    public void setActiveHouse(ObservableHouse house) { activeHouse.set(house); }
+    public ObjectProperty<ObservableHouse> activeHouseProperty() { return activeHouse; }
 
     public void createHouse(String name, String address) {
-        //repository.createHouse(name, address);
+        House house = new House(null, name, address, ZoneId.systemDefault(), null);
+        houseStore.add(house);
     }
 
-    public void kickHousemate(HousemateModel housemate) {
-        //repository.removeHousemate(housemate);
+    public void kickHousemate(ObservableHousemate housemate) {
+        housemateStore.kick(housemate.getId());
     }
 
-    public void inviteHousemate(String name) {
-        //repository.inviteHousemate(name);
+    public void inviteHousemate(String email) {
+        Housemate housemate = new Housemate(null, getActiveHouse().getId(), "", email, Role.GUEST);
+        housemateStore.invite(housemate);
     }
 
     public boolean canLeaveHouse() {
         // cannot leave a house orphaned with no owner
         return getCurrentUserRole() != Role.OWNER ||
-                housemates.stream().anyMatch(h -> h.getRole() == Role.OWNER && !h.getId().equals(IDoEverything.getCurrentUser().getId()));
+                housemates.stream().anyMatch(h ->
+                        h.getRole() == Role.OWNER &&
+                        !h.getId().equals(currentUser.getId()));
     }
 
     public void leaveActiveHouse() {
-        IDoEverything.leaveActiveHouse();
+        houseStore.leave(activeHouse.get().getId());
+
+        var nextHouse = houseStore.getAll().getFirst();
+        preferences.setActiveHouse(nextHouse);
     }
 
     public void deleteActiveHouse() {
-        IDoEverything.leaveActiveHouse();
+        houseStore.delete(activeHouse.get().getId());
+
+        var nextHouse = houseStore.getAll().getFirst();
+        preferences.setActiveHouse(nextHouse);
     }
 
     public void editActiveHouse(String name, String address) {
-        activeHouse.get().setName(name);
-        activeHouse.get().setAddress(address);
+        ObservableHouse house = activeHouse.get();
+        house.setName(name);
+        house.setAddress(address);
 
-        // repository.saveActiveHouseEdits();
-
+        houseStore.update(house.commit());
     }
 }

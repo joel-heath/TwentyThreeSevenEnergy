@@ -31,8 +31,8 @@ public class LocalStorageData {
         LocalStorageData data = new LocalStorageData();
 
         data.user = new User(0L, "Default User", "No email set");
-        data.preferences = new Preferences(0L, false,ColorVision.TYPICAL, Theme.LIGHT, Mode.SIMPLE, false, 1.0, 0L);
-        data.houses.put(0L, new House(0L, "Default House", "No address set",ZoneId.systemDefault(), Role.OWNER));
+        data.preferences = new Preferences(0L, false, ColorVision.TYPICAL, Theme.LIGHT, Mode.SIMPLE, false, 1.0, 0L);
+        data.houses.put(0L, new House(0L, "Default House", "No address set", ZoneId.systemDefault(), Role.OWNER));
 
         return data;
     }

@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -11,7 +11,7 @@ import java.time.ZoneId;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ModelUtils.updateIfChanged;
 
-public class HouseModel {
+public class ObservableHouse {
 
     private final Long id;
     private final StringProperty name;
@@ -19,7 +19,7 @@ public class HouseModel {
     private final ObjectProperty<ZoneId> timezone;
     private final ObjectProperty<Role> role;
 
-    public HouseModel(House house) {
+    public ObservableHouse(House house) {
         this.id = house.id();
         this.name = new SimpleStringProperty(house.name());
         this.address = new SimpleStringProperty(house.address());

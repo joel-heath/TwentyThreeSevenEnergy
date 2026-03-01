@@ -13,8 +13,9 @@ import uk.ac.soton.comp2300.group42.energyclient.data.mapper.HouseMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.mapper.UserMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.repository.*;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.*;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 
 public class CoreEnergyModule extends AbstractModule {
     @Override
@@ -36,31 +37,37 @@ public class CoreEnergyModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public UserMapper provideUserMapper() {
+    UserMapper provideUserMapper() {
         return Mappers.getMapper(UserMapper.class);
     }
 
     @Provides
     @Singleton
-    public HouseMapper provideHouseMapper() {
+    HouseMapper provideHouseMapper() {
         return Mappers.getMapper(HouseMapper.class);
     }
 
     @Provides
     @Singleton
-    public ApplianceMapper provideApplianceMapper() {
+    ApplianceMapper provideApplianceMapper() {
         return Mappers.getMapper(ApplianceMapper.class);
     }
 
     @Provides
     @Singleton
-    public ActivationMapper provideActivationMapper() {
+    ActivationMapper provideActivationMapper() {
         return Mappers.getMapper(ActivationMapper.class);
     }
 
     @Provides
     @Singleton
-    PreferencesModel providePreferences(IDoEverything IDoEverything) {
-        return IDoEverything.getPreferences();
+    ObservableHousemate provideCurrentUser(UserStore userStore) {
+        return userStore.getCurrent();
+    }
+
+    @Provides
+    @Singleton
+    ObservablePreferences providePreferences(UserStore userStore) {
+        return userStore.getPreferences();
     }
 }

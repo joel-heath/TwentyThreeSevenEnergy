@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.EnergyCalculator;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -32,15 +32,15 @@ public class DashboardDebugViewModel {
     private DoubleUnaryOperator formula = x -> x * 500 + 100;
 
     private final EnergyCalculator calc;
-    private final IDoEverything IDoEverything;
-    private final PreferencesModel preferences;
+    private final UserStore userStore;
+    private final ObservablePreferences preferences;
 
-    @Inject public DashboardDebugViewModel(IDoEverything IDoEverything, EnergyCalculator calc) {
+    @Inject public DashboardDebugViewModel(UserStore userStore, EnergyCalculator calc) {
         //costMessage.bind(Bindings.format("%£.2f", cost.get()));
         //goalMessage.bind(Bindings.format("%£.2f", goal.get()));
-        this.IDoEverything = IDoEverything;
+        this.userStore = userStore;
         this.calc = calc;
-        this.preferences = IDoEverything.getPreferences();
+        this.preferences = userStore.getPreferences();
 
         usage.bind(Bindings.when(goal.isEqualTo(0))
                 .then(0.0)
@@ -99,7 +99,7 @@ public class DashboardDebugViewModel {
         recalculateCost();
     }
 
-    public PreferencesModel getPreferences() {
+    public ObservablePreferences getPreferences() {
         return preferences;
     }
 
@@ -112,6 +112,6 @@ public class DashboardDebugViewModel {
         return formula;
     }
 
-    public void save() { IDoEverything.savePreferences(); }
+    public void save() { userStore.savePreferences(); }
 
 }

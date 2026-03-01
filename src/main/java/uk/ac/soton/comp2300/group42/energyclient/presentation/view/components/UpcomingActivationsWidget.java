@@ -9,9 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ActivationModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
 
@@ -56,7 +56,7 @@ public class UpcomingActivationsWidget extends VBox {
         Navigator.goTo("Schedule.fxml");
     }
 
-    private Pane createActivationView(ActivationModel activation) {
+    private Pane createActivationView(ObservableActivation activation) {
         VBox card = new VBox();
         card.styleProperty().bind(ColorVisionManager.visionProperty().map(
                 vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
@@ -69,7 +69,7 @@ public class UpcomingActivationsWidget extends VBox {
         Label dateLabel = new Label();
 
         nameLabel.textProperty().bind(
-                activation.applianceProperty().flatMap(ApplianceModel::nameProperty)
+                activation.applianceProperty().flatMap(ObservableAppliance::nameProperty)
         );
         timeLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> activation.getActivationTime().format(DateTimeFormatter.ofPattern("HH:mm")),
@@ -103,12 +103,12 @@ public class UpcomingActivationsWidget extends VBox {
     }
 
     private void bindActivations() {
-        SortedList<ActivationModel> activations = vm.getActivations();
+        SortedList<ObservableActivation> activations = vm.getActivations();
         renderActivations(activations);
-        activations.addListener((ListChangeListener<ActivationModel>) _ -> renderActivations(activations));
+        activations.addListener((ListChangeListener<ObservableActivation>) _ -> renderActivations(activations));
     }
 
-    private void renderActivations(SortedList<ActivationModel> activations) {
+    private void renderActivations(SortedList<ObservableActivation> activations) {
         scheduleContainer.getChildren().setAll(
                 activations.stream()
                         .map(this::createActivationView)

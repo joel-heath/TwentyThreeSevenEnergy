@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -14,10 +14,10 @@ import java.time.LocalTime;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ModelUtils.updateIfChanged;
 
-public class ActivationModel {
+public class ObservableActivation {
 
     private final Long id;
-    private final ObjectProperty<ApplianceModel> appliance;
+    private final ObjectProperty<ObservableAppliance> appliance;
     private final ObjectProperty<LocalTime> activationTime;
     private final ObjectProperty<LocalDate> activationDate;
     private final ObjectProperty<ActivationType> type;
@@ -30,7 +30,7 @@ public class ActivationModel {
     private final BooleanProperty recursSunday;
     private final BooleanProperty updateTrigger;
 
-    public ActivationModel(Activation entity, ApplianceModel appliance) {
+    public ObservableActivation(Activation entity, ObservableAppliance appliance) {
         this.id = entity.id();
         this.appliance = new SimpleObjectProperty<>(appliance);
         this.activationTime = new SimpleObjectProperty<>(entity.activationTime());
@@ -64,9 +64,10 @@ public class ActivationModel {
         );
     }
 
-    public void updateFrom(Activation entity, ApplianceModel appliance) {
+    public void updateFrom(Activation entity, ObservableAppliance appliance) {
         updateIfChanged(getActivationTime(), entity.activationTime(), this::setActivationTime);
         updateIfChanged(getActivationDate(), entity.activationDate(), this::setActivationDate);
+        updateIfChanged(getActivationType(), entity.type(), this::setActivationType);
         updateIfChanged(isRecursMonday(), entity.recursMonday(), this::setRecursMonday);
         updateIfChanged(isRecursTuesday(), entity.recursTuesday(), this::setRecursTuesday);
         updateIfChanged(isRecursWednesday(), entity.recursWednesday(), this::setRecursWednesday);
@@ -79,9 +80,9 @@ public class ActivationModel {
 
     public Long getId() { return id; }
 
-    public ApplianceModel getAppliance() { return appliance.get(); }
-    public void setAppliance(ApplianceModel appliance) { this.appliance.set(appliance); }
-    public ObjectProperty<ApplianceModel> applianceProperty() { return appliance; }
+    public ObservableAppliance getAppliance() { return appliance.get(); }
+    public void setAppliance(ObservableAppliance appliance) { this.appliance.set(appliance); }
+    public ObjectProperty<ObservableAppliance> applianceProperty() { return appliance; }
 
     public LocalTime getActivationTime() { return activationTime.get(); }
     public void setActivationTime(LocalTime activationTime) { this.activationTime.set(activationTime); }
@@ -90,6 +91,10 @@ public class ActivationModel {
     public LocalDate getActivationDate() { return activationDate.get(); }
     public void setActivationDate(LocalDate activationDate) { this.activationDate.set(activationDate); }
     public ObjectProperty<LocalDate> activationDateProperty() { return activationDate; }
+
+    public ActivationType getActivationType() { return type.get(); }
+    public void setActivationType(ActivationType type) { this.type.set(type); }
+    public ObjectProperty<ActivationType> activationTypeProperty() { return type; }
 
     public Boolean isRecursMonday() { return recursMonday.get(); }
     public Boolean isRecursTuesday() { return recursTuesday.get(); }
@@ -115,6 +120,7 @@ public class ActivationModel {
     public BooleanProperty recursSaturdayProperty() { return recursSaturday; }
     public BooleanProperty recursSundayProperty() { return recursSunday; }
 
+    // TODO: replace all calls to isRecurring with getAcitvationType() == ActivationType.RECURRING
     public boolean isRecurring() { return getActivationDate() == null; }
 
     public boolean recursOnDay(DayOfWeek dayOfWeek) {

@@ -3,8 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.services;
 import com.google.inject.Singleton;
 import javafx.application.Platform;
 
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ActivationModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 
 import java.time.Duration;
@@ -18,15 +18,15 @@ import java.util.function.Consumer;
 public class NotificationService {
 
     private final Timer timer = new Timer(true);
-    private final Hashtable<ActivationModel, TimerTask> timerTasks = new Hashtable<>();
-    private Consumer<ActivationModel> onCleanupAction;
+    private final Hashtable<ObservableActivation, TimerTask> timerTasks = new Hashtable<>();
+    private Consumer<ObservableActivation> onCleanupAction;
 
-    public void setOnCleanupAction(Consumer<ActivationModel> action) {
+    public void setOnCleanupAction(Consumer<ObservableActivation> action) {
         this.onCleanupAction = action;
     }
 
-    public LocalDateTime scheduleNotification(ActivationModel activation) {
-        ApplianceModel appliance = activation.getAppliance();
+    public LocalDateTime scheduleNotification(ObservableActivation activation) {
+        ObservableAppliance appliance = activation.getAppliance();
         LocalDateTime targetTime = activation.getNextActivationDateTime();
 
         LocalDateTime now = LocalDateTime.now();
@@ -55,12 +55,12 @@ public class NotificationService {
         return targetTime;
     }
 
-    public void cancelNotification(ActivationModel activation) {
+    public void cancelNotification(ObservableActivation activation) {
         TimerTask task = timerTasks.remove(activation);
         if (task != null) task.cancel();
     }
 
-    public void rescheduleNotification(ActivationModel activation) {
+    public void rescheduleNotification(ObservableActivation activation) {
         cancelNotification(activation);
         scheduleNotification(activation);
     }

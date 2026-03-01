@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.UnitRate;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.services.EnergyPriceService;
 
 import java.time.LocalDate;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 public class ProgressTrackingViewModel {
+
     private final EnergyPriceService service = new EnergyPriceService();
 
     private final ObservableList<XYChart.Series<String, Number>> priceSeriesData = FXCollections.observableArrayList();

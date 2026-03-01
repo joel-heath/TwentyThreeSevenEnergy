@@ -11,8 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,9 +25,11 @@ class ScheduleViewModelTest {
 
     @Mock
     IDoEverything repo;
-    ObservableList<ApplianceModel> appliances;
-    @Mock ApplianceModel appliance1;
-    @Mock ApplianceModel appliance2;
+    ObservableList<ObservableAppliance> appliances;
+    @Mock
+    ObservableAppliance appliance1;
+    @Mock
+    ObservableAppliance appliance2;
 
     @Captor ArgumentCaptor<ActivationDTO> activationCaptor;
 
@@ -44,7 +45,7 @@ class ScheduleViewModelTest {
     @Test void testLoadsAppliances() {
         appliances.setAll(List.of(appliance1, appliance2));
 
-        ObservableList<ApplianceModel> list = viewModel.getApplianceList();
+        ObservableList<ObservableAppliance> list = viewModel.getApplianceList();
 
         assertEquals(2, list.size(), "ApplianceList should contain 2 items");
         assertTrue(list.contains(appliance1));

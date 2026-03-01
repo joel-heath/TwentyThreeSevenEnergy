@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import javafx.beans.property.*;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
@@ -8,7 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ModelUtils.updateIfChanged;
 
-public class PreferencesModel {
+public class ObservablePreferences {
 
     private final BooleanProperty largeFont;
     private final ObjectProperty<ColorVision> vision;
@@ -16,9 +16,9 @@ public class PreferencesModel {
     private final ObjectProperty<Mode> mode;
     private final BooleanProperty shareLocation;
     private final DoubleProperty energyGoal;
-    private final ObjectProperty<HouseModel> activeHouse;
+    private final ObjectProperty<ObservableHouse> activeHouse;
 
-    public PreferencesModel(Preferences entity, HouseModel activeHouse) {
+    public ObservablePreferences(Preferences entity, ObservableHouse activeHouse) {
         this.largeFont = new SimpleBooleanProperty(entity.largeFont());
         this.vision = new SimpleObjectProperty<>(entity.vision());
         this.theme = new SimpleObjectProperty<>(entity.theme());
@@ -41,7 +41,7 @@ public class PreferencesModel {
         );
     }
 
-    public void updateFrom(Preferences entity, HouseModel house) {
+    public void updateFrom(Preferences entity, ObservableHouse house) {
         updateIfChanged(getLargeFont(), entity.largeFont(), this::setLargeFont);
         updateIfChanged(getVision(), entity.vision(), this::setVision);
         updateIfChanged(getTheme(), entity.theme(), this::setTheme);
@@ -75,7 +75,7 @@ public class PreferencesModel {
     public void setEnergyGoal(double energyGoal) { this.energyGoal.set(energyGoal); }
     public DoubleProperty energyGoalProperty() { return energyGoal; }
 
-    public HouseModel getActiveHouse() { return activeHouse.get(); }
-    public void setActiveHouse(HouseModel activeHouse) { this.activeHouse.set(activeHouse); }
-    public ObjectProperty<HouseModel> activeHouseProperty() { return activeHouse; }
+    public ObservableHouse getActiveHouse() { return activeHouse.get(); }
+    public void setActiveHouse(ObservableHouse activeHouse) { this.activeHouse.set(activeHouse); }
+    public ObjectProperty<ObservableHouse> activeHouseProperty() { return activeHouse; }
 }

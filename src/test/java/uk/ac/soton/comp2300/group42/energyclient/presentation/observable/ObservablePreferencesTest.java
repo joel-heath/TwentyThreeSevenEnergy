@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.energyclient.presentation.model;
+package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PreferencesModelTest {
+public class ObservablePreferencesTest {
     PreferencesDTO dto;
-    PreferencesModel model;
+    ObservablePreferences model;
 
-    @Mock HouseModel mockHouse1;
-    @Mock HouseModel mockHouse2;
+    @Mock
+    ObservableHouse mockHouse1;
+    @Mock
+    ObservableHouse mockHouse2;
 
     @BeforeEach void setUp() {
         dto = new PreferencesDTO(
@@ -31,7 +33,7 @@ public class PreferencesModelTest {
                 5.2,
                 1L);
 
-        model = new PreferencesModel(dto, mockHouse1);
+        model = new ObservablePreferences(dto, mockHouse1);
     }
 
     @Test void testGetters() {

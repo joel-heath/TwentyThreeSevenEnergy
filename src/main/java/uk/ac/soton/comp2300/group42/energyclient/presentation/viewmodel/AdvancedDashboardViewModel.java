@@ -3,7 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.UnitRate;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.services.EnergyPriceService;
 
 import java.util.ArrayList;

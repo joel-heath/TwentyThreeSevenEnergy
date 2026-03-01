@@ -6,11 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.energyclient.data.dto.PreferencesDTO;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.EnergyCalculator;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.HouseModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.PreferencesModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.EnergyCalculator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug.DashboardDebugViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.IDoEverything;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,14 +21,15 @@ public class DashboardDebugViewModelTest {
 
     @Mock
     IDoEverything mockRepo;
-    PreferencesModel preferences;
+    ObservablePreferences preferences;
     @Mock EnergyCalculator calc;
-    @Mock HouseModel mockHouse;
+    @Mock
+    ObservableHouse mockHouse;
 
     private DashboardDebugViewModel vm;
 
     @BeforeEach void setUp() {
-        preferences = new PreferencesModel(new PreferencesDTO(), mockHouse);
+        preferences = new ObservablePreferences(new PreferencesDTO(), mockHouse);
         when(mockRepo.getPreferences()).thenReturn(preferences);
 
         vm = new DashboardDebugViewModel(mockRepo, calc);

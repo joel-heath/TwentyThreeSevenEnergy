@@ -3,8 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.view.components;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ActivationModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.model.ApplianceModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class ActivationEditModal extends Modal {
     @FXML private Label responseLabel;
 
     private UpcomingActivationsViewModel vm;
-    private ActivationModel currentEditingActivation;
+    private ObservableActivation currentEditingActivation;
 
     public void bindComponents(UpcomingActivationsViewModel vm) {
         this.vm = vm;
@@ -46,7 +46,7 @@ public class ActivationEditModal extends Modal {
         super.show();
     }
 
-    public void show(ActivationModel activation) {
+    public void show(ObservableActivation activation) {
         this.currentEditingActivation = activation;
 
         schedulePane.setSelectedAppliance(activation.getAppliance());
@@ -71,18 +71,18 @@ public class ActivationEditModal extends Modal {
     }
 
     @FXML private void onSaveActivation() {
-        ApplianceModel appliance = schedulePane.getSelectedAppliance();
+        ObservableAppliance appliance = schedulePane.getSelectedAppliance();
 
         int hour = schedulePane.getHour();
         int minute = schedulePane.getMinute();
         boolean recurs = schedulePane.isRecurrenceRulesVisible();
 
         if (guard(appliance == null,
-                "Failed to schedule, no appliance selected") ||
-                guard(recurs && !schedulePane.isRecursSet(),
-                        "Failed to schedule, no recurrence days selected") ||
-                guard(!recurs && schedulePane.getDate().isBefore(LocalDateTime.now().toLocalDate()),
-                        "Failed to schedule, selected date is in the past")
+                  "Failed to schedule, no appliance selected") ||
+            guard(recurs && !schedulePane.isRecursSet(),
+                  "Failed to schedule, no recurrence days selected") ||
+            guard(!recurs && schedulePane.getDate().isBefore(LocalDateTime.now().toLocalDate()),
+                  "Failed to schedule, selected date is in the past")
         ) return;
 
         vm.updateActivation(currentEditingActivation,

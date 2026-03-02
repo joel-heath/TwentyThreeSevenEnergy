@@ -77,8 +77,8 @@ public class ActivationStore {
     }
 
     private ObservableActivation getObservable(Activation pojo) {
-        ObservableActivation existing = cache.get(pojo.id());
         ObservableAppliance appliance = applianceStore.get(pojo.applianceId());
+        ObservableActivation existing = cache.get(pojo.id());
 
         if (existing != null) {
             Platform.runLater(() -> existing.updateFrom(pojo, appliance));

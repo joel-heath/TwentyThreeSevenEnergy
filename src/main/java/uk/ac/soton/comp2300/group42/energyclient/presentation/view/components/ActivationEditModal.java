@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.view.components;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import uk.ac.soton.comp2300.group42.activation.ActivationType;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
@@ -52,7 +53,7 @@ public class ActivationEditModal extends Modal {
         schedulePane.setHour(activation.getActivationTime().getHour());
         schedulePane.setMinute(activation.getActivationTime().getMinute());
         schedulePane.setDate(activation.getActivationDate() == null ? LocalDateTime.now().toLocalDate() : activation.getActivationDate());
-        schedulePane.setRecurrenceRulesVisible(activation.isRecurring());
+        schedulePane.setRecurrenceRulesVisible(activation.getActivationType() == ActivationType.RECURRING);
         schedulePane.setRecursMonday(activation.isRecursMonday());
         schedulePane.setRecursTuesday(activation.isRecursTuesday());
         schedulePane.setRecursWednesday(activation.isRecursWednesday());

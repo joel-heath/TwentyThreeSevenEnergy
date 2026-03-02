@@ -65,6 +65,7 @@ public class HousemateStore {
     private ObservableHousemate getObservable(Housemate pojo) {
         ObservableHouse house = houseStore.get(pojo.houseId());
         ObservableHousemate existing = cache.get(pojo.userId());
+
         if (existing != null) {
             Platform.runLater(() -> existing.updateFrom(pojo, house));
             return existing;

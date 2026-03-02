@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ActivationDTO;
+import uk.ac.soton.comp2300.group42.activation.ActivationType;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -17,29 +18,30 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ObservableActivationTest {
+    
     final LocalDate christmas = LocalDate.of(2025, 12, 25);
     final LocalDate easter = LocalDate.of(2026, 4, 5);
 
     final LocalTime morning = LocalTime.of(8, 45);
     final LocalTime afternoon = LocalTime.of(13, 30);
 
-    ActivationDTO nonRecurringDto;
-    ActivationDTO recurringDto;
+    final Long dishwasherId = 1L;
+    final Long washingMachineId = 2L;
+    final Long houseId = 10L;
+
+    @Mock ObservableAppliance dishwasher;
+    @Mock ObservableAppliance washingMachine;
+    @Mock ObservableHouse house;
+
+    Activation nonRecurringDomain;
+    Activation recurringDomain;
 
     ObservableActivation nonRecurring;
     ObservableActivation recurring;
 
-    final Long dishwasherId = 2L;
-    final Long washingMachineId = 1L;
-
-    @Mock
-    ObservableAppliance dishwasher;
-    @Mock
-    ObservableAppliance washingMachine;
-
     @BeforeEach void setUp() {
-        nonRecurringDto = new ActivationDTO(dishwasherId, morning, christmas);
-        recurringDto = new ActivationDTO(washingMachineId, afternoon,
+        nonRecurringDomain = new Activation(dishwasherId, houseId, morning, christmas);
+        recurringDomain = new Activation(washingMachineId, houseId, afternoon,
                 true,
                 false,
                 true,
@@ -48,42 +50,50 @@ public class ObservableActivationTest {
                 false,
                 true
         );
-        nonRecurring = new ObservableActivation(nonRecurringDto, dishwasher);
-        recurring = new ObservableActivation(recurringDto, washingMachine);
+        nonRecurring = new ObservableActivation(nonRecurringDomain, dishwasher);
+        recurring = new ObservableActivation(recurringDomain, washingMachine);
     }
 
     @Test void testGetters_nonRecurring() {
         when(dishwasher.getId()).thenReturn(dishwasherId);
+        when(dishwasher.getHouse()).thenReturn(house);
+        when(house.getId()).thenReturn(houseId);
 
-        assertEquals(nonRecurringDto.getId(), nonRecurring.getId(), "ID should match DTO");
-        assertEquals(nonRecurringDto.getApplianceId(), nonRecurring.getAppliance().getId(), "Appliance ID should match DTO");
-        assertEquals(nonRecurringDto.getActivationTime(), nonRecurring.getActivationTime(), "Activation Time should match DTO");
-        assertEquals(nonRecurringDto.getActivationDate(), nonRecurring.getActivationDate(), "Activation Date should match DTO");
-        assertEquals(nonRecurringDto.isRecursMonday(), nonRecurring.isRecursMonday(), "Recurrence flags should match DTO");
-        assertEquals(nonRecurringDto.isRecursTuesday(), nonRecurring.isRecursTuesday(), "Recurrence flags should match DTO");
-        assertEquals(nonRecurringDto.isRecursWednesday(), nonRecurring.isRecursWednesday(), "Recurrence flags should match DTO");
-        assertEquals(nonRecurringDto.isRecursThursday(), nonRecurring.isRecursThursday(), "Recurrence flags should match DTO");
-        assertEquals(nonRecurringDto.isRecursFriday(), nonRecurring.isRecursFriday(), "Recurrence flags should match DTO");
-        assertEquals(nonRecurringDto.isRecursSaturday(), nonRecurring.isRecursSaturday(), "Recurrence flags should match DTO");
-        assertEquals(nonRecurringDto.isRecursSunday(), nonRecurring.isRecursSunday(), "Recurrence flags should match DTO");
-        assertFalse(nonRecurring.isRecurring(), "Model should evaluate itself as non-recurring based on DTO data");
+        assertEquals(nonRecurringDomain.id(), nonRecurring.getId(), "ID should match domain model");
+        assertEquals(nonRecurringDomain.applianceId(), nonRecurring.getAppliance().getId(), "Appliance ID should match domain model");
+        assertEquals(nonRecurringDomain.houseId(), nonRecurring.getAppliance().getHouse().getId(), "House ID should match domain model");
+        assertEquals(nonRecurringDomain.type(), nonRecurring.getActivationType(), "Type should match domain model");
+        assertEquals(nonRecurringDomain.activationTime(), nonRecurring.getActivationTime(), "Activation Time should match domain model");
+        assertEquals(nonRecurringDomain.activationDate(), nonRecurring.getActivationDate(), "Activation Date should match domain model");
+        assertEquals(nonRecurringDomain.recursMonday(), nonRecurring.isRecursMonday(), "Recurrence flags should match domain model");
+        assertEquals(nonRecurringDomain.recursTuesday(), nonRecurring.isRecursTuesday(), "Recurrence flags should match domain model");
+        assertEquals(nonRecurringDomain.recursWednesday(), nonRecurring.isRecursWednesday(), "Recurrence flags should match domain model");
+        assertEquals(nonRecurringDomain.recursThursday(), nonRecurring.isRecursThursday(), "Recurrence flags should match domain model");
+        assertEquals(nonRecurringDomain.recursFriday(), nonRecurring.isRecursFriday(), "Recurrence flags should match domain model");
+        assertEquals(nonRecurringDomain.recursSaturday(), nonRecurring.isRecursSaturday(), "Recurrence flags should match domain model");
+        assertEquals(nonRecurringDomain.recursSunday(), nonRecurring.isRecursSunday(), "Recurrence flags should match domain model");
+        assertEquals(dishwasher, nonRecurring.getAppliance(), "Appliance should match Appliance given in constructor");
     }
 
     @Test void testGetters_recurring() {
         when(washingMachine.getId()).thenReturn(washingMachineId);
+        when(washingMachine.getHouse()).thenReturn(house);
+        when(house.getId()).thenReturn(houseId);
 
-        assertEquals(recurringDto.getId(), recurring.getId(), "ID should match DTO");
-        assertEquals(recurringDto.getApplianceId(), recurring.getAppliance().getId(), "Appliance ID should match DTO");
-        assertEquals(recurringDto.getActivationTime(), recurring.getActivationTime(), "Activation Time should match DTO");
-        assertEquals(nonRecurringDto.getActivationDate(), nonRecurring.getActivationDate(), "Activation Date should match DTO");
-        assertEquals(recurringDto.isRecursMonday(), recurring.isRecursMonday(), "Recurrence flags should match DTO");
-        assertEquals(recurringDto.isRecursTuesday(), recurring.isRecursTuesday(), "Recurrence flags should match DTO");
-        assertEquals(recurringDto.isRecursWednesday(), recurring.isRecursWednesday(), "Recurrence flags should match DTO");
-        assertEquals(recurringDto.isRecursThursday(), recurring.isRecursThursday(), "Recurrence flags should match DTO");
-        assertEquals(recurringDto.isRecursFriday(), recurring.isRecursFriday(), "Recurrence flags should match DTO");
-        assertEquals(recurringDto.isRecursSaturday(), recurring.isRecursSaturday(), "Recurrence flags should match DTO");
-        assertEquals(recurringDto.isRecursSunday(), recurring.isRecursSunday(), "Recurrence flags should match DTO");
-        assertTrue(recurring.isRecurring(), "Model should evaluate itself as recurring based on DTO data");
+        assertEquals(recurringDomain.id(), recurring.getId(), "ID should match domain model");
+        assertEquals(recurringDomain.applianceId(), recurring.getAppliance().getId(), "Appliance ID should match domain model");
+        assertEquals(recurringDomain.houseId(), recurring.getAppliance().getHouse().getId(), "House ID should match domain model");
+        assertEquals(recurringDomain.type(), recurring.getActivationType(), "Type should match domain model");
+        assertEquals(recurringDomain.activationTime(), recurring.getActivationTime(), "Activation Time should match domain model");
+        assertEquals(recurringDomain.activationDate(), recurring.getActivationDate(), "Activation Date should match domain model");
+        assertEquals(recurringDomain.recursMonday(), recurring.isRecursMonday(), "Recurrence flags should match domain model");
+        assertEquals(recurringDomain.recursTuesday(), recurring.isRecursTuesday(), "Recurrence flags should match domain model");
+        assertEquals(recurringDomain.recursWednesday(), recurring.isRecursWednesday(), "Recurrence flags should match domain model");
+        assertEquals(recurringDomain.recursThursday(), recurring.isRecursThursday(), "Recurrence flags should match domain model");
+        assertEquals(recurringDomain.recursFriday(), recurring.isRecursFriday(), "Recurrence flags should match domain model");
+        assertEquals(recurringDomain.recursSaturday(), recurring.isRecursSaturday(), "Recurrence flags should match domain model");
+        assertEquals(recurringDomain.recursSunday(), recurring.isRecursSunday(), "Recurrence flags should match domain model");
+        assertEquals(washingMachine, recurring.getAppliance(), "Appliance should match Appliance given in constructor");
     }
 
     @Test void testSetters_nonRecurring() {
@@ -91,10 +101,10 @@ public class ObservableActivationTest {
         nonRecurring.setActivationTime(afternoon);
         nonRecurring.setActivationDate(easter);
 
-        assertEquals(washingMachine, nonRecurring.getAppliance(), "Appliance should be updated without error");
-        assertEquals(afternoon, nonRecurring.getActivationTime(), "Activation Time should be updated without error");
-        assertEquals(easter, nonRecurring.getActivationDate(), "Activation Date should be updated without error");
-        assertFalse(nonRecurring.isRecurring(), "Model should still evaluate itself as non-recurring after update");
+        assertEquals(washingMachine, nonRecurring.getAppliance(), "Appliance should be updated after setter");
+        assertEquals(afternoon, nonRecurring.getActivationTime(), "Activation Time should be updated after setter");
+        assertEquals(easter, nonRecurring.getActivationDate(), "Activation Date should be updated after setter");
+        assertEquals(ActivationType.NON_RECURRING, nonRecurring.getActivationType(), "Activation Type should remain unchanged after setter");
     }
 
     @Test void testSetters_recurring() {
@@ -108,19 +118,20 @@ public class ObservableActivationTest {
         recurring.setRecursSaturday(true);
         recurring.setRecursSunday(true);
 
-        assertEquals(dishwasher, recurring.getAppliance(), "Appliance should be updated without error");
-        assertEquals(morning, recurring.getActivationTime(), "Activation Time should be updated without error");
-        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated without error");
-        assertTrue(recurring.isRecursThursday(), "Recurrence flags should be updated without error");
-        assertTrue(recurring.isRecursFriday(), "Recurrence flags should be updated without error");
-        assertTrue(recurring.isRecursSaturday(), "Recurrence flags should be updated without error");
-        assertTrue(recurring.isRecursSunday(), "Recurrence flags should be updated without error");
-        assertTrue(recurring.isRecurring(), "Model should still evaluate itself as recurring after update");
+        assertEquals(dishwasher, recurring.getAppliance(), "Appliance should be updated after setter");
+        assertEquals(morning, recurring.getActivationTime(), "Activation Time should be updated after setter");
+        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated after setter");
+        assertTrue(recurring.isRecursThursday(), "Recurrence flags should be updated after setter");
+        assertTrue(recurring.isRecursFriday(), "Recurrence flags should be updated after setter");
+        assertTrue(recurring.isRecursSaturday(), "Recurrence flags should be updated after setter");
+        assertTrue(recurring.isRecursSunday(), "Recurrence flags should be updated after setter");
+        assertEquals(ActivationType.RECURRING, recurring.getActivationType(), "Activation Type should remain unchanged after setter");
     }
 
     @Test void testSetters_nonRecurring_to_recurring() {
+        nonRecurring.setActivationType(ActivationType.RECURRING);
         nonRecurring.setActivationDate(null);
         nonRecurring.setRecursMonday(true);
         nonRecurring.setRecursTuesday(true);
@@ -130,18 +141,19 @@ public class ObservableActivationTest {
         nonRecurring.setRecursSaturday(true);
         nonRecurring.setRecursSunday(true);
 
-        assertNull(nonRecurring.getActivationDate(), "Activation Date should be updated without error");
-        assertTrue(nonRecurring.isRecursMonday(), "Recurrence flags should be updated without error");
-        assertTrue(nonRecurring.isRecursTuesday(), "Recurrence flags should be updated without error");
-        assertFalse(nonRecurring.isRecursWednesday(), "Recurrence flags should be updated without error");
-        assertFalse(nonRecurring.isRecursThursday(), "Recurrence flags should be updated without error");
-        assertTrue(nonRecurring.isRecursFriday(), "Recurrence flags should be updated without error");
-        assertTrue(nonRecurring.isRecursSaturday(), "Recurrence flags should be updated without error");
-        assertTrue(nonRecurring.isRecursSunday(), "Recurrence flags should be updated without error");
-        assertTrue(nonRecurring.isRecurring(), "Model should evaluate itself as recurring after update");
+        assertEquals(ActivationType.RECURRING, nonRecurring.getActivationType(), "Activation Type should be updated to RECURRING");
+        assertNull(nonRecurring.getActivationDate(), "Activation Date should be updated after setter");
+        assertTrue(nonRecurring.isRecursMonday(), "Recurrence flags should be updated after setter");
+        assertTrue(nonRecurring.isRecursTuesday(), "Recurrence flags should be updated after setter");
+        assertFalse(nonRecurring.isRecursWednesday(), "Recurrence flags should be updated after setter");
+        assertFalse(nonRecurring.isRecursThursday(), "Recurrence flags should be updated after setter");
+        assertTrue(nonRecurring.isRecursFriday(), "Recurrence flags should be updated after setter");
+        assertTrue(nonRecurring.isRecursSaturday(), "Recurrence flags should be updated after setter");
+        assertTrue(nonRecurring.isRecursSunday(), "Recurrence flags should be updated after setter");
     }
 
     @Test void testSetters_recurring_to_nonRecurring() {
+        recurring.setActivationType(ActivationType.NON_RECURRING);
         recurring.setActivationDate(easter);
         recurring.setRecursMonday(false);
         recurring.setRecursTuesday(false);
@@ -151,19 +163,19 @@ public class ObservableActivationTest {
         recurring.setRecursSaturday(false);
         recurring.setRecursSunday(false);
 
-        assertEquals(easter, recurring.getActivationDate(), "Activation Date should be updated without error");
-        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursThursday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursFriday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursSaturday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecursSunday(), "Recurrence flags should be updated without error");
-        assertFalse(recurring.isRecurring(), "Model should evaluate itself as non-recurring after update");
+        assertEquals(easter, recurring.getActivationDate(), "Activation Date should be updated after setter");
+        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursThursday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursFriday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursSaturday(), "Recurrence flags should be updated after setter");
+        assertFalse(recurring.isRecursSunday(), "Recurrence flags should be updated after setter");
     }
 
     @Test void testProperties_nonRecurring() {
         assertNotNull(nonRecurring.applianceProperty(), "Appliance property should not be null");
+        assertNotNull(nonRecurring.activationTypeProperty(), "Activation Type property should not be null");
         assertNotNull(nonRecurring.activationTimeProperty(), "Activation Time property should not be null");
         assertNotNull(nonRecurring.activationDateProperty(), "Activation Date property should not be null");
         assertNotNull(nonRecurring.recursMondayProperty(), "Recurs Monday property should not be null");
@@ -177,6 +189,7 @@ public class ObservableActivationTest {
 
     @Test void testProperties_recurring() {
         assertNotNull(recurring.applianceProperty(), "Appliance property should not be null");
+        assertNotNull(recurring.activationTypeProperty(), "Activation Type property should not be null");
         assertNotNull(recurring.activationTimeProperty(), "Activation Time property should not be null");
         assertNotNull(recurring.activationDateProperty(), "Activation Date property should not be null");
         assertNotNull(recurring.recursMondayProperty(), "Recurs Monday property should not be null");
@@ -190,20 +203,26 @@ public class ObservableActivationTest {
 
     @Test void testCommit_nonRecurring() {
         when(washingMachine.getId()).thenReturn(washingMachineId);
+        when(washingMachine.getHouse()).thenReturn(house);
+        when(house.getId()).thenReturn(houseId);
 
         nonRecurring.setAppliance(washingMachine);
         nonRecurring.setActivationTime(afternoon);
         nonRecurring.setActivationDate(easter);
-        ActivationDTO result = nonRecurring.commit();
 
-        assertEquals(nonRecurringDto.getId(), result.getId(), "DTO ID should be unchanged");
-        assertEquals(washingMachine.getId(), result.getApplianceId(), "DTO Appliance ID should be updated");
-        assertEquals(afternoon, result.getActivationTime(), "DTO Activation Time should be updated");
-        assertEquals(easter, result.getActivationDate(), "DTO Activation Date should be updated");
+        Activation result = nonRecurring.commit();
+
+        assertEquals(nonRecurring.getId(), result.id(), "Domain model ID should be correct");
+        assertEquals(nonRecurring.getActivationType(), result.type(), "Domain model Activation Type should be correct");
+        assertEquals(washingMachine.getId(), result.applianceId(), "Domain model Appliance ID should be correct");
+        assertEquals(afternoon, result.activationTime(), "Domain model Activation Time should be correct");
+        assertEquals(easter, result.activationDate(), "Domain model Activation Date should be correct");
     }
 
     @Test void testCommit_recurring() {
         when(dishwasher.getId()).thenReturn(dishwasherId);
+        when(dishwasher.getHouse()).thenReturn(house);
+        when(house.getId()).thenReturn(houseId);
 
         recurring.setAppliance(dishwasher);
         recurring.setActivationTime(morning);
@@ -214,79 +233,82 @@ public class ObservableActivationTest {
         recurring.setRecursFriday(true);
         recurring.setRecursSaturday(true);
         recurring.setRecursSunday(true);
-        ActivationDTO result = recurring.commit();
 
-        assertEquals(recurring.getId(), result.getId(), "DTO ID should be unchanged");
-        assertEquals(dishwasher.getId(), result.getApplianceId(), "DTO Appliance ID should be updated");
-        assertEquals(morning, result.getActivationTime(), "DTO Activation Time should be updated");
-        assertFalse(result.isRecursMonday(), "DTO recurrence flags should be updated");
-        assertFalse(result.isRecursTuesday(), "DTO recurrence flags should be updated");
-        assertFalse(result.isRecursWednesday(), "DTO recurrence flags should be updated");
-        assertTrue(result.isRecursThursday(), "DTO recurrence flags should be updated");
-        assertTrue(result.isRecursFriday(), "DTO recurrence flags should be updated");
-        assertTrue(result.isRecursSaturday(), "DTO recurrence flags should be updated");
-        assertTrue(result.isRecursSunday(), "DTO recurrence flags should be updated");
+        Activation result = recurring.commit();
+
+        assertEquals(recurring.getId(), result.id(), "Domain model ID should be correct");
+        assertEquals(recurring.getActivationType(), result.type(), "Domain model Activation Type should be correct");
+        assertEquals(dishwasher.getId(), result.applianceId(), "Domain model Appliance ID should be correct");
+        assertEquals(morning, result.activationTime(), "Domain model Activation Time should be correct");
+        assertFalse(result.recursMonday(), "Domain model recurrence flags should be correct");
+        assertFalse(result.recursTuesday(), "Domain model recurrence flags should be correct");
+        assertFalse(result.recursWednesday(), "Domain model recurrence flags should be correct");
+        assertTrue(result.recursThursday(), "Domain model recurrence flags should be correct");
+        assertTrue(result.recursFriday(), "Domain model recurrence flags should be correct");
+        assertTrue(result.recursSaturday(), "Domain model recurrence flags should be correct");
+        assertTrue(result.recursSunday(), "Domain model recurrence flags should be correct");
     }
 
     @Test void testUpdateFrom_nonRecurring() {
-        ActivationDTO newDto = new ActivationDTO(washingMachineId, afternoon, easter);
+        Activation newDomain = new Activation(washingMachineId, houseId, afternoon, easter);
 
-        nonRecurring.updateFrom(newDto, washingMachine);
+        nonRecurring.updateFrom(newDomain, washingMachine);
 
-        assertEquals(nonRecurringDto.getId(), nonRecurring.getId(), "Model ID should not have changed");
-        assertEquals(washingMachine, nonRecurring.getAppliance(), "Model Appliance should be updated from new DTO");
-        assertEquals(afternoon, nonRecurring.getActivationTime(), "Model Activation Time should be updated from new DTO");
-        assertEquals(easter, nonRecurring.getActivationDate(), "Model Activation Date should be updated from new DTO");
+        assertEquals(nonRecurringDomain.id(), nonRecurring.getId(), "ID should not have changed");
+        assertEquals(ActivationType.NON_RECURRING, nonRecurring.getActivationType(), "Activation Type should not have changed");
+        assertEquals(washingMachine, nonRecurring.getAppliance(), "Appliance should be updated");
+        assertEquals(afternoon, nonRecurring.getActivationTime(), "Activation Time should be updated from domain model");
+        assertEquals(easter, nonRecurring.getActivationDate(), "Activation Date should be updated from domain model");
     }
 
     @Test void testUpdateFrom_recurring() {
-        ActivationDTO newDto = new ActivationDTO(dishwasherId, morning, false, false, false, true, true, true, true);
+        Activation newDto = new Activation(dishwasherId, houseId, morning, false, false, false, true, true, true, true);
 
         recurring.updateFrom(newDto, dishwasher);
 
-        assertEquals(recurringDto.getId(), recurring.getId(), "Model ID should not have changed");
-        assertEquals(dishwasher, recurring.getAppliance(), "Model Appliance should be updated from new DTO");
-        assertEquals(morning, recurring.getActivationTime(), "Model Activation Time should be updated from new DTO");
-        assertFalse(recurring.isRecursMonday(), "Model recurrence flags should be updated from new DTO");
-        assertFalse(recurring.isRecursTuesday(), "Model recurrence flags should be updated from new DTO");
-        assertFalse(recurring.isRecursWednesday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(recurring.isRecursThursday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(recurring.isRecursFriday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(recurring.isRecursSaturday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(recurring.isRecursSunday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(recurring.isRecurring(), "Model should still evaluate itself as recurring");
+        assertEquals(recurringDomain.id(), recurring.getId(), "ID should not have changed");
+        assertEquals(ActivationType.RECURRING, recurring.getActivationType(), "Activation Type should not have changed");
+        assertEquals(dishwasher, recurring.getAppliance(), "Appliance should be updated");
+        assertEquals(morning, recurring.getActivationTime(), "Activation Time should be updated from domain model");
+        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated from domain model");
+        assertTrue(recurring.isRecursThursday(), "Recurrence flags should be updated from domain model");
+        assertTrue(recurring.isRecursFriday(), "Recurrence flags should be updated from domain model");
+        assertTrue(recurring.isRecursSaturday(), "Recurrence flags should be updated from domain model");
+        assertTrue(recurring.isRecursSunday(), "Recurrence flags should be updated from domain model");
     }
 
     @Test void testUpdateFrom_nonRecurring_to_recurring() {
-        ActivationDTO newDto = new ActivationDTO(dishwasherId, morning, true, true, false, false, true, true, true);
+        Activation newDto = new Activation(dishwasherId, houseId, morning, true, true, false, false, true, true, true);
 
         nonRecurring.updateFrom(newDto, dishwasher);
 
-        assertNull(nonRecurring.getActivationDate(), "Model Activation Date should be updated from new DTO");
-        assertTrue(nonRecurring.isRecursMonday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(nonRecurring.isRecursTuesday(), "Model recurrence flags should be updated from new DTO");
-        assertFalse(nonRecurring.isRecursWednesday(), "Model recurrence flags should be updated from new DTO");
-        assertFalse(nonRecurring.isRecursThursday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(nonRecurring.isRecursFriday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(nonRecurring.isRecursSaturday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(nonRecurring.isRecursSunday(), "Model recurrence flags should be updated from new DTO");
-        assertTrue(nonRecurring.isRecurring(), "Model should evaluate itself as recurring after update");
+        assertEquals(ActivationType.RECURRING, nonRecurring.getActivationType(), "Activation Type should be updated to RECURRING");
+        assertNull(nonRecurring.getActivationDate(), "Activation Date should be updated from domain model");
+        assertTrue(nonRecurring.isRecursMonday(), "Recurrence flags should be updated from domain model");
+        assertTrue(nonRecurring.isRecursTuesday(), "Recurrence flags should be updated from domain model");
+        assertFalse(nonRecurring.isRecursWednesday(), "Recurrence flags should be updated from domain model");
+        assertFalse(nonRecurring.isRecursThursday(), "Recurrence flags should be updated from domain model");
+        assertTrue(nonRecurring.isRecursFriday(), "Recurrence flags should be updated from domain model");
+        assertTrue(nonRecurring.isRecursSaturday(), "Recurrence flags should be updated from domain model");
+        assertTrue(nonRecurring.isRecursSunday(), "Recurrence flags should be updated from domain model");
     }
 
     @Test void testUpdateFrom_recurring_to_nonRecurring() {
-        ActivationDTO newDto = new ActivationDTO(washingMachineId, afternoon, easter);
+        Activation newDto = new Activation(washingMachineId, houseId, afternoon, easter);
 
         recurring.updateFrom(newDto, washingMachine);
 
-//        assertEquals(easter, recurring.getActivationDate(), "Model Activation Date should be updated from new DTO");
-//        assertFalse(recurring.isRecursMonday(), "Model recurrence flags should be updated from new DTO");
-//        assertFalse(recurring.isRecursTuesday(), "Model recurrence flags should be updated from new DTO");
-//        assertFalse(recurring.isRecursWednesday(), "Model recurrence flags should be updated from new DTO");
-//        assertFalse(recurring.isRecursThursday(), "Model recurrence flags should be updated from new DTO");
-//        assertFalse(recurring.isRecursFriday(), "Model recurrence flags should be updated from new DTO");
-//        assertFalse(recurring.isRecursSaturday(), "Model recurrence flags should be updated from new DTO");
-//        assertFalse(recurring.isRecursSunday(), "Model recurrence flags should be updated from new DTO");
-//        assertFalse(recurring.isRecurring(), "Model should evaluate itself as non-recurring after update");
+        assertEquals(ActivationType.NON_RECURRING, recurring.getActivationType(), "Activation Type should be updated to NON_RECURRING");
+        assertEquals(easter, recurring.getActivationDate(), "Activation Date should be updated from domain model");
+        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursThursday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursFriday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursSaturday(), "Recurrence flags should be updated from domain model");
+        assertFalse(recurring.isRecursSunday(), "Recurrence flags should be updated from domain model");
     }
 
     @Test void testGetNextActivationDateTime_nonRecurring() {

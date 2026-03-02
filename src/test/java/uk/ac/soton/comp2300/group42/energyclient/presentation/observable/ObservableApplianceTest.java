@@ -2,52 +2,71 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.observable;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.ac.soton.comp2300.group42.energyclient.data.dto.ApplianceDTO;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class ObservableApplianceTest {
-    ApplianceDTO dto;
-    ObservableAppliance model;
+
+    Appliance domain;
+    ObservableAppliance presentation;
+
+    @Mock ObservableHouse mockHouse1;
+    @Mock ObservableHouse mockHouse2;
 
     @BeforeEach void setUp() {
-        dto = new ApplianceDTO(1L, "Washing Machine");
-        model = new ObservableAppliance(dto);
+        domain = new Appliance(10L, 1L, "Washing Machine");
+        presentation = new ObservableAppliance(domain, mockHouse1);
     }
 
     @Test void testGetters() {
-        assertEquals(dto.getId(), model.getId(), "ID should match DTO");
-        assertEquals(dto.getName(), model.getName(), "Appliance Name should match DTO");
+        when(mockHouse1.getId()).thenReturn(1L);
+
+        assertEquals(domain.id(), presentation.getId(), "ID should match domain model");
+        assertEquals(domain.houseId(), presentation.getHouse().getId(), "House ID should match domain model");
+        assertEquals(domain.name(), presentation.getName(), "Appliance Name should match domain model");
+        assertEquals(mockHouse1, presentation.getHouse(), "House should match House given in constructor");
     }
 
     @Test void testSetters() {
-        model.setName("Dishwasher");
-        assertEquals("Dishwasher", model.getName());
+        presentation.setName("Dishwasher");
+
+        assertEquals("Dishwasher", presentation.getName(), "Name should be updated after setter");
     }
 
     @Test void testProperties() {
-        assertNotNull(model.nameProperty());
+        assertNotNull(presentation.nameProperty(), "Name property should not be null");
     }
 
     @Test void testCommit() {
-        model.setName("Oven");
+        when(mockHouse2.getId()).thenReturn(2L);
 
-        ApplianceDTO result = model.commit();
+        presentation.setHouse(mockHouse2);
+        presentation.setName("Oven");
 
-        assertEquals(1L, result.getId(), "DTO ID should be unchanged");
-        assertEquals("Oven", result.getName(), "DTO Name should be updated");
+        Appliance result = presentation.commit();
+
+        assertEquals(10L, result.id(), "Domain model ID should be correct");
+        assertEquals(mockHouse2.getId(), result.houseId(), "Domain model House ID should be correct");
+        assertEquals("Oven", result.name(), "Domain model Name should be correct");
     }
 
     @Test void testUpdateFrom() {
-        ApplianceDTO newDto = new ApplianceDTO(4L, "Bedroom 1 Lights");
+        Appliance newDomain = new Appliance(20L, 2L,"Bedroom 1 Lights");
 
-        model.updateFrom(newDto); // should it throw an exception on incorrect id?
+        presentation.updateFrom(newDomain, mockHouse2);
 
-        assertEquals(1L, model.getId(), "Model ID should not have changed");
-        assertEquals("Bedroom 1 Lights", model.getName(), "Model Name should be updated from new DTO");
+        assertEquals(10L, presentation.getId(), "ID should not have changed");
+        assertEquals(mockHouse2, presentation.getHouse(), "House should be updated");
+        assertEquals("Bedroom 1 Lights", presentation.getName(), "Name should be updated from domain model");
     }
 
     @Test void testToString() {
-        assertTrue(model.toString().contains(dto.getName()));
+        assertTrue(presentation.toString().contains(domain.name()));
     }
 }

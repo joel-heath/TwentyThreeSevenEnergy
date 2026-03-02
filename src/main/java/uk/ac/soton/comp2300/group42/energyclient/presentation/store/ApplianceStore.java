@@ -62,12 +62,13 @@ public class ApplianceStore {
     }
 
     private ObservableAppliance getObservable(Appliance pojo) {
+        ObservableHouse house = houseStore.get(pojo.houseId());
         ObservableAppliance existing = cache.get(pojo.id());
+
         if (existing != null) {
-            Platform.runLater(() -> existing.updateFrom(pojo));
+            Platform.runLater(() -> existing.updateFrom(pojo, house));
             return existing;
         } else {
-            ObservableHouse house = houseStore.get(pojo.houseId());
             ObservableAppliance appliance = new ObservableAppliance(pojo, house);
             cache.put(pojo.id(), appliance);
             Platform.runLater(() -> masterList.add(appliance));
@@ -76,6 +77,7 @@ public class ApplianceStore {
     }
 
     public void refreshAll() {
+        ObservableHouse activeHouse = preferences.getActiveHouse();
         List<Appliance> pojos = repository.getAll(getActiveHouseId());
 
         Platform.runLater(() -> {
@@ -83,10 +85,10 @@ public class ApplianceStore {
             for (Appliance pojo : pojos) {
                 ObservableAppliance appliance = cache.get(pojo.id());
                 if (appliance != null) {
-                    appliance.updateFrom(pojo);
+                    appliance.updateFrom(pojo, activeHouse);
                 }
                 else {
-                    appliance = new ObservableAppliance(pojo, preferences.getActiveHouse());
+                    appliance = new ObservableAppliance(pojo, activeHouse);
                     cache.put(pojo.id(), appliance);
                 }
                 masterList.add(appliance);

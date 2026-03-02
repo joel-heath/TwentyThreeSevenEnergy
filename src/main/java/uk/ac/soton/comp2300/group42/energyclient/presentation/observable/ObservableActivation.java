@@ -120,9 +120,6 @@ public class ObservableActivation {
     public BooleanProperty recursSaturdayProperty() { return recursSaturday; }
     public BooleanProperty recursSundayProperty() { return recursSunday; }
 
-    // TODO: replace all calls to isRecurring with getAcitvationType() == ActivationType.RECURRING
-    public boolean isRecurring() { return getActivationDate() == null; }
-
     public boolean recursOnDay(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {
             case DayOfWeek.MONDAY -> isRecursMonday();
@@ -140,7 +137,7 @@ public class ObservableActivation {
     }
 
     public LocalDateTime getNextActivationDateTime(LocalDateTime now) {
-        if (!isRecurring())
+        if (getActivationType() == ActivationType.NON_RECURRING)
             return LocalDateTime.of(getActivationDate(), getActivationTime());
 
         var today = now.getDayOfWeek();

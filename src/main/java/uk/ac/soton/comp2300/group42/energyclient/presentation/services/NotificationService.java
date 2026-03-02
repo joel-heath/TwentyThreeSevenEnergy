@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.services;
 import com.google.inject.Singleton;
 import javafx.application.Platform;
 
+import uk.ac.soton.comp2300.group42.activation.ActivationType;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
@@ -38,7 +39,7 @@ public class NotificationService {
                 Platform.runLater(() -> {
                     Navigator.showPopup(appliance.getName());
                     timerTasks.remove(activation);
-                    if (activation.isRecurring()) {
+                    if (activation.getActivationType() == ActivationType.RECURRING) {
                         scheduleNotification(activation);
                         activation.triggerUpdate(); // Trigger UI to recalculate next activation time
                     }

@@ -28,8 +28,9 @@ public class ObservableAppliance {
         );
     }
 
-    public void updateFrom(Appliance entity) {
+    public void updateFrom(Appliance entity, ObservableHouse house) {
         updateIfChanged(getName(), entity.name(), this::setName);
+        updateIfChanged(getHouse(), house, this::setHouse);
     }
 
     public Long getId() { return id; }

@@ -35,9 +35,14 @@ public enum Role {
 
     @JsonCreator
     public static Role fromId(String id) {
+        if (id == null)
+            throw new IllegalArgumentException("Role id cannot be null");
+
         Role mode = BY_ID.get(id);
+
         if (mode == null)
             throw new IllegalArgumentException("Unknown role id: " + id);
+
         return mode;
     }
 }

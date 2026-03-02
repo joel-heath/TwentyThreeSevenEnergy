@@ -34,9 +34,14 @@ public enum ColorVision {
 
     @JsonCreator
     public static ColorVision fromId(String id) {
+        if (id == null)
+            throw new IllegalArgumentException("Color vision id cannot be null");
+
         ColorVision mode = BY_ID.get(id);
+
         if (mode == null)
             throw new IllegalArgumentException("Unknown color vision id: " + id);
+        
         return mode;
     }
 }

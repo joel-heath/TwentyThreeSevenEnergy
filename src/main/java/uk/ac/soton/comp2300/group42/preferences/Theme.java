@@ -33,9 +33,14 @@ public enum Theme {
 
     @JsonCreator
     public static Theme fromId(String id) {
+        if (id == null)
+            throw new IllegalArgumentException("Theme id cannot be null");
+
         Theme mode = BY_ID.get(id);
+
         if (mode == null)
             throw new IllegalArgumentException("Unknown theme id: " + id);
+
         return mode;
     }
 }

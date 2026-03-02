@@ -30,9 +30,13 @@ public enum ActivationType {
 
     @JsonCreator
     public static ActivationType fromId(String id) {
+        if (id == null)
+            throw new IllegalArgumentException("Activation type id cannot be null");
+
         ActivationType mode = BY_ID.get(id);
         if (mode == null)
             throw new IllegalArgumentException("Unknown activation type id: " + id);
+
         return mode;
     }
 }

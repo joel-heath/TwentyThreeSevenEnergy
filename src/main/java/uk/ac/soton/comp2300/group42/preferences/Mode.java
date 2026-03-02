@@ -31,9 +31,14 @@ public enum Mode {
 
     @JsonCreator
     public static Mode fromId(String id) {
+        if (id == null)
+            throw new IllegalArgumentException("Mode id cannot be null");
+
         Mode mode = BY_ID.get(id);
+
         if (mode == null)
             throw new IllegalArgumentException("Unknown mode id: " + id);
+
         return mode;
     }
 }

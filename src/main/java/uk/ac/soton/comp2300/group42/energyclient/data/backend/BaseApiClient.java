@@ -1,8 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.NetworkException;
@@ -15,9 +16,9 @@ import java.net.http.HttpResponse;
 public abstract class BaseApiClient {
 
     private final AuthenticatedHttpClient httpClient;
-    private final ObjectMapper mapper;
+    private final JsonMapper mapper;
 
-    protected BaseApiClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
+    protected BaseApiClient(AuthenticatedHttpClient httpClient, @BackendMapper JsonMapper mapper) {
         this.httpClient = httpClient;
         this.mapper = mapper;
     }
@@ -54,7 +55,7 @@ public abstract class BaseApiClient {
             String jsonBody = mapper.writeValueAsString(body);
             return httpClient.post(path, jsonBody);
         }
-        catch (JsonProcessingException e) {
+        catch (JacksonException e) {
             throw new DataFetchException("Failed to serialize request body while accessing " + path, e);
         }
         catch (IOException e) {
@@ -76,7 +77,7 @@ public abstract class BaseApiClient {
             String jsonBody = mapper.writeValueAsString(body);
             return httpClient.put(path, jsonBody);
         }
-        catch (JsonProcessingException e) {
+        catch (JacksonException e) {
             throw new DataFetchException("Failed to serialize request body while accessing " + path, e);
         }
         catch (IOException e) {
@@ -119,7 +120,7 @@ public abstract class BaseApiClient {
         try {
             return mapper.readValue(response.body(), responseType);
         }
-        catch (JsonProcessingException e) {
+        catch (JacksonException e) {
             throw new DataFetchException("Failed to deserialize response from " + response.uri() + " to " + responseType.getType().getTypeName(), e);
         }
     }

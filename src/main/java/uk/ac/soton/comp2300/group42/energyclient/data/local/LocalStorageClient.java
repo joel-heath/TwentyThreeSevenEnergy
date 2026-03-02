@@ -1,8 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.local;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 
 import java.io.File;
@@ -18,11 +19,11 @@ import java.util.concurrent.Executors;
 public class LocalStorageClient {
     private static final String FILE_PATH = "local_data.json";
     private final ExecutorService executor;
-    private final ObjectMapper mapper;
+    private final JsonMapper mapper;
     private final LocalStorageData data;
 
     @Inject
-    public LocalStorageClient(@BackendMapper ObjectMapper mapper) {
+    public LocalStorageClient(@BackendMapper JsonMapper mapper) {
         this.mapper = mapper;
         this.executor = Executors.newSingleThreadExecutor();
         this.data = new LocalStorageData();
@@ -38,7 +39,7 @@ public class LocalStorageClient {
                     LocalStorageData data = mapper.readValue(file, LocalStorageData.class);
                     this.data.updateFrom(data);
                 }
-                catch (IOException e) {
+                catch (JacksonException e) {
                     System.out.println("I/O Error while reading from local storage, maybe the file is corrupt. Using default data.");
                     System.out.println(e.getMessage());
                     this.data.updateFrom(LocalStorageData.createDefault());

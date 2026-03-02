@@ -1,9 +1,11 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.security.TokenStorageService;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendApiRootUri;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
 
@@ -21,14 +23,17 @@ public class AuthenticatedHttpClient {
 
     private String accessToken;
     private String refreshToken;
-    private final ObjectMapper mapper;
+    private final JsonMapper mapper;
     private final HttpClient client;
     private final TokenStorageService tokenStorage;
-    private static final String API_ROOT_URL = "http://localhost:8080/api/"; // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
+    private final URI apiRootUri;
 
     @Inject
-    public AuthenticatedHttpClient(@BackendMapper ObjectMapper mapper, TokenStorageService tokenStorage) {
+    public AuthenticatedHttpClient(@BackendMapper JsonMapper mapper,
+                                   @BackendApiRootUri URI apiRootUri,
+                                   TokenStorageService tokenStorage) {
         this.mapper = mapper;
+        this.apiRootUri = apiRootUri;
         this.tokenStorage = tokenStorage;
         this.refreshToken = tokenStorage.getRefreshToken();
         this.accessToken = null;
@@ -52,28 +57,28 @@ public class AuthenticatedHttpClient {
         tokenStorage.clearRefreshToken();
     }
 
-    public HttpResponse<String> get(String url) throws IOException, InterruptedException {
-        return send(HttpRequest.newBuilder().GET(), API_ROOT_URL + url);
+    public HttpResponse<String> get(String path) throws IOException, InterruptedException {
+        return send(HttpRequest.newBuilder().GET(), apiRootUri.resolve(path));
     }
 
-    public HttpResponse<String> post(String url, String jsonBody) throws IOException, InterruptedException {
+    public HttpResponse<String> post(String path, String jsonBody) throws IOException, InterruptedException {
         return send(HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody)), API_ROOT_URL + url);
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody)), apiRootUri.resolve(path));
     }
 
-    public HttpResponse<String> put(String url, String jsonBody) throws IOException, InterruptedException {
+    public HttpResponse<String> put(String path, String jsonBody) throws IOException, InterruptedException {
         return send(HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody)), API_ROOT_URL + url);
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody)), apiRootUri.resolve(path));
     }
 
-    public HttpResponse<String> delete(String url) throws IOException, InterruptedException {
-        return send(HttpRequest.newBuilder().DELETE(), API_ROOT_URL + url);
+    public HttpResponse<String> delete(String path) throws IOException, InterruptedException {
+        return send(HttpRequest.newBuilder().DELETE(), apiRootUri.resolve(path));
     }
 
-    private HttpResponse<String> send(HttpRequest.Builder builder, String url) throws IOException, InterruptedException {
-        builder.uri(URI.create(url));
+    private HttpResponse<String> send(HttpRequest.Builder builder, URI uri) throws IOException, InterruptedException {
+        builder.uri(uri);
         if (accessToken != null && !accessToken.isEmpty())
             builder.setHeader("Authorization", "Bearer " + accessToken);
         HttpRequest request = builder.build();
@@ -101,7 +106,7 @@ public class AuthenticatedHttpClient {
             String json = mapper.writeValueAsString(body);
 
             HttpRequest refreshRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(API_ROOT_URL + "auth/refresh"))
+                    .uri(apiRootUri.resolve("auth/refresh"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -118,12 +123,9 @@ public class AuthenticatedHttpClient {
                 // }
                 return true;
             }
-            else {
-                clearTokenPair();
-                tokenStorage.clearRefreshToken();
-            }
+            else clearTokenPair();
         }
-        catch (IOException | InterruptedException e) {
+        catch (IOException | InterruptedException | JacksonException e) {
             System.out.println("Error during token refresh: " + e.getMessage());
         }
         System.out.println("Refresh failed. User must log in again.");

@@ -1,9 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.house.CreateHouseRequest;
 import uk.ac.soton.comp2300.group42.house.HouseResponse;
@@ -16,7 +16,7 @@ import java.util.List;
 public class HouseClient extends BaseApiClient {
 
     @Inject
-    public HouseClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
+    public HouseClient(AuthenticatedHttpClient httpClient, @BackendMapper JsonMapper mapper) {
         super(httpClient, mapper);
     }
 

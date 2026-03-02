@@ -1,10 +1,10 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.external;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.ExternalMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.DataFetchException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.NetworkException;
@@ -26,10 +26,10 @@ public class EnergyPriceClient {
     private static final String BASE_URL = "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/";
 
     private final HttpClient client;
-    private final ObjectMapper mapper;
+    private final JsonMapper mapper;
 
     @Inject
-    public EnergyPriceClient(@ExternalMapper ObjectMapper mapper) {
+    public EnergyPriceClient(@ExternalMapper JsonMapper mapper) {
         this.client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_2)
                 .connectTimeout(Duration.ofSeconds(10))
@@ -59,7 +59,7 @@ public class EnergyPriceClient {
             UpcomingUnitRatesResponse res = mapper.readValue(response, new TypeReference<>() {});
             return res.results().reversed();
         }
-        catch (JsonProcessingException e) {
+        catch (JacksonException e) {
             throw new DataFetchException("Failed to deserialize response from " + request.uri() + " to List<UnitRate>", e);
         }
     }

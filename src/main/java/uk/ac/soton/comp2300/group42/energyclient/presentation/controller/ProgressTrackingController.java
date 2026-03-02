@@ -30,6 +30,7 @@ public class ProgressTrackingController {
 
         vm.loadDataAsync().exceptionally(e -> {
             Platform.runLater(() -> {
+                priceLabel.textProperty().unbind();
                 priceLabel.setText("Failed to load data.");
                 priceLabel.setStyle("-fx-text-fill: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";");
             });

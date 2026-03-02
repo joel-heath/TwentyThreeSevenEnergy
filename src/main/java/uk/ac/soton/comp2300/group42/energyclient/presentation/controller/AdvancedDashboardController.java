@@ -85,7 +85,7 @@ public class AdvancedDashboardController {
             colorRole = ColorVisionManager.ColorRole.STATUS_AVERAGE;
         }
         else {
-            statusLabel.setText("⚠️");
+            statusLabel.setText("\uD83D\uDE41");
             colorRole = ColorVisionManager.ColorRole.STATUS_EXPENSIVE;
         }
 

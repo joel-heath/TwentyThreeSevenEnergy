@@ -1,8 +1,8 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 import uk.ac.soton.comp2300.group42.metric.SaveMetricRequest;
@@ -12,7 +12,7 @@ import java.util.List;
 public class MetricClient extends BaseApiClient {
 
     @Inject
-    public MetricClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
+    public MetricClient(AuthenticatedHttpClient httpClient, @BackendMapper JsonMapper mapper) {
         super(httpClient, mapper);
     }
 

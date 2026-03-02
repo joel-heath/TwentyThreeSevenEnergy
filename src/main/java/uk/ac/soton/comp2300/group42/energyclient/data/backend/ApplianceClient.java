@@ -1,9 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.appliance.ApplianceResponse;
 import uk.ac.soton.comp2300.group42.appliance.CreateApplianceRequest;
 import uk.ac.soton.comp2300.group42.appliance.UpdateApplianceRequest;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ApplianceClient extends BaseApiClient {
 
     @Inject
-    public ApplianceClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
+    public ApplianceClient(AuthenticatedHttpClient httpClient, @BackendMapper JsonMapper mapper) {
         super(httpClient, mapper);
     }
 
@@ -38,5 +38,4 @@ public class ApplianceClient extends BaseApiClient {
     public void deleteAppliance(Long houseId, Long applianceId) {
         delete("houses/" + houseId + "/appliances/" + applianceId);
     }
-
 }

@@ -1,21 +1,23 @@
 package uk.ac.soton.comp2300.group42.energyclient.di;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 import org.mapstruct.factory.Mappers;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.mapper.*;
 import uk.ac.soton.comp2300.group42.energyclient.data.repository.*;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendApiRootUri;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.ExternalMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.*;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
+
+import java.net.URI;
 
 public class CoreEnergyModule extends AbstractModule {
     @Override
@@ -32,19 +34,24 @@ public class CoreEnergyModule extends AbstractModule {
     @Provides
     @Singleton
     @BackendMapper
-    ObjectMapper provideBackendObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        return mapper;
+    JsonMapper provideBackendObjectMapper() {
+        return JsonMapper.builder().build();
     }
 
     @Provides
     @Singleton
     @ExternalMapper
-    ObjectMapper provideExternalObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper;
+    JsonMapper provideExternalObjectMapper() {
+        return JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @BackendApiRootUri
+    URI provideApiRootUri() {
+        return URI.create("http://localhost:8080/api/"); // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
     }
 
     @Provides

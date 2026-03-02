@@ -1,9 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.activation.ActivationResponse;
 import uk.ac.soton.comp2300.group42.activation.CreateActivationRequest;
 import uk.ac.soton.comp2300.group42.activation.UpdateActivationRequest;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ActivationClient extends BaseApiClient {
 
     @Inject
-    public ActivationClient(AuthenticatedHttpClient httpClient, @BackendMapper ObjectMapper mapper) {
+    public ActivationClient(AuthenticatedHttpClient httpClient, @BackendMapper JsonMapper mapper) {
         super(httpClient, mapper);
     }
 
@@ -38,5 +38,4 @@ public class ActivationClient extends BaseApiClient {
     public void deleteActivation(Long houseId, Long activationId) {
         delete("houses/" + houseId + "/activations/" + activationId);
     }
-
 }

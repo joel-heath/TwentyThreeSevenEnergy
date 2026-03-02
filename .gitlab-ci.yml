@@ -1,7 +1,20 @@
 image: maven:3.9-eclipse-temurin-25
 
 stages:
+  - test
   - deploy
+
+run_unit_tests:
+  stage: test
+  tags:
+    - docker
+  script:
+    - mvn test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
 
 deploy_library:
   stage: deploy

@@ -31,6 +31,7 @@
 		<assertj.version>3.27.7</assertj.version>
 		<tomcat.version>11.0.18</tomcat.version>
 		<org.mapstruct.version>1.6.3</org.mapstruct.version>
+		<jackson-bom.version>3.1.0</jackson-bom.version>
 	</properties>
 
 	<repositories>
@@ -44,7 +45,7 @@
 		<dependency>
 			<groupId>uk.ac.soton.comp2300.group42</groupId>
 			<artifactId>EnergyApiContracts</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -91,24 +92,37 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.11.5</version>
+			<version>0.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.11.5</version>
+			<version>0.13.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
-			<version>0.11.5</version>
+			<version>0.13.0</version>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>2.21.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>

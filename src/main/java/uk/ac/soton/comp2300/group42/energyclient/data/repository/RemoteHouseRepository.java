@@ -41,7 +41,7 @@ public class RemoteHouseRepository implements HouseRepository {
     }
 
     @Override
-    public List<House> getCurrentUserHouses() {
+    public List<House> getAll() {
         return client.fetchMyHouses().stream().map(mapper::toHouse).toList();
     }
 

@@ -43,8 +43,8 @@ public class SwitchableHouseRepository implements HouseRepository {
     }
 
     @Override
-    public List<House> getCurrentUserHouses() {
-        return getActiveRepo().getCurrentUserHouses();
+    public List<House> getAll() {
+        return getActiveRepo().getAll();
     }
 
     @Override

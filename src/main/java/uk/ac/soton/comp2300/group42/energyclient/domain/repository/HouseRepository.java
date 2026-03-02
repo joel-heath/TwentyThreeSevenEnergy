@@ -9,7 +9,7 @@ public interface HouseRepository {
     House add();
     House add(House house);
     House get(Long houseId);
-    List<House> getCurrentUserHouses();
+    List<House> getAll();
     House update(House house);
     void delete(Long houseId);
     Housemate getCurrentUserAsHousemate(Long houseId);

@@ -78,7 +78,7 @@ public class HouseStore {
     }
 
     public void refreshAll() {
-        List<House> pojos = repository.getCurrentUserHouses();
+        List<House> pojos = repository.getAll();
 
         Platform.runLater(() -> {
             masterList.clear();

@@ -9,15 +9,17 @@ import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.mapper.*;
 import uk.ac.soton.comp2300.group42.energyclient.data.repository.*;
-import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendApiRootUri;
-import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
-import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.ExternalMapper;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.*;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.*;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 
 import java.net.URI;
+import java.nio.file.Path;
+import java.time.Clock;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CoreEnergyModule extends AbstractModule {
     @Override
@@ -50,8 +52,35 @@ public class CoreEnergyModule extends AbstractModule {
     @Provides
     @Singleton
     @BackendApiRootUri
-    URI provideApiRootUri() {
+    URI provideBackendApiRootUri() {
         return URI.create("http://localhost:8080/api/"); // in production will be something like "https://group42.ecs.soton.ac.uk/api/"
+    }
+
+    @Provides
+    @Singleton
+    @EnergyPriceApiRootUri
+    URI provideEnergyPriceApiRootUri() {
+        return URI.create("https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/");
+    }
+
+    @Provides
+    @Singleton
+    Clock provideClock() {
+        return Clock.systemUTC();
+    }
+
+    @Provides
+    @Singleton
+    @LocalStoragePath
+    Path provideLocalStoragePath() {
+        return Path.of("local_data.json");
+    }
+
+    @Provides
+    @Singleton
+    @LocalStorageExecutor
+    ExecutorService provideLocalStorageExecutor() {
+        return Executors.newSingleThreadExecutor();
     }
 
     @Provides

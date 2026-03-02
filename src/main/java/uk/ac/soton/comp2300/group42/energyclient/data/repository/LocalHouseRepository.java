@@ -64,7 +64,7 @@ public class LocalHouseRepository implements HouseRepository {
     }
 
     @Override
-    public List<House> getCurrentUserHouses() {
+    public List<House> getAll() {
         return data.houses.values().stream().toList();
     }
 

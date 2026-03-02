@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LocalStorageData {
+
     public User user;
     public Housemate housemate;
     public Preferences preferences;

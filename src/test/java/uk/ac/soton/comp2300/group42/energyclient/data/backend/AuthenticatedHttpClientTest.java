@@ -6,6 +6,9 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.data.security.TokenStorageService;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
@@ -19,20 +22,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class AuthenticatedHttpClientTest {
 
-    private MockWebServer mockWebServer;
-    private AuthenticatedHttpClient httpClient;
-    private TokenStorageService mockTokenStorage;
-    private JsonMapper mockMapper;
+    @Mock TokenStorageService mockTokenStorage;
+    @Mock JsonMapper mockMapper;
+    MockWebServer mockWebServer;
+
+    AuthenticatedHttpClient httpClient;
 
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-
-        mockTokenStorage = mock(TokenStorageService.class);
-        mockMapper = mock(JsonMapper.class);
 
         URI baseUrl = URI.create(mockWebServer.url("/api/").toString());
 

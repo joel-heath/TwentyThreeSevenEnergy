@@ -7,13 +7,16 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.EnergyPriceRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public class ProgressTrackingViewModel {
@@ -21,24 +24,28 @@ public class ProgressTrackingViewModel {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final EnergyPriceRepository repository;
+    private final ObservablePreferences preferences;
 
     private final ObservableList<XYChart.Series<String, Number>> priceSeriesData;
     private final ObservableList<XYChart.Series<String, Number>> expenseSeriesData;
 
+    private final MetricRepository metricRepo;
     private final DoubleProperty currentPrice;
 
+
     @Inject
-    public ProgressTrackingViewModel(EnergyPriceRepository repository) {
+    public ProgressTrackingViewModel(EnergyPriceRepository repository, MetricRepository metricRepo, ObservablePreferences preferences) {
         this.repository = repository;
         this.priceSeriesData = FXCollections.observableArrayList();
         this.expenseSeriesData = FXCollections.observableArrayList();
         this.currentPrice = new SimpleDoubleProperty(0.0);
+        this.metricRepo = metricRepo;
+        this.preferences = preferences;
     }
 
     public ObservableList<XYChart.Series<String, Number>> getPriceSeriesData() {
         return priceSeriesData;
     }
-
     public ObservableList<XYChart.Series<String, Number>> getExpenseSeriesData() {
         return expenseSeriesData;
     }
@@ -72,15 +79,17 @@ public class ProgressTrackingViewModel {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Daily Spend (Mock)");
 
-        Random random = new Random();
         LocalDate today = LocalDate.now();
+        List<Metric> testList = this.metricRepo.getAll(preferences.getActiveHouse().getId());
+        List<Double> energyValues = testList.stream()
+                .map(Metric::energyUsed)
+                .toList();
 
-        // Generate random energy costs between £1.50 and £5.00 for seven days
+        // Fetches hardcoded values from the database
         for (int i = 6; i >= 0; i--) {
             String dateLabel = today.minusDays(i).getDayOfWeek().toString().substring(0, 3);
-            double randomCost = 1.5 + (5.0 - 1.5) * random.nextDouble();
 
-            series.getData().add(new XYChart.Data<>(dateLabel, randomCost));
+            series.getData().add(new XYChart.Data<>(dateLabel, energyValues.get(i)));
         }
 
         expenseSeriesData.add(series);

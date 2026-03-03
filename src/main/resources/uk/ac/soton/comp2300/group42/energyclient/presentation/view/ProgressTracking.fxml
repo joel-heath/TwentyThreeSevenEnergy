@@ -29,12 +29,12 @@
                 </yAxis>
             </LineChart>
 
-            <BarChart fx:id="expenseChart" title="Daily Energy Expenses" prefHeight="200" prefWidth="200" animated="false">
+            <BarChart fx:id="expenseChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
                     <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Total Cost (p)" side="LEFT" animated="false"/>
+                    <NumberAxis label="Total Energy (Joules)" side="LEFT" animated="false"/>
                 </yAxis>
             </BarChart>
 

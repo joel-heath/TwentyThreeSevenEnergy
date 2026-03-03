@@ -13,6 +13,7 @@ import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.repository.MetricRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Service
@@ -37,6 +38,16 @@ public class MetricService {
         return metricRepo.findById(id)
                 .map(mapper::toMetricResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Appliance with ID " + id + " not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<MetricResponse> getMetricsByHouseId(Long houseId, User user) {
+        House house = authManager.authorize(houseId, user, Role.GUEST).getHouse();
+
+        return metricRepo.findAllByHouse(house)
+                .stream()
+                .map(mapper::toMetricResponse)
+                .toList();
     }
 
     @Transactional

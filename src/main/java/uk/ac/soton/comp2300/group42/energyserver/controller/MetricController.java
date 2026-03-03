@@ -11,6 +11,7 @@ import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 import uk.ac.soton.comp2300.group42.metric.SaveMetricRequest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @RestController
@@ -30,6 +31,13 @@ public class MetricController {
             @PathVariable Long id,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(service.getMetricById(houseId, id, user)); // use house id for now
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MetricResponse>> getAllMetrics (
+            @PathVariable Long houseId,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(service.getMetricsByHouseId(houseId, user));
     }
 
     @PostMapping("/seed-test-data")

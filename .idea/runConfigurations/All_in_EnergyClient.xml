@@ -1,0 +1,138 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All in EnergyClient" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="EnergyClient" />
+    <extension name="coverage">
+
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.backend.ActivationClient" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.backend.ApplianceClient" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.backend.AuthClient" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.backend.HouseClient" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.backend.MetricClient" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.backend.UserClient" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalActivationRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalApplianceRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalHouseRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalMetricRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalUserRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteActivationRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteApplianceRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteAuthRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteHouseRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteMetricRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteUserRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.di.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.presentation.view.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.EnergyClient" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.Launcher" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="package" />
+    <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

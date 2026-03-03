@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Energy Client" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="uk.ac.soton.comp2300.group42.energyclient.Launcher" />
+    <module name="EnergyClient" />
+    <option name="VM_PARAMETERS" value="--enable-native-access=javafx.graphics --enable-native-access=com.sun.jna --sun-misc-unsafe-memory-access=allow" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

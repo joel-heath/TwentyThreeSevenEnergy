@@ -58,7 +58,7 @@ public class ActivationStore {
     }
 
     public ObservableActivation get(Long id) {
-        Activation pojo = repository.get(id, getActiveHouseId());
+        Activation pojo = repository.get(getActiveHouseId(), id);
         return getObservable(pojo);
     }
 

@@ -43,7 +43,7 @@ public class ApplianceStore {
     }
 
     public ObservableAppliance get(Long id) {
-        Appliance pojo = repository.get(id, getActiveHouseId());
+        Appliance pojo = repository.get(getActiveHouseId(), id);
         return getObservable(pojo);
     }
 

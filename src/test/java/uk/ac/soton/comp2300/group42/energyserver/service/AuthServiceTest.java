@@ -22,6 +22,7 @@ import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
+import uk.ac.soton.comp2300.group42.user.ChangePasswordRequest;
 import uk.ac.soton.comp2300.group42.user.LoginRequest;
 import uk.ac.soton.comp2300.group42.user.RegistrationRequest;
 
@@ -238,5 +239,57 @@ class AuthServiceTest {
         Long userId = 1L;
         authService.logoutAll(userId);
         verify(refreshTokenService).deleteByUserId(userId);
+    }
+
+    @Test
+    void changePassword_Success() {
+        ChangePasswordRequest request = new ChangePasswordRequest("current-password", "new-secure-password");
+
+        when(passwordEncoder.matches(request.oldPassword(), dummyUser.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode(request.newPassword())).thenReturn("encoded_new_password");
+
+        authService.changePassword(dummyUser, request);
+
+        verify(passwordEncoder).encode(request.newPassword());
+        assertThat(dummyUser.getPassword()).isEqualTo("encoded_new_password");
+    }
+
+    @Test
+    void changePassword_InvalidCurrentPassword_ThrowsException() {
+        ChangePasswordRequest request = new ChangePasswordRequest("wrong-current-password", "new-password");
+
+        when(passwordEncoder.matches(request.oldPassword(), dummyUser.getPassword())).thenReturn(false);
+
+        assertThatThrownBy(() -> authService.changePassword(dummyUser, request))
+                .isInstanceOf(InvalidCredentialsException.class)
+                .hasMessageContaining("Current password is incorrect");
+
+        verify(passwordEncoder, never()).encode(any());
+        assertThat(dummyUser.getPassword()).isEqualTo("encoded_password");
+    }
+
+    @Test
+    void verifyPassword_Success() {
+        String password = "current-password";
+
+        when(passwordEncoder.matches(password, dummyUser.getPassword())).thenReturn(true);
+
+        authService.verifyPassword(dummyUser, password, "Error message");
+
+        verify(passwordEncoder).matches(password, dummyUser.getPassword());
+    }
+
+    @Test
+    void verifyPassword_InvalidPassword_ThrowsException() {
+        String password = "wrong-password";
+
+        when(passwordEncoder.matches(password, dummyUser.getPassword())).thenReturn(false);
+
+        assertThatThrownBy(() -> authService.verifyPassword(dummyUser, password, "Error message"))
+                .isInstanceOf(InvalidCredentialsException.class)
+                .hasMessageContaining("Error message");
+
+        verify(passwordEncoder).matches(password, dummyUser.getPassword());
+
     }
 }

@@ -34,6 +34,4 @@ public class Metric {
 
     public Double getEnergyUsed() { return energyUsed; }
     public void setEnergyUsed(Double energyUsed) { this.energyUsed = energyUsed; }
-
-
 }

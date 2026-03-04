@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 
@@ -15,8 +16,8 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    // We'll create an actual secret in application.properties for production
-    private static final String SECRET = "5481ca00242289316679fc0ed90ee7eb3a635151cd22779a0a67f334f8e8208e";
+    @Value("${application.security.jwt.secret}")
+    private String secret;
 
     private static final long ACCESS_EXPIRATION = 1000 * 60 * 15;
 
@@ -61,7 +62,7 @@ public class JwtUtils {
     }
 
     private SecretKey getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

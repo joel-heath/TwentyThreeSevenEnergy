@@ -22,6 +22,8 @@ import java.util.concurrent.CompletableFuture;
 public class ProgressTrackingViewModel {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd");
+
 
     private final EnergyPriceRepository repository;
     private final ObservablePreferences preferences;
@@ -79,16 +81,19 @@ public class ProgressTrackingViewModel {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Daily Spend (Mock)");
 
-        LocalDate today = LocalDate.now();
+        //LocalDate today = LocalDate.now();
         List<Metric> testList = this.metricRepo.getAll(preferences.getActiveHouse().getId());
         List<Double> energyValues = testList.stream()
                 .map(Metric::energyUsed)
                 .toList();
+        List<LocalDate> dateValues = testList.stream()
+                .map(Metric::date)
+                .toList();
 
         // Fetches hardcoded values from the database
-        for (int i = 6; i >= 0; i--) {
-            String dateLabel = today.minusDays(i).getDayOfWeek().toString().substring(0, 3);
-
+        for (int i = 0; i <= 6; i++) {
+            //String dateLabel = today.minusDays(i).getDayOfWeek().toString().substring(0, 3);
+            String dateLabel = dateValues.get(i).format(DATE_FORMATTER);
             series.getData().add(new XYChart.Data<>(dateLabel, energyValues.get(i)));
         }
 

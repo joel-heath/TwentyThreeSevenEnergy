@@ -34,7 +34,7 @@
                     <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Total Energy (Joules)" side="LEFT" animated="false"/>
+                    <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
                 </yAxis>
             </BarChart>
 

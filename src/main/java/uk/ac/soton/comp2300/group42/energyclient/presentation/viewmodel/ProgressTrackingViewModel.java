@@ -91,7 +91,8 @@ public class ProgressTrackingViewModel {
                 .toList();
 
         // Fetches hardcoded values from the database
-        for (int i = 0; i <= 6; i++) {
+        int maxLen = energyValues.size();
+        for (int i = 0; i < maxLen; i++) {
             //String dateLabel = today.minusDays(i).getDayOfWeek().toString().substring(0, 3);
             String dateLabel = dateValues.get(i).format(DATE_FORMATTER);
             series.getData().add(new XYChart.Data<>(dateLabel, energyValues.get(i)));

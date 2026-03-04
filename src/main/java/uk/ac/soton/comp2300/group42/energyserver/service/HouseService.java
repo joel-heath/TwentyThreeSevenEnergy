@@ -94,7 +94,7 @@ public class HouseService {
                 House newDefaultHouse = new House();
                 newDefaultHouse.setAddress("No Address Set");
                 newDefaultHouse.setTimezone(ZoneId.of("UTC"));
-                newDefaultHouse = houseRepo.save(house);
+                newDefaultHouse = houseRepo.save(newDefaultHouse);
 
                 HouseMembership newMembership = new HouseMembership();
                 newMembership.setUser(affectedUser);

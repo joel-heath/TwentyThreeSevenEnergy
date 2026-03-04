@@ -37,7 +37,7 @@ public class MetricService {
 
         return metricRepo.findById(id)
                 .map(mapper::toMetricResponse)
-                .orElseThrow(() -> new ResourceNotFoundException("Appliance with ID " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Metric with ID " + id + " not found"));
     }
 
     @Transactional(readOnly = true)
@@ -51,13 +51,13 @@ public class MetricService {
     }
 
     @Transactional
-    public MetricResponse saveTestMetric(Long houseId, LocalDate date, Double energyUsed, SaveMetricRequest request, User user) {
+    public MetricResponse saveMetric(Long houseId, LocalDate date, SaveMetricRequest request, User user) {
         House house = authManager.authorize(houseId, user, Role.RESIDENT).getHouse();
 
         Metric metric = new Metric();
         metric.setHouse(house);
         metric.setDate(date);
-        metric.setEnergyUsed(energyUsed);
+        metric.setEnergyUsed(request.energyUsed());
         metric = metricRepo.save(metric);
 
         return mapper.toMetricResponse(metric);

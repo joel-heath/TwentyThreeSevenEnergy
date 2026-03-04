@@ -57,6 +57,8 @@ public class ActivationService {
         }
         else activation.setActivationDate(request.activationDate());
 
+        activationRepo.save(activation);
+
         return mapper.toActivationResponse(activation);
     }
 

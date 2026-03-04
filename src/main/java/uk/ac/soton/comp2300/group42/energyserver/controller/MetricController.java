@@ -46,8 +46,6 @@ public class MetricController {
             @Valid @RequestBody SaveMetricRequest request,
             @AuthenticationPrincipal User user) {
 
-        LocalDate testDate = LocalDate.now();
-        Double testEnergyUsed = 1.0;
-        return ResponseEntity.ok(service.saveTestMetric(houseId, testDate, testEnergyUsed, request, user));
+        return ResponseEntity.ok(service.saveMetric(houseId, LocalDate.now(), request, user));
     }
 }

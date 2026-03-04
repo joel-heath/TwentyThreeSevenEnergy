@@ -24,7 +24,7 @@ public class AccountSettingsViewModel {
     }
 
     public CompletableFuture<Void> refreshDataAsync() {
-        return CompletableFuture.runAsync(userStore::refresh);
+        return CompletableFuture.runAsync(userStore::refreshCurrentUser);
     }
 
     public ObservablePreferences getPreferences() {

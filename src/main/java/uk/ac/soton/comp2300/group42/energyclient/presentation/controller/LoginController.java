@@ -3,8 +3,10 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.LoginViewModel;
 
@@ -12,9 +14,16 @@ public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
+    @FXML private Hyperlink signUpLink;
 
     private final LoginViewModel vm;
     @Inject public LoginController(LoginViewModel vm) { this.vm = vm; }
+
+    @FXML private void initialize() {
+        signUpLink.textFillProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.TOGGLE_ENABLED)
+        ));
+    }
 
     private boolean guard(boolean condition, String errorMessage) {
         if (condition)

@@ -67,6 +67,14 @@ public class UserStore {
         //userRepo.saveCurrentUser(currentUser.commit());
     }
 
+    public void refreshCurrentUser() {
+        ObservableHouse house = currentUser.getHouse();
+        if (house == null) return;
+
+        Housemate me = houseRepo.getCurrentUserAsHousemate(house.getId());
+        Platform.runLater(() -> currentUser.updateFrom(me, house));
+    }
+
     public void refresh() {
         var prefs = userRepo.getCurrentPreferences();
         var house = houseStore.get(prefs.activeHouseId());

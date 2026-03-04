@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
@@ -18,13 +19,19 @@ public class AccountSettingsController {
     @FXML private TextField editEmailField;
     @FXML private TextField passwordField;
     @FXML private TextField confirmPasswordField;
+    @FXML private Button deleteAccountButton;
     @FXML private Label responseLabel;
 
     @Inject public AccountSettingsController(AccountSettingsViewModel vm) {
         this.vm = vm;
     }
 
+    private ColorVisionManager.ColorRole responseRole = ColorVisionManager.ColorRole.WIDGET_TEXT;
+
     @FXML private void initialize() {
+        bindDeleteButtonStyle();
+        bindResponseLabelColour();
+
         editNameField.setText(vm.getUser().getName());
         editEmailField.setText(vm.getUser().getName());
         editNameField.setDisable(true);
@@ -42,8 +49,7 @@ public class AccountSettingsController {
             Platform.runLater(() -> {
                 editNameField.setText("");
                 editEmailField.setText("");
-                responseLabel.setText("Failed to load user data.");
-                responseLabel.setStyle("-fx-text-fill: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";");
+                applyResponseMessage("Failed to load user data.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
                 System.out.println("Error loading user data: " + e.getMessage());
             });
             return null;
@@ -57,20 +63,17 @@ public class AccountSettingsController {
         String confirmPassword = confirmPasswordField.getText();
 
         if (!password.isEmpty() && !password.equals(confirmPassword)) {
-            responseLabel.setText("Passwords do not match.");
-            responseLabel.setStyle("-fx-text-fill: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";");
+            applyResponseMessage("Passwords do not match.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
             return;
         }
 
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.\\w+$")) {
-            responseLabel.setText("Invalid email format.");
-            responseLabel.setStyle("-fx-text-fill: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";");
+            applyResponseMessage("Invalid email format.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
             return;
         }
 
         if (name.isEmpty()) {
-            responseLabel.setText("Name cannot be empty.");
-            responseLabel.setStyle("-fx-text-fill: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";");
+            applyResponseMessage("Name cannot be empty.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
             return;
         }
 
@@ -80,8 +83,7 @@ public class AccountSettingsController {
         if (!password.isEmpty())
             vm.setPassword(password);
 
-        responseLabel.setText("Account updated successfully.");
-        responseLabel.setStyle("-fx-text-fill: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.TOGGLE_ENABLED) + ";");
+        applyResponseMessage("Account updated successfully.", ColorVisionManager.ColorRole.TOGGLE_ENABLED);
     }
 
     @FXML private void onLogout() {
@@ -90,5 +92,28 @@ public class AccountSettingsController {
 
     @FXML private void onDeleteAccount() {
         vm.deleteAccount();
+    }
+
+    private void bindDeleteButtonStyle() {
+        deleteAccountButton.styleProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
+                        vision, ColorVisionManager.ColorRole.VALIDATION_ERROR
+                ) + "; -fx-text-fill: #FFFFFF;"
+        ));
+    }
+
+    private void bindResponseLabelColour() {
+        updateResponseLabelColour();
+        ColorVisionManager.visionProperty().addListener((_, _, _) -> updateResponseLabelColour());
+    }
+
+    private void applyResponseMessage(String message, ColorVisionManager.ColorRole role) {
+        responseRole = role;
+        responseLabel.setText(message);
+        updateResponseLabelColour();
+    }
+
+    private void updateResponseLabelColour() {
+        responseLabel.setTextFill(ColorVisionManager.getColor(responseRole));
     }
 }

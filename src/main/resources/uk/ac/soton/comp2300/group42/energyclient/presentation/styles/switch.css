@@ -10,9 +10,9 @@
     -fx-fill: #b0b0b0; /* Gray when off */
 }
 
-/* Blue track when selected */
+/* Selected fallback track */
 .toggle-switch:selected .track {
-    -fx-fill: #3797ef; /* Blue when on */
+    -fx-fill: #b0b0b0;
 }
 
 /* The thumb (white circle) */

@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleSpringValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
         java.util.List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TokenRefreshException.class)
     public ResponseEntity<ApiErrorResponse> handleTokenRefresh(TokenRefreshException ex, WebRequest request) {
-        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage(), request);
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
     }
 
     // == Generic ==
@@ -84,8 +84,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public ResponseEntity<String> handleResourceConflict(ResourceAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public ResponseEntity<ApiErrorResponse> handleResourceConflict(ResourceAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
     @ExceptionHandler(Exception.class)

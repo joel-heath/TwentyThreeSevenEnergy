@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyserver.security.filter;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,8 +30,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
@@ -44,8 +46,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwt = authHeader.substring("Bearer ".length());
         try {
             userId = jwtUtils.extractUserId(jwt);
-        } catch (Exception e) {
-            // Token invalid or expired
+        }
+        catch (JwtException | IllegalArgumentException e) {
             filterChain.doFilter(request, response);
             return;
         }

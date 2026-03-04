@@ -10,11 +10,11 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ApiContractTest
-class PreferencesRequestTest {
+class UpdatePreferencesRequestTest {
 
     @Test
     void validRequest_ShouldPassValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L,
                 true,
                 ColorVision.DEUTERAN,
@@ -32,7 +32,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullUserId_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 null, true, ColorVision.DEUTERAN, Theme.DARK, Mode.ADVANCED, true, 150.5, 42L
         );
 
@@ -44,7 +44,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullLargeFont_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, null, ColorVision.DEUTERAN, Theme.DARK, Mode.ADVANCED, true, 150.5, 42L
         );
 
@@ -56,7 +56,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullVision_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, true, null, Theme.DARK, Mode.ADVANCED, true, 150.5, 42L
         );
 
@@ -68,7 +68,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullTheme_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, true, ColorVision.DEUTERAN, null, Mode.ADVANCED, true, 150.5, 42L
         );
 
@@ -80,7 +80,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullMode_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, true, ColorVision.DEUTERAN, Theme.DARK, null, true, 150.5, 42L
         );
 
@@ -92,7 +92,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullShareLocation_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, true, ColorVision.DEUTERAN, Theme.DARK, Mode.ADVANCED, null, 150.5, 42L
         );
 
@@ -104,7 +104,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullEnergyGoal_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, true, ColorVision.DEUTERAN, Theme.DARK, Mode.ADVANCED, true, null, 42L
         );
 
@@ -116,7 +116,7 @@ class PreferencesRequestTest {
 
     @Test
     void negativeEnergyGoal_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, true, ColorVision.DEUTERAN, Theme.DARK, Mode.ADVANCED, true, -13.2, 42L
         );
 
@@ -128,7 +128,7 @@ class PreferencesRequestTest {
 
     @Test
     void nullActiveHouseId_ShouldFailValidation(Validator validator) {
-        var request = new PreferencesRequest(
+        var request = new UpdatePreferencesRequest(
                 7L, true, ColorVision.DEUTERAN, Theme.DARK, Mode.ADVANCED, true, 150.5, null
         );
 
@@ -139,8 +139,8 @@ class PreferencesRequestTest {
     }
 
     @Test
-    void shouldSerializeCorrectly(JacksonTester<PreferencesRequest> tester) throws IOException {
-        var request = new PreferencesRequest(
+    void shouldSerializeCorrectly(JacksonTester<UpdatePreferencesRequest> tester) throws IOException {
+        var request = new UpdatePreferencesRequest(
                 84L,
                 false,
                 ColorVision.PROTAN,
@@ -164,7 +164,7 @@ class PreferencesRequestTest {
     }
 
     @Test
-    void shouldDeserializeCorrectly(JacksonTester<PreferencesRequest> tester) throws IOException {
+    void shouldDeserializeCorrectly(JacksonTester<UpdatePreferencesRequest> tester) throws IOException {
         var payload = """
                 {
                     "userId": 100,

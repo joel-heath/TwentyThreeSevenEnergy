@@ -3,7 +3,7 @@ package uk.ac.soton.comp2300.group42.preferences;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public record PreferencesRequest(
+public record UpdatePreferencesRequest(
         @NotNull(message = "User ID must not be null")
         Long userId,
 

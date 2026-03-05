@@ -20,7 +20,19 @@ public class UserClient extends BaseApiClient {
         return get("users/me", new TypeReference<>() {});
     }
 
+    public UserResponse putMe(UserResponse request) {
+        return put("users/me", request, new TypeReference<>() {});
+    }
+
+    public void deleteMe() {
+        delete("users/me");
+    }
+
     public PreferencesResponse fetchMyPreferences() {
         return get("users/me/preferences", new TypeReference<>() {});
+    }
+
+    public PreferencesResponse putMyPreferences(PreferencesResponse request) {
+        return put("users/me/preferences", request, new TypeReference<>() {});
     }
 }

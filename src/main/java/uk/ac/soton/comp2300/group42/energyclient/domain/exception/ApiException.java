@@ -1,14 +1,35 @@
 package uk.ac.soton.comp2300.group42.energyclient.domain.exception;
 
-public class ApiException extends RuntimeException {
-    private final int statusCode;
+import java.time.Instant;
 
-    public ApiException(String message, int statusCode) {
+public class ApiException extends RuntimeException {
+
+    private final Instant timestamp;
+    private final int status;
+    private final String error;
+    private final String path;
+
+    public ApiException(Instant timestamp, int status, String error, String message, String path) {
         super(message);
-        this.statusCode = statusCode;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.error = error;
+        this.path = path;
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

@@ -81,7 +81,7 @@ class ProgressTrackingViewModelTest {
 
         assertEquals(1, viewModel.getExpenseSeriesData().size());
         assertEquals(7, viewModel.getExpenseSeriesData().getFirst().getData().size());
-        assertEquals(7.0, viewModel.getExpenseSeriesData().getFirst().getData().get(0).getYValue());
-        assertEquals(1.0, viewModel.getExpenseSeriesData().getFirst().getData().get(6).getYValue());
+        assertEquals(1.0, viewModel.getExpenseSeriesData().getFirst().getData().get(0).getYValue());
+        assertEquals(7.0, viewModel.getExpenseSeriesData().getFirst().getData().get(6).getYValue());
     }
 }

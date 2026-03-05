@@ -4,13 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageData;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.UnauthorizedException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 
 import java.util.List;
 import java.util.Objects;
+
+import static uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalRepositoryUtils.throwApiException;
 
 @Singleton
 public class LocalMetricRepository implements MetricRepository {
@@ -45,10 +45,10 @@ public class LocalMetricRepository implements MetricRepository {
 
     private void validateRequestExists(Long houseId) {
         if (Objects.isNull(houseId))
-            throw new ApiException("House ID is required", 400);
+            throwApiException(400, "House ID is required");
 
         if (!data.houses.containsKey(houseId))
-            throw new ApiException("House not found", 404);
+            throwApiException(404, "House not found");
     }
 
     @Override
@@ -64,28 +64,28 @@ public class LocalMetricRepository implements MetricRepository {
         validateRequestExists(metricId);
 
         if (Objects.isNull(metricId))
-            throw new ApiException("Metric ID is required", 400);
+            throwApiException(400, "Metric ID is required");
 
         Metric metric = data.metrics.get(metricId);
 
         if (Objects.isNull(metric))
-            throw new ApiException("Metric not found", 404);
+            throwApiException(404, "Metric not found");
         if (!Objects.equals(houseId, metric.houseId()))
-            throw new UnauthorizedException("Metric does not belong to this house");
+            throwApiException(401, "Metric does not belong to the specified house");
 
         return metric;
     }
 
     private void validateRequestFields(Metric metric) {
         if (Objects.isNull(metric))
-            throw new ApiException("Metric is required", 400);
+            throwApiException(400, "Metric is required");
 
         validateRequestExists(metric.houseId());
 
         if (Objects.isNull(metric.date()))
-            throw new ApiException("Date is required", 400);
+            throwApiException(400, "Date is required");
 
         if (Objects.isNull(metric.energyUsed()))
-            throw new ApiException("Energy used is required", 400);
+            throwApiException(400, "Energy used is required");
     }
 }

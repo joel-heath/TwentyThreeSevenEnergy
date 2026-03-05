@@ -4,11 +4,9 @@ package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
+import uk.ac.soton.comp2300.group42.common.ApiErrorResponse;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.NetworkException;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.DataFetchException;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.UnauthorizedException;
+import uk.ac.soton.comp2300.group42.energyclient.domain.exception.*;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
@@ -21,10 +19,6 @@ public abstract class BaseApiClient {
     protected BaseApiClient(AuthenticatedHttpClient httpClient, @BackendMapper JsonMapper mapper) {
         this.httpClient = httpClient;
         this.mapper = mapper;
-    }
-
-    protected boolean isSuccess(HttpResponse<String> response) {
-        return response.statusCode() >= 200 && response.statusCode() < 300;
     }
 
     protected <T> T get(String path, TypeReference<T> responseType) {
@@ -108,11 +102,7 @@ public abstract class BaseApiClient {
     }
 
     protected <T> T handleResponse(HttpResponse<String> response,  TypeReference<T> responseType) {
-        if (response.statusCode() == 401)
-            throw new UnauthorizedException("Unauthorized access to " + response.uri());
-
-        if (!isSuccess(response))
-            throw new ApiException("HTTP " + response.statusCode() + " while accessing " + response.uri(), response.statusCode());
+        throwIfNotSuccess(response);
 
         if (response.body() == null || response.body().trim().isEmpty())
             throw new DataFetchException("Empty response body from " + response.uri() + " when deserializing to " + responseType.getType().getTypeName());
@@ -122,6 +112,31 @@ public abstract class BaseApiClient {
         }
         catch (JacksonException e) {
             throw new DataFetchException("Failed to deserialize response from " + response.uri() + " to " + responseType.getType().getTypeName(), e);
+        }
+    }
+
+    protected void throwIfNotSuccess(HttpResponse<String> response) {
+        int status = response.statusCode();
+
+        if (status >= 200 && status < 300)
+            return;
+
+        ApiErrorResponse error;
+        try {
+            error = mapper.readValue(response.body(), ApiErrorResponse.class);
+        }
+        catch (JacksonException e) {
+            throw new DataFetchException("Failed to deserialize error response from " + response.uri(), e);
+        }
+
+        switch (status) {
+            case 400 -> throw new BadRequestException(error.timestamp(), error.error(), error.message(), error.path());
+            case 401 -> throw new UnauthorizedException(error.timestamp(), error.error(), error.message(), error.path());
+            case 403 -> throw new ForbiddenException(error.timestamp(), error.error(), error.message(), error.path());
+            case 404 -> throw new NotFoundException(error.timestamp(), error.error(), error.message(), error.path());
+            case 409 -> throw new ConflictException(error.timestamp(), error.error(), error.message(), error.path());
+            case 500 -> throw new InternalServerErrorException(error.timestamp(), error.error(), error.message(), error.path());
+            default -> throw new ApiException(error.timestamp(), status, error.error(), error.message(), error.path());
         }
     }
 }

@@ -4,13 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageData;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.UnauthorizedException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ApplianceRepository;
 
 import java.util.List;
 import java.util.Objects;
+
+import static uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalRepositoryUtils.throwApiException;
 
 @Singleton
 public class LocalApplianceRepository implements ApplianceRepository {
@@ -73,36 +73,36 @@ public class LocalApplianceRepository implements ApplianceRepository {
 
     private void validateRequestExists(Long houseId) {
         if (Objects.isNull(houseId))
-            throw new ApiException("House ID is required", 400);
+            throwApiException(400, "House ID is required");
 
         if (!data.houses.containsKey(houseId))
-            throw new ApiException("House with id " + houseId + " not found", 404);
+            throwApiException(404, "House with id " + houseId + " not found");
     }
 
     private Appliance validateRequestExists(Long houseId, Long applianceId) {
         validateRequestExists(houseId);
 
         if (Objects.isNull(applianceId))
-            throw new ApiException("Appliance ID is required", 400);
+            throwApiException(400, "Appliance ID is required");
 
         Appliance appliance = data.appliances.get(applianceId);
 
         if (Objects.isNull(appliance))
-            throw new ApiException("Appliance not found", 404);
+            throwApiException(404, "Appliance not found");
 
         if (!Objects.equals(houseId, appliance.houseId()))
-            throw new UnauthorizedException("Appliance does not belong to this house");
+            throwApiException(401, "Appliance does not belong to this house");
 
         return appliance;
     }
 
     private void validateRequestFields(Appliance appliance) {
         if (Objects.isNull(appliance))
-            throw new ApiException("Appliance is required", 400);
+            throwApiException(400, "Appliance is required");
 
         validateRequestExists(appliance.houseId());
 
         if (Objects.isNull(appliance.name()) || appliance.name().isBlank())
-            throw new ApiException("Appliance name is required", 400);
+            throwApiException(400, "Appliance name is required");
     }
 }

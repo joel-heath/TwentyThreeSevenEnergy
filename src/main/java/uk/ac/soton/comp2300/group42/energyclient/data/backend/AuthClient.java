@@ -6,11 +6,11 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
+import uk.ac.soton.comp2300.group42.user.ChangePasswordRequest;
 import uk.ac.soton.comp2300.group42.user.LoginRequest;
 import uk.ac.soton.comp2300.group42.user.RegistrationRequest;
 
 import java.net.http.HttpResponse;
-import java.util.Optional;
 
 @Singleton
 public class AuthClient extends BaseApiClient {
@@ -24,25 +24,21 @@ public class AuthClient extends BaseApiClient {
         return get("users/me").statusCode() == 200;
     }
 
-    public Optional<AuthResponse> login(String email, String password) {
+    public AuthResponse login(String email, String password) {
         LoginRequest request = new LoginRequest(email, password);
 
-        HttpResponse<String> response = post("auth/login", request);
-        if (!isSuccess(response))
-            return Optional.empty();
-
-        AuthResponse auth = handleResponse(response, new TypeReference<>() {});
-        return Optional.of(auth);
+        return post("auth/login", request, new TypeReference<>() {});
     }
 
-    public Optional<AuthResponse> register(String name, String email, String password) {
+    public AuthResponse register(String name, String email, String password) {
         RegistrationRequest request = new RegistrationRequest(name, email, password);
 
-        HttpResponse<String> response = post("auth/register", request);
-        if (!isSuccess(response))
-            return Optional.empty();
+        return post("auth/register", request, new TypeReference<>() {});
+    }
 
-        AuthResponse auth = handleResponse(response, new TypeReference<>() {});
-        return Optional.of(auth);
+    public void changePassword(String oldPassword, String newPassword) {
+        ChangePasswordRequest request = new ChangePasswordRequest(oldPassword, newPassword);
+        HttpResponse<String> response = put("users/me/password", request);
+        throwIfNotSuccess(response);
     }
 }

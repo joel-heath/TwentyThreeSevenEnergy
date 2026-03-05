@@ -2,7 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.domain.repository;
 
 public interface AuthRepository {
     boolean verifyLoggedIn();
-    boolean login(String email, String password);
+    void login(String email, String password);
     void logout();
-    boolean register(String name, String email, String password);
+    void register(String name, String email, String password);
 }

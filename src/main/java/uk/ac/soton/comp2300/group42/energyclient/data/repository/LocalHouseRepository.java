@@ -5,7 +5,6 @@ import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageData;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
@@ -13,6 +12,8 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseReposito
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
+
+import static uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalRepositoryUtils.throwApiException;
 
 @Singleton
 public class LocalHouseRepository implements HouseRepository {
@@ -116,27 +117,27 @@ public class LocalHouseRepository implements HouseRepository {
 
     private House validateRequest(Long houseId) {
         if (Objects.isNull(houseId))
-            throw new ApiException("House ID is required", 400);
+            throwApiException(400, "House ID is required");
 
         House house = data.houses.get(houseId);
 
         if (Objects.isNull(house))
-            throw new ApiException("House not found", 404);
+            throwApiException(404, "House not found");
 
         return house;
     }
 
     private void validateRequest(House house) {
         if (Objects.isNull(house))
-            throw new ApiException("House is required", 400);
+            throwApiException(400, "House is required");
 
         if (Objects.isNull(house.name()) || house.name().isBlank())
-            throw new ApiException("House name is required", 400);
+            throwApiException(400, "House name is required");
 
         if (Objects.isNull(house.address()) || house.address().isBlank())
-            throw new ApiException("House address is required", 400);
+            throwApiException(400, "House address is required");
 
         if (Objects.isNull(house.timezone()))
-            throw new ApiException("House timezone is required", 400);
+            throwApiException(400, "House timezone is required");
     }
 }

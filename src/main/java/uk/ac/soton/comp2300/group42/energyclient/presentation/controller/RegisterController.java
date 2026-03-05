@@ -47,11 +47,8 @@ public class RegisterController {
             guard(!password.equals(confirm), "Passwords do not match"))
             return;
 
-        try {
-            vm.register(name, email, password);
-        }
-        catch (Exception e) {
-            showError("An error occurred during registration: " + e.getMessage());
+        if (!vm.register(name, email, password)) {
+            showError("An error occurred during registration");
             return;
         }
 

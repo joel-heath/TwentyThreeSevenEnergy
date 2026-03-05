@@ -9,8 +9,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepositor
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
 
-import java.util.Optional;
-
 @Singleton
 public class RemoteAuthRepository implements AuthRepository {
 
@@ -40,15 +38,10 @@ public class RemoteAuthRepository implements AuthRepository {
     }
 
     @Override
-    public boolean login(String email, String password) {
-        Optional<AuthResponse> response = client.login(email, password);
-        if (response.isPresent()) {
-            AuthResponse auth = response.get();
-            httpClient.setTokenPair(auth.accessToken(), auth.refreshToken());
-            sessionManager.setLoggedIn(true);
-            return true;
-        }
-        return false;
+    public void login(String email, String password) {
+        AuthResponse response = client.login(email, password);
+        httpClient.setTokenPair(response.accessToken(), response.refreshToken());
+        sessionManager.setLoggedIn(true);
     }
 
     @Override
@@ -58,14 +51,9 @@ public class RemoteAuthRepository implements AuthRepository {
     }
 
     @Override
-    public boolean register(String name, String email, String password) {
-        Optional<AuthResponse> response = client.register(name, email, password);
-        if (response.isPresent()) {
-            AuthResponse auth = response.get();
-            httpClient.setTokenPair(auth.accessToken(), auth.refreshToken());
-            sessionManager.setLoggedIn(true);
-            return true;
-        }
-        return false;
+    public void register(String name, String email, String password) {
+        AuthResponse response = client.register(name, email, password);
+        httpClient.setTokenPair(response.accessToken(), response.refreshToken());
+        sessionManager.setLoggedIn(true);
     }
 }

@@ -40,13 +40,8 @@ public class LoginController {
             guard(password.isBlank(), "Password is required"))
             return;
 
-        try {
-            vm.login(email, password);
-        }
-        catch (Exception e) {
-            // invalid email or password ?
-            showError("An error occurred during registration: " + e.getMessage());
-            return;
+        if (!vm.login(email, password)) {
+            showError("An error occurred during login");
         }
 
         Navigator.goToIrreversible("Dashboard.fxml");

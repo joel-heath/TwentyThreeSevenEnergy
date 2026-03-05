@@ -42,9 +42,6 @@ class ScheduleViewModelTest {
     void setUp() {
         applianceList = FXCollections.observableArrayList(appliance);
         when(applianceStore.getAll()).thenReturn(applianceList);
-        when(preferences.getActiveHouse()).thenReturn(activeHouse);
-        when(activeHouse.getId()).thenReturn(88L);
-        when(appliance.getId()).thenReturn(44L);
         viewModel = new ScheduleViewModel(activationService, applianceStore, preferences);
     }
 
@@ -61,6 +58,9 @@ class ScheduleViewModelTest {
         LocalDate date = LocalDate.of(2026, 3, 10);
         LocalDateTime expected = LocalDateTime.of(2026, 3, 10, 9, 15);
         when(activationService.create(any(Activation.class))).thenReturn(expected);
+        when(preferences.getActiveHouse()).thenReturn(activeHouse);
+        when(activeHouse.getId()).thenReturn(88L);
+        when(appliance.getId()).thenReturn(44L);
 
         viewModel.selectedApplianceProperty().set(appliance);
         viewModel.hourProperty().set(9);
@@ -84,6 +84,9 @@ class ScheduleViewModelTest {
     void scheduleActivation_recurring_buildsRecurringActivation() {
         LocalDateTime expected = LocalDateTime.of(2026, 3, 11, 8, 30);
         when(activationService.create(any(Activation.class))).thenReturn(expected);
+        when(preferences.getActiveHouse()).thenReturn(activeHouse);
+        when(activeHouse.getId()).thenReturn(88L);
+        when(appliance.getId()).thenReturn(44L);
 
         viewModel.selectedApplianceProperty().set(appliance);
         viewModel.hourProperty().set(8);

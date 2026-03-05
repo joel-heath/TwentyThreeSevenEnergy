@@ -81,7 +81,6 @@ public class ProgressTrackingViewModel {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Daily Spend (Mock)");
 
-        //LocalDate today = LocalDate.now();
         List<Metric> testList = this.metricRepo.getAll(preferences.getActiveHouse().getId());
         List<Double> energyValues = testList.stream()
                 .map(Metric::energyUsed)
@@ -90,10 +89,8 @@ public class ProgressTrackingViewModel {
                 .map(Metric::date)
                 .toList();
 
-        // Fetches hardcoded values from the database
         int maxLen = energyValues.size();
         for (int i = 0; i < maxLen; i++) {
-            //String dateLabel = today.minusDays(i).getDayOfWeek().toString().substring(0, 3);
             String dateLabel = dateValues.get(i).format(DATE_FORMATTER);
             series.getData().add(new XYChart.Data<>(dateLabel, energyValues.get(i)));
         }

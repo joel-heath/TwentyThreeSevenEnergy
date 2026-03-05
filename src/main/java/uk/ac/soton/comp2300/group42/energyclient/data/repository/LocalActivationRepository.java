@@ -5,14 +5,14 @@ import com.google.inject.Singleton;
 import uk.ac.soton.comp2300.group42.activation.ActivationType;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageData;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.UnauthorizedException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ActivationRepository;
 
 import java.util.List;
 import java.util.Objects;
+
+import static uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalRepositoryUtils.throwApiException;
 
 @Singleton
 public class LocalActivationRepository implements ActivationRepository {
@@ -84,59 +84,59 @@ public class LocalActivationRepository implements ActivationRepository {
 
     private void validateHouseExists(Long houseId) {
         if (Objects.isNull(houseId))
-            throw new ApiException("House ID is required", 400);
+            throwApiException(400, "House ID is required");
 
         if (!data.houses.containsKey(houseId))
-            throw new ApiException("House not found", 404);
+            throwApiException(404, "House not found");
     }
 
     private void validateApplianceExists(Long houseId, Long applianceId) {
         if (Objects.isNull(applianceId))
-            throw new ApiException("Appliance ID is required", 400);
+            throwApiException(400, "Appliance ID is required");
 
         Appliance appliance = data.appliances.get(applianceId);
 
         if (Objects.isNull(appliance))
-            throw new ApiException("Appliance not found", 404);
+            throwApiException(404, "Appliance not found");
 
         if (!Objects.equals(houseId, appliance.houseId()))
-            throw new UnauthorizedException("Appliance does not belong to this house");
+            throwApiException(401, "Appliance does not belong to this house");
     }
 
     private Activation validateExists(Long houseId, Long activationId) {
         validateHouseExists(houseId);
 
         if (Objects.isNull(activationId))
-            throw new ApiException("Activation ID is required", 400);
+            throwApiException(400, "Activation ID is required");
 
         Activation activation = data.activations.get(activationId);
 
         if (Objects.isNull(activation))
-            throw new ApiException("Activation not found", 404);
+            throwApiException(404, "Activation not found");
 
         if (!Objects.equals(houseId, activation.houseId()))
-            throw new UnauthorizedException("Activation does not belong to this house");
+            throwApiException(401, "Activation does not belong to this house");
 
         return activation;
     }
 
     private void validateRequestFields(Activation activation) {
         if (Objects.isNull(activation))
-            throw new ApiException("Activation is required", 400);
+            throwApiException(400, "Activation is required");
 
         validateHouseExists(activation.houseId());
 
         validateApplianceExists(activation.houseId(), activation.applianceId());
 
         if (Objects.isNull(activation.type()))
-            throw new ApiException("Activation type is required", 400);
+            throwApiException(400, "Activation type is required");
 
         if (Objects.isNull(activation.activationTime()))
-            throw new ApiException("Activation time is required", 400);
+            throwApiException(400, "Activation time is required");
 
         if (activation.type() == ActivationType.NON_RECURRING) {
             if (Objects.isNull(activation.activationDate()))
-                throw new ApiException("Activation date is required for non-recurring activations", 400);
+                throwApiException(400, "Activation date is required for non-recurring activations");
         }
         else {
             if (activation.recursMonday() == null ||
@@ -146,7 +146,7 @@ public class LocalActivationRepository implements ActivationRepository {
                 activation.recursFriday() == null ||
                 activation.recursSaturday() == null ||
                 activation.recursSunday() == null)
-                throw new ApiException("Recurrence fields are required for recurring activations", 400);
+                throwApiException(400, "Recurrence fields are required for recurring activations");
         }
     }
 }

@@ -25,7 +25,9 @@ public final class ColorVisionManager {
         WIDGET_SURFACE,
         WIDGET_TEXT,
         TOGGLE_ENABLED,
-        VALIDATION_ERROR
+        VALIDATION_ERROR,
+        STATUS_50PERCENT_OVER,
+        STATUS_200PERCENT_OVER
     }
 
     private record Palette(Paint gradient, Map<ColorRole, Color> colors) {
@@ -80,9 +82,7 @@ public final class ColorVisionManager {
         return paletteFor(vision).gradient();
     }
 
-    public static Color getColor(ColorRole role) {
-        return getColor(getVision(), role);
-    }
+    public static Color getColor(ColorRole role) { return getColor(getVision(), role); }
 
     public static Color getColor(ColorVision vision, ColorRole role) {
         Objects.requireNonNull(role, "role must not be null");
@@ -109,13 +109,13 @@ public final class ColorVisionManager {
                 ColorVision.TYPICAL,
                 new Palette(
                         createGradient("#2ECC71", "#FFC107", "#E74C3C"),
-                        colors("#D4EDDA", "#FFF3CD", "#F8D7DA", "#ADD8E6", "#B0ACE3", "#477890", "#3797EF", "#DC3545")
+                        colors("#D4EDDA", "#FFF3CD", "#F8D7DA", "#ADD8E6", "#B0ACE3", "#477890", "#3797EF", "#DC3545","#E74C3C", "#C0392B")
                 )
         );
 
         Palette protanDeutanPalette = new Palette(
                 createGradient("#0072B2", "#E69F00", "#D55E00"),
-                colors("#D9ECFA", "#FCE8C3", "#F8DCCB", "#CFE8FA", "#D7EAF9", "#3E5F77", "#0072B2", "#D55E00")
+                colors("#D9ECFA", "#FCE8C3", "#F8DCCB", "#CFE8FA", "#D7EAF9", "#3E5F77", "#0072B2", "#D55E00","#D55E00", "9E4400")
         );
         palettes.put(ColorVision.PROTAN, protanDeutanPalette);
         palettes.put(ColorVision.DEUTERAN, protanDeutanPalette);
@@ -124,7 +124,7 @@ public final class ColorVisionManager {
                 ColorVision.TRITAN,
                 new Palette(
                         createGradient("#009E73", "#F0E442", "#56B4E9"),
-                        colors("#D8F5EA", "#FFF8CC", "#F4DCEC", "#E5F2FB", "#EADFF5", "#3F5F70", "#009E73", "#CC79A7")
+                        colors("#D8F5EA", "#FFF8CC", "#F4DCEC", "#E5F2FB", "#EADFF5", "#3F5F70", "#009E73", "#CC79A7","#56B4E9", "#2E86C1")
                 )
         );
 
@@ -132,7 +132,7 @@ public final class ColorVisionManager {
                 ColorVision.ACHROMA,
                 new Palette(
                         createGradient("#000000", "#808080", "#FFFFFF"),
-                        colors("#E8E8E8", "#CFCFCF", "#A8A8A8", "#DDDDDD", "#D0D0D0", "#444444", "#4A4A4A", "#666666")
+                        colors("#E8E8E8", "#CFCFCF", "#A8A8A8", "#DDDDDD", "#D0D0D0", "#444444", "#4A4A4A", "#666666","#FFFFFF", "#FFFFFF")
                 )
         );
 
@@ -148,6 +148,7 @@ public final class ColorVisionManager {
         );
     }
 
+
     private static Map<ColorRole, Color> colors(String statusCheap,
                                                  String statusAverage,
                                                  String statusExpensive,
@@ -155,7 +156,9 @@ public final class ColorVisionManager {
                                                  String widgetSurface,
                                                  String widgetText,
                                                  String toggleEnabled,
-                                                 String validationError) {
+                                                 String validationError,
+                                                 String status_50percent_over,
+                                                 String status_200percent_over) {
         return Map.of(
                 ColorRole.STATUS_CHEAP, color(statusCheap),
                 ColorRole.STATUS_AVERAGE, color(statusAverage),
@@ -164,7 +167,9 @@ public final class ColorVisionManager {
                 ColorRole.WIDGET_SURFACE, color(widgetSurface),
                 ColorRole.WIDGET_TEXT, color(widgetText),
                 ColorRole.TOGGLE_ENABLED, color(toggleEnabled),
-                ColorRole.VALIDATION_ERROR, color(validationError)
+                ColorRole.VALIDATION_ERROR, color(validationError),
+                ColorRole.STATUS_50PERCENT_OVER, color(status_50percent_over),
+                ColorRole.STATUS_200PERCENT_OVER, color(status_200percent_over)
         );
     }
 

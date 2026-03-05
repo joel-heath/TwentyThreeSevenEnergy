@@ -8,7 +8,7 @@ import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ModelU
 
 public class ObservableHousemate {
 
-    private final Long id;
+    private Long id;
     private final StringProperty name;
     private final StringProperty email;
     private final ObjectProperty<ObservableHouse> house;
@@ -33,6 +33,7 @@ public class ObservableHousemate {
     }
 
     public void updateFrom(Housemate housemate, ObservableHouse house) {
+        updateIfChanged(getId(), housemate.userId(), this::setId);
         updateIfChanged(getName(), housemate.name(), this::setName);
         updateIfChanged(getEmail(), housemate.email(), this::setEmail);
         updateIfChanged(getRole(), housemate.role(), this::setRole);
@@ -40,6 +41,7 @@ public class ObservableHousemate {
     }
 
     public Long getId() { return id; }
+    public void setId(Long value) { id = value; }
 
     public String getName() { return name.get(); }
     public void setName(String value) { name.set(value); }

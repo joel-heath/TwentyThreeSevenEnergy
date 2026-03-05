@@ -2,10 +2,10 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
+import java.util.concurrent.Executor;
 
 @Singleton
 public class HousemateStore {
@@ -26,17 +27,23 @@ public class HousemateStore {
     private final ObservablePreferences preferences;
     private final Map<Long, ObservableHousemate> cache;
     private final ObservableList<ObservableHousemate> masterList;
+    private final Executor uiExecutor;
 
     @Inject
-    public HousemateStore(HouseRepository repository, HouseStore houseStore, ObservablePreferences preferences, SessionManager sessionManager) {
+    public HousemateStore(HouseRepository repository,
+                          HouseStore houseStore,
+                          ObservablePreferences preferences,
+                          SessionManager sessionManager,
+                          @UIExecutor Executor uiExecutor) {
         this.repository = repository;
         this.houseStore = houseStore;
         this.preferences = preferences;
+        this.uiExecutor = uiExecutor;
         this.cache = new WeakHashMap<>();
         this.masterList = FXCollections.observableArrayList();
 
         sessionManager.subscribe(_ ->
-                Platform.runLater(() -> {
+                uiExecutor.execute(() -> {
                     cache.clear();
                     masterList.clear();
                 })
@@ -55,7 +62,7 @@ public class HousemateStore {
     public void kick(Long userId) {
         // repository.kickHousemate(getActiveHouseId(), userId);
         cache.remove(userId);
-        Platform.runLater(() -> masterList.removeIf(h -> h.getId().equals(userId)));
+        uiExecutor.execute(() -> masterList.removeIf(h -> h.getId().equals(userId)));
     }
 
     public ObservableHousemate get(Long userId) {
@@ -75,12 +82,12 @@ public class HousemateStore {
         ObservableHousemate existing = cache.get(pojo.userId());
 
         if (existing != null) {
-            Platform.runLater(() -> existing.updateFrom(pojo, house));
+            uiExecutor.execute(() -> existing.updateFrom(pojo, house));
             return existing;
         } else {
             ObservableHousemate housemate = new ObservableHousemate(pojo, house);
             cache.put(pojo.userId(), housemate);
-            Platform.runLater(() -> masterList.add(housemate));
+            uiExecutor.execute(() -> masterList.add(housemate));
             return housemate;
         }
     }
@@ -111,7 +118,7 @@ public class HousemateStore {
                 })
                 .toList();
 
-        Platform.runLater(() -> {
+        uiExecutor.execute(() -> {
             masterList.setAll(pojos.stream().map(Pair::getKey).toList());
 
             pojos.forEach(pair -> pair.getValue().ifPresent(

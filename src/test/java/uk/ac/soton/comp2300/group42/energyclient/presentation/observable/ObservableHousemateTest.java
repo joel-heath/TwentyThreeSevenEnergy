@@ -90,7 +90,7 @@ public class ObservableHousemateTest {
 
         presentation.updateFrom(newDomain, mockHouse2);
 
-        assertEquals(10L, presentation.getId(), "ID should not have changed");
+        assertEquals(20L, presentation.getId(), "ID should be updated from domain model");
         assertEquals("Alice Smith", presentation.getName(), "Name should be updated from domain model");
         assertEquals("a.smith@example.com", presentation.getEmail(), "Email should be updated from domain model");
         assertEquals(Role.OWNER, presentation.getRole(), "Role should be updated from domain model");

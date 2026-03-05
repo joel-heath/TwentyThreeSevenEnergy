@@ -2,10 +2,10 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ActivationRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.concurrent.Executor;
 
 @Singleton
 public class ActivationStore {
@@ -26,12 +27,18 @@ public class ActivationStore {
     private final ObservablePreferences preferences;
     private final Map<Long, ObservableActivation> cache;
     private final ObservableList<ObservableActivation> masterList;
+    private final Executor uiExecutor;
 
     @Inject
-    public ActivationStore(ActivationRepository repository, ApplianceStore applianceStore, ObservablePreferences preferences, SessionManager sessionManager) {
+    public ActivationStore(ActivationRepository repository,
+                           ApplianceStore applianceStore,
+                           ObservablePreferences preferences,
+                           SessionManager sessionManager,
+                           @UIExecutor Executor uiExecutor) {
         this.repository = repository;
         this.applianceStore = applianceStore;
         this.preferences = preferences;
+        this.uiExecutor = uiExecutor;
         this.cache = new WeakHashMap<>();
         this.masterList = FXCollections.observableArrayList(
                 a -> new Observable[] {
@@ -50,7 +57,7 @@ public class ActivationStore {
         );
 
         sessionManager.subscribe(_ ->
-                Platform.runLater(() -> {
+                uiExecutor.execute(() -> {
                     cache.clear();
                     masterList.clear();
                 })
@@ -91,12 +98,12 @@ public class ActivationStore {
         ObservableActivation existing = cache.get(pojo.id());
 
         if (existing != null) {
-            Platform.runLater(() -> existing.updateFrom(pojo, appliance));
+            uiExecutor.execute(() -> existing.updateFrom(pojo, appliance));
             return existing;
         } else {
             ObservableActivation activation = new ObservableActivation(pojo, appliance);
             cache.put(pojo.id(), activation);
-            Platform.runLater(() -> masterList.add(activation));
+            uiExecutor.execute(() -> masterList.add(activation));
             return activation;
         }
     }
@@ -105,7 +112,7 @@ public class ActivationStore {
         List<Activation> pojos = repository.getAll(getActiveHouseId());
         applianceStore.refreshAll();
 
-        Platform.runLater(() -> {
+        uiExecutor.execute(() -> {
             masterList.clear();
             for (Activation pojo : pojos) {
                 ObservableActivation activation = cache.get(pojo.id());

@@ -2,9 +2,9 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
@@ -13,6 +13,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.Executor;
 
 @Singleton
 public class HouseStore {
@@ -20,15 +21,17 @@ public class HouseStore {
     private final HouseRepository repository;
     private final Map<Long, ObservableHouse> cache;
     private final ObservableList<ObservableHouse> masterList;
+    private final Executor uiExecutor;
 
     @Inject
-    public HouseStore(HouseRepository repository, SessionManager sessionManager) {
+    public HouseStore(HouseRepository repository, SessionManager sessionManager, @UIExecutor Executor uiExecutor) {
         this.repository = repository;
+        this.uiExecutor = uiExecutor;
         this.cache = new WeakHashMap<>();
         this.masterList = FXCollections.observableArrayList();
 
         sessionManager.subscribe(_ ->
-                Platform.runLater(() -> {
+                uiExecutor.execute(() -> {
                     cache.clear();
                     masterList.clear();
                 })
@@ -62,25 +65,25 @@ public class HouseStore {
     public void delete(Long id) {
         repository.delete(id);
         cache.remove(id);
-        Platform.runLater(() -> masterList.removeIf(h -> h.getId().equals(id)));
+        uiExecutor.execute(() -> masterList.removeIf(h -> h.getId().equals(id)));
     }
 
     public void leave(Long id) {
         // TODO: repository.leave(id);
         cache.remove(id);
-        Platform.runLater(() -> masterList.removeIf(h -> h.getId().equals(id)));
+        uiExecutor.execute(() -> masterList.removeIf(h -> h.getId().equals(id)));
     }
 
     private ObservableHouse getObservable(House pojo) {
         ObservableHouse existing = cache.get(pojo.id());
 
         if (existing != null) {
-            Platform.runLater(() -> existing.updateFrom(pojo));
+            uiExecutor.execute(() -> existing.updateFrom(pojo));
             return existing;
         } else {
             ObservableHouse house = new ObservableHouse(pojo);
             cache.put(house.getId(), house);
-            Platform.runLater(() -> masterList.add(house));
+            uiExecutor.execute(() -> masterList.add(house));
             return house;
         }
     }
@@ -88,7 +91,7 @@ public class HouseStore {
     public void refreshAll() {
         List<House> pojos = repository.getAll();
 
-        Platform.runLater(() -> {
+        uiExecutor.execute(() -> {
             masterList.clear();
             for (House pojo : pojos) {
                 ObservableHouse house = cache.get(pojo.id());

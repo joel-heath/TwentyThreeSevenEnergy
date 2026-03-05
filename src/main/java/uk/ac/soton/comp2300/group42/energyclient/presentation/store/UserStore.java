@@ -2,7 +2,6 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javafx.application.Platform;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
@@ -51,11 +50,11 @@ public class UserStore {
         preferences.activeHouseProperty().subscribe((_, newHouse) -> {
             if (newHouse == null) return;
             Housemate me = houseRepo.getCurrentUserAsHousemate(newHouse.getId());
-            Platform.runLater(() -> currentUser.updateFrom(me, newHouse));
+            uiExecutor.execute(() -> currentUser.updateFrom(me, newHouse));
         });
         currentUser.houseProperty().subscribe((_, newHouse) -> {
             if (newHouse == null || !newHouse.equals(preferences.getActiveHouse())) return;
-            Platform.runLater(() -> preferences.setActiveHouse(newHouse));
+            uiExecutor.execute(() -> preferences.setActiveHouse(newHouse));
         });
 
         // We choose to run this once on the main thread so that
@@ -63,7 +62,7 @@ public class UserStore {
         refresh();
 
         sessionManager.subscribe(_ ->
-            Platform.runLater(() -> {
+            uiExecutor.execute(() -> {
                 currentUser.updateFrom(tmpHousemate, tmpHouse);
                 refresh();
             }), false

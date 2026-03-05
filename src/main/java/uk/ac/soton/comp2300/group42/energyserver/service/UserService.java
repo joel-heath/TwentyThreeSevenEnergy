@@ -78,6 +78,8 @@ public class UserService {
         user.setName(request.name());
         user.setEmail(request.email());
 
+        userRepository.save(user);
+
         return userMapper.toUserResponse(user);
     }
 

@@ -9,18 +9,21 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.ac.soton.comp2300.group42.common.Role;
+import uk.ac.soton.comp2300.group42.energyserver.exception.InvalidCredentialsException;
 import uk.ac.soton.comp2300.group42.energyserver.exception.ResourceNotFoundException;
 import uk.ac.soton.comp2300.group42.energyserver.mapper.PreferencesMapper;
 import uk.ac.soton.comp2300.group42.energyserver.mapper.UserMapper;
 import uk.ac.soton.comp2300.group42.energyserver.model.House;
+import uk.ac.soton.comp2300.group42.energyserver.model.HouseMembership;
 import uk.ac.soton.comp2300.group42.energyserver.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
+import uk.ac.soton.comp2300.group42.energyserver.repository.HouseMembershipRepository;
 import uk.ac.soton.comp2300.group42.energyserver.repository.PreferencesRepository;
 import uk.ac.soton.comp2300.group42.energyserver.repository.UserRepository;
-import uk.ac.soton.comp2300.group42.preferences.ColorVision;
-import uk.ac.soton.comp2300.group42.preferences.Mode;
-import uk.ac.soton.comp2300.group42.preferences.PreferencesResponse;
-import uk.ac.soton.comp2300.group42.preferences.Theme;
+import uk.ac.soton.comp2300.group42.preferences.*;
+import uk.ac.soton.comp2300.group42.user.DeleteUserRequest;
+import uk.ac.soton.comp2300.group42.user.UpdateUserRequest;
 import uk.ac.soton.comp2300.group42.user.UserResponse;
 
 import java.util.List;
@@ -39,6 +42,18 @@ class UserServiceTest {
     @Mock
     private PreferencesRepository preferencesRepository;
 
+    @Mock
+    private HouseMembershipRepository houseMembershipRepository;
+
+    @Mock
+    private HouseService houseService;
+
+    @Mock
+    private AuthService authService;
+
+    @Mock
+    private HouseAuthorizationManager authManager;
+
     @Spy
     private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
@@ -50,6 +65,7 @@ class UserServiceTest {
 
     private User dummyUser;
     private Preferences dummyPreferences;
+    private HouseMembership dummyMembership;
 
     @BeforeEach
     void setUp() {
@@ -60,6 +76,9 @@ class UserServiceTest {
 
         House dummyHouse = new House();
         ReflectionTestUtils.setField(dummyHouse, "id", 10L);
+
+        dummyMembership = new HouseMembership();
+        dummyMembership.setHouse(dummyHouse);
 
         dummyPreferences = new Preferences();
         ReflectionTestUtils.setField(dummyPreferences, "id", 100L);
@@ -118,10 +137,64 @@ class UserServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(1L);
+        assertThat(result.name()).isEqualTo("Batman");
         assertThat(result.email()).isEqualTo("bruce@tab23.net");
 
         verify(userMapper).toUserResponse(dummyUser);
         verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void updateCurrentUser_Success() {
+        UpdateUserRequest request = new UpdateUserRequest("Superman", "clark@tab23.net");
+
+        UserResponse result = userService.updateCurrentUser(dummyUser, request);
+
+        assertThat(result).isNotNull();
+        assertThat(result.id()).isEqualTo(1L);
+        assertThat(result.name()).isEqualTo("Superman");
+        assertThat(result.email()).isEqualTo("clark@tab23.net");
+    }
+
+    @Test
+    void deleteCurrentUser_OwnsHouse_DeletesHouse() {
+        DeleteUserRequest request = new DeleteUserRequest("very-secure-password");
+
+        when(houseMembershipRepository.findByUserAndRole(dummyUser, Role.OWNER)).thenReturn(List.of(dummyMembership));
+
+        userService.deleteCurrentUser(dummyUser, request);
+
+        verify(authService).verifyPassword(eq(dummyUser), eq(request.password()), anyString());
+        verify(houseMembershipRepository).findByUserAndRole(dummyUser, Role.OWNER);
+        verify(houseService).deleteHouse(dummyMembership.getId(), dummyUser);
+        verify(userRepository).delete(dummyUser);
+    }
+
+    @Test
+    void deleteCurrentUser_OwnsHouse_DoesNotDeleteHouse() {
+        DeleteUserRequest request = new DeleteUserRequest("very-secure-password");
+
+        when(houseMembershipRepository.findByUserAndRole(dummyUser, Role.OWNER)).thenReturn(List.of());
+
+        userService.deleteCurrentUser(dummyUser, request);
+
+        verify(authService).verifyPassword(eq(dummyUser), eq(request.password()), anyString());
+        verify(houseMembershipRepository).findByUserAndRole(dummyUser, Role.OWNER);
+        verify(houseService, never()).deleteHouse(anyLong(), any());
+        verify(userRepository).delete(dummyUser);
+    }
+
+    @Test
+    void deleteCurrentUser_IncorrectPassword_ThrowsException() {
+        DeleteUserRequest request = new DeleteUserRequest("wrong-password");
+
+        doThrow(new InvalidCredentialsException("Incorrect password")).when(authService).verifyPassword(eq(dummyUser), eq(request.password()), anyString());
+
+        assertThatThrownBy(() -> userService.deleteCurrentUser(dummyUser, request))
+                .isInstanceOf(InvalidCredentialsException.class)
+                .hasMessageContaining("Incorrect password");
+
+        verify(userRepository, never()).delete(any());
     }
 
     @Test
@@ -141,5 +214,27 @@ class UserServiceTest {
         assertThat(result.energyGoal()).isEqualTo(8.24);
 
         verify(preferencesMapper).toPreferencesResponse(dummyPreferences);
+    }
+
+    @Test
+    void updateCurrentUserPreferences_Success() {
+        UpdatePreferencesRequest request = new UpdatePreferencesRequest(
+                1L, false, ColorVision.DEUTERAN, Theme.LIGHT, Mode.SIMPLE, true, 13.2, 10L
+        );
+
+        when(authManager.authorize(10L, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
+        when(preferencesRepository.findByUser(dummyUser)).thenReturn(dummyPreferences);
+
+        PreferencesResponse result = userService.updateCurrentUserPreferences(dummyUser, request);
+
+        assertThat(result).isNotNull();
+        assertThat(result.userId()).isEqualTo(1L);
+        assertThat(result.activeHouseId()).isEqualTo(10L);
+        assertThat(result.theme()).isEqualTo(Theme.LIGHT);
+        assertThat(result.mode()).isEqualTo(Mode.SIMPLE);
+        assertThat(result.vision()).isEqualTo(ColorVision.DEUTERAN);
+        assertThat(result.largeFont()).isFalse();
+        assertThat(result.shareLocation()).isTrue();
+        assertThat(result.energyGoal()).isEqualTo(13.2);
     }
 }

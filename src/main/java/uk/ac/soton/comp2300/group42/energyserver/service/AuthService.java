@@ -12,6 +12,7 @@ import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
+import uk.ac.soton.comp2300.group42.user.ChangePasswordRequest;
 import uk.ac.soton.comp2300.group42.user.LoginRequest;
 import uk.ac.soton.comp2300.group42.user.RegistrationRequest;
 import uk.ac.soton.comp2300.group42.energyserver.exception.InvalidCredentialsException;
@@ -113,5 +114,18 @@ public class AuthService {
 
     public void logoutAll(Long userId) {
         refreshTokenService.deleteByUserId(userId);
+    }
+
+    @Transactional
+    public void changePassword(User user, ChangePasswordRequest request) {
+        verifyPassword(user, request.oldPassword(), "Current password is incorrect");
+
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+    }
+
+    @Transactional(readOnly = true)
+    public void verifyPassword(User user, String password, String errorMessage) {
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            throw new InvalidCredentialsException(errorMessage);
     }
 }

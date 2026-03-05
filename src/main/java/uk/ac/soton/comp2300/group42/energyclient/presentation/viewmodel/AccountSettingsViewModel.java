@@ -24,7 +24,7 @@ public class AccountSettingsViewModel {
     }
 
     public CompletableFuture<Void> refreshDataAsync() {
-        return CompletableFuture.runAsync(userStore::refreshCurrentUser);
+        return CompletableFuture.runAsync(userStore::refresh);
     }
 
     public ObservablePreferences getPreferences() {
@@ -44,13 +44,13 @@ public class AccountSettingsViewModel {
         userStore.saveUser();
     }
 
-    public void deleteAccount() {
-        // userStore.deleteUser();
+    public void deleteAccount(String password) {
+        userStore.deleteUser(password);
         authRepo.logout();
         Navigator.goToIrreversible("Landing.fxml");
     }
 
-    public void setPassword(String password) {
-        // authRepo.changePassword(password);
+    public void setPassword(String oldPassword, String newPassword) {
+        authRepo.changePassword(oldPassword, newPassword);
     }
 }

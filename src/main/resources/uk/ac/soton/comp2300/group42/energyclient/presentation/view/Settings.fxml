@@ -43,6 +43,8 @@
             <Button text="Set Goal" onAction="#onSetCostGoal"/>
         </HBox>
 
+        <Button text="Save changes" onAction="#onSaveSettings" prefWidth="220"/>
+
         <Button text="Accessibility Settings"
                 onAction="#onGoToAccessibility"
                 prefWidth="220"/>

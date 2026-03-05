@@ -7,6 +7,7 @@ import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
@@ -60,19 +61,19 @@ public class UserStore {
     public ObservablePreferences getPreferences() { return preferences; }
 
     public void savePreferences() {
-        //userRepo.savePreferences(preferences.commit());
+        userRepo.updateCurrentPreferences(preferences.commit(currentUser.getId()));
     }
 
     public void saveUser() {
-        //userRepo.saveCurrentUser(currentUser.commit());
+        Housemate me = currentUser.commit();
+        User user = new User(me.userId(), me.name(), me.email());
+
+        userRepo.updateMe(user);
     }
 
-    public void refreshCurrentUser() {
-        ObservableHouse house = currentUser.getHouse();
-        if (house == null) return;
-
-        Housemate me = houseRepo.getCurrentUserAsHousemate(house.getId());
-        Platform.runLater(() -> currentUser.updateFrom(me, house));
+    public void deleteUser(String password) {
+        userRepo.deleteMe(password);
+        // TODO: need to run many resetting operations that are currently inside constructors ...
     }
 
     public void refresh() {

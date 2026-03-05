@@ -77,6 +77,12 @@ public class AuthenticatedHttpClient {
         return send(HttpRequest.newBuilder().DELETE(), apiRootUri.resolve(path));
     }
 
+    public HttpResponse<String> delete(String path, String jsonBody) throws IOException, InterruptedException {
+        return send(HttpRequest.newBuilder()
+                .header("Content-Type", "application/json")
+                .method("DELETE", HttpRequest.BodyPublishers.ofString(jsonBody)), apiRootUri.resolve(path));
+    }
+
     private HttpResponse<String> send(HttpRequest.Builder builder, URI uri) throws IOException, InterruptedException {
         builder.uri(uri);
         if (accessToken != null && !accessToken.isEmpty())

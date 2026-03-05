@@ -6,6 +6,9 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.preferences.PreferencesResponse;
+import uk.ac.soton.comp2300.group42.preferences.UpdatePreferencesRequest;
+import uk.ac.soton.comp2300.group42.user.DeleteUserRequest;
+import uk.ac.soton.comp2300.group42.user.UpdateUserRequest;
 import uk.ac.soton.comp2300.group42.user.UserResponse;
 
 @Singleton
@@ -20,19 +23,19 @@ public class UserClient extends BaseApiClient {
         return get("users/me", new TypeReference<>() {});
     }
 
-    public UserResponse putMe(UserResponse request) {
+    public UserResponse putMe(UpdateUserRequest request) {
         return put("users/me", request, new TypeReference<>() {});
     }
 
-    public void deleteMe() {
-        delete("users/me");
+    public void deleteMe(DeleteUserRequest request) {
+        delete("users/me", request);
     }
 
     public PreferencesResponse fetchMyPreferences() {
         return get("users/me/preferences", new TypeReference<>() {});
     }
 
-    public PreferencesResponse putMyPreferences(PreferencesResponse request) {
+    public PreferencesResponse putMyPreferences(UpdatePreferencesRequest request) {
         return put("users/me/preferences", request, new TypeReference<>() {});
     }
 }

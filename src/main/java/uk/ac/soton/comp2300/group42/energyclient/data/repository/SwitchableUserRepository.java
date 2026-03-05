@@ -36,17 +36,22 @@ public class SwitchableUserRepository implements UserRepository {
     }
 
     @Override
+    public Preferences updateCurrentPreferences(Preferences preferences) {
+        return getActiveRepo().updateCurrentPreferences(preferences);
+    }
+
+    @Override
     public User get(Long id) {
         return remoteRepository.get(id);
     }
 
     @Override
-    public User update(User user) {
-        return getActiveRepo().update(user);
+    public User updateMe(User user) {
+        return getActiveRepo().updateMe(user);
     }
 
     @Override
-    public void delete(Long id) {
-        getActiveRepo().delete(id);
+    public void deleteMe(String password) {
+        getActiveRepo().deleteMe(password);
     }
 }

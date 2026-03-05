@@ -83,9 +83,21 @@ public abstract class BaseApiClient {
         }
     }
 
-    protected <T> T delete(String path, TypeReference<T> responseType) {
-        HttpResponse<String> response = delete(path);
-        return handleResponse(response, responseType);
+    protected HttpResponse<String> delete(String path, Object body) {
+        try {
+            String jsonBody = mapper.writeValueAsString(body);
+            return httpClient.delete(path, jsonBody);
+        }
+        catch (JacksonException e) {
+            throw new DataFetchException("Failed to serialize request body while accessing " + path, e);
+        }
+        catch (IOException e) {
+            throw new NetworkException("Network error while accessing " + path, e);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new NetworkException("Interrupted while accessing " + path, e);
+        }
     }
 
     protected HttpResponse<String> delete(String path) {

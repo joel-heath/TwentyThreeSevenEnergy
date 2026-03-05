@@ -19,7 +19,8 @@
         </VBox>
         <VBox spacing="5" alignment="CENTER">
             <Label text="Change Password"/>
-            <PasswordField fx:id="passwordField" promptText="New Password" maxWidth="220"/>
+            <PasswordField fx:id="currentPasswordField" promptText="Current Password" maxWidth="220"/>
+            <PasswordField fx:id="newPasswordField" promptText="New Password" maxWidth="220"/>
             <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" maxWidth="220"/>
         </VBox>
 

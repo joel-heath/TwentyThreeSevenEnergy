@@ -35,6 +35,16 @@ public class LocalUserRepository implements UserRepository {
     }
 
     @Override
+    public Preferences updateCurrentPreferences(Preferences preferences) {
+        if (Objects.isNull(preferences))
+            throwApiException(400, "Preferences are required");
+
+        data.preferences = preferences;
+        client.saveData();
+        return data.preferences;
+    }
+
+    @Override
     public User get(Long id) {
         if (!Objects.equals(id, data.user.id()))
             throwApiException(403, "Cannot access a different user");
@@ -43,7 +53,7 @@ public class LocalUserRepository implements UserRepository {
     }
 
     @Override
-    public User update(User user) {
+    public User updateMe(User user) {
         if (Objects.isNull(user))
             throwApiException(400, "User is required");
 
@@ -56,10 +66,7 @@ public class LocalUserRepository implements UserRepository {
     }
 
     @Override
-    public void delete(Long id) {
-        if (!Objects.equals(id, data.user.id()))
-            throwApiException(403, "Cannot delete a different user");
-
+    public void deleteMe(String password) {
         throw new UnsupportedOperationException("No local storage implementation exists yet for this operation");
     }
 }

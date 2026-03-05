@@ -75,6 +75,30 @@ class SwitchableUserRepositoryTest {
 
 
     @Test
+    void updateCurrentPreferences_WhenLoggedIn_ShouldUseRemoteRepository() {
+        when(sessionManager.isLoggedIn()).thenReturn(true);
+        when(remoteRepository.updateCurrentPreferences(dummyPreferences)).thenReturn(dummyPreferences);
+
+        Preferences result = switchableRepository.updateCurrentPreferences(dummyPreferences);
+
+        assertEquals(dummyPreferences, result);
+        verify(remoteRepository).updateCurrentPreferences(dummyPreferences);
+        verifyNoInteractions(localRepository);
+    }
+
+    @Test
+    void updateCurrentPreferences_WhenNotLoggedIn_ShouldUseLocalRepository() {
+        when(sessionManager.isLoggedIn()).thenReturn(false);
+        when(localRepository.updateCurrentPreferences(dummyPreferences)).thenReturn(dummyPreferences);
+
+        Preferences result = switchableRepository.updateCurrentPreferences(dummyPreferences);
+
+        assertEquals(dummyPreferences, result);
+        verify(localRepository).updateCurrentPreferences(dummyPreferences);
+        verifyNoInteractions(remoteRepository);
+    }
+
+    @Test
     void get_WhenLoggedIn_ShouldUseRemoteRepository() {
         when(remoteRepository.get(100L)).thenReturn(dummyUser);
 
@@ -98,47 +122,47 @@ class SwitchableUserRepositoryTest {
 
 
     @Test
-    void update_WhenLoggedIn_ShouldUseRemoteRepository() {
+    void updateMe_WhenLoggedIn_ShouldUseRemoteRepository() {
         when(sessionManager.isLoggedIn()).thenReturn(true);
-        when(remoteRepository.update(dummyUser)).thenReturn(dummyUser);
+        when(remoteRepository.updateMe(dummyUser)).thenReturn(dummyUser);
 
-        User result = switchableRepository.update(dummyUser);
+        User result = switchableRepository.updateMe(dummyUser);
 
         assertEquals(dummyUser, result);
-        verify(remoteRepository).update(dummyUser);
+        verify(remoteRepository).updateMe(dummyUser);
         verifyNoInteractions(localRepository);
     }
 
     @Test
-    void update_WhenNotLoggedIn_ShouldUseLocalRepository() {
+    void updateMe_WhenNotLoggedIn_ShouldUseLocalRepository() {
         when(sessionManager.isLoggedIn()).thenReturn(false);
-        when(localRepository.update(dummyUser)).thenReturn(dummyUser);
+        when(localRepository.updateMe(dummyUser)).thenReturn(dummyUser);
 
-        User result = switchableRepository.update(dummyUser);
+        User result = switchableRepository.updateMe(dummyUser);
 
         assertEquals(dummyUser, result);
-        verify(localRepository).update(dummyUser);
+        verify(localRepository).updateMe(dummyUser);
         verifyNoInteractions(remoteRepository);
     }
 
 
     @Test
-    void delete_WhenLoggedIn_ShouldUseRemoteRepository() {
+    void deleteMe_WhenLoggedIn_ShouldUseRemoteRepository() {
         when(sessionManager.isLoggedIn()).thenReturn(true);
 
-        switchableRepository.delete(100L);
+        switchableRepository.deleteMe("password");
 
-        verify(remoteRepository).delete(100L);
+        verify(remoteRepository).deleteMe("password");
         verifyNoInteractions(localRepository);
     }
 
     @Test
-    void delete_WhenNotLoggedIn_ShouldUseLocalRepository() {
+    void deleteMe_WhenNotLoggedIn_ShouldUseLocalRepository() {
         when(sessionManager.isLoggedIn()).thenReturn(false);
 
-        switchableRepository.delete(100L);
+        switchableRepository.deleteMe("password");
 
-        verify(localRepository).delete(100L);
+        verify(localRepository).deleteMe("password");
         verifyNoInteractions(remoteRepository);
     }
 }

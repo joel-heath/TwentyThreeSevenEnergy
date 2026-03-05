@@ -7,6 +7,7 @@ import uk.ac.soton.comp2300.group42.energyclient.data.mapper.UserMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
+import uk.ac.soton.comp2300.group42.user.DeleteUserRequest;
 
 @Singleton
 public class RemoteUserRepository implements UserRepository {
@@ -31,17 +32,22 @@ public class RemoteUserRepository implements UserRepository {
     }
 
     @Override
+    public Preferences updateCurrentPreferences(Preferences preferences) {
+        return mapper.toPreferences(client.putMyPreferences(mapper.toUpdatePreferencesRequest(preferences)));
+    }
+
+    @Override
     public User get(Long id) {
         throw new UnsupportedOperationException("No API endpoint exists yet for this operation");
     }
     
     @Override
-    public User update(User user) {
-        throw new UnsupportedOperationException("No API endpoint exists yet for this operation");
+    public User updateMe(User user) {
+        return mapper.toUser(client.putMe(mapper.toUpdateUserRequest(user)));
     }
 
     @Override
-    public void delete(Long id) {
-        throw new UnsupportedOperationException("No API endpoint exists yet for this operation");
+    public void deleteMe(String password) {
+        client.deleteMe(new DeleteUserRequest(password));
     }
 }

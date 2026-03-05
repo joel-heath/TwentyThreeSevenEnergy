@@ -24,20 +24,15 @@ public class AuthClient extends BaseApiClient {
         return get("users/me").statusCode() == 200;
     }
 
-    public AuthResponse login(String email, String password) {
-        LoginRequest request = new LoginRequest(email, password);
-
+    public AuthResponse login(LoginRequest request) {
         return post("auth/login", request, new TypeReference<>() {});
     }
 
-    public AuthResponse register(String name, String email, String password) {
-        RegistrationRequest request = new RegistrationRequest(name, email, password);
-
+    public AuthResponse register(RegistrationRequest request) {
         return post("auth/register", request, new TypeReference<>() {});
     }
 
-    public void changePassword(String oldPassword, String newPassword) {
-        ChangePasswordRequest request = new ChangePasswordRequest(oldPassword, newPassword);
+    public void changePassword(ChangePasswordRequest request) {
         HttpResponse<String> response = put("users/me/password", request);
         throwIfNotSuccess(response);
     }

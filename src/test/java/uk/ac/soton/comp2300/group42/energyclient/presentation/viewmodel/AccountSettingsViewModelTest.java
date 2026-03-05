@@ -42,7 +42,7 @@ class AccountSettingsViewModelTest {
     void refreshDataAsync_refreshesCurrentUser() {
         viewModel.refreshDataAsync().join();
 
-        verify(userStore).refreshCurrentUser();
+        verify(userStore).refresh();
     }
 
     @Test
@@ -61,8 +61,9 @@ class AccountSettingsViewModelTest {
 
     @Test
     void deleteAccount_logsOutBeforeNavigation() {
-        assertThrows(RuntimeException.class, viewModel::deleteAccount);
+        assertThrows(RuntimeException.class, () -> viewModel.deleteAccount("password"));
 
+        verify(userStore).deleteUser("password");
         verify(authRepository).logout();
     }
 }

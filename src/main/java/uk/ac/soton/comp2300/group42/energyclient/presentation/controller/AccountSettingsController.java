@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
@@ -17,8 +18,9 @@ public class AccountSettingsController {
 
     @FXML private TextField editNameField;
     @FXML private TextField editEmailField;
-    @FXML private TextField passwordField;
-    @FXML private TextField confirmPasswordField;
+    @FXML private PasswordField currentPasswordField;
+    @FXML private PasswordField newPasswordField;
+    @FXML private PasswordField confirmPasswordField;
     @FXML private Button deleteAccountButton;
     @FXML private Label responseLabel;
 
@@ -59,11 +61,23 @@ public class AccountSettingsController {
     @FXML private void onUpdateAccount() {
         String name = editNameField.getText().trim();
         String email = editEmailField.getText().trim();
-        String password = passwordField.getText();
+
+        String currentPassword = currentPasswordField.getText();
+        String newPassword = newPasswordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
-        if (!password.isEmpty() && !password.equals(confirmPassword)) {
+        if (!newPassword.isEmpty() && !newPassword.equals(confirmPassword)) {
             applyResponseMessage("Passwords do not match.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            return;
+        }
+
+        if (!currentPassword.isEmpty() && newPassword.isEmpty()) {
+            applyResponseMessage("New password cannot be empty.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            return;
+        }
+
+        if (!newPassword.isEmpty() && currentPassword.isEmpty()) {
+            applyResponseMessage("Must enter current password to change it.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
             return;
         }
 
@@ -80,8 +94,8 @@ public class AccountSettingsController {
         vm.getUser().setName(name);
         vm.getUser().setEmail(email);
         vm.save();
-        if (!password.isEmpty())
-            vm.setPassword(password);
+        if (!newPassword.isEmpty())
+            vm.setPassword(currentPassword, newPassword);
 
         applyResponseMessage("Account updated successfully.", ColorVisionManager.ColorRole.TOGGLE_ENABLED);
     }
@@ -91,7 +105,14 @@ public class AccountSettingsController {
     }
 
     @FXML private void onDeleteAccount() {
-        vm.deleteAccount();
+        String currentPassword = currentPasswordField.getText();
+
+        if (currentPassword.isEmpty()) {
+            applyResponseMessage("Must enter password to delete account.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            return;
+        }
+
+        vm.deleteAccount(currentPassword);
     }
 
     private void bindDeleteButtonStyle() {

@@ -5,4 +5,5 @@ public interface AuthRepository {
     void login(String email, String password);
     void logout();
     void register(String name, String email, String password);
+    void changePassword(String oldPassword, String newPassword);
 }

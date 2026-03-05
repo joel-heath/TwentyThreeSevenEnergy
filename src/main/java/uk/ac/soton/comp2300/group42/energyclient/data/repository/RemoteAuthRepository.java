@@ -8,6 +8,9 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.exception.NetworkExcepti
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.user.AuthResponse;
+import uk.ac.soton.comp2300.group42.user.ChangePasswordRequest;
+import uk.ac.soton.comp2300.group42.user.LoginRequest;
+import uk.ac.soton.comp2300.group42.user.RegistrationRequest;
 
 @Singleton
 public class RemoteAuthRepository implements AuthRepository {
@@ -25,21 +28,21 @@ public class RemoteAuthRepository implements AuthRepository {
 
     @Override
     public boolean verifyLoggedIn() {
-        boolean loggedIn;
         try {
-            loggedIn = client.isLoggedIn();
+            client.isLoggedIn();
+            sessionManager.setLoggedIn(true);
+            return true;
         }
         catch (NetworkException e) {
             System.out.println("Warning: Network error while verifying login status, either you are offline or are not running the backend.");
-            loggedIn = false;
+            sessionManager.setLoggedIn(false);
+            return false;
         }
-        sessionManager.setLoggedIn(loggedIn);
-        return loggedIn;
     }
 
     @Override
     public void login(String email, String password) {
-        AuthResponse response = client.login(email, password);
+        AuthResponse response = client.login(new LoginRequest(email, password));
         httpClient.setTokenPair(response.accessToken(), response.refreshToken());
         sessionManager.setLoggedIn(true);
     }
@@ -52,8 +55,13 @@ public class RemoteAuthRepository implements AuthRepository {
 
     @Override
     public void register(String name, String email, String password) {
-        AuthResponse response = client.register(name, email, password);
+        AuthResponse response = client.register(new RegistrationRequest(name, email, password));
         httpClient.setTokenPair(response.accessToken(), response.refreshToken());
         sessionManager.setLoggedIn(true);
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+        client.changePassword(new ChangePasswordRequest(oldPassword, newPassword));
     }
 }

@@ -3,10 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.data.mapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
-import uk.ac.soton.comp2300.group42.preferences.ColorVision;
-import uk.ac.soton.comp2300.group42.preferences.Mode;
-import uk.ac.soton.comp2300.group42.preferences.PreferencesResponse;
-import uk.ac.soton.comp2300.group42.preferences.Theme;
+import uk.ac.soton.comp2300.group42.preferences.*;
+import uk.ac.soton.comp2300.group42.user.UpdateUserRequest;
 import uk.ac.soton.comp2300.group42.user.UserResponse;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 
@@ -59,5 +57,48 @@ class UserMapperTest {
         Preferences domain = mapper.toPreferences(null);
 
         assertNull(domain);
+    }
+
+    @Test
+    void toUpdateUserRequest_ShouldMapFieldsAndDropId() {
+        User user = new User(1L, "Jane Doe", "janedoe@example.com");
+
+        UpdateUserRequest request = mapper.toUpdateUserRequest(user);
+
+        assertNotNull(request);
+        assertEquals("Jane Doe", request.name());
+        assertEquals("janedoe@example.com", request.email());
+    }
+
+    @Test
+    void toUpdateUserRequest_ShouldReturnNullWhenInputIsNull() {
+        UpdateUserRequest request = mapper.toUpdateUserRequest(null);
+
+        assertNull(request);
+    }
+
+    @Test
+    void toUpdatePreferencesRequest_ShouldMapFieldsAndDropUserId() {
+        Preferences preferences = new Preferences(
+                1L, true, ColorVision.TRITAN, Theme.DARK, Mode.ADVANCED, false, 10.0, 10L
+        );
+
+        UpdatePreferencesRequest request = mapper.toUpdatePreferencesRequest(preferences);
+
+        assertNotNull(request);
+        assertTrue(request.largeFont());
+        assertEquals(ColorVision.TRITAN, request.vision());
+        assertEquals(Theme.DARK, request.theme());
+        assertEquals(Mode.ADVANCED, request.mode());
+        assertFalse(request.shareLocation());
+        assertEquals(10.0, request.energyGoal());
+        assertEquals(10L, request.activeHouseId());
+    }
+
+    @Test
+    void toUpdatePreferencesRequest_ShouldReturnNullWhenInputIsNull() {
+        UpdatePreferencesRequest request = mapper.toUpdatePreferencesRequest(null);
+
+        assertNull(request);
     }
 }

@@ -65,4 +65,8 @@ public class SettingsController {
             );
         }
     }
+
+    @FXML private void onSaveSettings() {
+        vm.save();
+    }
 }

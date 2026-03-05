@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.LoginViewModel;
@@ -27,7 +28,7 @@ public class LoginController {
 
     private boolean guard(boolean condition, String errorMessage) {
         if (condition)
-            showError(errorMessage);
+            showError("Login error", errorMessage);
 
         return condition;
     }
@@ -40,8 +41,12 @@ public class LoginController {
             guard(password.isBlank(), "Password is required"))
             return;
 
-        if (!vm.login(email, password)) {
-            showError("An error occurred during login");
+        try {
+            vm.login(email, password);
+        }
+        catch (ApiException e) {
+            showError(e.getError(), e.getMessage());
+            return;
         }
 
         Navigator.goToIrreversible("Dashboard.fxml");
@@ -55,9 +60,9 @@ public class LoginController {
         Navigator.goTo("AccessibilitySettings.fxml");
     }
 
-    private void showError(String message) {
+    private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Login Error");
+        alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

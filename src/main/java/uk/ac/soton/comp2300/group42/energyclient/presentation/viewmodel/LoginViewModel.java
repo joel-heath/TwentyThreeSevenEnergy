@@ -13,24 +13,12 @@ public class LoginViewModel {
         this.repo = repo;
     }
 
-    public boolean login(String email, String password) {
-        try {
-            repo.login(email, password);
-            return true;
-        }
-        catch (ApiException e) {
-            return false;
-        }
+    public void login(String email, String password) {
+        repo.login(email, password);
     }
 
-    public boolean register(String name, String email, String password) {
-        try {
-            repo.register(name, email, password);
-            return true;
-        }
-        catch (ApiException e) {
-            return false;
-        }
+    public void register(String name, String email, String password) {
+        repo.register(name, email, password);
     }
 
 }

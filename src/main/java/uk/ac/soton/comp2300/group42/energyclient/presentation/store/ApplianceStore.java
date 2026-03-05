@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ApplianceRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
@@ -26,12 +27,19 @@ public class ApplianceStore {
     private final ObservableList<ObservableAppliance> masterList;
 
     @Inject
-    public ApplianceStore(ApplianceRepository repository, HouseStore houseStore, ObservablePreferences preferences) {
+    public ApplianceStore(ApplianceRepository repository, HouseStore houseStore, ObservablePreferences preferences, SessionManager sessionManager) {
         this.repository = repository;
         this.houseStore = houseStore;
         this.preferences = preferences;
         this.cache = new WeakHashMap<>();
         this.masterList = FXCollections.observableArrayList();
+
+        sessionManager.subscribe(_ ->
+                Platform.runLater(() -> {
+                    cache.clear();
+                    masterList.clear();
+                })
+        );
     }
 
     private Long getActiveHouseId() {

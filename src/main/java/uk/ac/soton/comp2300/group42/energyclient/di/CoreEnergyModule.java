@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+import javafx.application.Platform;
 import org.mapstruct.factory.Mappers;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.json.JsonMapper;
@@ -18,6 +19,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.Clock;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -81,6 +83,13 @@ public class CoreEnergyModule extends AbstractModule {
     @LocalStorageExecutor
     ExecutorService provideLocalStorageExecutor() {
         return Executors.newSingleThreadExecutor();
+    }
+
+    @Provides
+    @Singleton
+    @UIExecutor
+    Executor provideUIExecutor() {
+        return Platform::runLater;
     }
 
     @Provides

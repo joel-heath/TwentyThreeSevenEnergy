@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.LoginViewModel;
@@ -29,7 +30,7 @@ public class RegisterController {
 
     private boolean guard(boolean condition, String errorMessage) {
         if (condition)
-            showError(errorMessage);
+            showError("Sign Up Error", errorMessage);
 
         return condition;
     }
@@ -47,8 +48,11 @@ public class RegisterController {
             guard(!password.equals(confirm), "Passwords do not match"))
             return;
 
-        if (!vm.register(name, email, password)) {
-            showError("An error occurred during registration");
+        try {
+            vm.register(name, email, password);
+        }
+        catch (ApiException e) {
+            showError(e.getError(), e.getMessage());
             return;
         }
 
@@ -60,9 +64,9 @@ public class RegisterController {
     }
 
 
-    private void showError(String message) {
+    private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Sign Up Error");
+        alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

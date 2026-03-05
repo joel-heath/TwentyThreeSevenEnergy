@@ -42,7 +42,7 @@ class AccountSettingsViewModelTest {
     void refreshDataAsync_refreshesCurrentUser() {
         viewModel.refreshDataAsync().join();
 
-        verify(userStore).refresh();
+        verify(userStore).refreshAsync();
     }
 
     @Test

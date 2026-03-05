@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.util.Pair;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
@@ -27,12 +28,19 @@ public class HousemateStore {
     private final ObservableList<ObservableHousemate> masterList;
 
     @Inject
-    public HousemateStore(HouseRepository repository, HouseStore houseStore, ObservablePreferences preferences) {
+    public HousemateStore(HouseRepository repository, HouseStore houseStore, ObservablePreferences preferences, SessionManager sessionManager) {
         this.repository = repository;
         this.houseStore = houseStore;
         this.preferences = preferences;
         this.cache = new WeakHashMap<>();
         this.masterList = FXCollections.observableArrayList();
+
+        sessionManager.subscribe(_ ->
+                Platform.runLater(() -> {
+                    cache.clear();
+                    masterList.clear();
+                })
+        );
     }
 
     private Long getActiveHouseId() {

@@ -24,7 +24,7 @@ public class AccountSettingsViewModel {
     }
 
     public CompletableFuture<Void> refreshDataAsync() {
-        return CompletableFuture.runAsync(userStore::refresh);
+        return userStore.refreshAsync();
     }
 
     public ObservablePreferences getPreferences() {
@@ -37,7 +37,7 @@ public class AccountSettingsViewModel {
 
     public void logout() {
         authRepo.logout();
-        Navigator.goToIrreversible("Dashboard.fxml");
+        Navigator.goToIrreversible("Landing.fxml");
     }
 
     public void save() {

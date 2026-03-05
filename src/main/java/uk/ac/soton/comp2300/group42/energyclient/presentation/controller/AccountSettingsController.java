@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
 
@@ -94,8 +95,16 @@ public class AccountSettingsController {
         vm.getUser().setName(name);
         vm.getUser().setEmail(email);
         vm.save();
-        if (!newPassword.isEmpty())
-            vm.setPassword(currentPassword, newPassword);
+
+        if (!newPassword.isEmpty()) {
+            try {
+                vm.setPassword(currentPassword, newPassword);
+            }
+            catch (ApiException e) {
+                applyResponseMessage("Failed to change password: " + e.getMessage(), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+                return;
+            }
+        }
 
         applyResponseMessage("Account updated successfully.", ColorVisionManager.ColorRole.TOGGLE_ENABLED);
     }

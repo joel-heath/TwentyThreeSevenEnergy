@@ -14,6 +14,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 @Singleton
@@ -74,6 +75,7 @@ public class ActivationStore {
     public void delete(Long id) {
         repository.delete(getActiveHouseId(), id);
         cache.remove(id);
+        masterList.removeIf(act -> Objects.equals(act.getId(), id));
     }
 
     private ObservableActivation getObservable(Activation pojo) {

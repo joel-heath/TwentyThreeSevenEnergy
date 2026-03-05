@@ -38,6 +38,8 @@
                         <TextField fx:id="newHouseAddressField" promptText="Enter new house address"/>
                         <Button text="Create New House" onAction="#onCreateNewHouse"/>
                     </VBox>
+
+                    <Button text="Manage Appliances" onAction="#onManageAppliances"/>
                 </VBox>
         </SettingsOverlayPane>
     </BackOverlayPane>

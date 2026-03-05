@@ -57,4 +57,45 @@ class TokenStorageServiceTest {
             assertDoesNotThrow(() -> service.saveRefreshToken("new-token"));
         }
     }
+
+    @Test
+    void clearRefreshToken_SuccessfullyDeletesToken() throws PasswordAccessException {
+        Keyring mockKeyringInstance = mock(Keyring.class);
+
+        try (MockedStatic<Keyring> mockedKeyring = mockStatic(Keyring.class)) {
+            mockedKeyring.when(Keyring::create).thenReturn(mockKeyringInstance);
+
+            TokenStorageService service = new TokenStorageService();
+            service.clearRefreshToken();
+
+            verify(mockKeyringInstance, times(1)).deletePassword("EnergyClient", "refresh_token");
+        }
+    }
+
+    @Test
+    void clearRefreshToken_WhenPasswordAccessFails_FailsGracefully() throws PasswordAccessException {
+        Keyring mockKeyringInstance = mock(Keyring.class);
+
+        doThrow(new PasswordAccessException("Failed to delete item"))
+                .when(mockKeyringInstance).deletePassword(anyString(), anyString());
+
+        try (MockedStatic<Keyring> mockedKeyring = mockStatic(Keyring.class)) {
+            mockedKeyring.when(Keyring::create).thenReturn(mockKeyringInstance);
+
+            TokenStorageService service = new TokenStorageService();
+
+            assertDoesNotThrow(service::clearRefreshToken);
+        }
+    }
+
+    @Test
+    void clearRefreshToken_WhenBackendNotSupported_DoesNothingGracefully() {
+        try (MockedStatic<Keyring> mockedKeyring = mockStatic(Keyring.class)) {
+            mockedKeyring.when(Keyring::create).thenThrow(new BackendNotSupportedException("No OS keyring found"));
+
+            TokenStorageService service = new TokenStorageService();
+
+            assertDoesNotThrow(service::clearRefreshToken);
+        }
+    }
 }

@@ -60,6 +60,11 @@
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.LocalRepositoryUtils" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
         <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteActivationRepository" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
@@ -86,6 +91,11 @@
       </pattern>
       <pattern>
         <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.RemoteUserRepository" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.EnergyPriceRepositoryImpl" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>

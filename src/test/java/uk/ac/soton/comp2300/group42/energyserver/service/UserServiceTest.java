@@ -150,6 +150,8 @@ class UserServiceTest {
 
         UserResponse result = userService.updateCurrentUser(dummyUser, request);
 
+        verify(userRepository).save(dummyUser); // MUST BE VERIFIED (regardless of @Transactional)
+        verify(userMapper).toUserResponse(dummyUser);
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(1L);
         assertThat(result.name()).isEqualTo("Superman");

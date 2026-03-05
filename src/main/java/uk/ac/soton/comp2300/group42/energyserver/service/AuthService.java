@@ -121,6 +121,8 @@ public class AuthService {
         verifyPassword(user, request.oldPassword(), "Current password is incorrect");
 
         user.setPassword(passwordEncoder.encode(request.newPassword()));
+
+        userRepo.save(user);
     }
 
     @Transactional(readOnly = true)

@@ -250,6 +250,7 @@ class AuthServiceTest {
 
         authService.changePassword(dummyUser, request);
 
+        verify(userRepo).save(dummyUser); // MUST BE VERIFIED (regardless of @Transactional)
         verify(passwordEncoder).encode(request.newPassword());
         assertThat(dummyUser.getPassword()).isEqualTo("encoded_new_password");
     }

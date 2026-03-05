@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
@@ -17,6 +18,7 @@ import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.Contro
 public class SettingsController {
 
     private final SettingsViewModel vm;
+    private final InputFeedbackManager inputFeedbackManager;
 
     @FXML private Button accountSettingsButton;
     @FXML private ToggleSwitch shareLocationToggle;
@@ -24,8 +26,9 @@ public class SettingsController {
     @FXML private ComboBox<Mode> modeComboBox;
     @FXML private TextField costGoalField;
 
-    @Inject public SettingsController(SettingsViewModel vm) {
+    @Inject public SettingsController(SettingsViewModel vm, InputFeedbackManager inputFeedbackManager) {
         this.vm = vm;
+        this.inputFeedbackManager = inputFeedbackManager;
     }
 
     @FXML private void initialize() {
@@ -51,15 +54,37 @@ public class SettingsController {
     }
 
     @FXML private void onSetCostGoal() {
+        String raw = costGoalField.getText() == null ? "" : costGoalField.getText().trim();
+
+        if (raw.isEmpty()) {
+            inputFeedbackManager.showPopup(
+                    "Cost goal updated",
+                    "Please enter a cost goal before clicking Set Goal."
+            );
+            costGoalField.setStyle(
+                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+            );
+            return;
+        }
+
         try {
-            String text = costGoalField.getText().replace("£", "");
+            String text = raw.replace("£", "").trim();
             double value = Double.parseDouble(text);
             if (value <= 0) throw new NumberFormatException();
 
             vm.setCostGoal(value);
+            inputFeedbackManager.showPopup(
+                    "Cost goal updated",
+                    String.format("Your new cost goal is £%.2f.", value)
+            );
+
             costGoalField.clear();
             costGoalField.setStyle("");
         } catch (NumberFormatException e) {
+            inputFeedbackManager.showPopup(
+                    "Goal not updated",
+                    "Please enter a valid number greater than 0."
+            );
             costGoalField.setStyle(
                     "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
             );

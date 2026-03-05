@@ -150,4 +150,6 @@ public class Navigator {
     public static void showPopup(String popupTitle) {
         rootController.showPopup(popupTitle);
     }
+
+    public static void showPopup(String title, String description) { rootController.showPopup(title, description);}
 }

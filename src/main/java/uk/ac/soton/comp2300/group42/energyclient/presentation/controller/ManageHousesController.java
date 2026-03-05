@@ -12,6 +12,7 @@ import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ManageHousesViewModel;
 
@@ -36,7 +37,12 @@ public class ManageHousesController {
     @FXML private Label responseLabel;
 
     private final ManageHousesViewModel vm;
-    @Inject public ManageHousesController(ManageHousesViewModel vm) { this.vm = vm; }
+    private final InputFeedbackManager inputFeedbackManager;
+
+    @Inject public ManageHousesController(ManageHousesViewModel vm, InputFeedbackManager inputFeedbackManager) {
+        this.vm = vm;
+        this.inputFeedbackManager = inputFeedbackManager;
+    }
 
     @FXML private void initialize() {
         activeHouseComboBox.getItems().setAll(vm.getHouseList());
@@ -88,7 +94,23 @@ public class ManageHousesController {
     }
 
     @FXML private void onInviteHousemate() {
-        vm.inviteHousemate(inviteHousemateField.getText());
+        String email = inviteHousemateField.getText() == null ? "" : inviteHousemateField.getText().trim();
+
+        if (email.isEmpty()) {
+            inputFeedbackManager.showPopup(
+                    "Invite not sent",
+                    "Please enter an email address before sending an invite."
+            );
+            inviteHousemateField.setStyle(
+                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+            );
+            return;
+        }
+
+        vm.inviteHousemate(email);
+
+        inputFeedbackManager.showPopup("Invite sent", "An invitation has been sent to " + email + ".");
+        inviteHousemateField.setStyle("");
     }
 
     private Pane createHousemateView(ObservableHousemate housemate) {

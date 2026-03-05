@@ -65,4 +65,15 @@ public class NotificationService {
         cancelNotification(activation);
         scheduleNotification(activation);
     }
+
+    public void showPopup(String message) {
+        if (message == null || message.isBlank()) return;
+        Platform.runLater(() -> Navigator.showPopup(message));
+    }
+
+    public void showPopup(String title, String description) {
+        if (title == null || title.isBlank()) return;
+        String safeDescription = (description == null) ? "" : description;
+        Platform.runLater(() -> Navigator.showPopup(title, safeDescription));
+    }
 }

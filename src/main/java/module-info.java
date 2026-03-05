@@ -35,4 +35,5 @@ module uk.ac.soton.comp2300.group42.energyclient {
     opens uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel        to com.google.guice;
     opens uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug  to com.google.guice;
     opens uk.ac.soton.comp2300.group42.energyclient.presentation.observable       to com.google.guice;
+    opens uk.ac.soton.comp2300.group42.energyclient.presentation.util             to com.google.guice;
 }

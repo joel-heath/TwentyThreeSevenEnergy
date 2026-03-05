@@ -49,7 +49,7 @@ public class RootController {
     public StackPane getContentArea() { return contentArea; }
 
     public void showPopup(String popupTitle) {
-        Node popup = createPopup(popupTitle);
+        Node popup = createReminderPopup(popupTitle);
 
         remindersArea.getChildren().add(popup);
 
@@ -60,7 +60,26 @@ public class RootController {
         reminderScroll.layout();
     }
 
-    private Node createPopup(String appliance) {
+    public void showPopup(String title, String description) {
+        Node popup = createPopup(title, description);
+
+        remindersArea.getChildren().add(popup);
+
+        modal.show();
+
+        reminderScroll.requestLayout();
+        reminderScroll.applyCss();
+        reminderScroll.layout();
+    }
+
+    private Node createReminderPopup(String appliance) {
+        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+        String title = appliance + " Reminder.";
+        String description = "The time is " + time + ", time to use the " + appliance + ".";
+        return createPopup(title, description);
+    }
+
+    private Node createPopup(String titleText, String descriptionText) {
         VBox card = new VBox();
 
         Button dismiss = new Button("Dismiss");
@@ -73,13 +92,12 @@ public class RootController {
                 modal.close();
         });
 
-        Label title = new Label(appliance + " Reminder.");
+        Label title = new Label(titleText);
         title.setStyle("-fx-font-weight: bold; -fx-font-scale: large");
 
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-        Label description = new Label("The time is " + time + ", time to use the " + appliance + ".");
+        Label description = new Label(descriptionText);
 
-        card.setStyle("-fx-padding: 10; -fx-border-color: lightgray;");
+        card.setStyle("-fx-padding: 10; -fx-border-color: lightgray");
         card.getChildren().addAll(title, description, dismiss);
         return card;
     }

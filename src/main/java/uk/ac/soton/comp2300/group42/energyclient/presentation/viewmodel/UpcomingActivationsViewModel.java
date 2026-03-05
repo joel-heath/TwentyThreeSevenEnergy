@@ -59,13 +59,13 @@ public class UpcomingActivationsViewModel {
         }
         else {
             act.setActivationDate(date);
-            act.setRecursMonday(false);
-            act.setRecursTuesday(false);
-            act.setRecursWednesday(false);
-            act.setRecursThursday(false);
-            act.setRecursFriday(false);
-            act.setRecursSaturday(false);
-            act.setRecursSunday(false);
+            act.setRecursMonday(null);
+            act.setRecursTuesday(null);
+            act.setRecursWednesday(null);
+            act.setRecursThursday(null);
+            act.setRecursFriday(null);
+            act.setRecursSaturday(null);
+            act.setRecursSunday(null);
         }
 
         activationService.save(act);

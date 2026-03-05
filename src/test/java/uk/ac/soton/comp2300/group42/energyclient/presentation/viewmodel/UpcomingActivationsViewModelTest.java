@@ -50,7 +50,7 @@ class UpcomingActivationsViewModelTest {
     void constructor_initialisesLists_sortsActivations_andTriggersAsyncRefresh() {
         // Verify appliances passed through correctly
         assertEquals(1, viewModel.getAppliances().size());
-        assertEquals(mockAppliance, viewModel.getAppliances().get(0));
+        assertEquals(mockAppliance, viewModel.getAppliances().getFirst());
 
         // Verify activations are sorted by date (mock2 is earlier)
         assertEquals(2, viewModel.getActivations().size());
@@ -112,13 +112,13 @@ class UpcomingActivationsViewModelTest {
 
         // Non-recurring logic: date must be set, all recursion days forced to false
         verify(mockActivation1).setActivationDate(date);
-        verify(mockActivation1).setRecursMonday(false);
-        verify(mockActivation1).setRecursTuesday(false);
-        verify(mockActivation1).setRecursWednesday(false);
-        verify(mockActivation1).setRecursThursday(false);
-        verify(mockActivation1).setRecursFriday(false);
-        verify(mockActivation1).setRecursSaturday(false);
-        verify(mockActivation1).setRecursSunday(false);
+        verify(mockActivation1).setRecursMonday(null);
+        verify(mockActivation1).setRecursTuesday(null);
+        verify(mockActivation1).setRecursWednesday(null);
+        verify(mockActivation1).setRecursThursday(null);
+        verify(mockActivation1).setRecursFriday(null);
+        verify(mockActivation1).setRecursSaturday(null);
+        verify(mockActivation1).setRecursSunday(null);
 
         verify(mockActivationService, times(1)).save(mockActivation1);
     }

@@ -155,22 +155,22 @@ public class ObservableActivationTest {
     @Test void testSetters_recurring_to_nonRecurring() {
         recurring.setActivationType(ActivationType.NON_RECURRING);
         recurring.setActivationDate(easter);
-        recurring.setRecursMonday(false);
-        recurring.setRecursTuesday(false);
-        recurring.setRecursWednesday(false);
-        recurring.setRecursThursday(false);
-        recurring.setRecursFriday(false);
-        recurring.setRecursSaturday(false);
-        recurring.setRecursSunday(false);
+        recurring.setRecursMonday(null);
+        recurring.setRecursTuesday(null);
+        recurring.setRecursWednesday(null);
+        recurring.setRecursThursday(null);
+        recurring.setRecursFriday(null);
+        recurring.setRecursSaturday(null);
+        recurring.setRecursSunday(null);
 
         assertEquals(easter, recurring.getActivationDate(), "Activation Date should be updated after setter");
-        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated after setter");
-        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated after setter");
-        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated after setter");
-        assertFalse(recurring.isRecursThursday(), "Recurrence flags should be updated after setter");
-        assertFalse(recurring.isRecursFriday(), "Recurrence flags should be updated after setter");
-        assertFalse(recurring.isRecursSaturday(), "Recurrence flags should be updated after setter");
-        assertFalse(recurring.isRecursSunday(), "Recurrence flags should be updated after setter");
+        assertNull(recurring.isRecursMonday(), "Recurrence flags should be updated after setter");
+        assertNull(recurring.isRecursTuesday(), "Recurrence flags should be updated after setter");
+        assertNull(recurring.isRecursWednesday(), "Recurrence flags should be updated after setter");
+        assertNull(recurring.isRecursThursday(), "Recurrence flags should be updated after setter");
+        assertNull(recurring.isRecursFriday(), "Recurrence flags should be updated after setter");
+        assertNull(recurring.isRecursSaturday(), "Recurrence flags should be updated after setter");
+        assertNull(recurring.isRecursSunday(), "Recurrence flags should be updated after setter");
     }
 
     @Test void testProperties_nonRecurring() {
@@ -302,13 +302,13 @@ public class ObservableActivationTest {
 
         assertEquals(ActivationType.NON_RECURRING, recurring.getActivationType(), "Activation Type should be updated to NON_RECURRING");
         assertEquals(easter, recurring.getActivationDate(), "Activation Date should be updated from domain model");
-        assertFalse(recurring.isRecursMonday(), "Recurrence flags should be updated from domain model");
-        assertFalse(recurring.isRecursTuesday(), "Recurrence flags should be updated from domain model");
-        assertFalse(recurring.isRecursWednesday(), "Recurrence flags should be updated from domain model");
-        assertFalse(recurring.isRecursThursday(), "Recurrence flags should be updated from domain model");
-        assertFalse(recurring.isRecursFriday(), "Recurrence flags should be updated from domain model");
-        assertFalse(recurring.isRecursSaturday(), "Recurrence flags should be updated from domain model");
-        assertFalse(recurring.isRecursSunday(), "Recurrence flags should be updated from domain model");
+        assertNull(recurring.isRecursMonday(), "Recurrence flags should be updated from domain model");
+        assertNull(recurring.isRecursTuesday(), "Recurrence flags should be updated from domain model");
+        assertNull(recurring.isRecursWednesday(), "Recurrence flags should be updated from domain model");
+        assertNull(recurring.isRecursThursday(), "Recurrence flags should be updated from domain model");
+        assertNull(recurring.isRecursFriday(), "Recurrence flags should be updated from domain model");
+        assertNull(recurring.isRecursSaturday(), "Recurrence flags should be updated from domain model");
+        assertNull(recurring.isRecursSunday(), "Recurrence flags should be updated from domain model");
     }
 
     @Test void testGetNextActivationDateTime_nonRecurring() {
@@ -334,13 +334,13 @@ public class ObservableActivationTest {
     }
 
     @Test void testRecursOnDay_nonRecurring() {
-        assertEquals(nonRecurring.isRecursMonday(), nonRecurring.recursOnDay(DayOfWeek.MONDAY), "Recurs on day should match getter");
-        assertEquals(nonRecurring.isRecursTuesday(), nonRecurring.recursOnDay(DayOfWeek.TUESDAY), "Recurs on day should match getter");
-        assertEquals(nonRecurring.isRecursWednesday(), nonRecurring.recursOnDay(DayOfWeek.WEDNESDAY), "Recurs on day should match getter");
-        assertEquals(nonRecurring.isRecursThursday(), nonRecurring.recursOnDay(DayOfWeek.THURSDAY), "Recurs on day should match getter");
-        assertEquals(nonRecurring.isRecursFriday(), nonRecurring.recursOnDay(DayOfWeek.FRIDAY), "Recurs on day should match getter");
-        assertEquals(nonRecurring.isRecursSaturday(), nonRecurring.recursOnDay(DayOfWeek.SATURDAY), "Recurs on day should match getter");
-        assertEquals(nonRecurring.isRecursSunday(), nonRecurring.recursOnDay(DayOfWeek.SUNDAY), "Recurs on day should match getter");
+        assertFalse(nonRecurring.recursOnDay(DayOfWeek.MONDAY), "Recurs on day should match getter");
+        assertFalse(nonRecurring.recursOnDay(DayOfWeek.TUESDAY), "Recurs on day should match getter");
+        assertFalse(nonRecurring.recursOnDay(DayOfWeek.WEDNESDAY), "Recurs on day should match getter");
+        assertFalse(nonRecurring.recursOnDay(DayOfWeek.THURSDAY), "Recurs on day should match getter");
+        assertFalse(nonRecurring.recursOnDay(DayOfWeek.FRIDAY), "Recurs on day should match getter");
+        assertFalse(nonRecurring.recursOnDay(DayOfWeek.SATURDAY), "Recurs on day should match getter");
+        assertFalse(nonRecurring.recursOnDay(DayOfWeek.SUNDAY), "Recurs on day should match getter");
     }
 
     @Test void testRecursOnDay_recurring() {

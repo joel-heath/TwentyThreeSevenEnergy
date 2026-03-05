@@ -21,13 +21,13 @@ public class ObservableActivation {
     private final ObjectProperty<LocalTime> activationTime;
     private final ObjectProperty<LocalDate> activationDate;
     private final ObjectProperty<ActivationType> type;
-    private final BooleanProperty recursMonday;
-    private final BooleanProperty recursTuesday;
-    private final BooleanProperty recursWednesday;
-    private final BooleanProperty recursThursday;
-    private final BooleanProperty recursFriday;
-    private final BooleanProperty recursSaturday;
-    private final BooleanProperty recursSunday;
+    private final ObjectProperty<Boolean> recursMonday;
+    private final ObjectProperty<Boolean> recursTuesday;
+    private final ObjectProperty<Boolean> recursWednesday;
+    private final ObjectProperty<Boolean> recursThursday;
+    private final ObjectProperty<Boolean> recursFriday;
+    private final ObjectProperty<Boolean> recursSaturday;
+    private final ObjectProperty<Boolean> recursSunday;
     private final BooleanProperty updateTrigger;
 
     public ObservableActivation(Activation entity, ObservableAppliance appliance) {
@@ -36,13 +36,13 @@ public class ObservableActivation {
         this.activationTime = new SimpleObjectProperty<>(entity.activationTime());
         this.activationDate = new SimpleObjectProperty<>(entity.activationDate());
         this.type = new SimpleObjectProperty<>(entity.type());
-        this.recursMonday = new SimpleBooleanProperty(entity.recursMonday());
-        this.recursTuesday = new SimpleBooleanProperty(entity.recursTuesday());
-        this.recursWednesday = new SimpleBooleanProperty(entity.recursWednesday());
-        this.recursThursday = new SimpleBooleanProperty(entity.recursThursday());
-        this.recursFriday = new SimpleBooleanProperty(entity.recursFriday());
-        this.recursSaturday = new SimpleBooleanProperty(entity.recursSaturday());
-        this.recursSunday = new SimpleBooleanProperty(entity.recursSunday());
+        this.recursMonday = new SimpleObjectProperty<>(entity.recursMonday());
+        this.recursTuesday = new SimpleObjectProperty<>(entity.recursTuesday());
+        this.recursWednesday = new SimpleObjectProperty<>(entity.recursWednesday());
+        this.recursThursday = new SimpleObjectProperty<>(entity.recursThursday());
+        this.recursFriday = new SimpleObjectProperty<>(entity.recursFriday());
+        this.recursSaturday = new SimpleObjectProperty<>(entity.recursSaturday());
+        this.recursSunday = new SimpleObjectProperty<>(entity.recursSunday());
         this.updateTrigger = new SimpleBooleanProperty(false);
     }
 
@@ -104,31 +104,31 @@ public class ObservableActivation {
     public Boolean isRecursSaturday() { return recursSaturday.get(); }
     public Boolean isRecursSunday() { return recursSunday.get(); }
 
-    public void setRecursMonday(boolean recursMonday) { this.recursMonday.set(recursMonday); }
-    public void setRecursTuesday(boolean recursTuesday) { this.recursTuesday.set(recursTuesday); }
-    public void setRecursWednesday(boolean recursWednesday) { this.recursWednesday.set(recursWednesday); }
-    public void setRecursThursday(boolean recursThursday) { this.recursThursday.set(recursThursday); }
-    public void setRecursFriday(boolean recursFriday) { this.recursFriday.set(recursFriday); }
-    public void setRecursSaturday(boolean recursSaturday) { this.recursSaturday.set(recursSaturday); }
-    public void setRecursSunday(boolean recursSunday) { this.recursSunday.set(recursSunday); }
+    public void setRecursMonday(Boolean recursMonday) { this.recursMonday.set(recursMonday); }
+    public void setRecursTuesday(Boolean recursTuesday) { this.recursTuesday.set(recursTuesday); }
+    public void setRecursWednesday(Boolean recursWednesday) { this.recursWednesday.set(recursWednesday); }
+    public void setRecursThursday(Boolean recursThursday) { this.recursThursday.set(recursThursday); }
+    public void setRecursFriday(Boolean recursFriday) { this.recursFriday.set(recursFriday); }
+    public void setRecursSaturday(Boolean recursSaturday) { this.recursSaturday.set(recursSaturday); }
+    public void setRecursSunday(Boolean recursSunday) { this.recursSunday.set(recursSunday); }
 
-    public BooleanProperty recursMondayProperty() { return recursMonday; }
-    public BooleanProperty recursTuesdayProperty() { return recursTuesday; }
-    public BooleanProperty recursWednesdayProperty() { return recursWednesday; }
-    public BooleanProperty recursThursdayProperty() { return recursThursday; }
-    public BooleanProperty recursFridayProperty() { return recursFriday; }
-    public BooleanProperty recursSaturdayProperty() { return recursSaturday; }
-    public BooleanProperty recursSundayProperty() { return recursSunday; }
+    public ObjectProperty<Boolean> recursMondayProperty() { return recursMonday; }
+    public ObjectProperty<Boolean> recursTuesdayProperty() { return recursTuesday; }
+    public ObjectProperty<Boolean> recursWednesdayProperty() { return recursWednesday; }
+    public ObjectProperty<Boolean> recursThursdayProperty() { return recursThursday; }
+    public ObjectProperty<Boolean> recursFridayProperty() { return recursFriday; }
+    public ObjectProperty<Boolean> recursSaturdayProperty() { return recursSaturday; }
+    public ObjectProperty<Boolean> recursSundayProperty() { return recursSunday; }
 
     public boolean recursOnDay(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {
-            case DayOfWeek.MONDAY -> isRecursMonday();
-            case DayOfWeek.TUESDAY -> isRecursTuesday();
-            case DayOfWeek.WEDNESDAY -> isRecursWednesday();
-            case DayOfWeek.THURSDAY -> isRecursThursday();
-            case DayOfWeek.FRIDAY -> isRecursFriday();
-            case DayOfWeek.SATURDAY -> isRecursSaturday();
-            case DayOfWeek.SUNDAY -> isRecursSunday();
+            case DayOfWeek.MONDAY -> Boolean.TRUE.equals(isRecursMonday());
+            case DayOfWeek.TUESDAY -> Boolean.TRUE.equals(isRecursTuesday());
+            case DayOfWeek.WEDNESDAY -> Boolean.TRUE.equals(isRecursWednesday());
+            case DayOfWeek.THURSDAY -> Boolean.TRUE.equals(isRecursThursday());
+            case DayOfWeek.FRIDAY -> Boolean.TRUE.equals(isRecursFriday());
+            case DayOfWeek.SATURDAY -> Boolean.TRUE.equals(isRecursSaturday());
+            case DayOfWeek.SUNDAY -> Boolean.TRUE.equals(isRecursSunday());
         };
     }
 

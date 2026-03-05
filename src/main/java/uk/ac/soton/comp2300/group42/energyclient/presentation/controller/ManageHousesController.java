@@ -13,12 +13,14 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionMa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ManageHousesViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;
 
 public class ManageHousesController {
+
     private static final String HOUSEMATE_CARD_STYLE =
             "-fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5";
 
@@ -149,6 +151,10 @@ public class ManageHousesController {
 
         inputFeedbackManager.showPopup("Invite sent", "An invitation has been sent to " + email + ".");
         inviteHousemateField.setStyle("");
+    }
+
+    @FXML private void onManageAppliances() {
+        Navigator.goTo("ManageAppliances.fxml");
     }
 
     private Pane createHousemateView(ObservableHousemate housemate) {

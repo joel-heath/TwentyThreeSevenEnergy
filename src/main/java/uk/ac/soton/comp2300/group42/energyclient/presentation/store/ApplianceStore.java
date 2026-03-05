@@ -13,6 +13,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 @Singleton
@@ -59,6 +60,7 @@ public class ApplianceStore {
     public void delete(Long id) {
         repository.delete(getActiveHouseId(), id);
         cache.remove(id);
+        masterList.removeIf(app -> Objects.equals(app.getId(), id)); // TODO: Platform.runLater when this is called on a background thread
     }
 
     private ObservableAppliance getObservable(Appliance pojo) {

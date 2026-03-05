@@ -32,7 +32,7 @@ public class EnergyUsageViewModel {
                 () -> {
                     double target = preferences.getEnergyGoal();
                     if (target == 0) return 0.0;
-                    return Math.max(0, Math.min(cost.get() / target, 1));
+                    return Math.max(0, Math.min(cost.get() / target, 2));
                 },
                 cost, preferences.energyGoalProperty()
         ));

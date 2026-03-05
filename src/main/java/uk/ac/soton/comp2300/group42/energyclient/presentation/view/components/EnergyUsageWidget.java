@@ -1,8 +1,10 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.view.components;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUsageViewModel;
@@ -23,13 +25,35 @@ public class EnergyUsageWidget extends VBox {
         goalLabel.textProperty().unbind();
         energyUsageRect.usageProperty().unbind();
         energyUsageRect.fillProperty().unbind();
+        energyUsageRect.effectProperty().unbind();
 
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
         energyUsageRect.usageProperty().bind(vm.usageProperty());
-        energyUsageRect.fillProperty().bind(
-                vm.getPreferences().visionProperty().map(ColorVisionManager::getGradientFor)
-        );
+
+        energyUsageRect.fillProperty().bind(Bindings.createObjectBinding(() -> {
+            double usage = vm.usageProperty().get();
+            var vision = vm.getPreferences().getVision();
+
+            if (usage >= 1.5) {
+                return ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.STATUS_50PERCENT_OVER);
+            }
+
+            return ColorVisionManager.getGradientFor(vision);
+
+        }, vm.usageProperty(), vm.getPreferences().visionProperty()));
+
+        energyUsageRect.effectProperty().bind(Bindings.createObjectBinding(() -> {
+            double usage = vm.usageProperty().get();
+
+            if (usage >= 2.0) {
+                DropShadow shadow = new DropShadow();
+                shadow.setColor(ColorVisionManager.getColor(vm.getPreferences().getVision(), ColorVisionManager.ColorRole.STATUS_50PERCENT_OVER));
+                shadow.setRadius(40);
+                return shadow;
+            }
+            return null;
+        }, vm.usageProperty(), vm.getPreferences().energyGoalProperty(), vm.getPreferences().visionProperty()));
     }
 
     public EnergyUsageWidget() throws IOException {

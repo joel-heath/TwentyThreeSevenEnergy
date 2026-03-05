@@ -89,8 +89,46 @@ public class ManageHousesController {
     }
 
     @FXML private void onCreateNewHouse() {
-        vm.createHouse(newHouseNameField.getText(), newHouseAddressField.getText());
+        String name = newHouseNameField.getText() == null ? "" : newHouseNameField.getText().trim();
+        String address = newHouseAddressField.getText() == null ? "" : newHouseAddressField.getText().trim();
+
+        boolean hasError = false;
+
+        if (name.isEmpty()) {
+            newHouseAddressField.setStyle(
+                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+            );
+            hasError = true;
+        } else {
+            newHouseAddressField.setStyle("");
+        }
+
+        if (address.isEmpty()) {
+            newHouseAddressField.setStyle(
+                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+            );
+            hasError = true;
+        } else {
+            newHouseAddressField.setStyle("");
+        }
+
+        if (hasError) {
+            inputFeedbackManager.showPopup(
+                    "House not created",
+                    "Please enter a house name and address before creating a new house."
+            );
+            return;
+        }
+        vm.createHouse(name, address);
         activeHouseComboBox.getItems().setAll(vm.getHouseList());
+
+        inputFeedbackManager.showPopup(
+                "House created",
+                "Created \"" + name + "\"."
+        );
+
+        newHouseNameField.clear();
+        newHouseAddressField.clear();
     }
 
     @FXML private void onInviteHousemate() {

@@ -13,7 +13,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.EnergyPriceRe
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -23,7 +22,6 @@ public class ProgressTrackingViewModel {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd");
-
 
     private final EnergyPriceRepository repository;
     private final ObservablePreferences preferences;
@@ -76,12 +74,16 @@ public class ProgressTrackingViewModel {
         });
     }
 
+    public List<Metric> getAllMetrics() {
+        return this.metricRepo.getAll(preferences.getActiveHouse().getId());
+    }
+
     public void loadMockExpenses() {
         expenseSeriesData.clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Daily Spend (Mock)");
 
-        List<Metric> testList = this.metricRepo.getAll(preferences.getActiveHouse().getId());
+        List<Metric> testList = getAllMetrics();
         List<Double> energyValues = testList.stream()
                 .map(Metric::energyUsed)
                 .toList();
@@ -96,5 +98,10 @@ public class ProgressTrackingViewModel {
         }
 
         expenseSeriesData.add(series);
+    }
+
+    public void logUsage(double energyUsed) {
+        Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDate.now(), energyUsed);
+        metricRepo.add(metric);
     }
 }

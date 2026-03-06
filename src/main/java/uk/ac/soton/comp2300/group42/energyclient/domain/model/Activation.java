@@ -22,7 +22,7 @@ public record Activation(
 ) {
     public Activation(Long applianceId, Long houseId, LocalTime activationTime, LocalDate activationDate) {
         this(null, applianceId, houseId, ActivationType.NON_RECURRING, activationTime, activationDate,
-             false, false, false, false, false, false, false);
+             null, null, null, null, null, null, null);
     }
 
     public Activation(Long applianceId, Long houseId, LocalTime activationTime,

@@ -3,7 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
-<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch?>
 
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"

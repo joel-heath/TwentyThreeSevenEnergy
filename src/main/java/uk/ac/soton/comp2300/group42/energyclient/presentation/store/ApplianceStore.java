@@ -2,18 +2,21 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ApplianceRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.concurrent.Executor;
 
 @Singleton
 public class ApplianceStore {
@@ -23,14 +26,27 @@ public class ApplianceStore {
     private final ObservablePreferences preferences;
     private final Map<Long, ObservableAppliance> cache;
     private final ObservableList<ObservableAppliance> masterList;
+    private final Executor uiExecutor;
 
     @Inject
-    public ApplianceStore(ApplianceRepository repository, HouseStore houseStore, ObservablePreferences preferences) {
+    public ApplianceStore(ApplianceRepository repository,
+                          HouseStore houseStore,
+                          ObservablePreferences preferences,
+                          SessionManager sessionManager,
+                          @UIExecutor Executor uiExecutor) {
         this.repository = repository;
         this.houseStore = houseStore;
         this.preferences = preferences;
+        this.uiExecutor = uiExecutor;
         this.cache = new WeakHashMap<>();
         this.masterList = FXCollections.observableArrayList();
+
+        sessionManager.subscribe(_ ->
+                uiExecutor.execute(() -> {
+                    cache.clear();
+                    masterList.clear();
+                })
+        );
     }
 
     private Long getActiveHouseId() {
@@ -59,6 +75,7 @@ public class ApplianceStore {
     public void delete(Long id) {
         repository.delete(getActiveHouseId(), id);
         cache.remove(id);
+        masterList.removeIf(app -> Objects.equals(app.getId(), id)); // TODO: uiExecutor.execute when this is called on a background thread
     }
 
     private ObservableAppliance getObservable(Appliance pojo) {
@@ -66,12 +83,12 @@ public class ApplianceStore {
         ObservableAppliance existing = cache.get(pojo.id());
 
         if (existing != null) {
-            Platform.runLater(() -> existing.updateFrom(pojo, house));
+            uiExecutor.execute(() -> existing.updateFrom(pojo, house));
             return existing;
         } else {
             ObservableAppliance appliance = new ObservableAppliance(pojo, house);
             cache.put(pojo.id(), appliance);
-            Platform.runLater(() -> masterList.add(appliance));
+            uiExecutor.execute(() -> masterList.add(appliance));
             return appliance;
         }
     }
@@ -80,7 +97,7 @@ public class ApplianceStore {
         ObservableHouse activeHouse = preferences.getActiveHouse();
         List<Appliance> pojos = repository.getAll(getActiveHouseId());
 
-        Platform.runLater(() -> {
+        uiExecutor.execute(() -> {
             masterList.clear();
             for (Appliance pojo : pojos) {
                 ObservableAppliance appliance = cache.get(pojo.id());

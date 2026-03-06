@@ -1,7 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
 import com.google.inject.Inject;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
 
 public class LoginViewModel {
@@ -13,24 +12,12 @@ public class LoginViewModel {
         this.repo = repo;
     }
 
-    public boolean login(String email, String password) {
-        try {
-            repo.login(email, password);
-            return true;
-        }
-        catch (ApiException e) {
-            return false;
-        }
+    public void login(String email, String password) {
+        repo.login(email, password);
     }
 
-    public boolean register(String name, String email, String password) {
-        try {
-            repo.register(name, email, password);
-            return true;
-        }
-        catch (ApiException e) {
-            return false;
-        }
+    public void register(String name, String email, String password) {
+        repo.register(name, email, password);
     }
 
 }

@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccessibilitySettingsViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;

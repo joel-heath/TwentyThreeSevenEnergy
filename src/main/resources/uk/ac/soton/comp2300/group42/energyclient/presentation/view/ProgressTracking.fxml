@@ -8,6 +8,8 @@
 <?import javafx.scene.chart.LineChart?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.ProgressTrackingController"
@@ -37,6 +39,12 @@
                     <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
                 </yAxis>
             </BarChart>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Log Energy Usage:"/>
+                <TextField fx:id="logUsageField" promptText="Log Usage (J)" maxWidth="250"/>
+                <Button text="Log" onAction="#onLogUsage"/>
+            </HBox>
 
         </VBox>
 </BackOverlayPane>

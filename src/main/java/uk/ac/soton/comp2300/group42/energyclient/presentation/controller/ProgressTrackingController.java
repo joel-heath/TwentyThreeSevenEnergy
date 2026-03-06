@@ -12,6 +12,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ProgressTrackingViewModel;
 
@@ -20,6 +21,7 @@ public class ProgressTrackingController {
     @FXML private LineChart<String, Number> priceChart;
     @FXML private BarChart<String, Number> expenseChart;
     @FXML private Label priceLabel;
+    @FXML private TextField logUsageField;
 
     private final ProgressTrackingViewModel vm;
     @Inject public ProgressTrackingController(ProgressTrackingViewModel vm) { this.vm = vm; }
@@ -106,5 +108,12 @@ public class ProgressTrackingController {
         for (Node legendSymbol : expenseChart.lookupAll(".chart-legend-item-symbol")) {
             legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
         }
+    }
+
+    @FXML
+    private void onLogUsage() {
+        double usage = Double.parseDouble(logUsageField.getText());
+        vm.logUsage(usage);
+        vm.loadMockExpenses();
     }
 }

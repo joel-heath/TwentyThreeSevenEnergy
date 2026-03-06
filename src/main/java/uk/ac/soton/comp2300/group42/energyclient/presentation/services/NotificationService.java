@@ -1,9 +1,9 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.services;
 
 import com.google.inject.Singleton;
-import javafx.application.Platform;
 
 import uk.ac.soton.comp2300.group42.activation.ActivationType;
+import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
@@ -13,14 +13,20 @@ import java.time.LocalDateTime;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 @Singleton
 public class NotificationService {
 
+    private final Executor uiExecutor;
     private final Timer timer = new Timer(true);
     private final Hashtable<ObservableActivation, TimerTask> timerTasks = new Hashtable<>();
     private Consumer<ObservableActivation> onCleanupAction;
+
+    public NotificationService(@UIExecutor Executor executor) {
+        this.uiExecutor = executor;
+    }
 
     public void setOnCleanupAction(Consumer<ObservableActivation> action) {
         this.onCleanupAction = action;
@@ -36,7 +42,7 @@ public class NotificationService {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
+                uiExecutor.execute(() -> {
                     Navigator.showPopup(appliance.getName());
                     timerTasks.remove(activation);
                     if (activation.getActivationType() == ActivationType.RECURRING) {
@@ -68,12 +74,12 @@ public class NotificationService {
 
     public void showPopup(String message) {
         if (message == null || message.isBlank()) return;
-        Platform.runLater(() -> Navigator.showPopup(message));
+        uiExecutor.execute(() -> Navigator.showPopup(message));
     }
 
     public void showPopup(String title, String description) {
         if (title == null || title.isBlank()) return;
         String safeDescription = (description == null) ? "" : description;
-        Platform.runLater(() -> Navigator.showPopup(title, safeDescription));
+        uiExecutor.execute(() -> Navigator.showPopup(title, safeDescription));
     }
 }

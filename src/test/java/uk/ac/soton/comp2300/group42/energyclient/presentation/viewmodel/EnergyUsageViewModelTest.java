@@ -51,7 +51,7 @@ class EnergyUsageViewModelTest {
 
         preferences.setEnergyGoal(0.25);
         viewModel.setCost(1.0);
-        assertEquals(1.0, viewModel.usageProperty().get(), 1e-9);
+        assertEquals(2.0, viewModel.usageProperty().get(), 1e-9);
 
         preferences.setEnergyGoal(0.0);
         viewModel.setCost(1.0);

@@ -30,7 +30,7 @@ public class MetricController {
             @PathVariable Long houseId,
             @PathVariable Long id,
             @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(service.getMetricById(houseId, id, user)); // use house id for now
+        return ResponseEntity.ok(service.getMetricById(houseId, id, user));
     }
 
     @GetMapping

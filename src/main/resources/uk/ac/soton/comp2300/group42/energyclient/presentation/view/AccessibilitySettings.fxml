@@ -13,10 +13,11 @@
         <Label text="Accessibility Settings" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
         <VBox spacing="5" alignment="CENTER">
+             <!--
             <HBox spacing="10" alignment="CENTER">
                 <Label text="Large Font Mode"/>
                 <ToggleSwitch fx:id="largeFontToggle"/>
-            </HBox>
+            </HBox> -->
         </VBox>
 
         <VBox spacing="5" alignment="CENTER">

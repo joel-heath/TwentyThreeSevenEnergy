@@ -11,7 +11,7 @@ import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.Contro
 
 public class AccessibilityController {
 
-    @FXML private ToggleSwitch largeFontToggle;
+    // @FXML private ToggleSwitch largeFontToggle;
     @FXML private ComboBox<ColorVision> colorVisionComboBox;
 
     private final AccessibilitySettingsViewModel vm;
@@ -20,9 +20,9 @@ public class AccessibilityController {
     }
 
     @FXML private void initialize() {
-        largeFontToggle.selectedProperty().bindBidirectional(
+        /*largeFontToggle.selectedProperty().bindBidirectional(
                 vm.getPreferences().largeFontProperty()
-        );
+        );*/
 
         colorVisionComboBox.getItems().setAll(ColorVision.values());
         colorVisionComboBox.setConverter(createConverter(ColorVision::getName));

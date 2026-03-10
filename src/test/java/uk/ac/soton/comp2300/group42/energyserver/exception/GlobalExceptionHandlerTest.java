@@ -2,14 +2,20 @@ package uk.ac.soton.comp2300.group42.energyserver.exception;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import uk.ac.soton.comp2300.group42.common.ApiErrorResponse;
 
 import java.util.List;
@@ -126,6 +132,18 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void handleSpringNoHandlerFound_ShouldReturn404() {
+        NoHandlerFoundException ex = new NoHandlerFoundException("GET", "/api/nonexistent", mock(HttpHeaders.class));
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleSpringNoHandlerFound(ex, mockRequest);
+        ApiErrorResponse error = response.getBody();
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(error);
+        assertTrue(error.message().contains("Endpoint not found: GET /api/nonexistent"));
+    }
+
+    @Test
     void handleSpringArgumentTypeMismatch_ShouldReturn400() {
         MethodArgumentTypeMismatchException ex = mock(MethodArgumentTypeMismatchException.class);
         when(ex.getValue()).thenReturn("abc");
@@ -159,6 +177,42 @@ class GlobalExceptionHandlerTest {
         assertTrue(error.message().contains("Validation failed:"));
         assertTrue(error.message().contains("email: must be a well-formed email address"));
         assertTrue(error.message().contains("password: must not be null"));
+    }
+
+    @Test
+    void handleHttpMessageNotReadable_ShouldReturn400() {
+        HttpMessageNotReadableException ex = new HttpMessageNotReadableException("Malformed JSON request", mock(HttpInputMessage.class));
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleHttpMessageNotReadable(ex, mockRequest);
+        ApiErrorResponse error = response.getBody();
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(error);
+        assertTrue(error.message().contains("Malformed JSON request or missing request body."));
+    }
+
+    @Test
+    void handleMethodNotSupported_ShouldReturn405() {
+        HttpRequestMethodNotSupportedException ex = new HttpRequestMethodNotSupportedException("POST", List.of("GET", "PUT"));
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMethodNotSupported(ex, mockRequest);
+        ApiErrorResponse error = response.getBody();
+
+        assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.getStatusCode());
+        assertNotNull(error);
+        assertTrue(error.message().contains("HTTP method 'POST' is not supported for this endpoint. Supported methods are: [GET, PUT]"));
+    }
+
+    @Test
+    void handleMissingRequestParameter_ShouldReturn400() {
+        MissingServletRequestParameterException ex = new MissingServletRequestParameterException("houseId", "Long");
+
+        ResponseEntity<ApiErrorResponse> response = exceptionHandler.handleMissingRequestParameter(ex, mockRequest);
+        ApiErrorResponse error = response.getBody();
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(error);
+        assertTrue(error.message().contains("Required request parameter 'houseId' of type 'Long' is missing."));
     }
 
     @Test

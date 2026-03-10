@@ -4,12 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import uk.ac.soton.comp2300.group42.common.ApiErrorResponse;
 
 import java.time.Instant;
@@ -29,6 +33,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
     public ResponseEntity<ApiErrorResponse> handleSpringSecurityAccessDenied(org.springframework.security.access.AccessDeniedException ex, WebRequest request) {
         return buildErrorResponse(HttpStatus.FORBIDDEN, "Forbidden: You do not have permission to perform this action.", request);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleSpringNoHandlerFound(NoHandlerFoundException ex, WebRequest request) {
+        String message = String.format("Endpoint not found: %s %s", ex.getHttpMethod(), ex.getRequestURL());
+        return buildErrorResponse(HttpStatus.NOT_FOUND, message, request);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -51,6 +61,27 @@ public class GlobalExceptionHandler {
 
         String message = "Validation failed: " + String.join(", ", errors);
 
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, message, request);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Malformed JSON request or missing request body.", request);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, WebRequest request) {
+        String message = String.format("HTTP method '%s' is not supported for this endpoint. Supported methods are: %s",
+                ex.getMethod(),
+                ex.getSupportedHttpMethods());
+        return buildErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, message, request);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiErrorResponse> handleMissingRequestParameter(MissingServletRequestParameterException ex, WebRequest request) {
+        String message = String.format("Required request parameter '%s' of type '%s' is missing.",
+                ex.getParameterName(),
+                ex.getParameterType());
         return buildErrorResponse(HttpStatus.BAD_REQUEST, message, request);
     }
 

@@ -1,6 +1,5 @@
 package uk.ac.soton.comp2300.group42.energyclient;
 
-import javafx.application.Platform;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -20,12 +19,6 @@ public class EnergyClient extends Application {
         stage.setMinHeight(400);
 
         stage.setTitle("23/7 Energy");
-
-        stage.setOnCloseRequest(_ -> {
-            // first make sure data is saved if using local storage?
-            Platform.exit();
-            System.exit(0);
-        });
 
         stage.show();
     }

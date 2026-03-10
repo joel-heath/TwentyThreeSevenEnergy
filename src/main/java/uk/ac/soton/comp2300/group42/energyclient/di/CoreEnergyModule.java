@@ -82,7 +82,12 @@ public class CoreEnergyModule extends AbstractModule {
     @Singleton
     @LocalStorageExecutor
     ExecutorService provideLocalStorageExecutor() {
-        return Executors.newSingleThreadExecutor();
+        return Executors.newSingleThreadExecutor(runnable -> {
+            Thread thread = new Thread(runnable);
+            thread.setDaemon(true);
+            thread.setName("LocalStorage-Executor");
+            return thread;
+        });
     }
 
     @Provides

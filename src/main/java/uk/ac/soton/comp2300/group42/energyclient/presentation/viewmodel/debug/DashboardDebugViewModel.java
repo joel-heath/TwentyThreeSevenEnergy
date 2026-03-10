@@ -20,7 +20,12 @@ import static java.lang.Math.max;
 public class DashboardDebugViewModel {
 
     private final ScheduledExecutorService scheduler =
-            Executors.newSingleThreadScheduledExecutor();
+            Executors.newSingleThreadScheduledExecutor(runnable -> {
+                Thread thread = new Thread(runnable);
+                thread.setDaemon(true);
+                thread.setName("DebugDashboard-Scheduler");
+                return thread;
+            });
 
     private final IntegerProperty counter = new SimpleIntegerProperty(0);
     private final DoubleProperty usage = new SimpleDoubleProperty(0);

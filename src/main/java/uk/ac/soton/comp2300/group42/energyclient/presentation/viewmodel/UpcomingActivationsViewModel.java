@@ -24,8 +24,10 @@ public class UpcomingActivationsViewModel {
         this.appliances = applianceStore.getAll();
         this.activations = new SortedList<>(activationService.getAll());
         this.activations.setComparator(Comparator.comparing(ObservableActivation::getNextActivationDateTime));
+    }
 
-        CompletableFuture.runAsync(activationService::refreshAll);
+    public CompletableFuture<Void> refreshActivationsAsync() {
+        return activationService.refreshAllAsync();
     }
 
     public ObservableList<ObservableAppliance> getAppliances() { return appliances; }

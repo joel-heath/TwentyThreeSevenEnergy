@@ -114,7 +114,7 @@ class ApplianceStoreTest {
     }
 
     @Test
-    void shouldRefreshAllAndPopulateLists() {
+    void shouldRefreshAllAsyncAndPopulateLists() {
         List<Appliance> appliances = List.of(
                 new Appliance(10L, 100L, "Microwave"),
                 new Appliance(11L, 100L, "Kettle")
@@ -122,7 +122,7 @@ class ApplianceStoreTest {
 
         when(repository.getAll(100L)).thenReturn(appliances);
 
-        applianceStore.refreshAll();
+        applianceStore.refreshAllAsync();
 
         verify(repository).getAll(100L);
         assertEquals(2, applianceStore.getAll().size());
@@ -135,7 +135,7 @@ class ApplianceStoreTest {
     }
 
     @Test
-    void shouldUpdateExistingCachedItemsOnRefreshAll() {
+    void shouldUpdateExistingCachedItemsOnRefreshAllAsync() {
         Appliance initialPojo = new Appliance(12L, 100L, "Old Heater");
         when(repository.get(100L, 12L)).thenReturn(initialPojo);
         when(houseStore.get(100L)).thenReturn(activeHouse);
@@ -145,7 +145,7 @@ class ApplianceStoreTest {
         Appliance updatedPojo = new Appliance(12L, 100L, "New Heater");
         when(repository.getAll(100L)).thenReturn(List.of(updatedPojo));
 
-        applianceStore.refreshAll();
+        applianceStore.refreshAllAsync();
 
         assertEquals(1, applianceStore.getAll().size());
         assertSame(cachedAppliance, applianceStore.getAll().getFirst());

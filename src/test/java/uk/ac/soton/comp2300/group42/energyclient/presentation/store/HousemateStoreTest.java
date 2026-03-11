@@ -96,7 +96,7 @@ class HousemateStoreTest {
     }
 
     @Test
-    void shouldRefreshAllAndPopulateLists() {
+    void shouldRefreshAllAsyncAndPopulateLists() {
         List<Housemate> housemates = List.of(
                 new Housemate(10L, 100L, "Charlie", "charlie@example.com", Role.OWNER),
                 new Housemate(11L, 100L, "Dave", "dave@example.com", Role.RESIDENT)
@@ -104,7 +104,7 @@ class HousemateStoreTest {
 
         when(repository.getHousemates(100L)).thenReturn(housemates);
 
-        housemateStore.refreshAll();
+        housemateStore.refreshAllAsync();
 
         verify(repository).getHousemates(100L);
         assertEquals(2, housemateStore.getAll().size());
@@ -123,7 +123,7 @@ class HousemateStoreTest {
     }
 
     @Test
-    void shouldUpdateExistingCachedItemsOnRefreshAll() {
+    void shouldUpdateExistingCachedItemsOnRefreshAllAsync() {
         Housemate initialPojo = new Housemate(12L, 100L, "Eve (Old)", "eve.old@example.com", Role.GUEST);
         when(houseStore.get(100L)).thenReturn(activeHouse);
         
@@ -132,7 +132,7 @@ class HousemateStoreTest {
         Housemate updatedPojo = new Housemate(12L, 100L, "Eve (New)", "eve.new@example.com", Role.RESIDENT);
         when(repository.getHousemates(100L)).thenReturn(List.of(updatedPojo));
 
-        housemateStore.refreshAll();
+        housemateStore.refreshAllAsync();
 
         assertEquals(1, housemateStore.getAll().size());
         assertSame(cachedHousemate, housemateStore.getAll().getFirst(), "Should update the exact cached instance");

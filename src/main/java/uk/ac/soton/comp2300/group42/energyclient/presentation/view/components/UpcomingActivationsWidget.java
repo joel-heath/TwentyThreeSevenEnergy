@@ -17,6 +17,8 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.Upcoming
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.CompletableFuture;
+
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.formatDay;
 
 public class UpcomingActivationsWidget extends VBox {
@@ -37,6 +39,10 @@ public class UpcomingActivationsWidget extends VBox {
 
         editModal.bindComponents(vm);
         bindActivations();
+    }
+
+    public CompletableFuture<Void> loadActivationsAsync() {
+        return vm.refreshActivationsAsync();
     }
 
     public UpcomingActivationsWidget() throws IOException {

@@ -63,8 +63,8 @@ class ManageHousesViewModelTest {
         assertSame(houseList, viewModel.getHouseList());
         assertSame(housemates, viewModel.getHousemates());
 
-        verify(houseStore, timeout(1000)).refreshAll();
-        verify(housemateStore, timeout(1000)).refreshAll();
+        verify(houseStore, timeout(1000)).refreshAllAsync();
+        verify(housemateStore, timeout(1000)).refreshAllAsync();
     }
 
     @Test

@@ -142,7 +142,7 @@ class HouseStoreTest {
     }
 
     @Test
-    void shouldRefreshAllAndPopulateLists() {
+    void shouldRefreshAllAsyncAndPopulateLists() {
         List<House> houses = List.of(
                 new House(10L, "House A", "Address A", ZoneId.of("UTC"), Role.OWNER),
                 new House(11L, "House B", "Address B", ZoneId.of("Europe/London"), Role.RESIDENT)
@@ -150,7 +150,7 @@ class HouseStoreTest {
 
         when(repository.getAll()).thenReturn(houses);
 
-        houseStore.refreshAll();
+        houseStore.refreshAllAsync();
 
         verify(repository).getAll();
         assertEquals(2, houseStore.getAll().size());
@@ -163,7 +163,7 @@ class HouseStoreTest {
     }
 
     @Test
-    void shouldUpdateExistingCachedItemsOnRefreshAll() {
+    void shouldUpdateExistingCachedItemsOnRefreshAllAsync() {
         House initialPojo = new House(12L, "Stale Name", "Stale Address", ZoneId.of("UTC"), Role.RESIDENT);
         when(repository.get(12L)).thenReturn(initialPojo);
 
@@ -172,7 +172,7 @@ class HouseStoreTest {
         House updatedPojo = new House(12L, "Fresh Name", "Fresh Address", ZoneId.of("Asia/Tokyo"), Role.OWNER);
         when(repository.getAll()).thenReturn(List.of(updatedPojo));
 
-        houseStore.refreshAll();
+        houseStore.refreshAllAsync();
 
         assertEquals(1, houseStore.getAll().size());
         assertSame(cachedHouse, houseStore.getAll().getFirst());

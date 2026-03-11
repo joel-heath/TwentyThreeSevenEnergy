@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.services;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import uk.ac.soton.comp2300.group42.activation.ActivationType;
@@ -24,6 +25,7 @@ public class NotificationService {
     private final Hashtable<ObservableActivation, TimerTask> timerTasks = new Hashtable<>();
     private Consumer<ObservableActivation> onCleanupAction;
 
+    @Inject
     public NotificationService(@UIExecutor Executor executor) {
         this.uiExecutor = executor;
     }

@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Pair;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
@@ -13,10 +12,9 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Singleton
@@ -97,33 +95,32 @@ public class HousemateStore {
         return masterList;
     }
 
-    public void refreshAll() {
+    public CompletableFuture<Void> refreshAllAsync() {
+        record HousemateUpdate(ObservableHousemate housemate, Housemate pojo, boolean needsUpdate) {}
+
         ObservableHouse activeHouse = preferences.getActiveHouse();
 
-        List<Pair<ObservableHousemate, Optional<Housemate>>> pojos = repository
-                .getHousemates(getActiveHouseId())
-                .stream()
-                .map(pojo -> {
-                    ObservableHousemate housemate = cache.get(pojo.userId());
-                    Optional<Housemate> returnedPojo;
-                    if (housemate != null) {
-                        returnedPojo = Optional.of(pojo);
-                    }
-                    else {
-                        housemate = new ObservableHousemate(pojo, activeHouse);
-                        cache.put(pojo.userId(), housemate);
-                        returnedPojo = Optional.empty();
-                    }
-                    return new Pair<>(housemate, returnedPojo);
-                })
-                .toList();
+        return CompletableFuture.supplyAsync(() ->
+            repository.getHousemates(getActiveHouseId())
+            .stream()
+            .map(pojo -> {
+                ObservableHousemate housemate = cache.get(pojo.userId());
+                if (housemate != null) {
+                    return new HousemateUpdate(housemate, pojo, true);
+                }
+                else {
+                    housemate = new ObservableHousemate(pojo, activeHouse);
+                    cache.put(pojo.userId(), housemate);
+                    return new HousemateUpdate(housemate, pojo, false);
+                }
+            })
+            .toList()
+        ).thenAcceptAsync(updates -> {
+            updates.stream().filter(HousemateUpdate::needsUpdate).forEach(
+                    update -> update.housemate().updateFrom(update.pojo(), activeHouse)
+            );
 
-        uiExecutor.execute(() -> {
-            masterList.setAll(pojos.stream().map(Pair::getKey).toList());
-
-            pojos.forEach(pair -> pair.getValue().ifPresent(
-                    pojo -> pair.getKey().updateFrom(pojo, activeHouse)
-            ));
-        });
+            masterList.setAll(updates.stream().map(HousemateUpdate::housemate).toList());
+        }, uiExecutor);
     }
 }

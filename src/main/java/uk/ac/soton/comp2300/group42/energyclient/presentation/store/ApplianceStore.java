@@ -12,10 +12,10 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Singleton
@@ -93,23 +93,32 @@ public class ApplianceStore {
         }
     }
 
-    public void refreshAll() {
-        ObservableHouse activeHouse = preferences.getActiveHouse();
-        List<Appliance> pojos = repository.getAll(getActiveHouseId());
+    public CompletableFuture<Void> refreshAllAsync() {
+        record ApplianceUpdate(ObservableAppliance appliance, Appliance pojo, boolean needsUpdate) {}
 
-        uiExecutor.execute(() -> {
-            masterList.clear();
-            for (Appliance pojo : pojos) {
+        ObservableHouse activeHouse = preferences.getActiveHouse();
+
+        return CompletableFuture.supplyAsync(() ->
+            repository.getAll(getActiveHouseId())
+            .stream()
+            .map(pojo -> {
                 ObservableAppliance appliance = cache.get(pojo.id());
                 if (appliance != null) {
-                    appliance.updateFrom(pojo, activeHouse);
+                    return new ApplianceUpdate(appliance, pojo, true);
                 }
                 else {
                     appliance = new ObservableAppliance(pojo, activeHouse);
                     cache.put(pojo.id(), appliance);
+                    return new ApplianceUpdate(appliance, pojo, false);
                 }
-                masterList.add(appliance);
-            }
-        });
+            })
+            .toList()
+        ).thenAcceptAsync(updates -> {
+            updates.stream().filter(ApplianceUpdate::needsUpdate).forEach(
+                    update -> update.appliance().updateFrom(update.pojo(), activeHouse)
+            );
+
+            masterList.setAll(updates.stream().map(ApplianceUpdate::appliance).toList());
+        }, uiExecutor);
     }
 }

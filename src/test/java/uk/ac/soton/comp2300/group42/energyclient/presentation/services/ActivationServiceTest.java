@@ -68,10 +68,10 @@ class ActivationServiceTest {
     }
 
     @Test
-    void refreshAllDelegatesToStore() {
-        underTest.refreshAll();
+    void refreshAllAsyncDelegatesToStore() {
+        underTest.refreshAllAsync();
 
-        then(activationStore).should().refreshAll();
+        then(activationStore).should().refreshAllAsync();
     }
 
     @Test

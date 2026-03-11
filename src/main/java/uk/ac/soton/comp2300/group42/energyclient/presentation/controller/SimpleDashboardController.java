@@ -30,7 +30,7 @@ public class SimpleDashboardController {
         energyWidgetVM.startAutoUpdateTest();
         activationsWidget.bindComponents(activationsWidgetVM, activationEditModal);
 
-
+        activationsWidget.loadActivationsAsync();
     }
 
     @FXML private void onManageHouses() {

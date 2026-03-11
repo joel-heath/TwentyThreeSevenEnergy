@@ -141,7 +141,7 @@ class ActivationStoreTest {
     }
 
     @Test
-    void shouldRefreshAllAndPopulateLists() {
+    void shouldRefreshAllAsyncAndPopulateLists() {
         List<Activation> activations = List.of(
                 new Activation(10L, 200L, 100L, ActivationType.NON_RECURRING, LocalTime.of(9, 0), LocalDate.now(), null, null, null, null, null, null, null),
                 new Activation(11L, 200L, 100L, ActivationType.RECURRING, LocalTime.of(18, 0), null, true, false, false, false, false, false, false)
@@ -150,9 +150,9 @@ class ActivationStoreTest {
         when(repository.getAll(100L)).thenReturn(activations);
         when(applianceStore.get(200L)).thenReturn(mockAppliance);
 
-        activationStore.refreshAll();
+        activationStore.refreshAllAsync();
 
-        verify(applianceStore).refreshAll();
+        verify(applianceStore).refreshAllAsync();
         verify(repository).getAll(100L);
         assertEquals(2, activationStore.getAll().size());
 
@@ -161,7 +161,7 @@ class ActivationStoreTest {
     }
 
     @Test
-    void shouldUpdateExistingCachedItemsOnRefreshAll() {
+    void shouldUpdateExistingCachedItemsOnRefreshAllAsync() {
         Activation initialPojo = new Activation(
                 12L, 200L, 100L, ActivationType.NON_RECURRING,
                 LocalTime.of(7, 0), LocalDate.of(2025, 12, 25),
@@ -178,7 +178,7 @@ class ActivationStoreTest {
 
         when(repository.getAll(100L)).thenReturn(List.of(updatedPojo));
 
-        activationStore.refreshAll();
+        activationStore.refreshAllAsync();
 
         assertEquals(1, activationStore.getAll().size());
         assertSame(cachedActivation, activationStore.getAll().getFirst());

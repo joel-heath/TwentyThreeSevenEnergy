@@ -10,9 +10,9 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseReposito
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 
-import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Singleton
@@ -88,22 +88,31 @@ public class HouseStore {
         }
     }
 
-    public void refreshAll() {
-        List<House> pojos = repository.getAll();
+    public CompletableFuture<Void> refreshAllAsync() {
+        record HouseUpdate(ObservableHouse house, House pojo, boolean needsUpdate) {}
 
-        uiExecutor.execute(() -> {
-            masterList.clear();
-            for (House pojo : pojos) {
+        return CompletableFuture.supplyAsync(() ->
+            repository.getAll()
+            .stream()
+            .map(pojo -> {
                 ObservableHouse house = cache.get(pojo.id());
                 if (house != null) {
-                    house.updateFrom(pojo);
+                    return new HouseUpdate(house, pojo, true);
                 }
                 else {
                     house = new ObservableHouse(pojo);
                     cache.put(pojo.id(), house);
+                    return new HouseUpdate(house, pojo, false);
                 }
-                masterList.add(house);
-            }
-        });
+            })
+            .toList()
+
+        ).thenAcceptAsync(updates -> {
+            updates.stream().filter(HouseUpdate::needsUpdate).forEach(
+                    update -> update.house().updateFrom(update.pojo())
+            );
+
+            masterList.setAll(updates.stream().map(HouseUpdate::house).toList());
+        }, uiExecutor);
     }
 }

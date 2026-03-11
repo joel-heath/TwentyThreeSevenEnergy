@@ -57,7 +57,7 @@ class ManageAppliancesViewModelTest {
 
     @Test
     void constructor_shouldFetchAllAppliancesAsynchronously() {
-        verify(applianceStore, timeout(500).times(1)).refreshAll();
+        verify(applianceStore, timeout(500).times(1)).refreshAllAsync();
     }
 
     @Test

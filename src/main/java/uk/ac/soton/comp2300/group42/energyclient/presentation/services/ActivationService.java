@@ -8,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ActivationStore;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Singleton
 public class ActivationService {
@@ -26,8 +27,8 @@ public class ActivationService {
         return activationStore.getAll();
     }
 
-    public void refreshAll() {
-        activationStore.refreshAll();
+    public CompletableFuture<Void> refreshAllAsync() {
+        return activationStore.refreshAllAsync();
     }
 
     public LocalDateTime create(Activation pojo) {

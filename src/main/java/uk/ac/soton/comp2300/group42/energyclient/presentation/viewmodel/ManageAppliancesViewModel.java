@@ -29,8 +29,10 @@ public class ManageAppliancesViewModel {
         this.role = currentUser.roleProperty();
         this.activeHouse = preferences.activeHouseProperty();
         this.activeHouseName = preferences.getActiveHouse().nameProperty();
+    }
 
-        CompletableFuture.runAsync(applianceStore::refreshAll);
+    public CompletableFuture<Void> refreshAppliances() {
+        return applianceStore.refreshAllAsync();
     }
 
     public String getActiveHouseName() { return activeHouseName.get(); }

@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import uk.ac.soton.comp2300.group42.energyclient.di.AppStateManager;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.controller.RootController;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 
 import java.io.IOException;
 import java.net.URL;
@@ -91,10 +92,11 @@ public class Navigator {
 
         mainStage.setScene(rootScene);
 
-        if (AppStateManager.getInjector().getInstance(AuthRepository.class).verifyLoggedIn()) {
-            goToAbsoluteIrreversible(LOGGED_IN_LANDING_PATH);
-        }
-        else goToAbsoluteIrreversible(LOGGED_OUT_LANDING_PATH);
+        // TODO: Cleaner bootstrapping with a splash screen.
+        var loggedIn = AppStateManager.getInjector().getInstance(AuthRepository.class).verifyLoggedIn();
+        AppStateManager.getInjector().getInstance(UserStore.class).refresh();
+
+        goToAbsoluteIrreversible(loggedIn ? LOGGED_IN_LANDING_PATH : LOGGED_OUT_LANDING_PATH);
     }
 
     private static void switchView(ViewContext context) {

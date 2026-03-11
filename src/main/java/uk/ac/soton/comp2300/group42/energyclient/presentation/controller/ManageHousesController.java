@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -47,19 +48,34 @@ public class ManageHousesController {
     }
 
     @FXML private void initialize() {
-        activeHouseComboBox.getItems().setAll(vm.getHouseList());
         activeHouseComboBox.setConverter(createConverter(ObservableHouse::getName));
+        activeHouseComboBox.setItems(vm.getHouseList());
         activeHouseComboBox.valueProperty().bindBidirectional(vm.activeHouseProperty());
         activeHouseComboBox.valueProperty()
-                .map(_ -> vm.getHousemates()
+                .subscribe(_ -> {
+                    vm.updateHousemates();
+                    housematesContainer.getChildren().setAll(
+                            vm.getHousemates()
                             .stream()
                             .map(this::createHousemateView)
-                            .toList())
-                .subscribe(housemates -> housematesContainer.getChildren().setAll(housemates));
+                            .toList());
+                });
 
         deleteHouseButton.visibleProperty().bind(vm.currentRoleProperty().isEqualTo(Role.OWNER));
         leaveHouseButton.visibleProperty().bind(vm.currentRoleProperty().map(_ -> vm.canLeaveHouse()));
         inviteContainer.visibleProperty().bind(vm.currentRoleProperty().isNotEqualTo(Role.GUEST));
+
+        vm.refreshDataAsync().thenRunAsync(() -> {
+            vm.updateHousemates();
+            housematesContainer.getChildren().setAll(
+            vm.getHousemates()
+                    .stream()
+                    .map(this::createHousemateView)
+                    .toList());
+        }, Platform::runLater).exceptionally(e -> {
+            System.out.println("Error loading user data: " + e.getMessage());
+            return null;
+        });
     }
 
     @FXML private void onEditHouse() {

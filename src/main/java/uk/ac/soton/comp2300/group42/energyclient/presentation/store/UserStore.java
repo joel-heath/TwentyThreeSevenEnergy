@@ -56,16 +56,8 @@ public class UserStore {
             if (newHouse == null || !newHouse.equals(preferences.getActiveHouse())) return;
             uiExecutor.execute(() -> preferences.setActiveHouse(newHouse));
         });
-
-        // We choose to run this once on the main thread so that
-        // all other stores are guaranteed to have the correct user and preferences
-        refresh();
-
         sessionManager.subscribe(_ ->
-            uiExecutor.execute(() -> {
-                currentUser.updateFrom(tmpHousemate, tmpHouse);
-                refresh();
-            }), false
+            uiExecutor.execute(this::refresh), false
         );
     }
 

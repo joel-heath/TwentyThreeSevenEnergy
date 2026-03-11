@@ -13,10 +13,10 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Singleton
@@ -108,24 +108,31 @@ public class ActivationStore {
         }
     }
 
-    public void refreshAll() {
-        List<Activation> pojos = repository.getAll(getActiveHouseId());
-        applianceStore.refreshAll();
+    public CompletableFuture<Void> refreshAllAsync() {
+        record ActivationUpdate(ObservableActivation activation, ObservableAppliance appliance, Activation pojo, boolean needsUpdate) {}
 
-        uiExecutor.execute(() -> {
-            masterList.clear();
-            for (Activation pojo : pojos) {
+        return CompletableFuture.supplyAsync(() ->
+            repository.getAll(getActiveHouseId())
+            .stream()
+            .map(pojo -> {
                 ObservableActivation activation = cache.get(pojo.id());
                 ObservableAppliance appliance = applianceStore.get(pojo.applianceId());
+
                 if (activation != null) {
-                    activation.updateFrom(pojo, appliance);
-                }
-                else {
+                    return new ActivationUpdate(activation, appliance, pojo, true);
+                } else {
                     activation = new ObservableActivation(pojo, appliance);
                     cache.put(pojo.id(), activation);
+                    return new ActivationUpdate(activation, appliance, pojo, false);
                 }
-                masterList.add(activation);
-            }
-        });
+            })
+            .toList()
+        ).thenAcceptAsync(updates -> {
+            updates.stream().filter(ActivationUpdate::needsUpdate).forEach(
+                    update -> update.activation().updateFrom(update.pojo(), update.appliance())
+            );
+
+            masterList.setAll(updates.stream().map(ActivationUpdate::activation).toList());
+        }, uiExecutor);
     }
 }

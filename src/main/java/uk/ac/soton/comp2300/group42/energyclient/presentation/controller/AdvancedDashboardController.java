@@ -56,6 +56,9 @@ public class AdvancedDashboardController {
                 statusRow.getChildren().add(createStatusCard(rate));
             }
         });
+
+        upcomingActivationsWidget.loadActivationsAsync();
+
         vm.loadDashboardData();
     }
 

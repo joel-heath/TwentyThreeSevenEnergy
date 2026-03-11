@@ -35,11 +35,11 @@ public class ManageHousesViewModel {
         this.activeHouse = preferences.activeHouseProperty();
         this.currentUser = currentUser;
         this.preferences = preferences;
+    }
 
-        CompletableFuture.runAsync(() -> {
-            houseStore.refreshAll();
-            housemateStore.refreshAll();
-        });
+    public CompletableFuture<Void> refreshDataAsync() {
+        return houseStore.refreshAllAsync()
+                .thenCompose(_ -> housemateStore.refreshAllAsync());
     }
 
     public Role getCurrentUserRole() { return currentUser.getRole(); }
@@ -47,6 +47,7 @@ public class ManageHousesViewModel {
 
     public ObservableList<ObservableHouse> getHouseList() { return houseList; }
     public ObservableList<ObservableHousemate> getHousemates() { return housemates; }
+    public void updateHousemates() { housemateStore.refreshAllAsync(); }
 
     public ObservableHouse getActiveHouse() { return activeHouse.get(); }
     public void setActiveHouse(ObservableHouse house) { activeHouse.set(house); }

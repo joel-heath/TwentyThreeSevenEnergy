@@ -45,6 +45,11 @@ public class ManageAppliancesController {
         deleteApplianceButton.visibleProperty().bind(vm.currentRoleProperty().map(_ -> vm.hasReadWritePermission()));
         addContainer.visibleProperty().bind(deleteApplianceButton.visibleProperty());
         bindActivations();
+
+        vm.refreshAppliances().exceptionally(ex -> {
+            inputFeedbackManager.showPopup("Error loading appliances", "An error occurred while loading appliances: " + ex.getMessage());
+            return null;
+        });
     }
 
     @FXML private void onSaveApplianceEdits() {

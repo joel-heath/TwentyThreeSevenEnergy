@@ -58,7 +58,7 @@ class UpcomingActivationsViewModelTest {
         assertEquals(mockActivation1, viewModel.getActivations().get(1));
 
         // Verify async refresh call. Timeout is necessary as it runs on a background thread.
-        verify(mockActivationService, timeout(1000).times(1)).refreshAll();
+        verify(mockActivationService, timeout(1000).times(1)).refreshAllAsync();
     }
 
     @Test

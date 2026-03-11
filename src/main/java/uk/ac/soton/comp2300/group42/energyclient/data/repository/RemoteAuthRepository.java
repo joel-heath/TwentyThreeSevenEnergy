@@ -28,16 +28,16 @@ public class RemoteAuthRepository implements AuthRepository {
 
     @Override
     public boolean verifyLoggedIn() {
+        boolean result;
         try {
-            client.isLoggedIn();
-            sessionManager.setLoggedIn(true);
-            return true;
+            result = client.isLoggedIn();
         }
         catch (NetworkException e) {
-            System.out.println("Warning: Network error while verifying login status, either you are offline or are not running the backend.");
-            sessionManager.setLoggedIn(false);
-            return false;
+            System.err.println("Network error while verifying login status, either you are offline or are not running the backend.");
+            result = false;
         }
+        sessionManager.setLoggedIn(false);
+        return result;
     }
 
     @Override

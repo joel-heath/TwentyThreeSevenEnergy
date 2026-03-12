@@ -15,7 +15,7 @@
 
     <Modal fx:id="modal" onClose="#clearReminders">
         <ScrollPane fx:id="reminderScroll" maxWidth="250" prefHeight="-Infinity"
-                    style="-fx-background-color: white;-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: transparent;"
+                    styleClass="scroll-pane card-scroll"
                     vbarPolicy="NEVER" hbarPolicy="NEVER" pannable="true">
             <StackPane style="-fx-padding: 20;">
                 <VBox fx:id="remindersArea" alignment="TOP_CENTER" prefHeight="-Infinity"/>

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -12,11 +13,15 @@ import javafx.scene.layout.VBox;
 
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
+import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class RootController {
+
+    private static final String THEME_DARK_CLASS = "theme-dark";
+    private static final String THEME_LIGHT_CLASS = "theme-light";
 
     private final ObservablePreferences preferences;
 
@@ -34,10 +39,15 @@ public class RootController {
                 Bindings.min(500, remindersArea.heightProperty().add(40))
         );
 
+        contentArea.sceneProperty().addListener((_, _, newScene) -> {
+            if (newScene != null)
+                applyTheme(newScene, preferences.getTheme());
+        });
+
         preferences.themeProperty().subscribe((oldTheme, newTheme) -> {
-            // Logic to switch CSS files on contentArea or Scene
-            System.out.println("Theme changed to: " + newTheme);
-            // applyTheme(newVal);
+            Scene scene = contentArea.getScene();
+            if (scene != null)
+                applyTheme(scene, newTheme);
         });
     }
 
@@ -100,5 +110,14 @@ public class RootController {
         card.setStyle("-fx-padding: 10; -fx-border-color: lightgray");
         card.getChildren().addAll(title, description, dismiss);
         return card;
+    }
+
+    private void applyTheme(Scene scene, Theme theme) {
+        var root = scene.getRoot();
+        root.getStyleClass().removeAll(THEME_DARK_CLASS, THEME_LIGHT_CLASS);
+        if (theme == Theme.DARK)
+            root.getStyleClass().add(THEME_DARK_CLASS);
+        else
+            root.getStyleClass().add(THEME_LIGHT_CLASS);
     }
 }

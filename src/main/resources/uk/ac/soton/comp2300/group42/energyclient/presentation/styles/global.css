@@ -1,0 +1,130 @@
+/* Base theme variables */
+.root {
+    -color-bg: #f4f6f9;
+    -color-surface: #ffffff;
+    -color-surface-alt: #eef1f5;
+    -color-text: #15181f;
+    -color-muted: #5b6270;
+    -color-border: #d1d6de;
+    -color-accent: #2563eb;
+    -color-focus: #3b82f6;
+    -color-danger: #c23b3b;
+    -fx-background-color: -color-bg;
+}
+
+.theme-dark {
+    -color-bg: #111318;
+    -color-surface: #1b1f27;
+    -color-surface-alt: #232936;
+    -color-text: #e6e9ef;
+    -color-muted: #9aa3b2;
+    -color-border: #2f3644;
+    -color-accent: #6aa1ff;
+    -color-focus: #7ab0ff;
+    -color-danger: #e16a6a;
+}
+
+/* Typography */
+.label {
+    -fx-text-fill: -color-text;
+}
+
+.text {
+    -fx-fill: -color-text;
+}
+
+/* Inputs */
+.text-input {
+    -fx-background-color: -color-surface;
+    -fx-text-fill: -color-text;
+    -fx-prompt-text-fill: -color-muted;
+    -fx-border-color: -color-border;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.combo-box-base {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: -color-text;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -color-surface;
+    -fx-control-inner-background: -color-surface;
+}
+
+.list-cell {
+    -fx-text-fill: -color-text;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: -color-surface-alt;
+    -fx-border-color: -color-border;
+    -fx-text-fill: -color-text;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.button:hover {
+    -fx-background-color: derive(-color-surface-alt, -6%);
+}
+
+.button:focused {
+    -fx-border-color: -color-focus;
+}
+
+/* Scroll panes */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Cards / Modals */
+.modal-card {
+    -fx-background-color: -color-surface;
+    -fx-background-radius: 10;
+    -fx-border-color: -color-border;
+    -fx-border-radius: 10;
+    -fx-padding: 20;
+}
+
+.card-scroll {
+    -fx-background-color: -color-surface;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -color-border;
+}
+
+.card-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Charts */
+.chart {
+    -fx-background-color: transparent;
+}
+
+.chart-plot-background {
+    -fx-background-color: -color-surface;
+}
+
+.axis-label,
+.chart-title,
+.axis .tick-label {
+    -fx-text-fill: -color-text;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+}

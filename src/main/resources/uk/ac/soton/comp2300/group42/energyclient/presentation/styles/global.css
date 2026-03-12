@@ -1,83 +1,62 @@
-/* Base theme variables */
+/* Shared app styles built on Modena looked-up colors */
 .root {
-    -color-bg: #f4f6f9;
-    -color-surface: #ffffff;
-    -color-surface-alt: #eef1f5;
-    -color-text: #15181f;
-    -color-muted: #5b6270;
-    -color-border: #d1d6de;
-    -color-accent: #2563eb;
-    -color-focus: #3b82f6;
-    -color-danger: #c23b3b;
-    -fx-background-color: -color-bg;
-}
-
-.theme-dark {
-    -color-bg: #111318;
-    -color-surface: #1b1f27;
-    -color-surface-alt: #232936;
-    -color-text: #e6e9ef;
-    -color-muted: #9aa3b2;
-    -color-border: #2f3644;
-    -color-accent: #6aa1ff;
-    -color-focus: #7ab0ff;
-    -color-danger: #e16a6a;
+    -fx-background-color: -fx-background;
 }
 
 /* Typography */
 .label {
-    -fx-text-fill: -color-text;
+    -fx-text-fill: -fx-text-background-color;
 }
 
 .text {
-    -fx-fill: -color-text;
+    -fx-fill: -fx-text-background-color;
 }
 
 /* Inputs */
 .text-input {
-    -fx-background-color: -color-surface;
-    -fx-text-fill: -color-text;
-    -fx-prompt-text-fill: -color-muted;
-    -fx-border-color: -color-border;
+    -fx-background-color: -fx-control-inner-background;
+    -fx-text-fill: -fx-text-background-color;
+    -fx-prompt-text-fill: derive(-fx-text-background-color, -45%);
+    -fx-border-color: derive(-fx-control-inner-background, -15%);
     -fx-background-radius: 6;
     -fx-border-radius: 6;
 }
 
 .combo-box-base {
-    -fx-background-color: -color-surface;
-    -fx-border-color: -color-border;
+    -fx-background-color: -fx-control-inner-background;
+    -fx-border-color: derive(-fx-control-inner-background, -15%);
     -fx-background-radius: 6;
     -fx-border-radius: 6;
 }
 
 .combo-box .list-cell {
-    -fx-text-fill: -color-text;
+    -fx-text-fill: -fx-text-background-color;
 }
 
 .combo-box-popup .list-view {
-    -fx-background-color: -color-surface;
-    -fx-control-inner-background: -color-surface;
+    -fx-background-color: -fx-control-inner-background;
+    -fx-control-inner-background: -fx-control-inner-background;
 }
 
 .list-cell {
-    -fx-text-fill: -color-text;
+    -fx-text-fill: -fx-text-background-color;
 }
 
 /* Buttons */
 .button {
-    -fx-background-color: -color-surface-alt;
-    -fx-border-color: -color-border;
-    -fx-text-fill: -color-text;
+    -fx-background-color: -fx-base;
+    -fx-border-color: derive(-fx-base, -20%);
+    -fx-text-fill: -fx-text-background-color;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
 }
 
 .button:hover {
-    -fx-background-color: derive(-color-surface-alt, -6%);
+    -fx-background-color: derive(-fx-base, -6%);
 }
 
 .button:focused {
-    -fx-border-color: -color-focus;
+    -fx-border-color: -fx-accent;
 }
 
 /* Scroll panes */
@@ -92,18 +71,18 @@
 
 /* Cards / Modals */
 .modal-card {
-    -fx-background-color: -color-surface;
+    -fx-background-color: -fx-control-inner-background;
     -fx-background-radius: 10;
-    -fx-border-color: -color-border;
+    -fx-border-color: derive(-fx-control-inner-background, -18%);
     -fx-border-radius: 10;
     -fx-padding: 20;
 }
 
 .card-scroll {
-    -fx-background-color: -color-surface;
+    -fx-background-color: -fx-control-inner-background;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
-    -fx-border-color: -color-border;
+    -fx-border-color: derive(-fx-control-inner-background, -18%);
 }
 
 .card-scroll > .viewport {
@@ -116,13 +95,13 @@
 }
 
 .chart-plot-background {
-    -fx-background-color: -color-surface;
+    -fx-background-color: -fx-control-inner-background;
 }
 
 .axis-label,
 .chart-title,
 .axis .tick-label {
-    -fx-text-fill: -color-text;
+    -fx-text-fill: -fx-text-background-color;
 }
 
 .chart-legend {

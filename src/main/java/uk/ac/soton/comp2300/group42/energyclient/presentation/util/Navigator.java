@@ -77,7 +77,12 @@ public class Navigator {
         contentArea = rootController.getContentArea();
 
         Scene rootScene = new Scene(root);
-        rootScene.getStylesheets().add(Objects.requireNonNull(Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/global.css")).toExternalForm());
+        rootScene.getStylesheets().add(Objects.requireNonNull(
+                Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/global.css")
+        ).toExternalForm());
+        rootScene.getStylesheets().add(Objects.requireNonNull(
+                Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css")
+        ).toExternalForm());
 
         rootScene.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             MouseButton button = event.getButton();

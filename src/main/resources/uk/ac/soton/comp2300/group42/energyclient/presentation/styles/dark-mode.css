@@ -1,0 +1,17 @@
+.root {
+    /* Modena dark theme overrides */
+    -fx-base: #3f474f;
+    -fx-background: #333639;
+    -fx-control-inner-background: #464a4e;
+    -fx-text-background-color: #ffffff;
+    -fx-accent: #0096c9;
+}
+
+/* Force black text for specific labels in dark mode */
+.force-black-text {
+    -fx-text-fill: #000000;
+}
+
+.forecast-chart .chart-title {
+    -fx-text-fill: #000000;
+}

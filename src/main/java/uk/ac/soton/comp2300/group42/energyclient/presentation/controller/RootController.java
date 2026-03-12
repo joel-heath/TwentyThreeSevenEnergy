@@ -15,13 +15,16 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 
+import java.util.Objects;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class RootController {
 
-    private static final String THEME_DARK_CLASS = "theme-dark";
-    private static final String THEME_LIGHT_CLASS = "theme-light";
+    private static final String LIGHT_THEME_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css";
+    private static final String DARK_THEME_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/dark-mode.css";
 
     private final ObservablePreferences preferences;
 
@@ -113,11 +116,19 @@ public class RootController {
     }
 
     private void applyTheme(Scene scene, Theme theme) {
-        var root = scene.getRoot();
-        root.getStyleClass().removeAll(THEME_DARK_CLASS, THEME_LIGHT_CLASS);
-        if (theme == Theme.DARK)
-            root.getStyleClass().add(THEME_DARK_CLASS);
-        else
-            root.getStyleClass().add(THEME_LIGHT_CLASS);
+        String light = Objects.requireNonNull(
+                RootController.class.getResource(LIGHT_THEME_PATH),
+                LIGHT_THEME_PATH + " not found"
+        ).toExternalForm();
+        String dark = Objects.requireNonNull(
+                RootController.class.getResource(DARK_THEME_PATH),
+                DARK_THEME_PATH + " not found"
+        ).toExternalForm();
+
+        var stylesheets = scene.getStylesheets();
+        stylesheets.remove(light);
+        stylesheets.remove(dark);
+
+        stylesheets.add(theme == Theme.DARK ? dark : light);
     }
 }

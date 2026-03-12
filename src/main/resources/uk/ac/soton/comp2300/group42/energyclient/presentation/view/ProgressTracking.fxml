@@ -22,7 +22,8 @@
                 <Label fx:id="priceLabel" text="Loading..."/>
             </HBox>
 
-            <LineChart fx:id="priceChart" title="Upcoming Energy Prices (p/kWh)" prefHeight="200" prefWidth="200" animated="false">
+            <LineChart fx:id="priceChart" title="Upcoming Energy Prices (p/kWh)" prefHeight="200" prefWidth="200" animated="false"
+                       styleClass="chart forecast-chart">
                 <xAxis>
                     <CategoryAxis label="Time (30m windows)" side="BOTTOM" animated="false"/>
                 </xAxis>

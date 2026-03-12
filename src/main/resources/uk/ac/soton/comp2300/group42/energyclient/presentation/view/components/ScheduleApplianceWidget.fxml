@@ -15,7 +15,7 @@
 
     <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">
         <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
-            <Label text="Upcoming Device Schedules"/>
+            <Label text="Upcoming Device Schedules" styleClass="label force-black-text"/>
             <HBox fx:id="scheduleContainer" spacing="15"/>
         </VBox>
     </ScrollPane>

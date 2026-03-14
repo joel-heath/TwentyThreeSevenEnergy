@@ -35,7 +35,6 @@
 
 .combo-box-popup .list-view {
     -fx-background-color: -fx-control-inner-background;
-    -fx-control-inner-background: -fx-control-inner-background;
 }
 
 .list-cell {

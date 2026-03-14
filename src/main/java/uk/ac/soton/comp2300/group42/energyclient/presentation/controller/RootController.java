@@ -25,6 +25,10 @@ public class RootController {
             "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css";
     private static final String DARK_THEME_PATH =
             "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/dark-mode.css";
+    private static final String LIGHT_CONTRAST_THEME_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-light.css";
+    private static final String DARK_CONTRAST_THEME_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-dark.css";
 
     private final ObservablePreferences preferences;
 
@@ -124,11 +128,27 @@ public class RootController {
                 RootController.class.getResource(DARK_THEME_PATH),
                 DARK_THEME_PATH + " not found"
         ).toExternalForm();
+        String lightContrast = Objects.requireNonNull(
+                RootController.class.getResource(LIGHT_CONTRAST_THEME_PATH),
+                LIGHT_CONTRAST_THEME_PATH + " not found"
+        ).toExternalForm();
+        String darkContrast = Objects.requireNonNull(
+                RootController.class.getResource(DARK_CONTRAST_THEME_PATH),
+                DARK_CONTRAST_THEME_PATH + " not found"
+        ).toExternalForm();
 
         var stylesheets = scene.getStylesheets();
         stylesheets.remove(light);
         stylesheets.remove(dark);
+        stylesheets.remove(lightContrast);
+        stylesheets.remove(darkContrast);
 
-        stylesheets.add(theme == Theme.DARK ? dark : light);
+        switch (theme) {
+            case DARK -> stylesheets.add(dark);
+            case LIGHT_CONTRAST -> stylesheets.add(lightContrast);
+            case DARK_CONTRAST -> stylesheets.add(darkContrast);
+            case LIGHT -> stylesheets.add(light);
+            default -> stylesheets.add(light);
+        }
     }
 }

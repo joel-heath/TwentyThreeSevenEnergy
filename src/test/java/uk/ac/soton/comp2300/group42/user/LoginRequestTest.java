@@ -14,7 +14,7 @@ class LoginRequestTest {
 
     @Test
     void validRequest_ShouldPassValidation(Validator validator) {
-        var request = new LoginRequest("shadrach@judah.il", "RefuseToBow123");
+        var request = new LoginRequest("shadrach@judah.il", "RefuseToBow!1");
 
         var violations = validator.validate(request);
 
@@ -23,7 +23,7 @@ class LoginRequestTest {
 
     @Test
     void blankEmail_ShouldFailValidation(Validator validator) {
-        var request = new LoginRequest("   ", "sevenTimesHotter!");
+        var request = new LoginRequest("   ", "SevenTimesHotter!");
 
         var violations = validator.validate(request);
 
@@ -33,7 +33,7 @@ class LoginRequestTest {
 
     @Test
     void invalidEmailFormat_ShouldFailValidation(Validator validator) {
-        var request = new LoginRequest("not-nebuchadnezzar's-email", "weren't there three men?");
+        var request = new LoginRequest("not-nebuchadnezzar's-email", "ThreeMen!1");
 
         var violations = validator.validate(request);
 
@@ -47,18 +47,29 @@ class LoginRequestTest {
 
         var violations = validator.validate(request);
 
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).anyMatch(v -> v.getMessage().equals("Password is required"));
+    }
+
+    @Test
+    void weakPassword_ShouldFailValidation(Validator validator) {
+        var request = new LoginRequest("meshach@judah.il", "RefuseToBow1");
+
+        var violations = validator.validate(request);
+
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).isEqualTo("Password is required");
+        assertThat(violations.iterator().next().getMessage())
+                .isEqualTo(PasswordValidation.PASSWORD_QUALITY_MESSAGE);
     }
 
     @Test
     void shouldSerializeCorrectly(JacksonTester<LoginRequest> tester) throws IOException {
-        var request = new LoginRequest("shadrach@judah.il", "not!today!neb");
+        var request = new LoginRequest("shadrach@judah.il", "Not!TodayN3b");
 
         var json = tester.write(request);
 
         assertThat(json).extractingJsonPathStringValue("@.email").isEqualTo("shadrach@judah.il");
-        assertThat(json).extractingJsonPathStringValue("@.password").isEqualTo("not!today!neb");
+        assertThat(json).extractingJsonPathStringValue("@.password").isEqualTo("Not!TodayN3b");
     }
 
     @Test
@@ -66,13 +77,13 @@ class LoginRequestTest {
         var payload = """
                 {
                     "email": "meshach@judah.il",
-                    "password": "faith_over_fire777"
+                    "password": "Faith_Over_Fire!7"
                 }
                 """;
 
         var request = tester.parseObject(payload);
 
         assertThat(request.email()).isEqualTo("meshach@judah.il");
-        assertThat(request.password()).isEqualTo("faith_over_fire777");
+        assertThat(request.password()).isEqualTo("Faith_Over_Fire!7");
     }
 }

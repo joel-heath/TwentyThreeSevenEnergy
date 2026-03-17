@@ -5,6 +5,5 @@ import jakarta.validation.constraints.Pattern;
 
 public record DeleteUserRequest(
         @NotBlank(message = "Password must not be blank")
-        @Pattern(regexp = PasswordValidation.PASSWORD_QUALITY_REGEX, message = PasswordValidation.PASSWORD_QUALITY_MESSAGE)
         String password
 ) {}

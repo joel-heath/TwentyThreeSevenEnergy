@@ -32,17 +32,6 @@ class DeleteUserRequestTest {
     }
 
     @Test
-    void weakPassword_ShouldFailValidation(Validator validator) {
-        var request = new DeleteUserRequest("alllowercase!");
-
-        var violations = validator.validate(request);
-
-        assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage())
-                .isEqualTo(PasswordValidation.PASSWORD_QUALITY_MESSAGE);
-    }
-
-    @Test
     void shouldSerializeCorrectly(JacksonTester<DeleteUserRequest> tester) throws IOException {
         var request = new DeleteUserRequest("Delete!Me1");
 

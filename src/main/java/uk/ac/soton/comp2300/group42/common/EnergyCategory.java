@@ -1,4 +1,4 @@
-package uk.ac.soton.comp2300.group42.metric;
+package uk.ac.soton.comp2300.group42.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -11,7 +11,9 @@ public enum EnergyCategory {
 
     ELECTRICITY("electricity", "Electricity"),
     GAS("gas", "Gas"),
-    WATER("water", "Water");
+    WATER("water", "Water"),
+    OTHER("other", "Other");
+
 
     private final String id;
     private final String name;

@@ -1,5 +1,7 @@
 package uk.ac.soton.comp2300.group42.metric;
 
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
+
 import java.time.LocalDate;
 
 public record MetricResponse(

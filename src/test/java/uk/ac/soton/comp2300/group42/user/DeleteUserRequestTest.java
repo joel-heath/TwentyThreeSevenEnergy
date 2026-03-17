@@ -14,7 +14,7 @@ class DeleteUserRequestTest {
 
     @Test
     void validRequest_ShouldPassValidation(Validator validator) {
-        var request = new DeleteUserRequest("very-secure-password");
+        var request = new DeleteUserRequest("Delete!Me1");
 
         var violations = validator.validate(request);
 
@@ -27,29 +27,40 @@ class DeleteUserRequestTest {
 
         var violations = validator.validate(request);
 
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).anyMatch(v -> v.getMessage().equals("Password must not be blank"));
+    }
+
+    @Test
+    void weakPassword_ShouldFailValidation(Validator validator) {
+        var request = new DeleteUserRequest("alllowercase!");
+
+        var violations = validator.validate(request);
+
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).isEqualTo("Password must not be blank");
+        assertThat(violations.iterator().next().getMessage())
+                .isEqualTo(PasswordValidation.PASSWORD_QUALITY_MESSAGE);
     }
 
     @Test
     void shouldSerializeCorrectly(JacksonTester<DeleteUserRequest> tester) throws IOException {
-        var request = new DeleteUserRequest("very-secure-password");
+        var request = new DeleteUserRequest("Delete!Me1");
 
         var json = tester.write(request);
 
-        assertThat(json).extractingJsonPathStringValue("@.password").isEqualTo("very-secure-password");
+        assertThat(json).extractingJsonPathStringValue("@.password").isEqualTo("Delete!Me1");
     }
 
     @Test
     void shouldDeserializeCorrectly(JacksonTester<DeleteUserRequest> tester) throws IOException {
         var payload = """
                 {
-                    "password": "very-secure-password"
+                    "password": "Delete!Me1"
                 }
                 """;
 
         var request = tester.parseObject(payload);
 
-        assertThat(request.password()).isEqualTo("very-secure-password");
+        assertThat(request.password()).isEqualTo("Delete!Me1");
     }
 }

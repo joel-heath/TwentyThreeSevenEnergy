@@ -10,15 +10,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ManageAppliancesViewModel;
 
-public class ManageAppliancesController {
+import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.setValidationError;
 
-    private static final String APPLIANCE_CARD_STYLE =
-            "-fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5";
+public class ManageAppliancesController {
 
     @FXML private Label houseLabel;
     @FXML private VBox appliancesContainer;
@@ -75,15 +73,13 @@ public class ManageAppliancesController {
                     "Appliance not added",
                     "Please enter an appliance name."
             );
-            addApplianceField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
+            setValidationError(addApplianceField, true);
             return;
         }
 
         vm.createAppliance(name);
         inputFeedbackManager.showPopup("Appliance added", "\"" + name + "\" has been added.");
-        addApplianceField.setStyle("");
+        setValidationError(addApplianceField, false);
         addApplianceField.clear();
     }
 
@@ -95,11 +91,7 @@ public class ManageAppliancesController {
 
     private Pane createApplianceView(ObservableAppliance appliance) {
         VBox card = new VBox();
-        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.CARD_SURFACE
-                ) + "; " + APPLIANCE_CARD_STYLE
-        ));
+        card.getStyleClass().add("list-card");
 
         Label name = new Label();
         name.textProperty().bind(appliance.nameProperty());

@@ -13,6 +13,12 @@ import java.io.IOException;
 
 public class EnergyUsageRect extends StackPane {
 
+    public enum UsageState {
+        NORMAL,
+        WARNING,
+        CRITICAL
+    }
+
     @FXML private Rectangle usageRect;
     private final DoubleProperty usage = new SimpleDoubleProperty(0);
     private final Rectangle clip = new Rectangle();
@@ -33,4 +39,22 @@ public class EnergyUsageRect extends StackPane {
 
     public ObjectProperty<Paint> fillProperty() { return usageRect.fillProperty(); }
     public DoubleProperty usageProperty() { return usage; }
+
+    public void setUsageState(UsageState state) {
+        var classes = usageRect.getStyleClass();
+        classes.remove("usage-gradient");
+        classes.remove("usage-warning");
+        classes.remove("usage-critical");
+
+        if (state == null) {
+            classes.add("usage-gradient");
+            return;
+        }
+
+        switch (state) {
+            case WARNING -> classes.add("usage-warning");
+            case CRITICAL -> classes.add("usage-critical");
+            case NORMAL -> classes.add("usage-gradient");
+        }
+    }
 }

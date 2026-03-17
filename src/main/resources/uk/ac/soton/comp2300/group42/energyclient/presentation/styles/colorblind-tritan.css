@@ -1,0 +1,13 @@
+.root {
+    -app-status-cheap: #D8F5EA;
+    -app-status-average: #FFF8CC;
+    -app-status-expensive: #F4DCEC;
+    -app-usage-warning: #56B4E9;
+    -app-usage-critical: #2E86C1;
+    -app-gradient-start: #009E73;
+    -app-gradient-mid: #F0E442;
+    -app-gradient-end: #56B4E9;
+    -app-toggle-enabled: #009E73;
+    -app-error: #CC79A7;
+    -app-success: #009E73;
+}

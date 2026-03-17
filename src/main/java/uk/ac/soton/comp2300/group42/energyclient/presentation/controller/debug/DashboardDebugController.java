@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug.DashboardDebugViewModel;
@@ -37,7 +36,8 @@ public class DashboardDebugController {
 
     @FXML private void initialize() {
         energyUsageRect.usageProperty().bind(vm.usageProperty());
-        energyUsageRect.fillProperty().bind(vm.getPreferences().visionProperty().map(ColorVisionManager::getGradientFor));
+        vm.usageProperty().addListener((_, _, newVal) -> updateUsageState(newVal.doubleValue()));
+        updateUsageState(vm.usageProperty().get());
         counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
@@ -86,12 +86,12 @@ public class DashboardDebugController {
 
             vm.setCostGoal(value);
             costGoalField.clear();
-            costGoalField.setStyle("");
+            costGoalField.getStyleClass().remove("validation-error");
 
         } catch (NumberFormatException e) {
-            costGoalField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
+            if (!costGoalField.getStyleClass().contains("validation-error")) {
+                costGoalField.getStyleClass().add("validation-error");
+            }
         }
     }
 
@@ -112,5 +112,15 @@ public class DashboardDebugController {
 
     @FXML private void onExit() {
         Navigator.goTo("Landing.fxml");
+    }
+
+    private void updateUsageState(double usage) {
+        if (usage >= 2.0) {
+            energyUsageRect.setUsageState(EnergyUsageRect.UsageState.CRITICAL);
+        } else if (usage >= 1.5) {
+            energyUsageRect.setUsageState(EnergyUsageRect.UsageState.WARNING);
+        } else {
+            energyUsageRect.setUsageState(EnergyUsageRect.UsageState.NORMAL);
+        }
     }
 }

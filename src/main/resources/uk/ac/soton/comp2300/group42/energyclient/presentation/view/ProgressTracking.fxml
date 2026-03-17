@@ -32,7 +32,8 @@
                 </yAxis>
             </LineChart>
 
-            <BarChart fx:id="expenseChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false">
+            <BarChart fx:id="expenseChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false"
+                      styleClass="chart expense-chart">
                 <xAxis>
                     <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                 </xAxis>

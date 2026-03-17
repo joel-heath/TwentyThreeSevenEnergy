@@ -23,7 +23,7 @@
 
         <Button text="Login" onAction="#onLogin" maxWidth="250"/>
 
-        <Hyperlink fx:id="signUpLink" text="Don't have an account? Sign up"
+        <Hyperlink fx:id="signUpLink" text="Don't have an account? Sign up" styleClass="hyperlink link-accent"
                    onAction="#goToSignUp"/>
 
         <Button text="Accessibility Settings" onAction="#onAccessibilitySettings" prefWidth="220"/>

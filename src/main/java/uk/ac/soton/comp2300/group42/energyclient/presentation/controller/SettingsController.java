@@ -9,11 +9,11 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedback
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.SettingsViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;
+import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.setValidationError;
 
 public class SettingsController {
 
@@ -61,9 +61,7 @@ public class SettingsController {
                     "Cost goal updated",
                     "Please enter a cost goal before clicking Set Goal."
             );
-            costGoalField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
+            setValidationError(costGoalField, true);
             return;
         }
 
@@ -79,15 +77,13 @@ public class SettingsController {
             );
 
             costGoalField.clear();
-            costGoalField.setStyle("");
+            setValidationError(costGoalField, false);
         } catch (NumberFormatException e) {
             inputFeedbackManager.showPopup(
                     "Goal not updated",
                     "Please enter a valid number greater than 0."
             );
-            costGoalField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
+            setValidationError(costGoalField, true);
         }
     }
 

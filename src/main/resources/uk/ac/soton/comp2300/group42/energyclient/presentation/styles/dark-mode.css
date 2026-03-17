@@ -5,13 +5,30 @@
     -fx-control-inner-background: #464a4e;
     -fx-text-background-color: #ffffff;
     -fx-accent: #0096c9;
-}
 
-/* Force black text for specific labels in dark mode */
-.force-black-text {
-    -fx-text-fill: #000000;
-}
+    -app-text: -fx-text-background-color;
+    -app-muted: derive(-fx-text-background-color, -45%);
+    -app-card-surface: -fx-control-inner-background;
+    -app-card-border: derive(-fx-control-inner-background, -18%);
+    -app-widget-surface: -fx-control-inner-background;
+    -app-widget-text: -fx-text-background-color;
+    -app-accent: -fx-accent;
+    -app-link: -fx-accent;
+    -app-error: #DC3545;
+    -app-on-error: #ffffff;
+    -app-success: #2ECC71;
+    -app-toggle-enabled: -fx-accent;
+    -app-toggle-disabled: derive(-fx-control-inner-background, -25%);
+    -app-thumb: #ffffff;
+    -app-shadow: rgba(0, 0, 0, 0.35);
+    -app-overlay: rgba(0, 0, 0, 0.6);
 
-.forecast-chart .chart-title {
-    -fx-text-fill: #000000;
+    -app-status-cheap: #D4EDDA;
+    -app-status-average: #FFF3CD;
+    -app-status-expensive: #F8D7DA;
+    -app-usage-warning: #E74C3C;
+    -app-usage-critical: #C0392B;
+    -app-gradient-start: #2ECC71;
+    -app-gradient-mid: #FFC107;
+    -app-gradient-end: #E74C3C;
 }

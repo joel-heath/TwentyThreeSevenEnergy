@@ -4,4 +4,30 @@
     -fx-control-inner-background: #000000;
     -fx-text-background-color: #ffffff;
     -fx-accent: #ffff00;
+
+    -app-text: -fx-text-background-color;
+    -app-muted: #bfbfbf;
+    -app-card-surface: -fx-control-inner-background;
+    -app-card-border: #ffffff;
+    -app-widget-surface: -fx-control-inner-background;
+    -app-widget-text: -fx-text-background-color;
+    -app-accent: -fx-accent;
+    -app-link: -fx-accent;
+    -app-error: #ff0000;
+    -app-on-error: #ffffff;
+    -app-success: #00ff00;
+    -app-toggle-enabled: -fx-accent;
+    -app-toggle-disabled: #808080;
+    -app-thumb: #ffffff;
+    -app-shadow: rgba(0, 0, 0, 0.7);
+    -app-overlay: rgba(0, 0, 0, 0.7);
+
+    -app-status-cheap: #333333;
+    -app-status-average: #666666;
+    -app-status-expensive: #999999;
+    -app-usage-warning: #ffff00;
+    -app-usage-critical: #ffffff;
+    -app-gradient-start: #000000;
+    -app-gradient-mid: #7f7f7f;
+    -app-gradient-end: #ffffff;
 }

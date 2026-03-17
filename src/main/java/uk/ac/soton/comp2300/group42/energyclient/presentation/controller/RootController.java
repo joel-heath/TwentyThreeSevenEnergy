@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
+import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.util.Objects;
@@ -29,6 +30,14 @@ public class RootController {
             "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-light.css";
     private static final String DARK_CONTRAST_THEME_PATH =
             "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-dark.css";
+    private static final String COLORBLIND_PROTAN_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-protan.css";
+    private static final String COLORBLIND_DEUTERAN_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-deuteran.css";
+    private static final String COLORBLIND_TRITAN_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-tritan.css";
+    private static final String COLORBLIND_ACHROMA_PATH =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-achroma.css";
 
     private final ObservablePreferences preferences;
 
@@ -47,14 +56,24 @@ public class RootController {
         );
 
         contentArea.sceneProperty().addListener((_, _, newScene) -> {
-            if (newScene != null)
+            if (newScene != null) {
                 applyTheme(newScene, preferences.getTheme());
+                applyColorVision(newScene, preferences.getVision());
+            }
         });
 
         preferences.themeProperty().subscribe((oldTheme, newTheme) -> {
             Scene scene = contentArea.getScene();
-            if (scene != null)
+            if (scene != null) {
                 applyTheme(scene, newTheme);
+                applyColorVision(scene, preferences.getVision());
+            }
+        });
+
+        preferences.visionProperty().subscribe((_, newVision) -> {
+            Scene scene = contentArea.getScene();
+            if (scene != null)
+                applyColorVision(scene, newVision);
         });
     }
 
@@ -114,7 +133,7 @@ public class RootController {
 
         Label description = new Label(descriptionText);
 
-        card.setStyle("-fx-padding: 10; -fx-border-color: lightgray");
+        card.getStyleClass().add("popup-card");
         card.getChildren().addAll(title, description, dismiss);
         return card;
     }
@@ -149,6 +168,45 @@ public class RootController {
             case DARK_CONTRAST -> stylesheets.add(darkContrast);
             case LIGHT -> stylesheets.add(light);
             default -> stylesheets.add(light);
+        }
+    }
+
+    private void applyColorVision(Scene scene, ColorVision vision) {
+        String protan = Objects.requireNonNull(
+                RootController.class.getResource(COLORBLIND_PROTAN_PATH),
+                COLORBLIND_PROTAN_PATH + " not found"
+        ).toExternalForm();
+        String deuteran = Objects.requireNonNull(
+                RootController.class.getResource(COLORBLIND_DEUTERAN_PATH),
+                COLORBLIND_DEUTERAN_PATH + " not found"
+        ).toExternalForm();
+        String tritan = Objects.requireNonNull(
+                RootController.class.getResource(COLORBLIND_TRITAN_PATH),
+                COLORBLIND_TRITAN_PATH + " not found"
+        ).toExternalForm();
+        String achroma = Objects.requireNonNull(
+                RootController.class.getResource(COLORBLIND_ACHROMA_PATH),
+                COLORBLIND_ACHROMA_PATH + " not found"
+        ).toExternalForm();
+
+        var stylesheets = scene.getStylesheets();
+        stylesheets.remove(protan);
+        stylesheets.remove(deuteran);
+        stylesheets.remove(tritan);
+        stylesheets.remove(achroma);
+
+        if (vision == null)
+            return;
+
+        switch (vision) {
+            case PROTAN -> stylesheets.add(protan);
+            case DEUTERAN -> stylesheets.add(deuteran);
+            case TRITAN -> stylesheets.add(tritan);
+            case ACHROMA -> stylesheets.add(achroma);
+            case TYPICAL -> {
+            }
+            default -> {
+            }
         }
     }
 }

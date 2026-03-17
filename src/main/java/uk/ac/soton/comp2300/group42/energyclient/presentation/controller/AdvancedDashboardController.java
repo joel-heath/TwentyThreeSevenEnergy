@@ -9,7 +9,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.PriceStatus;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget;
@@ -23,9 +22,6 @@ import java.time.format.DateTimeFormatter;
 public class AdvancedDashboardController {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    private static final String STATUS_CARD_BASE_STYLE =
-            "-fx-alignment: center; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 5;";
-
     @FXML private EnergyUsageWidget energyWidget;
     @FXML private UpcomingActivationsWidget upcomingActivationsWidget;
     @FXML private ActivationEditModal activationEditModal;
@@ -77,24 +73,22 @@ public class AdvancedDashboardController {
 
         Label statusLabel = new Label();
         PriceStatus status = rate.getPriceStatus();
-        ColorVisionManager.ColorRole colorRole;
-
         if (status == PriceStatus.CHEAP) {
             statusLabel.setText("\uD83D\uDE0A");
-            colorRole = ColorVisionManager.ColorRole.STATUS_CHEAP;
         }
         else if (status == PriceStatus.AVERAGE) {
             statusLabel.setText("\uD83D\uDE10");
-            colorRole = ColorVisionManager.ColorRole.STATUS_AVERAGE;
         }
         else {
             statusLabel.setText("\uD83D\uDE41");
-            colorRole = ColorVisionManager.ColorRole.STATUS_EXPENSIVE;
         }
 
-        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> STATUS_CARD_BASE_STYLE + "-fx-background-color: " + ColorVisionManager.getWebColor(vision, colorRole) + ";"
-        ));
+        card.getStyleClass().add("status-card");
+        switch (status) {
+            case CHEAP -> card.getStyleClass().add("status-cheap");
+            case AVERAGE -> card.getStyleClass().add("status-average");
+            case EXPENSIVE -> card.getStyleClass().add("status-expensive");
+        }
 
         Label timeLabel = new Label(rate.validFrom().format(TIME_FORMATTER));
         timeLabel.setStyle("-fx-font-size: 9px;");

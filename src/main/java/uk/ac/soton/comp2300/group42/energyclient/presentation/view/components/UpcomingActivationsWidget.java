@@ -11,7 +11,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
 
@@ -22,11 +21,6 @@ import java.util.concurrent.CompletableFuture;
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.formatDay;
 
 public class UpcomingActivationsWidget extends VBox {
-    private static final String WIDGET_STYLE =
-            "-fx-background-radius: 10; -fx-padding: 15;";
-    private static final String ACTIVATION_CARD_STYLE =
-            "-fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5";
-
     @FXML private HBox scheduleContainer;
 
     private UpcomingActivationsViewModel vm;
@@ -55,7 +49,6 @@ public class UpcomingActivationsWidget extends VBox {
             throw new IllegalStateException("Unexpected controller: " + controllerType.getName());
         });
         loader.load();
-        bindWidgetStyle();
     }
 
     @FXML private void onSchedule() {
@@ -64,11 +57,7 @@ public class UpcomingActivationsWidget extends VBox {
 
     private Pane createActivationView(ObservableActivation activation) {
         VBox card = new VBox();
-        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.CARD_SURFACE
-                ) + "; " + ACTIVATION_CARD_STYLE
-        ));
+        card.getStyleClass().add("activation-card");
 
         Label nameLabel = new Label();
         Label timeLabel = new Label();
@@ -98,14 +87,6 @@ public class UpcomingActivationsWidget extends VBox {
         card.setUserData(activation);
 
         return card;
-    }
-
-    private void bindWidgetStyle() {
-        styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.WIDGET_SURFACE
-                ) + "; " + WIDGET_STYLE
-        ));
     }
 
     private void bindActivations() {

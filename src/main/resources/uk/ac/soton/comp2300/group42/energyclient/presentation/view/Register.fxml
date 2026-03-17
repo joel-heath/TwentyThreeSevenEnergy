@@ -31,7 +31,7 @@
 
         <Button text="Sign Up" onAction="#onRegister" maxWidth="250"/>
 
-        <Hyperlink fx:id="loginLink" text="Already have an account? Login"
+        <Hyperlink fx:id="loginLink" text="Already have an account? Login" styleClass="hyperlink link-accent"
                    onAction="#goToLogin"/>
     </VBox>
 </BackOverlayPane>

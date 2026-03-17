@@ -11,7 +11,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
@@ -45,7 +44,6 @@ public class UserStore {
         final var tmpHousemate = new Housemate(-1L, -1L, "Loading...", "Loading...", Role.GUEST);
         this.currentUser = new ObservableHousemate(tmpHousemate, tmpHouse);
         this.preferences = new ObservablePreferences(new Preferences(), tmpHouse);
-        ColorVisionManager.bind(preferences.visionProperty());
 
         preferences.activeHouseProperty().subscribe((_, newHouse) -> {
             if (newHouse == null) return;

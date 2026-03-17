@@ -43,7 +43,7 @@ public class ModalOverlayPane extends StackPane {
         this.modal = pane;
         pane.setOverlayParent(this);
         pane.setVisible(false);
-        pane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        pane.getStyleClass().add("modal-overlay");
         pane.setOnMousePressed(e -> startedOnBg = (e.getTarget() == pane));
         pane.setOnMouseReleased(e -> {
             if (startedOnBg && e.getTarget() == pane)

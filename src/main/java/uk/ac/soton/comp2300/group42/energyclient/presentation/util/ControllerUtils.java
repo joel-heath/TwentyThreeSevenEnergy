@@ -76,4 +76,16 @@ public class ControllerUtils {
             label.setText(newValue);
         }
     }
+
+    public static void setValidationError(TextInputControl input, boolean hasError) {
+        if (input == null) return;
+        var classes = input.getStyleClass();
+        if (hasError) {
+            if (!classes.contains("validation-error")) {
+                classes.add("validation-error");
+            }
+        } else {
+            classes.remove("validation-error");
+        }
+    }
 }

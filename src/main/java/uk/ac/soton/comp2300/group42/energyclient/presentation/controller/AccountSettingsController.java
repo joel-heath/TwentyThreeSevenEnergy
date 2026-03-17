@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.setIfNew;
@@ -29,11 +28,11 @@ public class AccountSettingsController {
         this.vm = vm;
     }
 
-    private ColorVisionManager.ColorRole responseRole = ColorVisionManager.ColorRole.WIDGET_TEXT;
+    private static final String RESPONSE_ERROR_CLASS = "response-error";
+    private static final String RESPONSE_SUCCESS_CLASS = "response-success";
 
     @FXML private void initialize() {
-        bindDeleteButtonStyle();
-        bindResponseLabelColour();
+        deleteAccountButton.getStyleClass().add("danger-button");
 
         editNameField.setText(vm.getUser().getName());
         editEmailField.setText(vm.getUser().getName());
@@ -49,10 +48,10 @@ public class AccountSettingsController {
                     editEmailField.setDisable(false);
                 })
         ).exceptionally(e -> {
-            Platform.runLater(() -> {
-                editNameField.setText("");
-                editEmailField.setText("");
-                applyResponseMessage("Failed to load user data.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+                Platform.runLater(() -> {
+                    editNameField.setText("");
+                    editEmailField.setText("");
+                applyResponseMessage("Failed to load user data.", true);
                 System.out.println("Error loading user data: " + e.getMessage());
             });
             return null;
@@ -68,27 +67,27 @@ public class AccountSettingsController {
         String confirmPassword = confirmPasswordField.getText();
 
         if (!newPassword.isEmpty() && !newPassword.equals(confirmPassword)) {
-            applyResponseMessage("Passwords do not match.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            applyResponseMessage("Passwords do not match.", true);
             return;
         }
 
         if (!currentPassword.isEmpty() && newPassword.isEmpty()) {
-            applyResponseMessage("New password cannot be empty.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            applyResponseMessage("New password cannot be empty.", true);
             return;
         }
 
         if (!newPassword.isEmpty() && currentPassword.isEmpty()) {
-            applyResponseMessage("Must enter current password to change it.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            applyResponseMessage("Must enter current password to change it.", true);
             return;
         }
 
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.\\w+$")) {
-            applyResponseMessage("Invalid email format.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            applyResponseMessage("Invalid email format.", true);
             return;
         }
 
         if (name.isEmpty()) {
-            applyResponseMessage("Name cannot be empty.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            applyResponseMessage("Name cannot be empty.", true);
             return;
         }
 
@@ -101,12 +100,12 @@ public class AccountSettingsController {
                 vm.setPassword(currentPassword, newPassword);
             }
             catch (ApiException e) {
-                applyResponseMessage("Failed to change password: " + e.getMessage(), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+                applyResponseMessage("Failed to change password: " + e.getMessage(), true);
                 return;
             }
         }
 
-        applyResponseMessage("Account updated successfully.", ColorVisionManager.ColorRole.TOGGLE_ENABLED);
+        applyResponseMessage("Account updated successfully.", false);
     }
 
     @FXML private void onLogout() {
@@ -117,33 +116,18 @@ public class AccountSettingsController {
         String currentPassword = currentPasswordField.getText();
 
         if (currentPassword.isEmpty()) {
-            applyResponseMessage("Must enter password to delete account.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            applyResponseMessage("Must enter password to delete account.", true);
             return;
         }
 
         vm.deleteAccount(currentPassword);
     }
 
-    private void bindDeleteButtonStyle() {
-        deleteAccountButton.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.VALIDATION_ERROR
-                ) + "; -fx-text-fill: #FFFFFF;"
-        ));
-    }
-
-    private void bindResponseLabelColour() {
-        updateResponseLabelColour();
-        ColorVisionManager.visionProperty().addListener((_, _, _) -> updateResponseLabelColour());
-    }
-
-    private void applyResponseMessage(String message, ColorVisionManager.ColorRole role) {
-        responseRole = role;
+    private void applyResponseMessage(String message, boolean isError) {
         responseLabel.setText(message);
-        updateResponseLabelColour();
-    }
-
-    private void updateResponseLabelColour() {
-        responseLabel.setTextFill(ColorVisionManager.getColor(responseRole));
+        var classes = responseLabel.getStyleClass();
+        classes.remove(RESPONSE_ERROR_CLASS);
+        classes.remove(RESPONSE_SUCCESS_CLASS);
+        classes.add(isError ? RESPONSE_ERROR_CLASS : RESPONSE_SUCCESS_CLASS);
     }
 }

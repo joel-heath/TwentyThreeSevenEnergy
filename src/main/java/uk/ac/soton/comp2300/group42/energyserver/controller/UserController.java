@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyserver.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,14 +43,14 @@ public class UserController {
     @PutMapping("/me")
     public ResponseEntity<UserResponse> updateCurrentUser(
             @AuthenticationPrincipal User user,
-            @RequestBody UpdateUserRequest request) {
+            @Valid @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(service.updateCurrentUser(user, request));
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteCurrentUser(
             @AuthenticationPrincipal User user,
-            @RequestBody DeleteUserRequest request) {
+            @Valid @RequestBody DeleteUserRequest request) {
         service.deleteCurrentUser(user, request);
         return ResponseEntity.noContent().build();
     }
@@ -57,7 +58,7 @@ public class UserController {
     @PutMapping("/me/password")
     public ResponseEntity<Void> changeCurrentUserPassword(
             @AuthenticationPrincipal User user,
-            @RequestBody ChangePasswordRequest request) {
+            @Valid @RequestBody ChangePasswordRequest request) {
         authService.changePassword(user, request);
         return ResponseEntity.noContent().build();
     }
@@ -70,7 +71,7 @@ public class UserController {
     @PutMapping("/me/preferences")
     public ResponseEntity<PreferencesResponse> updateCurrentUserPreferences(
             @AuthenticationPrincipal User user,
-            @RequestBody UpdatePreferencesRequest request) {
+            @Valid @RequestBody UpdatePreferencesRequest request) {
         return ResponseEntity.ok(service.updateCurrentUserPreferences(user, request));
     }
 }

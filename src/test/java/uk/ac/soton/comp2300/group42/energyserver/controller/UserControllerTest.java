@@ -116,7 +116,7 @@ class UserControllerTest {
     @DisplayName("DELETE /me - Should delete current user and return 204 No Content")
     @WithMockUser
     void deleteCurrentUser_ShouldReturn204() throws Exception {
-        DeleteUserRequest request = new DeleteUserRequest("MySecurePassword123");
+        DeleteUserRequest request = new DeleteUserRequest("MySecurePassword123!");
 
         doNothing().when(userService).deleteCurrentUser(any(), any(DeleteUserRequest.class));
 
@@ -133,7 +133,7 @@ class UserControllerTest {
     @DisplayName("PUT /me/password - Should change password and return 204 No Content")
     @WithMockUser
     void changeCurrentUserPassword_ShouldReturn204() throws Exception {
-        ChangePasswordRequest request = new ChangePasswordRequest("OldPass", "NewPass");
+        ChangePasswordRequest request = new ChangePasswordRequest("OldPass!1", "NewPass!2");
 
         doNothing().when(authService).changePassword(any(), any(ChangePasswordRequest.class));
 

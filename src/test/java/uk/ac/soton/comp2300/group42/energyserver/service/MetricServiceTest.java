@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyserver.exception.ResourceNotFoundException;
 import uk.ac.soton.comp2300.group42.energyserver.mapper.MetricMapper;
@@ -69,6 +70,7 @@ class MetricServiceTest {
         dummyMetric.setHouse(dummyHouse);
         dummyMetric.setDate(LocalDate.of(2023, 10, 1));
         dummyMetric.setEnergyUsed(15.5);
+        dummyMetric.setEnergyCategory(EnergyCategory.ELECTRICITY);
     }
 
     @Test
@@ -106,9 +108,20 @@ class MetricServiceTest {
     }
 
     @Test
+    void getMetricsByHouseAndCategory_Success() {
+        when(authManager.authorize(10L, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
+        when(metricRepo.findAllByHouseAndEnergyCategory(dummyHouse, EnergyCategory.ELECTRICITY)).thenReturn(List.of(dummyMetric));
+
+        List<MetricResponse> results = metricService.getMetricsByHouseAndCategory(10L, EnergyCategory.ELECTRICITY, dummyUser);
+
+        assertThat(results).hasSize(1);
+        verify(mapper).toMetricResponse(dummyMetric);
+    }
+
+    @Test
     void saveMetric_Success() {
         LocalDate date = LocalDate.of(2025, 12, 25);
-        SaveMetricRequest request = new SaveMetricRequest(20.0);
+        SaveMetricRequest request = new SaveMetricRequest(20.0, EnergyCategory.WATER);
 
         when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
         when(metricRepo.save(any(Metric.class))).thenAnswer(m -> assignId(m, 200L));
@@ -121,10 +134,12 @@ class MetricServiceTest {
         assertThat(savedMetric.getHouse()).isEqualTo(dummyHouse);
         assertThat(savedMetric.getDate()).isEqualTo(date);
         assertThat(savedMetric.getEnergyUsed()).isEqualTo(20.0);
+        assertThat(savedMetric.getEnergyCategory()).isEqualTo(EnergyCategory.WATER);
 
         assertThat(result.id()).isEqualTo(200L);
         assertThat(result.houseId()).isEqualTo(10L);
         assertThat(result.date()).isEqualTo(date);
         assertThat(result.energyUsed()).isEqualTo(20.0);
+        assertThat(result.category()).isEqualTo(EnergyCategory.WATER);
     }
 }

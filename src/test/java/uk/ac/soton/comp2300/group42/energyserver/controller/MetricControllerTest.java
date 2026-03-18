@@ -10,6 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyserver.security.filter.JwtAuthFilter;
 import uk.ac.soton.comp2300.group42.energyserver.service.MetricService;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
@@ -50,7 +51,7 @@ class MetricControllerTest {
     @WithMockUser
     void getMetric_ShouldReturn200() throws Exception {
         LocalDate today = LocalDate.now();
-        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 15.5);
+        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 15.5, EnergyCategory.ELECTRICITY);
 
         when(metricService.getMetricById(eq(HOUSE_ID), eq(METRIC_ID), any()))
                 .thenReturn(response);
@@ -72,8 +73,8 @@ class MetricControllerTest {
     void getAllMetrics_ShouldReturn200() throws Exception {
         LocalDate today = LocalDate.now();
         List<MetricResponse> responses = List.of(
-                new MetricResponse(100L, HOUSE_ID, today.minusDays(1), 12.0),
-                new MetricResponse(101L, HOUSE_ID, today, 15.5)
+                new MetricResponse(100L, HOUSE_ID, today.minusDays(1), 12.0, EnergyCategory.OTHER),
+                new MetricResponse(101L, HOUSE_ID, today, 15.5, EnergyCategory.ELECTRICITY)
         );
 
         when(metricService.getMetricsByHouseId(eq(HOUSE_ID), any()))
@@ -90,12 +91,36 @@ class MetricControllerTest {
     }
 
     @Test
+    @DisplayName("GET / - Should return list of metrics by category and 200 OK")
+    @WithMockUser
+    void getAllMetricsByCategory_ShouldReturn200() throws Exception {
+        LocalDate today = LocalDate.now();
+        List<MetricResponse> responses = List.of(
+                new MetricResponse(100L, HOUSE_ID, today.minusDays(1), 12.0, EnergyCategory.OTHER),
+                new MetricResponse(101L, HOUSE_ID, today, 15.5, EnergyCategory.OTHER)
+        );
+
+        when(metricService.getMetricsByHouseAndCategory(eq(HOUSE_ID), eq(EnergyCategory.OTHER), any()))
+                .thenReturn(responses);
+
+        mockMvc.perform(get(BASE_URL, HOUSE_ID)
+                        .param("category", "OTHER")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].energyUsed").value(12.0))
+                .andExpect(jsonPath("$[1].energyUsed").value(15.5));
+
+        verify(metricService).getMetricsByHouseAndCategory(eq(HOUSE_ID), eq(EnergyCategory.OTHER), any());
+    }
+
+    @Test
     @DisplayName("POST /seed-test-data - Should save metric and return 200 OK")
     @WithMockUser
     void seedData_ShouldReturn200() throws Exception {
-        SaveMetricRequest request = new SaveMetricRequest(25.0);
+        SaveMetricRequest request = new SaveMetricRequest(25.0, EnergyCategory.WATER);
         LocalDate today = LocalDate.now();
-        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 25.0);
+        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 25.0, EnergyCategory.WATER);
 
         when(metricService.saveMetric(eq(HOUSE_ID), any(LocalDate.class), any(SaveMetricRequest.class), any()))
                 .thenReturn(response);

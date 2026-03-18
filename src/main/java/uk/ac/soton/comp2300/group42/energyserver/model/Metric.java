@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyserver.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 
 import java.time.LocalDate;
 
@@ -22,6 +23,9 @@ public class Metric {
     private LocalDate date;
 
     @Column(nullable = false)
+    private EnergyCategory energyCategory;
+
+    @Column(nullable = false)
     private Double energyUsed;
 
     public Long getId() { return id; }
@@ -34,4 +38,7 @@ public class Metric {
 
     public Double getEnergyUsed() { return energyUsed; }
     public void setEnergyUsed(Double energyUsed) { this.energyUsed = energyUsed; }
+
+    public EnergyCategory getEnergyCategory() { return energyCategory; }
+    public void setEnergyCategory(EnergyCategory energyCategory) { this.energyCategory = energyCategory; }
 }

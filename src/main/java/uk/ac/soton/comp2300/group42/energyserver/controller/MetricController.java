@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.service.MetricService;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
@@ -54,6 +55,14 @@ public class MetricController {
             @PathVariable Long houseId,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(service.getMetricsByHouseId(houseId, user));
+    }
+
+    @GetMapping(value = "", params = "category")
+    public ResponseEntity<List<MetricResponse>> getAllMetricsByCategory (
+            @PathVariable Long houseId,
+            @RequestParam EnergyCategory category,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(service.getMetricsByHouseAndCategory(houseId, category, user));
     }
 
     @PostMapping("/seed-test-data")

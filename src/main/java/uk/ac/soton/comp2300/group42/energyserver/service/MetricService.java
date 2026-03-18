@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyserver.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyserver.exception.ResourceNotFoundException;
 import uk.ac.soton.comp2300.group42.energyserver.model.House;
 import uk.ac.soton.comp2300.group42.energyserver.model.Metric;
@@ -50,6 +51,16 @@ public class MetricService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<MetricResponse> getMetricsByHouseAndCategory(Long houseId, EnergyCategory category, User user)  {
+        House house = authManager.authorize(houseId, user, Role.GUEST).getHouse();
+
+        return metricRepo.findAllByHouseAndEnergyCategory(house, category)
+                .stream()
+                .map(mapper::toMetricResponse)
+                .toList();
+    }
+
     @Transactional
     public MetricResponse saveMetric(Long houseId, LocalDate date, SaveMetricRequest request, User user) {
         House house = authManager.authorize(houseId, user, Role.RESIDENT).getHouse();
@@ -58,6 +69,7 @@ public class MetricService {
         metric.setHouse(house);
         metric.setDate(date);
         metric.setEnergyUsed(request.energyUsed());
+        metric.setEnergyCategory(request.energyCategory());
         metric = metricRepo.save(metric);
 
         return mapper.toMetricResponse(metric);

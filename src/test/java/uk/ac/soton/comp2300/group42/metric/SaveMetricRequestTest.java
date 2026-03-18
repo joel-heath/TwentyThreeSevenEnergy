@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.metric;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.json.JacksonTester;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.extensions.ApiContractTest;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ class SaveMetricRequestTest {
 
     @Test
     void validRequest_ShouldPassValidation(Validator validator) {
-        SaveMetricRequest request = new SaveMetricRequest(42.5);
+        SaveMetricRequest request = new SaveMetricRequest(42.5, EnergyCategory.ELECTRICITY);
 
         var violations = validator.validate(request);
 
@@ -23,7 +24,7 @@ class SaveMetricRequestTest {
 
     @Test
     void nullEnergyUsed_ShouldFailValidation(Validator validator) {
-        SaveMetricRequest request = new SaveMetricRequest(null);
+        SaveMetricRequest request = new SaveMetricRequest(null, EnergyCategory.ELECTRICITY);
 
         var violations = validator.validate(request);
 
@@ -33,7 +34,7 @@ class SaveMetricRequestTest {
 
     @Test
     void negativeEnergyUsed_ShouldFailValidation(Validator validator) {
-        SaveMetricRequest request = new SaveMetricRequest(-5.0);
+        SaveMetricRequest request = new SaveMetricRequest(-5.0, EnergyCategory.ELECTRICITY);
 
         var violations = validator.validate(request);
 
@@ -43,7 +44,7 @@ class SaveMetricRequestTest {
 
     @Test
     void shouldSerializeCorrectly(JacksonTester<SaveMetricRequest> tester) throws IOException {
-        var request = new SaveMetricRequest(122.35);
+        var request = new SaveMetricRequest(122.35, EnergyCategory.WATER);
 
         var json = tester.write(request);
 
@@ -54,12 +55,14 @@ class SaveMetricRequestTest {
     void shouldDeserializeCorrectly(JacksonTester<SaveMetricRequest> tester) throws IOException {
         var payload = """
                 {
-                    "energyUsed": 122.35
+                    "energyUsed": 122.35,
+                    "energyCategory": "water"
                 }
                 """;
 
         var request = tester.parseObject(payload);
 
         assertThat(request.energyUsed()).isEqualTo(122.35);
+        assertThat(request.energyCategory()).isEqualTo(EnergyCategory.WATER);
     }
 }

@@ -11,7 +11,6 @@ public enum EnergyCategory {
 
     ELECTRICITY("electricity", "Electricity"),
     GAS("gas", "Gas"),
-    WATER("water", "Water"),
     OTHER("other", "Other");
 
 

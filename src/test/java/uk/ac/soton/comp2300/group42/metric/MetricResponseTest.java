@@ -20,7 +20,7 @@ class MetricResponseTest {
                 10L,
                 LocalDate.of(2025, 12, 25),
                 32.89,
-                EnergyCategory.WATER
+                EnergyCategory.OTHER
         );
 
         var json = tester.write(response);
@@ -29,7 +29,7 @@ class MetricResponseTest {
         assertThat(json).extractingJsonPathNumberValue("@.houseId").isEqualTo(10);
         assertThat(json).extractingJsonPathStringValue("@.date").isEqualTo("2025-12-25");
         assertThat(json).extractingJsonPathNumberValue("@.energyUsed").isEqualTo(32.89);
-        assertThat(json).extractingJsonPathStringValue("@.category").isEqualTo("water");
+        assertThat(json).extractingJsonPathStringValue("@.category").isEqualTo("other");
     }
 
     @Test

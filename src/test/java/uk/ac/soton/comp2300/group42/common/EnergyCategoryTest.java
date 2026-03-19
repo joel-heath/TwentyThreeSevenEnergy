@@ -11,7 +11,6 @@ class EnergyCategoryTest {
     void fromId_ShouldReturnCorrectRole_WhenIdIsValid() {
         assertThat(EnergyCategory.fromId("electricity")).isEqualTo(EnergyCategory.ELECTRICITY);
         assertThat(EnergyCategory.fromId("gas")).isEqualTo(EnergyCategory.GAS);
-        assertThat(EnergyCategory.fromId("water")).isEqualTo(EnergyCategory.WATER);
         assertThat(EnergyCategory.fromId("other")).isEqualTo(EnergyCategory.OTHER);
     }
 

@@ -44,7 +44,7 @@ class SaveMetricRequestTest {
 
     @Test
     void shouldSerializeCorrectly(JacksonTester<SaveMetricRequest> tester) throws IOException {
-        var request = new SaveMetricRequest(122.35, EnergyCategory.WATER);
+        var request = new SaveMetricRequest(122.35, EnergyCategory.GAS);
 
         var json = tester.write(request);
 
@@ -56,13 +56,13 @@ class SaveMetricRequestTest {
         var payload = """
                 {
                     "energyUsed": 122.35,
-                    "energyCategory": "water"
+                    "energyCategory": "gas"
                 }
                 """;
 
         var request = tester.parseObject(payload);
 
         assertThat(request.energyUsed()).isEqualTo(122.35);
-        assertThat(request.energyCategory()).isEqualTo(EnergyCategory.WATER);
+        assertThat(request.energyCategory()).isEqualTo(EnergyCategory.GAS);
     }
 }

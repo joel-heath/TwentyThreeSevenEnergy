@@ -118,9 +118,9 @@ class MetricControllerTest {
     @DisplayName("POST /seed-test-data - Should save metric and return 200 OK")
     @WithMockUser
     void seedData_ShouldReturn200() throws Exception {
-        SaveMetricRequest request = new SaveMetricRequest(25.0, EnergyCategory.WATER);
+        SaveMetricRequest request = new SaveMetricRequest(25.0, EnergyCategory.OTHER);
         LocalDate today = LocalDate.now();
-        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 25.0, EnergyCategory.WATER);
+        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 25.0, EnergyCategory.OTHER);
 
         when(metricService.saveMetric(eq(HOUSE_ID), any(LocalDate.class), any(SaveMetricRequest.class), any()))
                 .thenReturn(response);

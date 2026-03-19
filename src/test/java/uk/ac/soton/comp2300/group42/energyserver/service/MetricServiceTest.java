@@ -121,7 +121,7 @@ class MetricServiceTest {
     @Test
     void saveMetric_Success() {
         LocalDate date = LocalDate.of(2025, 12, 25);
-        SaveMetricRequest request = new SaveMetricRequest(20.0, EnergyCategory.WATER);
+        SaveMetricRequest request = new SaveMetricRequest(20.0, EnergyCategory.OTHER);
 
         when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
         when(metricRepo.save(any(Metric.class))).thenAnswer(m -> assignId(m, 200L));
@@ -134,12 +134,12 @@ class MetricServiceTest {
         assertThat(savedMetric.getHouse()).isEqualTo(dummyHouse);
         assertThat(savedMetric.getDate()).isEqualTo(date);
         assertThat(savedMetric.getEnergyUsed()).isEqualTo(20.0);
-        assertThat(savedMetric.getEnergyCategory()).isEqualTo(EnergyCategory.WATER);
+        assertThat(savedMetric.getEnergyCategory()).isEqualTo(EnergyCategory.OTHER);
 
         assertThat(result.id()).isEqualTo(200L);
         assertThat(result.houseId()).isEqualTo(10L);
         assertThat(result.date()).isEqualTo(date);
         assertThat(result.energyUsed()).isEqualTo(20.0);
-        assertThat(result.category()).isEqualTo(EnergyCategory.WATER);
+        assertThat(result.category()).isEqualTo(EnergyCategory.OTHER);
     }
 }

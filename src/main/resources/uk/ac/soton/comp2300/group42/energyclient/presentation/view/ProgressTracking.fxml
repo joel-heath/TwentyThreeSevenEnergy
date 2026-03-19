@@ -10,11 +10,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ScrollPane?>
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.ProgressTrackingController"
                  prefHeight="400.0" prefWidth="600.0">
-
+        <ScrollPane>
         <VBox spacing="10" alignment="CENTER">
 
             <HBox spacing="10" alignment="CENTER">
@@ -22,8 +25,7 @@
                 <Label fx:id="priceLabel" text="Loading..."/>
             </HBox>
 
-            <LineChart fx:id="priceChart" title="Upcoming Energy Prices (p/kWh)" prefHeight="200" prefWidth="200" animated="false"
-                       styleClass="chart forecast-chart">
+            <LineChart fx:id="priceChart" title="Upcoming Energy Prices (p/kWh)" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
                     <CategoryAxis label="Time (30m windows)" side="BOTTOM" animated="false"/>
                 </xAxis>
@@ -41,6 +43,45 @@
                 </yAxis>
             </BarChart>
 
+
+            <StackPane VBox.vgrow="ALWAYS">
+                    <BarChart fx:id="electricityExpenseChart" title="Daily Electricity Usage" prefHeight="200" prefWidth="200" animated="false">
+                        <xAxis>
+                            <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                        </yAxis>
+                    </BarChart>
+
+                    <BarChart fx:id="gasExpenseChart" title="Daily Gas Usage" prefHeight="200" prefWidth="200" animated="false">
+                        <xAxis>
+                            <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                        </yAxis>
+                    </BarChart>
+
+                    <BarChart fx:id="otherExpenseChart" title="Daily Other Usage" prefHeight="200" prefWidth="200" animated="false">
+                        <xAxis>
+                            <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                        </yAxis>
+                    </BarChart>
+            </StackPane>
+
+            <fx:define>
+                <ToggleGroup fx:id="navToggleGroup" />
+            </fx:define>
+            <HBox alignment="CENTER" spacing="20.0" style="-fx-background-color: #eee; -fx-padding: 10;">
+                <ToggleButton fx:id="btnElec" text="Electricity" toggleGroup="$navToggleGroup" selected="true" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                <ToggleButton fx:id="btnGas"  text="Gas"         toggleGroup="$navToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                <ToggleButton fx:id="btnOther" text="Other" toggleGroup="$navToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+            </HBox>
+
             <HBox spacing="10" alignment="CENTER">
                 <Label text="Log Energy Usage:"/>
                 <TextField fx:id="logUsageField" promptText="Log Usage (J)" maxWidth="250"/>
@@ -48,4 +89,5 @@
             </HBox>
 
         </VBox>
+        </ScrollPane>
 </BackOverlayPane>

@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.data.repository;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.data.backend.MetricClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.mapper.MetricMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
@@ -34,6 +35,13 @@ public class RemoteMetricRepository implements MetricRepository {
     @Override
     public List<Metric> getAll(Long houseId) {
         return client.fetchAllMetrics(houseId).stream()
+                .map(mapper::toMetric)
+                .toList();
+    }
+
+    @Override
+    public List<Metric> getAllByCategory(Long houseId, EnergyCategory category) {
+        return client.fetchAllMetricsByCategory(houseId, category).stream()
                 .map(mapper::toMetric)
                 .toList();
     }

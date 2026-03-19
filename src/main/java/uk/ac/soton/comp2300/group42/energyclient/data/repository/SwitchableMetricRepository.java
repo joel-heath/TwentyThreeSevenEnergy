@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.data.repository;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
@@ -39,5 +40,10 @@ public class SwitchableMetricRepository implements MetricRepository {
     @Override
     public List<Metric> getAll(Long houseId) {
         return getActiveRepo().getAll(houseId);
+    }
+
+    @Override
+    public List<Metric> getAllByCategory(Long houseId, EnergyCategory category) {
+        return getActiveRepo().getAllByCategory(houseId, category);
     }
 }

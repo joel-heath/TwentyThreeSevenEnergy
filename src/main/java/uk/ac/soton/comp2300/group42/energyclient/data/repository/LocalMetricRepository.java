@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.data.repository;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageData;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
@@ -32,7 +33,8 @@ public class LocalMetricRepository implements MetricRepository {
                 data.nextMetricId(),
                 metric.houseId(),
                 metric.date(),
-                metric.energyUsed()
+                metric.energyUsed(),
+                metric.category()
         );
 
         data.metrics.put(newMetric.id(), newMetric);
@@ -57,6 +59,15 @@ public class LocalMetricRepository implements MetricRepository {
 
         return data.metrics.values().stream()
                 .filter(a -> Objects.equals(a.houseId(), houseId))
+                .toList();
+    }
+
+    @Override
+    public List<Metric> getAllByCategory(Long houseId, EnergyCategory category) {
+        validateRequestExists(houseId);
+
+        return data.metrics.values().stream()
+                .filter(a -> Objects.equals(a.houseId(), houseId) && Objects.equals(a.category(), category))
                 .toList();
     }
 

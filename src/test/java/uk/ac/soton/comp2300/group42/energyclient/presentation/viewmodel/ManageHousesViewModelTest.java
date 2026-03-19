@@ -21,10 +21,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.store.HousemateSto
 
 import java.time.ZoneId;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -93,10 +90,10 @@ class ManageHousesViewModelTest {
         ArgumentCaptor<House> captor = ArgumentCaptor.forClass(House.class);
         verify(houseStore).add(captor.capture());
         House created = captor.getValue();
-        assertEquals(null, created.id());
+        assertNull(created.id());
         assertEquals("Home", created.name());
         assertEquals("Road", created.address());
-        assertTrue(created.timezone() != null);
+        assertNotNull(created.timezone());
     }
 
     @Test

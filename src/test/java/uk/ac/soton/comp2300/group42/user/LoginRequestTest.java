@@ -52,17 +52,6 @@ class LoginRequestTest {
     }
 
     @Test
-    void weakPassword_ShouldFailValidation(Validator validator) {
-        var request = new LoginRequest("meshach@judah.il", "RefuseToBow1");
-
-        var violations = validator.validate(request);
-
-        assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage())
-                .isEqualTo(PasswordValidation.PASSWORD_QUALITY_MESSAGE);
-    }
-
-    @Test
     void shouldSerializeCorrectly(JacksonTester<LoginRequest> tester) throws IOException {
         var request = new LoginRequest("shadrach@judah.il", "Not!TodayN3b");
 

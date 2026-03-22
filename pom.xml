@@ -6,7 +6,7 @@
 
     <groupId>uk.ac.soton.comp2300.group42</groupId>
     <artifactId>EnergyApiContracts</artifactId>
-    <version>1.15-SNAPSHOT</version>
+    <version>1.16-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>

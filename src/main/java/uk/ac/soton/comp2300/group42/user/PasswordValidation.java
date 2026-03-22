@@ -6,6 +6,5 @@ public final class PasswordValidation {
     public static final String PASSWORD_QUALITY_MESSAGE =
             "Password must be at least 8 characters, contain at least one lowercase, one uppercase and one special character";
 
-    private PasswordValidation() {
-    }
+    private PasswordValidation() {}
 }

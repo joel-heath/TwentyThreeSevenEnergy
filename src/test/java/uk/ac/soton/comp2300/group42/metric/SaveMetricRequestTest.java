@@ -56,13 +56,13 @@ class SaveMetricRequestTest {
         var payload = """
                 {
                     "energyUsed": 122.35,
-                    "energyCategory": "gas"
+                    "category": "gas"
                 }
                 """;
 
         var request = tester.parseObject(payload);
 
         assertThat(request.energyUsed()).isEqualTo(122.35);
-        assertThat(request.energyCategory()).isEqualTo(EnergyCategory.GAS);
+        assertThat(request.category()).isEqualTo(EnergyCategory.GAS);
     }
 }

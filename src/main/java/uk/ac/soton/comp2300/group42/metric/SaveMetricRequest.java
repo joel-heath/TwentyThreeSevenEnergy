@@ -10,5 +10,5 @@ public record SaveMetricRequest(
         Double energyUsed,
 
         @NotNull(message = "Energy category must not be null")
-        EnergyCategory energyCategory
+        EnergyCategory category
 ) {}

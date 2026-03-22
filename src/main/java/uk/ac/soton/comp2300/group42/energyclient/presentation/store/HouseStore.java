@@ -10,8 +10,8 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseReposito
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -27,7 +27,7 @@ public class HouseStore {
     public HouseStore(HouseRepository repository, SessionManager sessionManager, @UIExecutor Executor uiExecutor) {
         this.repository = repository;
         this.uiExecutor = uiExecutor;
-        this.cache = new WeakHashMap<>();
+        this.cache = new HashMap<>();
         this.masterList = FXCollections.observableArrayList();
 
         sessionManager.subscribe(_ ->

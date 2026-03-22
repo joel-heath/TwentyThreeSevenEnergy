@@ -12,8 +12,8 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -37,7 +37,7 @@ public class HousemateStore {
         this.houseStore = houseStore;
         this.preferences = preferences;
         this.uiExecutor = uiExecutor;
-        this.cache = new WeakHashMap<>();
+        this.cache = new HashMap<>();
         this.masterList = FXCollections.observableArrayList();
 
         sessionManager.subscribe(_ ->

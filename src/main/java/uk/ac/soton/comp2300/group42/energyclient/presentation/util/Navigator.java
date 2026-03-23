@@ -8,9 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2300.group42.energyclient.di.AppStateManager;
-import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.controller.RootController;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,8 +35,6 @@ public class Navigator {
     }
 
     public static final String DEFAULT_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/view/";
-    private static final String LOGGED_OUT_LANDING_PATH = DEFAULT_PATH + "Landing.fxml";
-    private static final String LOGGED_IN_LANDING_PATH = DEFAULT_PATH + "Dashboard.fxml";
 
     private static final Stack<ViewContext> backHistory = new Stack<>();
     private static final Stack<ViewContext> forwardHistory = new Stack<>();
@@ -96,12 +92,7 @@ public class Navigator {
         });
 
         mainStage.setScene(rootScene);
-
-        // TODO: Cleaner bootstrapping with a splash screen.
-        var loggedIn = AppStateManager.getInjector().getInstance(AuthRepository.class).verifyLoggedIn();
-        AppStateManager.getInjector().getInstance(UserStore.class).refresh();
-
-        goToAbsoluteIrreversible(loggedIn ? LOGGED_IN_LANDING_PATH : LOGGED_OUT_LANDING_PATH);
+        AppStateManager.getInjector().getInstance(AppStateOrchestrator.class).initialize();
     }
 
     private static void switchView(ViewContext context) {

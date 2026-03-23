@@ -38,7 +38,7 @@ public class LocalMetricRepository implements MetricRepository {
         );
 
         data.metrics.put(newMetric.id(), newMetric);
-        client.saveData();
+        client.saveDataAsync();
         return newMetric;
     }
 

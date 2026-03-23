@@ -47,7 +47,7 @@ public class LocalActivationRepository implements ActivationRepository {
         );
 
         data.activations.put(newActivation.id(), newActivation);
-        client.saveData();
+        client.saveDataAsync();
         return newActivation;
     }
 
@@ -70,7 +70,7 @@ public class LocalActivationRepository implements ActivationRepository {
         validateExists(activation.houseId(), activation.id());
 
         data.activations.put(activation.id(), activation);
-        client.saveData();
+        client.saveDataAsync();
         return activation;
     }
 
@@ -79,7 +79,7 @@ public class LocalActivationRepository implements ActivationRepository {
         validateExists(houseId, activationId);
 
         data.activations.remove(activationId);
-        client.saveData();
+        client.saveDataAsync();
     }
 
     private void validateHouseExists(Long houseId) {

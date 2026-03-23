@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
@@ -31,7 +30,6 @@ public class HousemateStore {
     public HousemateStore(HouseRepository repository,
                           HouseStore houseStore,
                           ObservablePreferences preferences,
-                          SessionManager sessionManager,
                           @UIExecutor Executor uiExecutor) {
         this.repository = repository;
         this.houseStore = houseStore;
@@ -39,13 +37,6 @@ public class HousemateStore {
         this.uiExecutor = uiExecutor;
         this.cache = new HashMap<>();
         this.masterList = FXCollections.observableArrayList();
-
-        sessionManager.subscribe(_ ->
-                uiExecutor.execute(() -> {
-                    cache.clear();
-                    masterList.clear();
-                })
-        );
     }
 
     private Long getActiveHouseId() {
@@ -121,6 +112,13 @@ public class HousemateStore {
             );
 
             masterList.setAll(updates.stream().map(HousemateUpdate::housemate).toList());
+        }, uiExecutor);
+    }
+
+    public CompletableFuture<Void> invalidateCacheAsync() {
+        return CompletableFuture.runAsync(() -> {
+            cache.clear();
+            masterList.clear();
         }, uiExecutor);
     }
 }

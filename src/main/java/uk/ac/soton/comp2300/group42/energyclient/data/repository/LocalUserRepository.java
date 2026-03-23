@@ -40,7 +40,7 @@ public class LocalUserRepository implements UserRepository {
             throwApiException(400, "Preferences are required");
 
         data.preferences = preferences;
-        client.saveData();
+        client.saveDataAsync();
         return data.preferences;
     }
 
@@ -61,7 +61,7 @@ public class LocalUserRepository implements UserRepository {
             throwApiException(403, "Cannot update a different user");
 
         data.user = user;
-        client.saveData();
+        client.saveDataAsync();
         return data.user;
     }
 

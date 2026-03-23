@@ -36,7 +36,6 @@ public class RemoteAuthRepository implements AuthRepository {
             System.err.println("Network error while verifying login status, either you are offline or are not running the backend.");
             result = false;
         }
-        sessionManager.setLoggedIn(false);
         return result;
     }
 

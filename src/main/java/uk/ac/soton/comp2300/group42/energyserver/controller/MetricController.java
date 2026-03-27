@@ -65,6 +65,14 @@ public class MetricController {
         return ResponseEntity.ok(service.getMetricsByHouseAndCategory(houseId, category, user));
     }
 
+    @GetMapping(value ="", params = "date")
+    public ResponseEntity<List<MetricResponse>> getAllMetricsByDate (
+            @PathVariable Long houseId,
+            @RequestParam LocalDate date,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(service.getMetricsByHouseAndDate(houseId, date, user));
+    }
+
     @PostMapping("/seed-test-data")
     public ResponseEntity<MetricResponse> seedData(
             @PathVariable Long houseId,

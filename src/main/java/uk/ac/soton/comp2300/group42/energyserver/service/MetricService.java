@@ -61,6 +61,15 @@ public class MetricService {
                 .toList();
     }
 
+    public List<MetricResponse> getMetricsByHouseAndDate(Long houseId, LocalDate date, User user) {
+        House house = authManager.authorize(houseId, user, Role.GUEST).getHouse();
+
+        return metricRepo.findAllByHouseAndDate(house, date)
+                .stream()
+                .map(mapper::toMetricResponse)
+                .toList();
+    }
+
     @Transactional
     public MetricResponse saveMetric(Long houseId, LocalDate date, SaveMetricRequest request, User user) {
         House house = authManager.authorize(houseId, user, Role.RESIDENT).getHouse();
@@ -69,7 +78,7 @@ public class MetricService {
         metric.setHouse(house);
         metric.setDate(date);
         metric.setEnergyUsed(request.energyUsed());
-        metric.setEnergyCategory(request.energyCategory());
+        metric.setEnergyCategory(request.category());
         metric = metricRepo.save(metric);
 
         return mapper.toMetricResponse(metric);

@@ -13,6 +13,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ComboBox?>
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.ProgressTrackingController"
@@ -34,41 +35,41 @@
                 </yAxis>
             </LineChart>
 
-            <BarChart fx:id="expenseChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false">
+            <BarChart fx:id="usageChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
                     <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                    <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
                 </yAxis>
             </BarChart>
 
 
             <StackPane VBox.vgrow="ALWAYS">
-                    <BarChart fx:id="electricityExpenseChart" title="Daily Electricity Usage" prefHeight="200" prefWidth="200" animated="false">
+                    <BarChart fx:id="electricityUsageChart" title="Daily Electricity Usage" prefHeight="200" prefWidth="200" animated="false">
                         <xAxis>
                             <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                         </xAxis>
                         <yAxis>
-                            <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                            <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
                         </yAxis>
                     </BarChart>
 
-                    <BarChart fx:id="gasExpenseChart" title="Daily Gas Usage" prefHeight="200" prefWidth="200" animated="false">
+                    <BarChart fx:id="gasUsageChart" title="Daily Gas Usage" prefHeight="200" prefWidth="200" animated="false">
                         <xAxis>
                             <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                         </xAxis>
                         <yAxis>
-                            <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                            <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
                         </yAxis>
                     </BarChart>
 
-                    <BarChart fx:id="otherExpenseChart" title="Daily Other Usage" prefHeight="200" prefWidth="200" animated="false">
+                    <BarChart fx:id="otherUsageChart" title="Daily Other Usage" prefHeight="200" prefWidth="200" animated="false">
                         <xAxis>
                             <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                         </xAxis>
                         <yAxis>
-                            <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                            <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
                         </yAxis>
                     </BarChart>
             </StackPane>
@@ -82,11 +83,14 @@
                 <ToggleButton fx:id="btnOther" text="Other" toggleGroup="$navToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
             </HBox>
 
-            <HBox spacing="10" alignment="CENTER">
-                <Label text="Log Energy Usage:"/>
-                <TextField fx:id="logUsageField" promptText="Log Usage (J)" maxWidth="250"/>
-                <Button text="Log" onAction="#onLogUsage"/>
-            </HBox>
+            <VBox>
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Log Energy Usage:"/>
+                    <TextField fx:id="logUsageField" promptText="Log Usage (kWh)" maxWidth="250"/>
+                    <Button text="Log" onAction="#onLogUsage"/>
+                </HBox>
+                <ComboBox fx:id="categoryComboBox" promptText="Select Usage Type"/>
+            </VBox>
 
         </VBox>
         </ScrollPane>

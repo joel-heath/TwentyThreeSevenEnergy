@@ -28,8 +28,8 @@ public class SwitchableMetricRepository implements MetricRepository {
     }
 
     @Override
-    public Metric add(Metric metric) {
-        return getActiveRepo().add(metric);
+    public Metric add(Metric metric, EnergyCategory category) {
+        return getActiveRepo().add(metric, category);
     }
 
     @Override

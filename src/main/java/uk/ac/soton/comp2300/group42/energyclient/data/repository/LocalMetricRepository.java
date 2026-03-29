@@ -26,7 +26,7 @@ public class LocalMetricRepository implements MetricRepository {
     }
 
     @Override
-    public Metric add(Metric metric) {
+    public Metric add(Metric metric, EnergyCategory category) {
         validateRequestFields(metric);
 
         Metric newMetric = new Metric(
@@ -34,7 +34,7 @@ public class LocalMetricRepository implements MetricRepository {
                 metric.houseId(),
                 metric.date(),
                 metric.energyUsed(),
-                metric.category()
+                category
         );
 
         data.metrics.put(newMetric.id(), newMetric);

@@ -23,8 +23,8 @@ public class RemoteMetricRepository implements MetricRepository {
     }
 
     @Override
-    public Metric add(Metric metric) {
-        return mapper.toMetric(client.postMetric(metric.houseId(), mapper.toSaveMetricRequest(metric)));
+    public Metric add(Metric metric, EnergyCategory category) {
+        return mapper.toMetric(client.postMetric(metric.houseId(), mapper.toSaveMetricRequest(metric, category)));
     }
 
     @Override

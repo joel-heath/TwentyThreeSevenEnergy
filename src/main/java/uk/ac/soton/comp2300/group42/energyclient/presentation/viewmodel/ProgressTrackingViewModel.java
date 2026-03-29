@@ -3,7 +3,9 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
@@ -17,7 +19,10 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class ProgressTrackingViewModel {
 
@@ -35,7 +40,7 @@ public class ProgressTrackingViewModel {
 
     private final MetricRepository metricRepo;
     private final DoubleProperty currentPrice;
-
+    private final ObjectProperty<EnergyCategory> selectedCategory;
 
     @Inject
     public ProgressTrackingViewModel(EnergyPriceRepository repository, MetricRepository metricRepo, ObservablePreferences preferences) {
@@ -49,6 +54,7 @@ public class ProgressTrackingViewModel {
         this.currentPrice = new SimpleDoubleProperty(0.0);
         this.metricRepo = metricRepo;
         this.preferences = preferences;
+        this.selectedCategory = new SimpleObjectProperty<>(EnergyCategory.OTHER);
     }
 
     public ObservableList<XYChart.Series<String, Number>> getPriceSeriesData() {
@@ -59,9 +65,8 @@ public class ProgressTrackingViewModel {
     public ObservableList<XYChart.Series<String, Number>> getGasSeriesData() { return gasSeriesData; }
     public ObservableList<XYChart.Series<String, Number>> getOtherExpenseSeriesData() { return otherExpenseSeriesData; }
 
-    public DoubleProperty currentPriceProperty() {
-        return currentPrice;
-    }
+    public DoubleProperty currentPriceProperty() { return currentPrice; }
+    public ObjectProperty<EnergyCategory> selectedCategoryProperty() { return selectedCategory; }
 
     public CompletableFuture<Void> loadDataAsync() {
         return CompletableFuture.runAsync(() -> {
@@ -94,21 +99,21 @@ public class ProgressTrackingViewModel {
     public void loadMockExpenses() {
         expenseSeriesData.clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Daily Spend (Mock)");
+        series.setName("Daily Total Spend");
 
         List<Metric> metricList = getAllMetrics();
-        List<Double> energyValues = metricList.stream()
-                .map(Metric::energyUsed)
-                .toList();
-        List<LocalDate> dateValues = metricList.stream()
-                .map(Metric::date)
-                .toList();
 
-        int maxLen = energyValues.size();
-        for (int i = 0; i < maxLen; i++) {
-            String dateLabel = dateValues.get(i).format(DATE_FORMATTER);
-            series.getData().add(new XYChart.Data<>(dateLabel, energyValues.get(i)));
-        }
+        Map<LocalDate, Double> dailyTotals = metricList.stream()
+                .collect(Collectors.groupingBy(
+                        Metric::date,
+                        TreeMap::new,
+                        Collectors.summingDouble(Metric::energyUsed)
+                ));
+
+        dailyTotals.forEach((date, total) -> {
+            String dateLabel = date.format(DATE_FORMATTER);
+            series.getData().add(new XYChart.Data<>(dateLabel, total));
+        });
 
         expenseSeriesData.add(series);
     }
@@ -127,18 +132,18 @@ public class ProgressTrackingViewModel {
         series.setName("Daily Spend by Category (Mock)");
 
         List<Metric> metricList = getAllMetricsByCategory(category);
-        List<Double> energyValues = metricList.stream()
-                .map(Metric::energyUsed)
-                .toList();
-        List<LocalDate> dateValues = metricList.stream()
-                .map(Metric::date)
-                .toList();
 
-        int maxLen = energyValues.size();
-        for (int i = 0; i < maxLen; i++) {
-            String dateLabel = dateValues.get(i).format(DATE_FORMATTER);
-            series.getData().add(new XYChart.Data<>(dateLabel, energyValues.get(i)));
-        }
+        Map<LocalDate, Double> dailyTotals = metricList.stream()
+                .collect(Collectors.groupingBy(
+                        Metric::date,
+                        TreeMap::new,
+                        Collectors.summingDouble(Metric::energyUsed)
+                ));
+
+        dailyTotals.forEach((date, total) -> {
+            String dateLabel = date.format(DATE_FORMATTER);
+            series.getData().add(new XYChart.Data<>(dateLabel, total));
+        });
 
         if (category == EnergyCategory.ELECTRICITY) {
             electricitySeriesData.add(series);
@@ -152,7 +157,8 @@ public class ProgressTrackingViewModel {
     }
 
     public void logUsage(double energyUsed) {
-        Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDate.now(), energyUsed, EnergyCategory.OTHER);
-        metricRepo.add(metric);
+        System.out.println("Logging usage: " + energyUsed + " kWh for category " + selectedCategory.get());
+        Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDate.now(), energyUsed, selectedCategory.get());
+        metricRepo.add(metric, selectedCategory.get());
     }
 }

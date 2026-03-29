@@ -10,25 +10,31 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.Node;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ProgressTrackingViewModel;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;
 
 public class ProgressTrackingController {
 
     @FXML private LineChart<String, Number> priceChart;
-    @FXML private BarChart<String, Number> usageChart;
-    @FXML private BarChart<String, Number> electricityUsageChart;
-    @FXML private BarChart<String, Number> gasUsageChart;
-    @FXML private BarChart<String, Number> otherUsageChart;
 
+    @FXML private VBox expensesViewContainer;
+    @FXML private BarChart<String, Number> electricityExpensesChart, gasExpensesChart, otherExpensesChart;
+
+    @FXML private VBox usageViewContainer;
+    @FXML private BarChart<String, Number> usageChart, electricityUsageChart, gasUsageChart, otherUsageChart;
+
+    @FXML private ToggleGroup expenseUsageToggleGroup;
+    @FXML private ToggleGroup navToggleGroup;
+    @FXML private ToggleButton btnExpenses;
     @FXML private ToggleButton btnElec;
     @FXML private ToggleButton btnGas;
     @FXML private ToggleButton btnOther;
@@ -42,15 +48,17 @@ public class ProgressTrackingController {
     private final BooleanProperty loadError = new SimpleBooleanProperty(false);
 
     @FXML private void initialize() {
+
         priceChart.setData(vm.getPriceSeriesData());
         usageChart.setData(vm.getExpenseSeriesData());
         electricityUsageChart.setData(vm.getElectricitySeriesData());
         gasUsageChart.setData(vm.getGasSeriesData());
         otherUsageChart.setData(vm.getOtherExpenseSeriesData());
 
-        electricityUsageChart.visibleProperty().bind(btnElec.selectedProperty());
-        gasUsageChart.visibleProperty().bind(btnGas.selectedProperty());
-        otherUsageChart.visibleProperty().bind(btnOther.selectedProperty());
+        expenseUsageToggleGroup.selectedToggleProperty().addListener((_) -> updateVisibility());
+        navToggleGroup.selectedToggleProperty().addListener((_) -> updateVisibility());
+
+        updateVisibility();
 
         priceLabel.textProperty().bind(
             vm.currentPriceProperty().asString("%.2f p/kWh")
@@ -90,6 +98,40 @@ public class ProgressTrackingController {
             System.out.println("Error loading price data: " + e.getMessage());
             return null;
         });
+    }
+
+    private void updateVisibility() {
+        boolean isExpenseMode = expenseUsageToggleGroup.getSelectedToggle() == btnExpenses;
+
+        expensesViewContainer.setVisible(isExpenseMode);
+        expensesViewContainer.setManaged(isExpenseMode);
+        usageViewContainer.setVisible(!isExpenseMode);
+        usageViewContainer.setManaged(!isExpenseMode);
+
+        List<BarChart<String, Number>> categoryCharts = Arrays.asList(
+                electricityExpensesChart, gasExpensesChart, otherExpensesChart,
+                electricityUsageChart, gasUsageChart, otherUsageChart
+        );
+        for (BarChart<String, Number> chart : categoryCharts) {
+            chart.setVisible(false);
+            chart.setManaged(false);
+        }
+
+        ToggleButton selectedNav = (ToggleButton) navToggleGroup.getSelectedToggle();
+        BarChart<String, Number> toShow = null;
+
+        if (selectedNav == btnElec) {
+            toShow = isExpenseMode ? electricityExpensesChart : electricityUsageChart;
+        } else if (selectedNav == btnGas) {
+            toShow = isExpenseMode ? gasExpensesChart : gasUsageChart;
+        } else if (selectedNav == btnOther) {
+            toShow = isExpenseMode ? otherExpensesChart : otherUsageChart;
+        }
+
+        if (toShow != null) {
+            toShow.setVisible(true);
+            toShow.setManaged(true);
+        }
     }
 
     private void scheduleApplyChartColours() {

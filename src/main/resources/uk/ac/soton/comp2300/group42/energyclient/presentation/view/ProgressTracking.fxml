@@ -35,18 +35,59 @@
                 </yAxis>
             </LineChart>
 
-            <BarChart fx:id="usageChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false">
-                <xAxis>
-                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
-                </xAxis>
-                <yAxis>
-                    <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
-                </yAxis>
-            </BarChart>
-
+            <fx:define>
+                <ToggleGroup fx:id="expenseUsageToggleGroup" />
+            </fx:define>
+            <HBox alignment="CENTER" spacing="20.0" style="-fx-background-color: #eee; -fx-padding: 10;">
+                <ToggleButton fx:id="btnExpenses" text="View Expenses" toggleGroup="$expenseUsageToggleGroup" selected="true" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                <ToggleButton text="View Usage" toggleGroup="$expenseUsageToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+            </HBox>
 
             <StackPane VBox.vgrow="ALWAYS">
-                    <BarChart fx:id="electricityUsageChart" title="Daily Electricity Usage" prefHeight="200" prefWidth="200" animated="false">
+
+                <VBox fx:id="expensesViewContainer" spacing="10">
+                    <BarChart title="Daily Energy Expenses" prefHeight="200" prefWidth="200" animated="false">
+                        <xAxis>
+                            <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Total Cost (£)" side="LEFT" animated="false"/>
+                        </yAxis>
+                    </BarChart>
+
+                    <StackPane VBox.vgrow="ALWAYS">
+                            <BarChart fx:id="electricityExpensesChart" title="Daily Electricity Expenses" prefHeight="200" prefWidth="200" animated="false">
+                                <xAxis>
+                                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Total Cost (£)" side="LEFT" animated="false"/>
+                                </yAxis>
+                            </BarChart>
+
+                            <BarChart fx:id="gasExpensesChart" title="Daily Gas Expenses" prefHeight="200" prefWidth="200" animated="false">
+                                <xAxis>
+                                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Total Cost (£)" side="LEFT" animated="false"/>
+                                </yAxis>
+                            </BarChart>
+
+                            <BarChart fx:id="otherExpensesChart" title="Daily Other Expenses" prefHeight="200" prefWidth="200" animated="false">
+                                <xAxis>
+                                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Total Cost (£)" side="LEFT" animated="false"/>
+                                </yAxis>
+                            </BarChart>
+                    </StackPane>
+                </VBox>
+
+                <VBox fx:id="usageViewContainer" spacing="10">
+
+                    <BarChart fx:id="usageChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false">
                         <xAxis>
                             <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                         </xAxis>
@@ -55,25 +96,38 @@
                         </yAxis>
                     </BarChart>
 
-                    <BarChart fx:id="gasUsageChart" title="Daily Gas Usage" prefHeight="200" prefWidth="200" animated="false">
-                        <xAxis>
-                            <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
-                        </xAxis>
-                        <yAxis>
-                            <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
-                        </yAxis>
-                    </BarChart>
 
-                    <BarChart fx:id="otherUsageChart" title="Daily Other Usage" prefHeight="200" prefWidth="200" animated="false">
-                        <xAxis>
-                            <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
-                        </xAxis>
-                        <yAxis>
-                            <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
-                        </yAxis>
-                    </BarChart>
+                    <StackPane VBox.vgrow="ALWAYS">
+                            <BarChart fx:id="electricityUsageChart" title="Daily Electricity Usage" prefHeight="200" prefWidth="200" animated="false">
+                                <xAxis>
+                                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
+                                </yAxis>
+                            </BarChart>
+
+                            <BarChart fx:id="gasUsageChart" title="Daily Gas Usage" prefHeight="200" prefWidth="200" animated="false">
+                                <xAxis>
+                                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
+                                </yAxis>
+                            </BarChart>
+
+                            <BarChart fx:id="otherUsageChart" title="Daily Other Usage" prefHeight="200" prefWidth="200" animated="false">
+                                <xAxis>
+                                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
+                                </yAxis>
+                            </BarChart>
+                    </StackPane>
+
+                </VBox>
             </StackPane>
-
             <fx:define>
                 <ToggleGroup fx:id="navToggleGroup" />
             </fx:define>

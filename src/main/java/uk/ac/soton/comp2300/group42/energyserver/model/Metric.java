@@ -5,7 +5,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Metric {
@@ -20,7 +20,7 @@ public class Metric {
     private House house;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime dateTime;
 
     @Column(nullable = false)
     private EnergyCategory energyCategory;
@@ -33,8 +33,8 @@ public class Metric {
     public House getHouse() { return house; }
     public void setHouse(House house) { this.house = house; }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public LocalDateTime getDateTime() { return dateTime; }
+    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
 
     public Double getEnergyUsed() { return energyUsed; }
     public void setEnergyUsed(Double energyUsed) { this.energyUsed = energyUsed; }

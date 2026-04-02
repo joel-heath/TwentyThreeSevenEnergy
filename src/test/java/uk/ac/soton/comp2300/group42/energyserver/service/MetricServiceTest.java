@@ -22,6 +22,8 @@ import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 import uk.ac.soton.comp2300.group42.metric.SaveMetricRequest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +70,7 @@ class MetricServiceTest {
         dummyMetric = new Metric();
         ReflectionTestUtils.setField(dummyMetric, "id", 100L);
         dummyMetric.setHouse(dummyHouse);
-        dummyMetric.setDate(LocalDate.of(2023, 10, 1));
+        dummyMetric.setDateTime(LocalDateTime.of(LocalDate.of(2023, 10, 1), LocalTime.of(12, 0)));
         dummyMetric.setEnergyUsed(15.5);
         dummyMetric.setEnergyCategory(EnergyCategory.ELECTRICITY);
     }
@@ -120,25 +122,25 @@ class MetricServiceTest {
 
     @Test
     void saveMetric_Success() {
-        LocalDate date = LocalDate.of(2025, 12, 25);
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2025, 12, 25), LocalTime.of(15, 30));
         SaveMetricRequest request = new SaveMetricRequest(20.0, EnergyCategory.OTHER);
 
         when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
         when(metricRepo.save(any(Metric.class))).thenAnswer(m -> assignId(m, 200L));
 
-        MetricResponse result = metricService.saveMetric(10L, date, request, dummyUser);
+        MetricResponse result = metricService.saveMetric(10L, dateTime, request, dummyUser);
 
         Metric savedMetric = verifySaveAndCapture(metricRepo, Metric.class);
 
         assertThat(savedMetric.getId()).isEqualTo(200L);
         assertThat(savedMetric.getHouse()).isEqualTo(dummyHouse);
-        assertThat(savedMetric.getDate()).isEqualTo(date);
+        assertThat(savedMetric.getDateTime()).isEqualTo(dateTime);
         assertThat(savedMetric.getEnergyUsed()).isEqualTo(20.0);
         assertThat(savedMetric.getEnergyCategory()).isEqualTo(EnergyCategory.OTHER);
 
         assertThat(result.id()).isEqualTo(200L);
         assertThat(result.houseId()).isEqualTo(10L);
-        assertThat(result.date()).isEqualTo(date);
+        assertThat(result.dateTime()).isEqualTo(dateTime);
         assertThat(result.energyUsed()).isEqualTo(20.0);
         assertThat(result.category()).isEqualTo(EnergyCategory.OTHER);
     }

@@ -5,15 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.service.MetricService;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 import uk.ac.soton.comp2300.group42.metric.SaveMetricRequest;
 
-import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -33,12 +32,7 @@ public class MetricController {
             @PathVariable Long houseId,
             @Valid @RequestBody SaveMetricRequest request,
             @AuthenticationPrincipal User user) {
-        MetricResponse response = service.saveMetric(houseId, LocalDate.now(), request, user);
-        URI location = ServletUriComponentsBuilder
-               .fromCurrentRequest()
-               .path("/{id}")
-               .buildAndExpand(response.id())
-               .toUri();
+        MetricResponse response = service.saveMetric(houseId, LocalDateTime.now(), request, user);
         return ResponseEntity.ok(response);
    }
 
@@ -79,6 +73,6 @@ public class MetricController {
             @Valid @RequestBody SaveMetricRequest request,
             @AuthenticationPrincipal User user) {
 
-        return ResponseEntity.ok(service.saveMetric(houseId, LocalDate.now(), request, user));
+        return ResponseEntity.ok(service.saveMetric(houseId, LocalDateTime.now(), request, user));
     }
 }

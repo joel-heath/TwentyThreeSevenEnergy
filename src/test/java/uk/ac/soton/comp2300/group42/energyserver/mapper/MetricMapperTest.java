@@ -9,6 +9,8 @@ import uk.ac.soton.comp2300.group42.energyserver.model.Metric;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,14 +30,14 @@ class MetricMapperTest {
 
         Metric metric = new Metric();
         metric.setEnergyUsed(50.0);
-        metric.setDate(LocalDate.of(2026, 3, 4));
+        metric.setDateTime(LocalDateTime.of(LocalDate.of(2026, 3, 4), LocalTime.of(16,30)));
         metric.setHouse(house);
 
         MetricResponse result = underTest.toMetricResponse(metric);
 
         assertThat(result).isNotNull();
         assertThat(result.houseId()).isEqualTo(1L);
-        assertThat(result.date()).isEqualTo(LocalDate.of(2026, 3, 4));
+        assertThat(result.dateTime()).isEqualTo(LocalDateTime.of(LocalDate.of(2026, 3, 4), LocalTime.of(16,30)));
         assertThat(result.energyUsed()).isEqualTo(50.0);
     }
 

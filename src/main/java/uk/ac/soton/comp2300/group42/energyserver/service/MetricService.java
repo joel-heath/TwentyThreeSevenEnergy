@@ -14,6 +14,7 @@ import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.repository.MetricRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -64,19 +65,19 @@ public class MetricService {
     public List<MetricResponse> getMetricsByHouseAndDate(Long houseId, LocalDate date, User user) {
         House house = authManager.authorize(houseId, user, Role.GUEST).getHouse();
 
-        return metricRepo.findAllByHouseAndDate(house, date)
+        return metricRepo.findAllByHouseAndDateTimeBetween(house, date.atStartOfDay(), date.plusDays(1).atStartOfDay())
                 .stream()
                 .map(mapper::toMetricResponse)
                 .toList();
     }
 
     @Transactional
-    public MetricResponse saveMetric(Long houseId, LocalDate date, SaveMetricRequest request, User user) {
+    public MetricResponse saveMetric(Long houseId, LocalDateTime dateTime, SaveMetricRequest request, User user) {
         House house = authManager.authorize(houseId, user, Role.RESIDENT).getHouse();
 
         Metric metric = new Metric();
         metric.setHouse(house);
-        metric.setDate(date);
+        metric.setDateTime(dateTime);
         metric.setEnergyUsed(request.energyUsed());
         metric.setEnergyCategory(request.category());
         metric = metricRepo.save(metric);

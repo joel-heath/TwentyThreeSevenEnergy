@@ -5,11 +5,11 @@ import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyserver.model.House;
 import uk.ac.soton.comp2300.group42.energyserver.model.Metric;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MetricRepository extends JpaRepository<Metric, Long> {
     List<Metric> findAllByHouse(House metricsHouse);
     List<Metric> findAllByHouseAndEnergyCategory(House metricsHouse, EnergyCategory energyCategory);
-    List<Metric> findAllByHouseAndDate(House metricsHouse, LocalDate date);
+    List<Metric> findAllByHouseAndDateTimeBetween(House metricsHouse, LocalDateTime start, LocalDateTime end);
 }

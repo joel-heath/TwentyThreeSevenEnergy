@@ -32,7 +32,7 @@ public class LocalMetricRepository implements MetricRepository {
         Metric newMetric = new Metric(
                 data.nextMetricId(),
                 metric.houseId(),
-                metric.date(),
+                metric.dateTime(),
                 metric.energyUsed(),
                 category
         );
@@ -93,8 +93,8 @@ public class LocalMetricRepository implements MetricRepository {
 
         validateRequestExists(metric.houseId());
 
-        if (Objects.isNull(metric.date()))
-            throwApiException(400, "Date is required");
+        if (Objects.isNull(metric.dateTime()))
+            throwApiException(400, "Date/time is required");
 
         if (Objects.isNull(metric.energyUsed()))
             throwApiException(400, "Energy used is required");

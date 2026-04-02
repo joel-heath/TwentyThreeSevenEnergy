@@ -17,6 +17,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricReposit
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,7 @@ public class ProgressTrackingViewModel {
 
         Map<LocalDate, Double> dailyTotals = metricList.stream()
                 .collect(Collectors.groupingBy(
-                        Metric::date,
+                        metric -> metric.dateTime().toLocalDate(),
                         TreeMap::new,
                         Collectors.summingDouble(Metric::energyUsed)
                 ));
@@ -135,7 +136,7 @@ public class ProgressTrackingViewModel {
 
         Map<LocalDate, Double> dailyTotals = metricList.stream()
                 .collect(Collectors.groupingBy(
-                        Metric::date,
+                        metric -> metric.dateTime().toLocalDate(),
                         TreeMap::new,
                         Collectors.summingDouble(Metric::energyUsed)
                 ));
@@ -158,7 +159,7 @@ public class ProgressTrackingViewModel {
 
     public void logUsage(double energyUsed) {
         System.out.println("Logging usage: " + energyUsed + " kWh for category " + selectedCategory.get());
-        Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDate.now(), energyUsed, selectedCategory.get());
+        Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDateTime.now(), energyUsed, selectedCategory.get());
         metricRepo.add(metric, selectedCategory.get());
     }
 }

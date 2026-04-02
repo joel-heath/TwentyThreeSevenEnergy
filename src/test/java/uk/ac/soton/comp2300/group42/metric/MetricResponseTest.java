@@ -7,6 +7,8 @@ import uk.ac.soton.comp2300.group42.extensions.ApiContractTest;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +20,7 @@ class MetricResponseTest {
         var response = new MetricResponse(
                 5L,
                 10L,
-                LocalDate.of(2025, 12, 25),
+                LocalDateTime.of(LocalDate.of(2025, 12, 25), LocalTime.of(15, 30)),
                 32.89,
                 EnergyCategory.OTHER
         );
@@ -27,7 +29,7 @@ class MetricResponseTest {
 
         assertThat(json).extractingJsonPathNumberValue("@.id").isEqualTo(5);
         assertThat(json).extractingJsonPathNumberValue("@.houseId").isEqualTo(10);
-        assertThat(json).extractingJsonPathStringValue("@.date").isEqualTo("2025-12-25");
+        assertThat(json).extractingJsonPathStringValue("@.dateTime").isEqualTo("2025-12-25T15:30:00");
         assertThat(json).extractingJsonPathNumberValue("@.energyUsed").isEqualTo(32.89);
         assertThat(json).extractingJsonPathStringValue("@.category").isEqualTo("other");
     }
@@ -38,7 +40,7 @@ class MetricResponseTest {
                 {
                     "id": 2,
                     "houseId": 8,
-                    "date": "2025-04-20",
+                    "dateTime": "2025-04-20T16:20:00",
                     "energyUsed": 60.24,
                     "category": "electricity"
                 }
@@ -48,7 +50,7 @@ class MetricResponseTest {
 
         assertThat(response.id()).isEqualTo(2L);
         assertThat(response.houseId()).isEqualTo(8L);
-        assertThat(response.date()).isEqualTo(LocalDate.of(2025, 4, 20));
+        assertThat(response.dateTime()).isEqualTo(LocalDateTime.of(LocalDate.of(2025, 4, 20), LocalTime.of(16, 20)));
         assertThat(response.energyUsed()).isEqualTo(60.24);
         assertThat(response.category()).isEqualTo(EnergyCategory.ELECTRICITY);
     }

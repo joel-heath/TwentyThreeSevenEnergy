@@ -62,6 +62,7 @@ public class MetricService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<MetricResponse> getMetricsByHouseAndDate(Long houseId, LocalDate date, User user) {
         House house = authManager.authorize(houseId, user, Role.GUEST).getHouse();
 

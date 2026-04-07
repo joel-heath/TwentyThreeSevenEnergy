@@ -7,5 +7,8 @@ public record UnitRateResponse(
         double valueIncVat,
 
         @JsonProperty("valid_from")
-        String validFrom
+        String validFrom,
+
+        @JsonProperty("valid_to")
+        String validTo
 ) {}

@@ -27,7 +27,7 @@ public class ProgressTrackingController {
     @FXML private LineChart<String, Number> priceChart;
 
     @FXML private VBox expensesViewContainer;
-    @FXML private BarChart<String, Number> electricityExpensesChart, gasExpensesChart, otherExpensesChart;
+    @FXML private BarChart<String, Number> expensesChart, electricityExpensesChart, gasExpensesChart, otherExpensesChart;
 
     @FXML private VBox usageViewContainer;
     @FXML private BarChart<String, Number> usageChart, electricityUsageChart, gasUsageChart, otherUsageChart;
@@ -50,7 +50,8 @@ public class ProgressTrackingController {
     @FXML private void initialize() {
 
         priceChart.setData(vm.getPriceSeriesData());
-        usageChart.setData(vm.getExpenseSeriesData());
+        expensesChart.setData(vm.getExpenseSeriesData());
+        usageChart.setData(vm.getUsageSeriesData());
         electricityUsageChart.setData(vm.getElectricitySeriesData());
         gasUsageChart.setData(vm.getGasSeriesData());
         otherUsageChart.setData(vm.getOtherExpenseSeriesData());
@@ -75,10 +76,12 @@ public class ProgressTrackingController {
 
         vm.getPriceSeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
         vm.getExpenseSeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
+        vm.getUsageSeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
         vm.getElectricitySeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
         ColorVisionManager.visionProperty().addListener((_, _, _) -> scheduleApplyChartColours());
         scheduleApplyChartColours();
 
+        vm.loadWeeklyExpenses();
         vm.loadMockExpenses(); // when real data is available, do this asynchronously
         vm.loadExpensesByCategory(EnergyCategory.ELECTRICITY);
         vm.loadExpensesByCategory(EnergyCategory.GAS);
@@ -88,6 +91,8 @@ public class ProgressTrackingController {
         categoryComboBox.getItems().setAll(EnergyCategory.values());
         categoryComboBox.setConverter(createConverter(EnergyCategory::getName));
         categoryComboBox.valueProperty().bindBidirectional(vm.selectedCategoryProperty());
+
+        vm.syncPrices();
 
         vm.loadDataAsync().exceptionally(e -> {
             Platform.runLater(() -> {
@@ -141,6 +146,8 @@ public class ProgressTrackingController {
     private void applyChartColours() {
         priceChart.applyCss();
         priceChart.layout();
+        expensesChart.applyCss();
+        expensesChart.layout();
         usageChart.applyCss();
         usageChart.layout();
         electricityUsageChart.applyCss();
@@ -166,6 +173,15 @@ public class ProgressTrackingController {
                 Node symbolNode = data.getNode();
                 if (symbolNode != null) {
                     symbolNode.setStyle("-fx-background-color: " + lineColour + ", white;");
+                }
+            }
+        }
+
+        for (XYChart.Series<String, Number> series : expensesChart.getData()) {
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                Node barNode = data.getNode();
+                if (barNode != null) {
+                    barNode.setStyle("-fx-bar-fill: " + barColour + ";");
                 }
             }
         }
@@ -209,6 +225,9 @@ public class ProgressTrackingController {
         for (Node legendSymbol : priceChart.lookupAll(".chart-legend-item-symbol")) {
             legendSymbol.setStyle("-fx-background-color: " + lineColour + ", " + lineColour + ";");
         }
+        for (Node legendSymbol : expensesChart.lookupAll(".chart-legend-item-symbol")) {
+            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
+        }
         for (Node legendSymbol : usageChart.lookupAll(".chart-legend-item-symbol")) {
             legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
         }
@@ -227,6 +246,7 @@ public class ProgressTrackingController {
     private void onLogUsage() {
         double usage = Double.parseDouble(logUsageField.getText());
         vm.logUsage(usage);
+        vm.loadWeeklyExpenses();
         vm.loadMockExpenses();
         vm.loadExpensesByCategory(vm.selectedCategoryProperty().get());
     }

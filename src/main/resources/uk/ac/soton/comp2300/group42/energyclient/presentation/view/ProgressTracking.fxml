@@ -46,7 +46,7 @@
             <StackPane VBox.vgrow="ALWAYS">
 
                 <VBox fx:id="expensesViewContainer" spacing="10">
-                    <BarChart title="Daily Energy Expenses" prefHeight="200" prefWidth="200" animated="false">
+                    <BarChart fx:id = "expensesChart" title="Daily Energy Expenses" prefHeight="200" prefWidth="200" animated="false">
                         <xAxis>
                             <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
                         </xAxis>

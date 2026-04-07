@@ -18,10 +18,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EnergyPriceClientTest {
+class ExternalEnergyPriceClientTest {
 
     private MockWebServer mockWebServer;
-    private EnergyPriceClient client;
+    private ExternalEnergyPriceClient client;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -39,7 +39,7 @@ class EnergyPriceClientTest {
                 ZoneId.of("UTC")
         );
 
-        client = new EnergyPriceClient(mapper, mockBaseUrl, fixedClock);
+        client = new ExternalEnergyPriceClient(mapper, mockBaseUrl, fixedClock);
     }
 
     @AfterEach

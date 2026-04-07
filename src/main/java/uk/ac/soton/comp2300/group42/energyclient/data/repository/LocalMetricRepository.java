@@ -8,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageData;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,6 +60,15 @@ public class LocalMetricRepository implements MetricRepository {
 
         return data.metrics.values().stream()
                 .filter(a -> Objects.equals(a.houseId(), houseId))
+                .toList();
+    }
+
+    @Override
+    public List<Metric> getAllByDate(Long houseId, LocalDate date) {
+        validateRequestExists(houseId);
+
+        return data.metrics.values().stream()
+                .filter(a -> Objects.equals(a.houseId(), houseId) && Objects.equals(a.dateTime().toLocalDate(), date))
                 .toList();
     }
 

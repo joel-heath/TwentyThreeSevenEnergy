@@ -8,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.data.mapper.MetricMapper;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Singleton
@@ -35,6 +36,12 @@ public class RemoteMetricRepository implements MetricRepository {
     @Override
     public List<Metric> getAll(Long houseId) {
         return client.fetchAllMetrics(houseId).stream()
+                .map(mapper::toMetric)
+                .toList();
+    }
+
+    public List<Metric> getAllByDate(Long houseId, LocalDate date) {
+        return client.fetchAllMetricsByDate(houseId, date).stream()
                 .map(mapper::toMetric)
                 .toList();
     }

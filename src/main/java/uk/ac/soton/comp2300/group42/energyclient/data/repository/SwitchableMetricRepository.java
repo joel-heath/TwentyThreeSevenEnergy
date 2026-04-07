@@ -7,6 +7,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Singleton
@@ -40,6 +41,11 @@ public class SwitchableMetricRepository implements MetricRepository {
     @Override
     public List<Metric> getAll(Long houseId) {
         return getActiveRepo().getAll(houseId);
+    }
+
+    @Override
+    public List<Metric> getAllByDate(Long houseId, LocalDate date) {
+        return getActiveRepo().getAllByDate(houseId, date);
     }
 
     @Override

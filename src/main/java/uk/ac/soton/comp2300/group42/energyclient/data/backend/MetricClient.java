@@ -8,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 import uk.ac.soton.comp2300.group42.metric.SaveMetricRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class MetricClient extends BaseApiClient {
@@ -27,6 +28,10 @@ public class MetricClient extends BaseApiClient {
 
     public List<MetricResponse> fetchAllMetrics(Long houseId) {
         return get("houses/" + houseId + "/metrics", new TypeReference<>() {});
+    }
+
+    public List<MetricResponse> fetchAllMetricsByDate(Long houseId, LocalDate date) {
+        return get("houses/" + houseId + "/metrics?date=" + date, new TypeReference<>() {});
     }
 
     public List<MetricResponse> fetchAllMetricsByCategory(Long houseId, EnergyCategory category) {

@@ -11,6 +11,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
@@ -33,7 +34,6 @@ public class UserStore {
     public UserStore(UserRepository userRepo,
                      HouseRepository houseRepo,
                      HouseStore houseStore,
-                     SessionManager sessionManager,
                      @UIExecutor Executor uiExecutor) {
         this.userRepo = userRepo;
         this.houseRepo = houseRepo;
@@ -54,9 +54,6 @@ public class UserStore {
             if (newHouse == null || !newHouse.equals(preferences.getActiveHouse())) return;
             uiExecutor.execute(() -> preferences.setActiveHouse(newHouse));
         });
-        sessionManager.subscribe(_ ->
-            uiExecutor.execute(this::refresh), false
-        );
     }
 
     public ObservableHousemate getCurrent() { return currentUser; }
@@ -92,14 +89,4 @@ public class UserStore {
             currentUser.updateFrom(data.me(), data.house());
         }, uiExecutor);
     }
-
-    public void refresh() {
-        var prefs = userRepo.getCurrentPreferences();
-        var house = houseStore.get(prefs.activeHouseId());
-        var me = houseRepo.getCurrentUserAsHousemate(house.getId());
-        preferences.updateFrom(prefs, house);
-        currentUser.updateFrom(me, house);
-    }
-
-    // TODO: login/out, which calls AuthRepo and updates the current user and preferences accordingly
 }

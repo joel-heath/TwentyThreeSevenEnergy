@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 @Singleton
@@ -30,11 +31,10 @@ public class LocalStorageClient {
         this.storagePath = storagePath;
         this.executor = executor;
         this.data = new LocalStorageData();
-        loadData();
     }
 
-    private void loadData() {
-        executor.submit(() -> {
+    public CompletableFuture<Void> loadDataAsync() {
+        return CompletableFuture.runAsync(() -> {
             try {
                 if (!Files.exists(storagePath) || Files.size(storagePath) == 0)
                     throw new IOException("Local storage file does not exist or is empty.");
@@ -46,13 +46,13 @@ public class LocalStorageClient {
                 System.out.println("I/O Error while reading from local storage, maybe the file is corrupt. Using default data.");
                 System.out.println(e.getMessage());
                 this.data.updateFrom(LocalStorageData.createDefault());
-                saveData();
+                saveDataAsync();
             }
-        });
+        }, executor);
     }
 
-    public void saveData() {
-        executor.submit(() -> {
+    public CompletableFuture<Void> saveDataAsync() {
+        return CompletableFuture.runAsync(() -> {
             try {
                 Path tempPath = storagePath.resolveSibling(storagePath.getFileName() + ".tmp");
 
@@ -63,7 +63,7 @@ public class LocalStorageClient {
                 System.out.println("I/O Error while writing to local storage. Changes may not be saved.");
                 System.out.println(e.getMessage());
             }
-        });
+        }, executor);
     }
 
     public LocalStorageData getData() {

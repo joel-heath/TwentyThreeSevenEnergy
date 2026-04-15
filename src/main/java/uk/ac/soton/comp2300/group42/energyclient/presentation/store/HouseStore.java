@@ -7,11 +7,10 @@ import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -24,18 +23,12 @@ public class HouseStore {
     private final Executor uiExecutor;
 
     @Inject
-    public HouseStore(HouseRepository repository, SessionManager sessionManager, @UIExecutor Executor uiExecutor) {
+    public HouseStore(HouseRepository repository,
+                      @UIExecutor Executor uiExecutor) {
         this.repository = repository;
         this.uiExecutor = uiExecutor;
-        this.cache = new WeakHashMap<>();
+        this.cache = new HashMap<>();
         this.masterList = FXCollections.observableArrayList();
-
-        sessionManager.subscribe(_ ->
-                uiExecutor.execute(() -> {
-                    cache.clear();
-                    masterList.clear();
-                })
-        );
     }
 
     public ObservableHouse add() {
@@ -113,6 +106,13 @@ public class HouseStore {
             );
 
             masterList.setAll(updates.stream().map(HouseUpdate::house).toList());
+        }, uiExecutor);
+    }
+
+    public CompletableFuture<Void> invalidateCacheAsync() {
+        return CompletableFuture.runAsync(() -> {
+            cache.clear();
+            masterList.clear();
         }, uiExecutor);
     }
 }

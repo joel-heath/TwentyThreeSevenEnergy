@@ -38,7 +38,7 @@ public class LocalHouseRepository implements HouseRepository {
         );
 
         data.houses.put(newHouse.id(), newHouse);
-        client.saveData();
+        client.saveDataAsync();
         return newHouse;
     }
 
@@ -55,7 +55,7 @@ public class LocalHouseRepository implements HouseRepository {
         );
 
         data.houses.put(newHouse.id(), newHouse);
-        client.saveData();
+        client.saveDataAsync();
         return newHouse;
     }
 
@@ -83,7 +83,7 @@ public class LocalHouseRepository implements HouseRepository {
         );
 
         data.houses.put(updatedHouse.id(), updatedHouse);
-        client.saveData();
+        client.saveDataAsync();
         return house;
     }
 
@@ -92,7 +92,7 @@ public class LocalHouseRepository implements HouseRepository {
         validateRequest(houseId);
 
         data.houses.remove(houseId);
-        client.saveData();
+        client.saveDataAsync();
     }
 
     @Override

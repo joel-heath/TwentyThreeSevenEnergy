@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
@@ -67,13 +68,13 @@ class ProgressTrackingViewModelTest {
     @Test
     void loadMockExpenses_populatesSevenDaySeriesFromMetrics() {
         List<Metric> metrics = List.of(
-                new Metric(1L, 9L, LocalDate.now(), 1.0),
-                new Metric(2L, 9L, LocalDate.now(), 2.0),
-                new Metric(3L, 9L, LocalDate.now(), 3.0),
-                new Metric(4L, 9L, LocalDate.now(), 4.0),
-                new Metric(5L, 9L, LocalDate.now(), 5.0),
-                new Metric(6L, 9L, LocalDate.now(), 6.0),
-                new Metric(7L, 9L, LocalDate.now(), 7.0)
+                new Metric(1L, 9L, LocalDate.now(), 1.0, EnergyCategory.OTHER),
+                new Metric(2L, 9L, LocalDate.now(), 2.0, EnergyCategory.ELECTRICITY),
+                new Metric(3L, 9L, LocalDate.now(), 3.0, EnergyCategory.GAS),
+                new Metric(4L, 9L, LocalDate.now(), 4.0, EnergyCategory.OTHER),
+                new Metric(5L, 9L, LocalDate.now(), 5.0, EnergyCategory.GAS),
+                new Metric(6L, 9L, LocalDate.now(), 6.0, EnergyCategory.ELECTRICITY),
+                new Metric(7L, 9L, LocalDate.now(), 7.0, EnergyCategory.OTHER)
         );
         when(metricRepository.getAll(9L)).thenReturn(metrics);
 

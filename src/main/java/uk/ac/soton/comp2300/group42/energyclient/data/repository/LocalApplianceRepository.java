@@ -35,7 +35,7 @@ public class LocalApplianceRepository implements ApplianceRepository {
         );
 
         data.appliances.put(newAppliance.id(), newAppliance);
-        client.saveData();
+        client.saveDataAsync();
         return newAppliance;
     }
 
@@ -59,7 +59,7 @@ public class LocalApplianceRepository implements ApplianceRepository {
         validateRequestExists(appliance.houseId(), appliance.id());
 
         data.appliances.put(appliance.id(), appliance);
-        client.saveData();
+        client.saveDataAsync();
         return appliance;
     }
 
@@ -68,7 +68,7 @@ public class LocalApplianceRepository implements ApplianceRepository {
         validateRequestExists(houseId, applianceId);
 
         data.appliances.remove(applianceId);
-        client.saveData();
+        client.saveDataAsync();
     }
 
     private void validateRequestExists(Long houseId) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+
+<StackPane xmlns="http://javafx.com/javafx">
+    <VBox alignment="CENTER" spacing="30">
+        <Label text="23/7 Energy"
+               style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+        <ProgressIndicator prefWidth="60" prefHeight="60"/>
+    </VBox>
+</StackPane>

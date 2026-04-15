@@ -59,6 +59,20 @@ class EnergyUsageViewModelTest {
     }
 
     @Test
+    void usageProperty_isClampedBetweenZeroAndTwo() {
+        preferences.setEnergyGoal(10.0);
+
+        viewModel.setCost(-5.0);
+        assertEquals(0.0, viewModel.usageProperty().get(), "Usage should be clamped to a minimum of 0.0");
+
+        viewModel.setCost(25.0);
+        assertEquals(2.0, viewModel.usageProperty().get(), "Usage should be capped to a maximum of 2.0");
+
+        viewModel.setCost(5.0);
+        assertEquals(0.5, viewModel.usageProperty().get(), 1e-9);
+    }
+
+    @Test
     void goalMessage_updatesWhenPreferenceGoalChanges() {
         preferences.setEnergyGoal(2.5);
 
@@ -68,5 +82,14 @@ class EnergyUsageViewModelTest {
     @Test
     void getPreferences_returnsInjectedPreferences() {
         assertSame(preferences, viewModel.getPreferences());
+    }
+
+    @Test
+    void messages_haveCorrectCurrencyFormatting() {
+        viewModel.setCost(1.5);
+        assertEquals("£1.50", viewModel.costMessageProperty().get());
+
+        preferences.setEnergyGoal(5.0);
+        assertEquals("Goal: £5.00", viewModel.goalMessageProperty().get());
     }
 }

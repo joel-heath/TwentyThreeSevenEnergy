@@ -19,6 +19,7 @@ public class LocalStorageData {
     public Map<Long, Activation> activations;
     public Map<Long, House> houses;
     public Map<Long, Metric> metrics;
+    public Map<Long, EnergyPrice> energyPrices;
 
     public LocalStorageData() {
         this.user = null;
@@ -28,6 +29,7 @@ public class LocalStorageData {
         this.activations = new HashMap<>();
         this.houses = new HashMap<>();
         this.metrics = new HashMap<>();
+        this.energyPrices = new HashMap<>();
     }
 
     public static LocalStorageData createDefault() {
@@ -50,6 +52,7 @@ public class LocalStorageData {
         this.activations = newData.activations;
         this.houses = newData.houses;
         this.metrics = newData.metrics;
+        this.energyPrices = newData.energyPrices;
     }
 
     private Long nextId(Map<Long, ?> map) {
@@ -69,6 +72,10 @@ public class LocalStorageData {
     }
 
     public Long nextMetricId() {
+        return nextId(metrics);
+    }
+
+    public Long nextEnergyPriceId() {
         return nextId(metrics);
     }
 }

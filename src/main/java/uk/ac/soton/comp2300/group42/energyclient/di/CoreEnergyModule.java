@@ -15,6 +15,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.repository.*;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.AppStateOrchestrator;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -26,13 +27,14 @@ import java.util.concurrent.Executors;
 public class CoreEnergyModule extends AbstractModule {
     @Override
     protected void configure() {
+        bind(AppStateOrchestrator.class).asEagerSingleton();
         bind(AuthRepository.class).to(RemoteAuthRepository.class);
         bind(UserRepository.class).to(SwitchableUserRepository.class);
         bind(HouseRepository.class).to(SwitchableHouseRepository.class);
         bind(ApplianceRepository.class).to(SwitchableApplianceRepository.class);
         bind(ActivationRepository.class).to(SwitchableActivationRepository.class);
         bind(MetricRepository.class).to(SwitchableMetricRepository.class);
-        bind(EnergyPriceRepository.class).to(EnergyPriceRepositoryImpl.class);
+        bind(EnergyPriceRepository.class).to(SwitchableEnergyPriceRepository.class);
     }
 
     @Provides
@@ -125,6 +127,12 @@ public class CoreEnergyModule extends AbstractModule {
     @Singleton
     MetricMapper provideMetricMapper() {
         return Mappers.getMapper(MetricMapper.class);
+    }
+
+    @Provides
+    @Singleton
+    EnergyPriceMapper provideEnergyPriceMapper() {
+        return Mappers.getMapper(EnergyPriceMapper.class);
     }
 
     @Provides

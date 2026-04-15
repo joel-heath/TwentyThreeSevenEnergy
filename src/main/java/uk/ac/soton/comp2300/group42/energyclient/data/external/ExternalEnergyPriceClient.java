@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Singleton
-public class EnergyPriceClient {
+public class ExternalEnergyPriceClient {
 
 
     private final HttpClient client;
@@ -33,7 +33,7 @@ public class EnergyPriceClient {
     private final Clock clock;
 
     @Inject
-    public EnergyPriceClient(@ExternalMapper JsonMapper mapper,
+    public ExternalEnergyPriceClient(@ExternalMapper JsonMapper mapper,
                              @EnergyPriceApiRootUri URI apiRootUri,
                              Clock clock) {
         this.client = HttpClient.newBuilder()
@@ -55,6 +55,34 @@ public class EnergyPriceClient {
         String query = "?period_from=" + URLEncoder.encode(fromStr, StandardCharsets.UTF_8) +
                        "&period_to=" + URLEncoder.encode(toStr, StandardCharsets.UTF_8) +
                        "&page_size=24"; // there are 24 half-hour slots in 12 hours
+
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(apiRootUri.resolve(query))
+                .GET()
+                .build();
+
+        String response = fetchRawData(request);
+
+        try {
+            UpcomingUnitRatesResponse res = mapper.readValue(response, new TypeReference<>() {});
+            return res.results().reversed();
+        }
+        catch (JacksonException e) {
+            throw new DataFetchException("Failed to deserialize response from " + request.uri() + " to List<UnitRate>", e);
+        }
+    }
+
+    public List<UnitRateResponse> fetchNext24Hours() {
+        ZonedDateTime now = ZonedDateTime.now(clock);
+        ZonedDateTime twentyFourHoursLater = now.plusHours(24);
+
+        String fromStr = now.format(DateTimeFormatter.ISO_INSTANT);
+        String toStr = twentyFourHoursLater.format(DateTimeFormatter.ISO_INSTANT);
+
+        String query =  "?period_from=" + URLEncoder.encode(fromStr, StandardCharsets.UTF_8) +
+                        "&period_to=" + URLEncoder.encode(toStr, StandardCharsets.UTF_8) +
+                        "&page_size=48"; // there are 48 half-hour slots in 24 hours
 
         HttpRequest request = HttpRequest
                 .newBuilder()

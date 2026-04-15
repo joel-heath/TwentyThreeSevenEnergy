@@ -2,11 +2,13 @@ package uk.ac.soton.comp2300.group42.energyclient.data.repository;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageClient;
 import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageData;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,18 +27,19 @@ public class LocalMetricRepository implements MetricRepository {
     }
 
     @Override
-    public Metric add(Metric metric) {
+    public Metric add(Metric metric, EnergyCategory category) {
         validateRequestFields(metric);
 
         Metric newMetric = new Metric(
                 data.nextMetricId(),
                 metric.houseId(),
-                metric.date(),
-                metric.energyUsed()
+                metric.dateTime(),
+                metric.energyUsed(),
+                category
         );
 
         data.metrics.put(newMetric.id(), newMetric);
-        client.saveData();
+        client.saveDataAsync();
         return newMetric;
     }
 
@@ -57,6 +60,24 @@ public class LocalMetricRepository implements MetricRepository {
 
         return data.metrics.values().stream()
                 .filter(a -> Objects.equals(a.houseId(), houseId))
+                .toList();
+    }
+
+    @Override
+    public List<Metric> getAllByDate(Long houseId, LocalDate date) {
+        validateRequestExists(houseId);
+
+        return data.metrics.values().stream()
+                .filter(a -> Objects.equals(a.houseId(), houseId) && Objects.equals(a.dateTime().toLocalDate(), date))
+                .toList();
+    }
+
+    @Override
+    public List<Metric> getAllByCategory(Long houseId, EnergyCategory category) {
+        validateRequestExists(houseId);
+
+        return data.metrics.values().stream()
+                .filter(a -> Objects.equals(a.houseId(), houseId) && Objects.equals(a.category(), category))
                 .toList();
     }
 
@@ -82,8 +103,8 @@ public class LocalMetricRepository implements MetricRepository {
 
         validateRequestExists(metric.houseId());
 
-        if (Objects.isNull(metric.date()))
-            throwApiException(400, "Date is required");
+        if (Objects.isNull(metric.dateTime()))
+            throwApiException(400, "Date/time is required");
 
         if (Objects.isNull(metric.energyUsed()))
             throwApiException(400, "Energy used is required");

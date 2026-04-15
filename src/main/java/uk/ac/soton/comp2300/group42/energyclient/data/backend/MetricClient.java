@@ -3,10 +3,12 @@ package uk.ac.soton.comp2300.group42.energyclient.data.backend;
 import com.google.inject.Inject;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.BackendMapper;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 import uk.ac.soton.comp2300.group42.metric.SaveMetricRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class MetricClient extends BaseApiClient {
@@ -26,6 +28,14 @@ public class MetricClient extends BaseApiClient {
 
     public List<MetricResponse> fetchAllMetrics(Long houseId) {
         return get("houses/" + houseId + "/metrics", new TypeReference<>() {});
+    }
+
+    public List<MetricResponse> fetchAllMetricsByDate(Long houseId, LocalDate date) {
+        return get("houses/" + houseId + "/metrics?date=" + date, new TypeReference<>() {});
+    }
+
+    public List<MetricResponse> fetchAllMetricsByCategory(Long houseId, EnergyCategory category) {
+        return get("houses/" + houseId + "/metrics?category=" + category.name(), new TypeReference<>() {});
     }
 
     public MetricResponse putMetric(Long houseId, Long metricId, SaveMetricRequest request) {

@@ -8,14 +8,13 @@ import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ActivationRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -33,13 +32,12 @@ public class ActivationStore {
     public ActivationStore(ActivationRepository repository,
                            ApplianceStore applianceStore,
                            ObservablePreferences preferences,
-                           SessionManager sessionManager,
                            @UIExecutor Executor uiExecutor) {
         this.repository = repository;
         this.applianceStore = applianceStore;
         this.preferences = preferences;
         this.uiExecutor = uiExecutor;
-        this.cache = new WeakHashMap<>();
+        this.cache = new HashMap<>();
         this.masterList = FXCollections.observableArrayList(
                 a -> new Observable[] {
                         a.activationTimeProperty(),
@@ -54,13 +52,6 @@ public class ActivationStore {
                         a.recursSundayProperty(),
                         a.updateTriggerProperty()
                 }
-        );
-
-        sessionManager.subscribe(_ ->
-                uiExecutor.execute(() -> {
-                    cache.clear();
-                    masterList.clear();
-                })
         );
     }
 
@@ -133,6 +124,13 @@ public class ActivationStore {
             );
 
             masterList.setAll(updates.stream().map(ActivationUpdate::activation).toList());
+        }, uiExecutor);
+    }
+
+    public CompletableFuture<Void> invalidateCacheAsync() {
+        return CompletableFuture.runAsync(() -> {
+            cache.clear();
+            masterList.clear();
         }, uiExecutor);
     }
 }

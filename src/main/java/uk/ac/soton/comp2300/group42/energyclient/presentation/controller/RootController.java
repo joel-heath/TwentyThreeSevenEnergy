@@ -22,22 +22,8 @@ import java.time.format.DateTimeFormatter;
 
 public class RootController {
 
-    private static final String LIGHT_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css";
-    private static final String DARK_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/dark-mode.css";
-    private static final String LIGHT_CONTRAST_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-light.css";
-    private static final String DARK_CONTRAST_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-dark.css";
-    private static final String COLORBLIND_PROTAN_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-protan.css";
-    private static final String COLORBLIND_DEUTERAN_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-deuteran.css";
-    private static final String COLORBLIND_TRITAN_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-tritan.css";
-    private static final String COLORBLIND_ACHROMA_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/colorblind-achroma.css";
+    private static final String THEME_PATH_PREFIX =
+            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/theme-";
 
     private final ObservablePreferences preferences;
 
@@ -57,23 +43,21 @@ public class RootController {
 
         contentArea.sceneProperty().addListener((_, _, newScene) -> {
             if (newScene != null) {
-                applyTheme(newScene, preferences.getTheme());
-                applyColorVision(newScene, preferences.getVision());
+                applyThemeAndVision(newScene, preferences.getTheme(), preferences.getVision());
             }
         });
 
         preferences.themeProperty().subscribe((oldTheme, newTheme) -> {
             Scene scene = contentArea.getScene();
             if (scene != null) {
-                applyTheme(scene, newTheme);
-                applyColorVision(scene, preferences.getVision());
+                applyThemeAndVision(scene, newTheme, preferences.getVision());
             }
         });
 
         preferences.visionProperty().subscribe((_, newVision) -> {
             Scene scene = contentArea.getScene();
             if (scene != null)
-                applyColorVision(scene, newVision);
+                applyThemeAndVision(scene, preferences.getTheme(), newVision);
         });
     }
 
@@ -138,75 +122,30 @@ public class RootController {
         return card;
     }
 
-    private void applyTheme(Scene scene, Theme theme) {
-        String light = Objects.requireNonNull(
-                RootController.class.getResource(LIGHT_THEME_PATH),
-                LIGHT_THEME_PATH + " not found"
-        ).toExternalForm();
-        String dark = Objects.requireNonNull(
-                RootController.class.getResource(DARK_THEME_PATH),
-                DARK_THEME_PATH + " not found"
-        ).toExternalForm();
-        String lightContrast = Objects.requireNonNull(
-                RootController.class.getResource(LIGHT_CONTRAST_THEME_PATH),
-                LIGHT_CONTRAST_THEME_PATH + " not found"
-        ).toExternalForm();
-        String darkContrast = Objects.requireNonNull(
-                RootController.class.getResource(DARK_CONTRAST_THEME_PATH),
-                DARK_CONTRAST_THEME_PATH + " not found"
-        ).toExternalForm();
-
-        var stylesheets = scene.getStylesheets();
-        stylesheets.remove(light);
-        stylesheets.remove(dark);
-        stylesheets.remove(lightContrast);
-        stylesheets.remove(darkContrast);
-
-        switch (theme) {
-            case DARK -> stylesheets.add(dark);
-            case LIGHT_CONTRAST -> stylesheets.add(lightContrast);
-            case DARK_CONTRAST -> stylesheets.add(darkContrast);
-            case LIGHT -> stylesheets.add(light);
-            default -> stylesheets.add(light);
-        }
-    }
-
-    private void applyColorVision(Scene scene, ColorVision vision) {
-        String protan = Objects.requireNonNull(
-                RootController.class.getResource(COLORBLIND_PROTAN_PATH),
-                COLORBLIND_PROTAN_PATH + " not found"
-        ).toExternalForm();
-        String deuteran = Objects.requireNonNull(
-                RootController.class.getResource(COLORBLIND_DEUTERAN_PATH),
-                COLORBLIND_DEUTERAN_PATH + " not found"
-        ).toExternalForm();
-        String tritan = Objects.requireNonNull(
-                RootController.class.getResource(COLORBLIND_TRITAN_PATH),
-                COLORBLIND_TRITAN_PATH + " not found"
-        ).toExternalForm();
-        String achroma = Objects.requireNonNull(
-                RootController.class.getResource(COLORBLIND_ACHROMA_PATH),
-                COLORBLIND_ACHROMA_PATH + " not found"
+    private void applyThemeAndVision(Scene scene, Theme theme, ColorVision vision) {
+        Theme safeTheme = theme == null ? Theme.LIGHT : theme;
+        ColorVision safeVision = vision == null ? ColorVision.TYPICAL : vision;
+        String themeKey = switch (safeTheme) {
+            case DARK -> "dark";
+            case LIGHT_CONTRAST -> "high-contrast-light";
+            case DARK_CONTRAST -> "high-contrast-dark";
+            case LIGHT -> "light";
+        };
+        String visionKey = switch (safeVision) {
+            case PROTAN -> "protan";
+            case DEUTERAN -> "deuteran";
+            case TRITAN -> "tritan";
+            case ACHROMA -> "achroma";
+            case TYPICAL -> "typical";
+        };
+        String path = THEME_PATH_PREFIX + themeKey + "-" + visionKey + ".css";
+        String stylesheet = Objects.requireNonNull(
+                RootController.class.getResource(path),
+                path + " not found"
         ).toExternalForm();
 
         var stylesheets = scene.getStylesheets();
-        stylesheets.remove(protan);
-        stylesheets.remove(deuteran);
-        stylesheets.remove(tritan);
-        stylesheets.remove(achroma);
-
-        if (vision == null)
-            return;
-
-        switch (vision) {
-            case PROTAN -> stylesheets.add(protan);
-            case DEUTERAN -> stylesheets.add(deuteran);
-            case TRITAN -> stylesheets.add(tritan);
-            case ACHROMA -> stylesheets.add(achroma);
-            case TYPICAL -> {
-            }
-            default -> {
-            }
-        }
+        stylesheets.removeIf(entry -> entry.contains("/styles/theme-"));
+        stylesheets.add(stylesheet);
     }
 }

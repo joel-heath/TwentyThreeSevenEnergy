@@ -3,26 +3,40 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.view.components;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
-import uk.ac.soton.comp2300.group42.activation.ActivationType;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ActivationEditViewModel;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class ActivationEditModal extends Modal {
 
     @FXML private ActivationSchedulePane schedulePane;
     @FXML private Label responseLabel;
 
-    private UpcomingActivationsViewModel vm;
-    private ObservableActivation currentEditingActivation;
+    private ActivationEditViewModel vm;
 
-    public void bindComponents(UpcomingActivationsViewModel vm) {
+    public void bindComponents(ActivationEditViewModel vm) {
         this.vm = vm;
-        schedulePane.setApplianceList(vm.getAppliances());
+
+        schedulePane.selectedApplianceProperty().bindBidirectional(vm.selectedApplianceProperty());
+        schedulePane.hourProperty().bindBidirectional(vm.hourProperty());
+        schedulePane.minuteProperty().bindBidirectional(vm.minuteProperty());
+        schedulePane.dateProperty().bindBidirectional(vm.dateProperty());
+
+        schedulePane.recursMondayProperty().bindBidirectional(vm.recursMondayProperty());
+        schedulePane.recursTuesdayProperty().bindBidirectional(vm.recursTuesdayProperty());
+        schedulePane.recursWednesdayProperty().bindBidirectional(vm.recursWednesdayProperty());
+        schedulePane.recursThursdayProperty().bindBidirectional(vm.recursThursdayProperty());
+        schedulePane.recursFridayProperty().bindBidirectional(vm.recursFridayProperty());
+        schedulePane.recursSaturdayProperty().bindBidirectional(vm.recursSaturdayProperty());
+        schedulePane.recursSundayProperty().bindBidirectional(vm.recursSundayProperty());
+        schedulePane.recurrenceRulesVisibleProperty().bindBidirectional(vm.isRecurringProperty());
+
+        responseLabel.textProperty().bind(vm.responseMessageProperty());
+        vm.responseRoleProperty().subscribe(newVal ->
+                responseLabel.setTextFill(ColorVisionManager.getColor(newVal))
+        );
     }
 
     public ActivationEditModal() throws IOException  {
@@ -32,74 +46,21 @@ public class ActivationEditModal extends Modal {
         loader.load();
     }
 
-    @Override
-    public void close() {
-        super.close();
-        this.currentEditingActivation = null;
-    }
-
-    @Override
-    public void show() {
-        if (currentEditingActivation == null)
-            throw new IllegalStateException("No activation set for editing. Use show(ActivationModel) to set an activation before showing the modal.");
-
-        super.show();
-    }
-
     public void show(ObservableActivation activation) {
-        this.currentEditingActivation = activation;
+        if (vm == null)
+            throw new IllegalStateException("Must call bindComponents(ActivationEditViewModel vm) before showing the modal.");
 
-        schedulePane.setSelectedAppliance(activation.getAppliance());
-        schedulePane.setHour(activation.getActivationTime().getHour());
-        schedulePane.setMinute(activation.getActivationTime().getMinute());
-        schedulePane.setDate(activation.getActivationDate() == null ? LocalDateTime.now().toLocalDate() : activation.getActivationDate());
-        schedulePane.setRecurrenceRulesVisible(activation.getActivationType() == ActivationType.RECURRING);
-        schedulePane.setRecursMonday(activation.isRecursMonday());
-        schedulePane.setRecursTuesday(activation.isRecursTuesday());
-        schedulePane.setRecursWednesday(activation.isRecursWednesday());
-        schedulePane.setRecursThursday(activation.isRecursThursday());
-        schedulePane.setRecursFriday(activation.isRecursFriday());
-        schedulePane.setRecursSaturday(activation.isRecursSaturday());
-        schedulePane.setRecursSunday(activation.isRecursSunday());
-
+        vm.loadActivation(activation);
         super.show();
-    }
-    private boolean guard(boolean condition, String errorMessage) {
-        if (condition)
-            responseLabel.setText(errorMessage);
-        return condition;
     }
 
     @FXML private void onSaveActivation() {
-        ObservableAppliance appliance = schedulePane.getSelectedAppliance();
-
-        int hour = schedulePane.getHour();
-        int minute = schedulePane.getMinute();
-        boolean recurs = schedulePane.isRecurrenceRulesVisible();
-
-        if (guard(appliance == null,
-                  "Failed to schedule, no appliance selected") ||
-            guard(recurs && !schedulePane.isRecursSet(),
-                  "Failed to schedule, no recurrence days selected") ||
-            guard(!recurs && schedulePane.getDate().isBefore(LocalDateTime.now().toLocalDate()),
-                  "Failed to schedule, selected date is in the past")
-        ) return;
-
-        vm.updateActivation(currentEditingActivation,
-                appliance,
-                LocalTime.of(hour, minute),
-                schedulePane.getDate(),
-                schedulePane.isRecursMonday(), schedulePane.isRecursTuesday(),
-                schedulePane.isRecursWednesday(), schedulePane.isRecursThursday(),
-                schedulePane.isRecursFriday(), schedulePane.isRecursSaturday(),
-                schedulePane.isRecursSunday(),
-                schedulePane.isRecurrenceRulesVisible());
-
-        this.close();
+        if (vm.saveChanges())
+            this.close();
     }
 
     @FXML private void onCancelActivation() {
-        vm.removeActivation(currentEditingActivation);
+        vm.deleteActivation();
         this.close();
     }
 }

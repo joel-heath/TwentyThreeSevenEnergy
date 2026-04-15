@@ -11,6 +11,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ActivationEditViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AdvancedDashboardViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUsageViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
@@ -28,20 +29,23 @@ public class AdvancedDashboardController {
     private final AdvancedDashboardViewModel vm;
     private final EnergyUsageViewModel energyWidgetVM;
     private final UpcomingActivationsViewModel activationsWidgetVM;
+    private final ActivationEditViewModel editModalVM;
 
     @Inject public AdvancedDashboardController(AdvancedDashboardViewModel vm,
                                                EnergyUsageViewModel energyWidgetVM,
-                                               UpcomingActivationsViewModel activationsWidgetVM) {
+                                               UpcomingActivationsViewModel activationsWidgetVM,
+                                               ActivationEditViewModel editModalVM) {
         this.vm = vm;
         this.energyWidgetVM = energyWidgetVM;
         this.activationsWidgetVM = activationsWidgetVM;
+        this.editModalVM = editModalVM;
     }
 
     @FXML private void initialize() {
         energyWidget.bindComponents(energyWidgetVM);
         energyWidgetVM.startAutoUpdateTest();
 
-        upcomingActivationsWidget.bindComponents(activationsWidgetVM, activationEditModal);
+        upcomingActivationsWidget.bindComponents(activationsWidgetVM, editModalVM, activationEditModal);
 
         vm.getHourlyForecast().subscribe(() -> {
             statusRow.getChildren().clear();

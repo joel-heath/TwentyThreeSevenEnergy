@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.*;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ActivationEditViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUsageViewModel;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
 
@@ -16,17 +17,20 @@ public class SimpleDashboardController {
 
     private final EnergyUsageViewModel energyWidgetVM;
     private final UpcomingActivationsViewModel activationsWidgetVM;
+    private final ActivationEditViewModel editModalVM;
 
     @Inject public SimpleDashboardController(EnergyUsageViewModel energyWidgetVM,
-                                             UpcomingActivationsViewModel activationsWidgetVM) {
+                                             UpcomingActivationsViewModel activationsWidgetVM,
+                                             ActivationEditViewModel editModalVM) {
         this.energyWidgetVM = energyWidgetVM;
         this.activationsWidgetVM = activationsWidgetVM;
+        this.editModalVM = editModalVM;
     }
 
     @FXML private void initialize() {
         energyWidget.bindComponents(energyWidgetVM);
         energyWidgetVM.startAutoUpdateTest();
-        activationsWidget.bindComponents(activationsWidgetVM, activationEditModal);
+        activationsWidget.bindComponents(activationsWidgetVM, editModalVM, activationEditModal);
 
         activationsWidget.loadActivationsAsync();
     }

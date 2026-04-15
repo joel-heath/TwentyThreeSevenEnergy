@@ -1,6 +1,8 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
 import com.google.inject.Inject;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
@@ -8,8 +10,6 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.services.ActivationService;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
@@ -18,6 +18,8 @@ public class UpcomingActivationsViewModel {
     private final ObservableList<ObservableAppliance> appliances;
     private final SortedList<ObservableActivation> activations;
     private final ActivationService activationService;
+
+    private final ObjectProperty<ObservableActivation> selectedActivation = new SimpleObjectProperty<>(null);
 
     @Inject public UpcomingActivationsViewModel(ActivationService activationService, ApplianceStore applianceStore) {
         this.activationService = activationService;
@@ -30,46 +32,11 @@ public class UpcomingActivationsViewModel {
         return activationService.refreshAllAsync();
     }
 
+    public void selectActivation(ObservableActivation activation) {
+        selectedActivation.set(activation);
+    }
+
     public ObservableList<ObservableAppliance> getAppliances() { return appliances; }
     public SortedList<ObservableActivation> getActivations() { return activations; }
-
-    public void removeActivation(ObservableActivation activation) {
-        activationService.delete(activation);
-    }
-
-    public void updateActivation(ObservableActivation act, ObservableAppliance app, LocalTime time, LocalDate date,
-                                 boolean recursMonday,
-                                 boolean recursTuesday,
-                                 boolean recursWednesday,
-                                 boolean recursThursday,
-                                 boolean recursFriday,
-                                 boolean recursSaturday,
-                                 boolean recursSunday,
-                                 boolean isRecurring) {
-        act.setAppliance(app);
-        act.setActivationTime(time);
-
-        if (isRecurring) {
-            act.setActivationDate(null);
-            act.setRecursMonday(recursMonday);
-            act.setRecursTuesday(recursTuesday);
-            act.setRecursWednesday(recursWednesday);
-            act.setRecursThursday(recursThursday);
-            act.setRecursFriday(recursFriday);
-            act.setRecursSaturday(recursSaturday);
-            act.setRecursSunday(recursSunday);
-        }
-        else {
-            act.setActivationDate(date);
-            act.setRecursMonday(null);
-            act.setRecursTuesday(null);
-            act.setRecursWednesday(null);
-            act.setRecursThursday(null);
-            act.setRecursFriday(null);
-            act.setRecursSaturday(null);
-            act.setRecursSunday(null);
-        }
-
-        activationService.save(act);
-    }
+    public ObjectProperty<ObservableActivation> selectedActivationProperty() { return selectedActivation; }
 }

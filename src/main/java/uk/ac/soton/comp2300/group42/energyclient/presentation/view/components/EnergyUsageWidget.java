@@ -12,8 +12,8 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUs
 import java.io.IOException;
 
 public class EnergyUsageWidget extends VBox {
-    private static final String WIDGET_STYLE =
-            "-fx-background-radius: 10; -fx-padding: 15; -fx-font-weight: bold";
+
+    private static final String WIDGET_STYLE = "-fx-background-radius: 10; -fx-padding: 15; -fx-font-weight: bold";
 
     @FXML private EnergyUsageRect energyUsageRect;
     @FXML private Label totalSpentLabel;
@@ -21,39 +21,32 @@ public class EnergyUsageWidget extends VBox {
     @FXML private Label goalLabel;
 
     public void bindComponents(EnergyUsageViewModel vm) {
-        costLabel.textProperty().unbind();
-        goalLabel.textProperty().unbind();
-        energyUsageRect.usageProperty().unbind();
-        energyUsageRect.fillProperty().unbind();
-        energyUsageRect.effectProperty().unbind();
-
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
         energyUsageRect.usageProperty().bind(vm.usageProperty());
 
         energyUsageRect.fillProperty().bind(Bindings.createObjectBinding(() -> {
-            double usage = vm.usageProperty().get();
-            var vision = vm.getPreferences().getVision();
+            EnergyUsageViewModel.UsageState state = vm.usageStateProperty().get();
+            var vision = vm.visionProperty().get();
 
-            if (usage >= 1.5) {
+            if (state == EnergyUsageViewModel.UsageState.WARNING || state == EnergyUsageViewModel.UsageState.CRITICAL) {
                 return ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.STATUS_50PERCENT_OVER);
             }
-
             return ColorVisionManager.getGradientFor(vision);
 
-        }, vm.usageProperty(), vm.getPreferences().visionProperty()));
+        }, vm.usageStateProperty(), vm.visionProperty()));
 
         energyUsageRect.effectProperty().bind(Bindings.createObjectBinding(() -> {
-            double usage = vm.usageProperty().get();
+            EnergyUsageViewModel.UsageState state = vm.usageStateProperty().get();
 
-            if (usage >= 2.0) {
+            if (state == EnergyUsageViewModel.UsageState.CRITICAL) {
                 DropShadow shadow = new DropShadow();
-                shadow.setColor(ColorVisionManager.getColor(vm.getPreferences().getVision(), ColorVisionManager.ColorRole.STATUS_50PERCENT_OVER));
+                shadow.setColor(ColorVisionManager.getColor(vm.visionProperty().get(), ColorVisionManager.ColorRole.STATUS_50PERCENT_OVER));
                 shadow.setRadius(40);
                 return shadow;
             }
             return null;
-        }, vm.usageProperty(), vm.getPreferences().energyGoalProperty(), vm.getPreferences().visionProperty()));
+        }, vm.usageStateProperty(), vm.visionProperty()));
     }
 
     public EnergyUsageWidget() throws IOException {

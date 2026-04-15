@@ -4,25 +4,32 @@ import com.google.inject.Inject;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
+import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.services.ActivationService;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.formatDay;
+
 public class ScheduleViewModel {
 
     private final ActivationService activationService;
+    private final ApplianceStore applianceStore;
     private final ObservablePreferences preferences;
     private final ObservableList<ObservableAppliance> applianceList;
+
     private final ObjectProperty<ObservableAppliance> selectedAppliance;
     private final IntegerProperty hour;
     private final IntegerProperty minute;
     private final ObjectProperty<LocalDate> date;
+
     private final BooleanProperty recursMonday;
     private final BooleanProperty recursTuesday;
     private final BooleanProperty recursWednesday;
@@ -32,9 +39,13 @@ public class ScheduleViewModel {
     private final BooleanProperty recursSunday;
     private final BooleanProperty isRecurring;
 
+    private final StringProperty responseMessage;
+    private final ObjectProperty<ColorVisionManager.ColorRole> responseRole;
+
     @Inject public ScheduleViewModel(ActivationService activationService, ApplianceStore applianceStore, ObservablePreferences preferences) {
         this.activationService = activationService;
         this.applianceList = applianceStore.getAll();
+        this.applianceStore = applianceStore;
         this.preferences = preferences;
         selectedAppliance = new SimpleObjectProperty<>();
         hour = new SimpleIntegerProperty(LocalDateTime.now().getHour());
@@ -48,25 +59,27 @@ public class ScheduleViewModel {
         recursSaturday = new SimpleBooleanProperty(false);
         recursSunday = new SimpleBooleanProperty(false);
         isRecurring = new SimpleBooleanProperty(false);
-
-        // CompletableFuture.runAsync(fetchAllData);
+        responseMessage = new SimpleStringProperty("");
+        responseRole = new SimpleObjectProperty<>(ColorVisionManager.ColorRole.WIDGET_TEXT);
     }
 
-    public ObservableList<ObservableAppliance> getApplianceList() { return applianceList; }
-    public ObjectProperty<ObservableAppliance> selectedApplianceProperty() { return selectedAppliance; }
-    public IntegerProperty hourProperty() { return hour; }
-    public IntegerProperty minuteProperty() { return minute; }
-    public ObjectProperty<LocalDate> dateProperty() { return date; }
-    public BooleanProperty recursMondayProperty() { return recursMonday; }
-    public BooleanProperty recursTuesdayProperty() { return recursTuesday; }
-    public BooleanProperty recursWednesdayProperty() { return recursWednesday; }
-    public BooleanProperty recursThursdayProperty() { return recursThursday; }
-    public BooleanProperty recursFridayProperty() { return recursFriday; }
-    public BooleanProperty recursSaturdayProperty() { return recursSaturday; }
-    public BooleanProperty recursSundayProperty() { return recursSunday; }
-    public BooleanProperty isRecurringProperty() { return isRecurring; }
+    public void loadData() {
+        applianceStore.refreshAllAsync();
+    }
 
-    public LocalDateTime scheduleActivation() {
+    private boolean guard(boolean condition, String errorMessage) {
+        if (condition)
+            setResponse(errorMessage, ColorVisionManager.ColorRole.VALIDATION_ERROR);
+
+        return condition;
+    }
+
+    public void scheduleActivation() {
+        if (guard(selectedAppliance.get() == null, "Failed to schedule, no appliance selected") ||
+            guard(isRecurring.get() && !hasRecurrenceDaysSelected(), "Failed to schedule, no recurrence days selected") ||
+            guard(!isRecurring.get() && date.get().isBefore(LocalDate.now()), "Failed to schedule, selected date is in the past"))
+            return;
+
         Activation pojo = isRecurring.get()
                 ? new Activation(
                         selectedAppliance.get().getId(),
@@ -85,6 +98,41 @@ public class ScheduleViewModel {
                         LocalTime.of(hour.get(), minute.get()),
                         date.get());
 
-        return activationService.create(pojo);
+        try {
+            LocalDateTime time = activationService.create(pojo);
+            String timeString = String.format("%02d:%02d", hour.get(), minute.get());
+            setResponse(selectedAppliance.get().getName() + " scheduled for " + timeString + " on " + formatDay(time), ColorVisionManager.ColorRole.TOGGLE_ENABLED);
+        }
+        catch (ApiException e) {
+            setResponse("Failed to schedule: " + e.getMessage(), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+        }
     }
+
+    private boolean hasRecurrenceDaysSelected() {
+        return recursMonday.get() || recursTuesday.get() || recursWednesday.get() ||
+                recursThursday.get() || recursFriday.get() || recursSaturday.get() || recursSunday.get();
+    }
+
+    private void setResponse(String message, ColorVisionManager.ColorRole role) {
+        responseMessage.set(message);
+        responseRole.set(role);
+    }
+
+    public ObservableList<ObservableAppliance> getApplianceList() { return applianceList; }
+    public ObjectProperty<ObservableAppliance> selectedApplianceProperty() { return selectedAppliance; }
+    public IntegerProperty hourProperty() { return hour; }
+    public IntegerProperty minuteProperty() { return minute; }
+    public ObjectProperty<LocalDate> dateProperty() { return date; }
+
+    public BooleanProperty recursMondayProperty() { return recursMonday; }
+    public BooleanProperty recursTuesdayProperty() { return recursTuesday; }
+    public BooleanProperty recursWednesdayProperty() { return recursWednesday; }
+    public BooleanProperty recursThursdayProperty() { return recursThursday; }
+    public BooleanProperty recursFridayProperty() { return recursFriday; }
+    public BooleanProperty recursSaturdayProperty() { return recursSaturday; }
+    public BooleanProperty recursSundayProperty() { return recursSunday; }
+    public BooleanProperty isRecurringProperty() { return isRecurring; }
+
+    public StringProperty responseMessageProperty() { return responseMessage; }
+    public ObjectProperty<ColorVisionManager.ColorRole> responseRoleProperty() { return responseRole; }
 }

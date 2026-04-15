@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
@@ -17,30 +16,37 @@ import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.Contro
 
 public class SettingsController {
 
-    private final SettingsViewModel vm;
-    private final InputFeedbackManager inputFeedbackManager;
-
     @FXML private Button accountSettingsButton;
     @FXML private ToggleSwitch shareLocationToggle;
     @FXML private ComboBox<Theme> themeComboBox;
     @FXML private ComboBox<Mode> modeComboBox;
     @FXML private TextField costGoalField;
 
-    @Inject public SettingsController(SettingsViewModel vm, InputFeedbackManager inputFeedbackManager) {
+    private final SettingsViewModel vm;
+
+    @Inject public SettingsController(SettingsViewModel vm) {
         this.vm = vm;
-        this.inputFeedbackManager = inputFeedbackManager;
     }
 
     @FXML private void initialize() {
-        shareLocationToggle.selectedProperty().bindBidirectional(vm.getPreferences().shareLocationProperty());
+        shareLocationToggle.selectedProperty().bindBidirectional(vm.shareLocationProperty());
 
-        themeComboBox.getItems().setAll(Theme.values());
+        themeComboBox.setItems(vm.getAvailableThemes());
         themeComboBox.setConverter(createConverter(Theme::getName));
-        themeComboBox.valueProperty().bindBidirectional(vm.getPreferences().themeProperty());
+        themeComboBox.valueProperty().bindBidirectional(vm.themeProperty());
 
-        modeComboBox.getItems().setAll(Mode.values());
+        modeComboBox.setItems(vm.getAvailableModes());
         modeComboBox.setConverter(createConverter(Mode::getName));
-        modeComboBox.valueProperty().bindBidirectional(vm.getPreferences().modeProperty());
+        modeComboBox.valueProperty().bindBidirectional(vm.modeProperty());
+
+        costGoalField.textProperty().bindBidirectional(vm.costGoalInputProperty());
+
+        vm.hasCostGoalErrorProperty().subscribe(hasError ->
+            costGoalField.setStyle(
+                hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+                         : ""
+            )
+        );
 
         accountSettingsButton.setText(vm.isLoggedIn() ? "Account Settings" : "Login");
     }
@@ -54,44 +60,6 @@ public class SettingsController {
     }
 
     @FXML private void onSetCostGoal() {
-        String raw = costGoalField.getText() == null ? "" : costGoalField.getText().trim();
-
-        if (raw.isEmpty()) {
-            inputFeedbackManager.showPopup(
-                    "Cost goal updated",
-                    "Please enter a cost goal before clicking Set Goal."
-            );
-            costGoalField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
-            return;
-        }
-
-        try {
-            String text = raw.replace("£", "").trim();
-            double value = Double.parseDouble(text);
-            if (value <= 0) throw new NumberFormatException();
-
-            vm.setCostGoal(value);
-            inputFeedbackManager.showPopup(
-                    "Cost goal updated",
-                    String.format("Your new cost goal is £%.2f.", value)
-            );
-
-            costGoalField.clear();
-            costGoalField.setStyle("");
-        } catch (NumberFormatException e) {
-            inputFeedbackManager.showPopup(
-                    "Goal not updated",
-                    "Please enter a valid number greater than 0."
-            );
-            costGoalField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
-        }
-    }
-
-    @FXML private void onSaveSettings() {
-        vm.save();
+        vm.updateCostGoal();
     }
 }

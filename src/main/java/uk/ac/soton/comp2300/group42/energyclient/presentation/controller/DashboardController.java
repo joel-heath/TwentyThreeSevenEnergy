@@ -13,11 +13,18 @@ public class DashboardController {
 
     @FXML private StackPane container;
 
+    private final DashboardViewModel vm;
+    @Inject public DashboardController(DashboardViewModel vm) {
+        this.vm = vm;
+    }
+
     @FXML private void initialize() {
-        String targetFxml = switch (vm.getPreferredMode()) {
-            case SIMPLE -> "SimpleDashboard.fxml";
-            case ADVANCED -> "AdvancedDashboard.fxml";
-        };
+        vm.targetFxmlProperty().subscribe(this::loadView);
+    }
+
+    private void loadView(String targetFxml) {
+        if (targetFxml == null || targetFxml.isEmpty())
+            return;
 
         try {
             Parent view = Navigator.loadFXML(new Navigator.ViewContext(Navigator.DEFAULT_PATH + targetFxml, null));
@@ -25,11 +32,5 @@ public class DashboardController {
         } catch (IOException e) {
             throw new RuntimeException("Failed to load view: " + targetFxml, e);
         }
-    }
-
-    private final DashboardViewModel vm;
-
-    @Inject public DashboardController(DashboardViewModel vm) {
-        this.vm = vm;
     }
 }

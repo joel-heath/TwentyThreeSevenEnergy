@@ -14,8 +14,6 @@ public class SimpleDashboardController {
     @FXML private UpcomingActivationsWidget activationsWidget;
     @FXML private ActivationEditModal activationEditModal;
 
-
-
     private final EnergyUsageViewModel energyWidgetVM;
     private final UpcomingActivationsViewModel activationsWidgetVM;
 

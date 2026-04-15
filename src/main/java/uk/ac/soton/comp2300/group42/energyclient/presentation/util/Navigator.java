@@ -9,6 +9,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2300.group42.energyclient.di.AppStateManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.controller.RootController;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RootViewModel;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,7 +40,7 @@ public class Navigator {
     private static final Stack<ViewContext> backHistory = new Stack<>();
     private static final Stack<ViewContext> forwardHistory = new Stack<>();
 
-    private static RootController rootController;
+    private static RootViewModel rootViewModel;
     private static StackPane contentArea;
 
     public static <T> Parent loadFXML(ViewContext context) throws IOException {
@@ -69,8 +70,9 @@ public class Navigator {
         loader.setControllerFactory(AppStateManager.getInjector()::getInstance);
         Parent root = loader.load();
 
-        rootController = loader.getController();
+        RootController rootController = loader.getController();
         contentArea = rootController.getContentArea();
+        rootViewModel = AppStateManager.getInjector().getInstance(RootViewModel.class);
 
         Scene rootScene = new Scene(root);
         rootScene.getStylesheets().add(Objects.requireNonNull(
@@ -146,8 +148,8 @@ public class Navigator {
     }
 
     public static void showPopup(String popupTitle) {
-        rootController.showPopup(popupTitle);
+        rootViewModel.showReminder(popupTitle);
     }
 
-    public static void showPopup(String title, String description) { rootController.showPopup(title, description);}
+    public static void showPopup(String title, String description) { rootViewModel.showPopup(title, description);}
 }

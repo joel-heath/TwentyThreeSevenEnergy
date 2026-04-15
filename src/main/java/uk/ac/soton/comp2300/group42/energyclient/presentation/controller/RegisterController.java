@@ -2,14 +2,10 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
+import javafx.scene.control.*;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.LoginViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RegisterViewModel;
 
 public class RegisterController {
 
@@ -18,57 +14,37 @@ public class RegisterController {
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
     @FXML private Hyperlink loginLink;
+    @FXML private Label responseLabel;
 
-    private final LoginViewModel vm;
-    @Inject public RegisterController(LoginViewModel vm) { this.vm = vm; }
+    private final RegisterViewModel vm;
+    @Inject public RegisterController(RegisterViewModel vm) { this.vm = vm; }
 
     @FXML private void initialize() {
+        nameField.textProperty().bindBidirectional(vm.nameProperty());
+        emailField.textProperty().bindBidirectional(vm.emailProperty());
+        passwordField.textProperty().bindBidirectional(vm.passwordProperty());
+        confirmPasswordField.textProperty().bindBidirectional(vm.confirmPasswordProperty());
+        responseLabel.textProperty().bind(vm.responseMessageProperty());
+
+        vm.responseColorProperty().subscribe((_, newVal) ->
+                responseLabel.setTextFill(ColorVisionManager.getColor(newVal))
+        );
+
         loginLink.textFillProperty().bind(ColorVisionManager.visionProperty().map(
                 vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.TOGGLE_ENABLED)
         ));
     }
 
-    private boolean guard(boolean condition, String errorMessage) {
-        if (condition)
-            showError("Sign Up Error", errorMessage);
-
-        return condition;
-    }
-
     @FXML private void onRegister() {
-        String name = nameField.getText();
-        String email = emailField.getText();
-        String password = passwordField.getText();
-        String confirm = confirmPasswordField.getText();
-
-        if (guard(name.isBlank(), "Name is required") ||
-            guard(email.isBlank(), "Email is required") ||
-            guard(password.isBlank(), "Password is required") ||
-            guard(confirm.isBlank(), "Password confirmation is required") ||
-            guard(!password.equals(confirm), "Passwords do not match"))
-            return;
-
-        try {
-            vm.register(name, email, password);
-        }
-        catch (ApiException e) {
-            showError(e.getError(), e.getMessage());
-            return;
-        }
-
-        Navigator.goToIrreversible("Dashboard.fxml");
+        if (vm.register())
+            Navigator.goToIrreversible("Dashboard.fxml");
     }
 
     @FXML private void goToLogin() {
         Navigator.goTo("Login.fxml");
     }
 
-
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML private void onAccessibilitySettings() {
+        Navigator.goTo("AccessibilitySettings.fxml");
     }
 }

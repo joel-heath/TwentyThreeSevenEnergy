@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -11,34 +12,27 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RootViewModel;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.util.Objects;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class RootController {
 
-    private static final String LIGHT_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css";
-    private static final String DARK_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/dark-mode.css";
-    private static final String LIGHT_CONTRAST_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-light.css";
-    private static final String DARK_CONTRAST_THEME_PATH =
-            "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-dark.css";
-
-    private final ObservablePreferences preferences;
+    private static final String LIGHT_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css";
+    private static final String DARK_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/dark-mode.css";
+    private static final String LIGHT_CONTRAST_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-light.css";
+    private static final String DARK_CONTRAST_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-dark.css";
 
     @FXML private Modal modal;
     @FXML private StackPane contentArea;
     @FXML private ScrollPane reminderScroll;
     @FXML private VBox remindersArea;
 
-    @Inject public RootController(ObservablePreferences preferences) {
-        this.preferences = preferences;
+    private final RootViewModel vm;
+    @Inject public RootController(RootViewModel vm) {
+        this.vm = vm;
     }
 
     @FXML private void initialize() {
@@ -46,109 +40,75 @@ public class RootController {
                 Bindings.min(500, remindersArea.heightProperty().add(40))
         );
 
-        contentArea.sceneProperty().addListener((_, _, newScene) -> {
+        contentArea.sceneProperty().subscribe(newScene -> {
             if (newScene != null)
-                applyTheme(newScene, preferences.getTheme());
+                applyTheme(newScene, vm.themeProperty().get());
         });
 
-        preferences.themeProperty().subscribe((oldTheme, newTheme) -> {
+        vm.themeProperty().subscribe((oldTheme, newTheme) -> {
             Scene scene = contentArea.getScene();
-            if (scene != null)
+            if (scene != null) {
+                unapplyTheme(scene, oldTheme);
                 applyTheme(scene, newTheme);
+            }
         });
+
+        var notifications = vm.getActiveNotifications();
+        notifications.subscribe(() ->
+                Platform.runLater(() -> {
+                    remindersArea.getChildren().setAll(
+                            notifications.stream().map(this::createPopup).toList()
+                    );
+
+                    if (notifications.isEmpty())
+                        modal.close();
+                    else
+                        modal.show();
+                })
+        );
     }
 
     @FXML private void clearReminders() {
-        remindersArea.getChildren().clear();
-        System.out.println("Modal onClose has been triggered");
+        vm.clearAllNotifications();
     }
 
     public StackPane getContentArea() { return contentArea; }
 
-    public void showPopup(String popupTitle) {
-        Node popup = createReminderPopup(popupTitle);
-
-        remindersArea.getChildren().add(popup);
-
-        modal.show();
-
-        reminderScroll.requestLayout();
-        reminderScroll.applyCss();
-        reminderScroll.layout();
-    }
-
-    public void showPopup(String title, String description) {
-        Node popup = createPopup(title, description);
-
-        remindersArea.getChildren().add(popup);
-
-        modal.show();
-
-        reminderScroll.requestLayout();
-        reminderScroll.applyCss();
-        reminderScroll.layout();
-    }
-
-    private Node createReminderPopup(String appliance) {
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-        String title = appliance + " Reminder.";
-        String description = "The time is " + time + ", time to use the " + appliance + ".";
-        return createPopup(title, description);
-    }
-
-    private Node createPopup(String titleText, String descriptionText) {
+    private Node createPopup(RootViewModel.Notification notification) {
         VBox card = new VBox();
+        card.setStyle("-fx-padding: 10; -fx-border-color: lightgray");
 
-        Button dismiss = new Button("Dismiss");
-        dismiss.setOnAction(_ -> {
-            remindersArea.getChildren().remove(card);
-            reminderScroll.requestLayout();
-            reminderScroll.applyCss();
-            reminderScroll.layout();
-            if (remindersArea.getChildren().isEmpty())
-                modal.close();
-        });
-
-        Label title = new Label(titleText);
+        Label title = new Label(notification.title());
         title.setStyle("-fx-font-weight: bold; -fx-font-scale: large");
 
-        Label description = new Label(descriptionText);
+        Label description = new Label(notification.description());
 
-        card.setStyle("-fx-padding: 10; -fx-border-color: lightgray");
+        Button dismiss = new Button("Dismiss");
+        dismiss.setOnAction(_ -> vm.dismissNotification(notification));
+
         card.getChildren().addAll(title, description, dismiss);
         return card;
     }
 
+    private String getThemeExternalForm(Theme theme) {
+        String path = switch (theme) {
+            case LIGHT -> LIGHT_THEME_PATH;
+            case DARK -> DARK_THEME_PATH;
+            case LIGHT_CONTRAST -> LIGHT_CONTRAST_THEME_PATH;
+            case DARK_CONTRAST -> DARK_CONTRAST_THEME_PATH;
+        };
+
+        return Objects.requireNonNull(
+                RootController.class.getResource(path),
+                path + " not found"
+        ).toExternalForm();
+    }
+
+    private void unapplyTheme(Scene scene, Theme theme) {
+        scene.getStylesheets().remove(getThemeExternalForm(theme));
+    }
+
     private void applyTheme(Scene scene, Theme theme) {
-        String light = Objects.requireNonNull(
-                RootController.class.getResource(LIGHT_THEME_PATH),
-                LIGHT_THEME_PATH + " not found"
-        ).toExternalForm();
-        String dark = Objects.requireNonNull(
-                RootController.class.getResource(DARK_THEME_PATH),
-                DARK_THEME_PATH + " not found"
-        ).toExternalForm();
-        String lightContrast = Objects.requireNonNull(
-                RootController.class.getResource(LIGHT_CONTRAST_THEME_PATH),
-                LIGHT_CONTRAST_THEME_PATH + " not found"
-        ).toExternalForm();
-        String darkContrast = Objects.requireNonNull(
-                RootController.class.getResource(DARK_CONTRAST_THEME_PATH),
-                DARK_CONTRAST_THEME_PATH + " not found"
-        ).toExternalForm();
-
-        var stylesheets = scene.getStylesheets();
-        stylesheets.remove(light);
-        stylesheets.remove(dark);
-        stylesheets.remove(lightContrast);
-        stylesheets.remove(darkContrast);
-
-        switch (theme) {
-            case DARK -> stylesheets.add(dark);
-            case LIGHT_CONTRAST -> stylesheets.add(lightContrast);
-            case DARK_CONTRAST -> stylesheets.add(darkContrast);
-            case LIGHT -> stylesheets.add(light);
-            default -> stylesheets.add(light);
-        }
+        scene.getStylesheets().add(getThemeExternalForm(theme));
     }
 }

@@ -33,5 +33,9 @@
 
         <Hyperlink fx:id="loginLink" text="Already have an account? Login"
                    onAction="#goToLogin"/>
+
+        <Button text="Accessibility Settings" onAction="#onAccessibilitySettings" prefWidth="220"/>
+
+        <Label fx:id="responseLabel" wrapText="true" prefWidth="280" alignment="CENTER"/>
     </VBox>
 </BackOverlayPane>

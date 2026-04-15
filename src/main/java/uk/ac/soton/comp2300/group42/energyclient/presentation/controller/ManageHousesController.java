@@ -1,7 +1,7 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
-import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -13,7 +13,6 @@ import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ManageHousesViewModel;
@@ -37,140 +36,70 @@ public class ManageHousesController {
     @FXML private Modal editHouseModal;
     @FXML private TextField editHouseNameField;
     @FXML private TextField editAddressField;
-    @FXML private Label responseLabel;
 
     private final ManageHousesViewModel vm;
-    private final InputFeedbackManager inputFeedbackManager;
 
-    @Inject public ManageHousesController(ManageHousesViewModel vm, InputFeedbackManager inputFeedbackManager) {
+    @Inject public ManageHousesController(ManageHousesViewModel vm) {
         this.vm = vm;
-        this.inputFeedbackManager = inputFeedbackManager;
     }
 
     @FXML private void initialize() {
         activeHouseComboBox.setConverter(createConverter(ObservableHouse::getName));
         activeHouseComboBox.setItems(vm.getHouseList());
         activeHouseComboBox.valueProperty().bindBidirectional(vm.activeHouseProperty());
-        activeHouseComboBox.valueProperty()
-                .subscribe(_ -> {
-                    vm.updateHousemates();
-                    housematesContainer.getChildren().setAll(
-                            vm.getHousemates()
-                            .stream()
-                            .map(this::createHousemateView)
-                            .toList());
-                });
 
-        deleteHouseButton.visibleProperty().bind(vm.currentRoleProperty().isEqualTo(Role.OWNER));
-        leaveHouseButton.visibleProperty().bind(vm.currentRoleProperty().map(_ -> vm.canLeaveHouse()));
-        inviteContainer.visibleProperty().bind(vm.currentRoleProperty().isNotEqualTo(Role.GUEST));
+        deleteHouseButton.visibleProperty().bind(vm.isOwnerProperty());
+        leaveHouseButton.visibleProperty().bind(vm.canLeaveHouseProperty());
+        inviteContainer.visibleProperty().bind(vm.canInviteProperty());
 
-        vm.refreshDataAsync().thenRunAsync(() -> {
-            vm.updateHousemates();
-            housematesContainer.getChildren().setAll(
-            vm.getHousemates()
-                    .stream()
-                    .map(this::createHousemateView)
-                    .toList());
-        }, Platform::runLater).exceptionally(e -> {
-            System.out.println("Error loading user data: " + e.getMessage());
-            return null;
-        });
-    }
+        newHouseNameField.textProperty().bindBidirectional(vm.newHouseNameProperty());
+        newHouseAddressField.textProperty().bindBidirectional(vm.newHouseAddressProperty());
+        inviteHousemateField.textProperty().bindBidirectional(vm.inviteEmailProperty());
 
-    @FXML private void onEditHouse() {
-        editHouseModal.show();
-        editHouseNameField.setText(vm.getActiveHouse().getName());
-        editAddressField.setText(vm.getActiveHouse().getAddress());
-    }
+        editHouseNameField.textProperty().bindBidirectional(vm.editHouseNameProperty());
+        editAddressField.textProperty().bindBidirectional(vm.editHouseAddressProperty());
 
-    @FXML private void onSaveHouseEdits() {
-        vm.editActiveHouse(editHouseNameField.getText(), editAddressField.getText());
-        activeHouseComboBox.getItems().setAll(vm.getHouseList());
-        editHouseModal.close();
-    }
-
-    @FXML private void onDeleteHouse() {
-        // TODO: worth a confirmation popup
-        vm.deleteActiveHouse();
-        editHouseModal.close();
-    }
-
-    @FXML private void onLeaveHouse() {
-        // worth a confirmation popup
-        vm.leaveActiveHouse();
-        editHouseModal.close();
-    }
-
-    @FXML private void onCloseEditModal() {
-        editHouseModal.close();
-    }
-
-    @FXML private void onCreateNewHouse() {
-        String name = newHouseNameField.getText() == null ? "" : newHouseNameField.getText().trim();
-        String address = newHouseAddressField.getText() == null ? "" : newHouseAddressField.getText().trim();
-
-        boolean hasError = false;
-
-        if (name.isEmpty()) {
-            newHouseAddressField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
-            hasError = true;
-        } else {
-            newHouseAddressField.setStyle("");
-        }
-
-        if (address.isEmpty()) {
-            newHouseAddressField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
-            hasError = true;
-        } else {
-            newHouseAddressField.setStyle("");
-        }
-
-        if (hasError) {
-            inputFeedbackManager.showPopup(
-                    "House not created",
-                    "Please enter a house name and address before creating a new house."
-            );
-            return;
-        }
-        vm.createHouse(name, address);
-        activeHouseComboBox.getItems().setAll(vm.getHouseList());
-
-        inputFeedbackManager.showPopup(
-                "House created",
-                "Created \"" + name + "\"."
+        vm.hasNewHouseNameErrorProperty().subscribe(hasError ->
+                newHouseNameField.setStyle(hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";" : "")
+        );
+        vm.hasNewHouseAddressErrorProperty().subscribe(hasError ->
+                newHouseAddressField.setStyle(hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";" : "")
+        );
+        vm.hasInviteEmailErrorProperty().subscribe(hasError ->
+                inviteHousemateField.setStyle(hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";" : "")
         );
 
-        newHouseNameField.clear();
-        newHouseAddressField.clear();
+        vm.isEditingHouseProperty().subscribe(isEditing -> {
+            if (isEditing)
+                editHouseModal.show();
+            else
+                editHouseModal.close();
+        });
+
+        bindHousemates();
+
+        vm.loadData();
     }
 
-    @FXML private void onInviteHousemate() {
-        String email = inviteHousemateField.getText() == null ? "" : inviteHousemateField.getText().trim();
+    @FXML private void onCreateNewHouse() { vm.createHouse(); }
+    @FXML private void onInviteHousemate() { vm.inviteHousemate(); }
+    @FXML private void onEditHouse() { vm.openEditModal(); }
+    @FXML private void onSaveHouseEdits() { vm.saveHouseEdits(); }
+    @FXML private void onCloseEditModal() { vm.closeEditModal(); }
+    @FXML private void onDeleteHouse() { vm.deleteActiveHouse(); }
+    @FXML private void onLeaveHouse() { vm.leaveActiveHouse(); }
+    @FXML private void onManageAppliances() { Navigator.goTo("ManageAppliances.fxml"); }
 
-        if (email.isEmpty()) {
-            inputFeedbackManager.showPopup(
-                    "Invite not sent",
-                    "Please enter an email address before sending an invite."
-            );
-            inviteHousemateField.setStyle(
-                    "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-            );
-            return;
-        }
-
-        vm.inviteHousemate(email);
-
-        inputFeedbackManager.showPopup("Invite sent", "An invitation has been sent to " + email + ".");
-        inviteHousemateField.setStyle("");
+    private void bindHousemates() {
+        ObservableList<ObservableHousemate> housemates = vm.getHousemates();
+        renderHousemates(housemates);
+        housemates.subscribe(() -> renderHousemates(housemates));
     }
 
-    @FXML private void onManageAppliances() {
-        Navigator.goTo("ManageAppliances.fxml");
+    private void renderHousemates(ObservableList<ObservableHousemate> housemates) {
+        housematesContainer.getChildren().setAll(
+                housemates.stream().map(this::createHousemateView).toList()
+        );
     }
 
     private Pane createHousemateView(ObservableHousemate housemate) {
@@ -187,17 +116,15 @@ public class ManageHousesController {
         email.textProperty().bind(housemate.emailProperty());
         card.getChildren().addAll(name, email);
 
-        if (vm.getCurrentUserRole() == Role.OWNER) {
+        if (vm.isOwnerProperty().get()) {
             Button kickButton = new Button("Kick");
-            kickButton.setOnAction(_ -> {
-                vm.kickHousemate(housemate);
-                housematesContainer.getChildren()
-                        .removeIf(node -> node.getUserData() == housemate);
-            });
+            kickButton.setOnAction(_ -> vm.kickHousemate(housemate));
+
             ComboBox<Role> roleComboBox = new ComboBox<>();
             roleComboBox.getItems().setAll(Role.values());
             roleComboBox.valueProperty().bindBidirectional(housemate.roleProperty());
             roleComboBox.setConverter(createConverter(Role::getName));
+
             card.getChildren().addAll(roleComboBox, kickButton);
         }
 

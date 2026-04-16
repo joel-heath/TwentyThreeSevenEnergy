@@ -150,15 +150,15 @@ public final class ColorVisionManager {
 
 
     private static Map<ColorRole, Color> colors(String statusCheap,
-                                                 String statusAverage,
-                                                 String statusExpensive,
-                                                 String cardSurface,
-                                                 String widgetSurface,
-                                                 String widgetText,
-                                                 String toggleEnabled,
-                                                 String validationError,
-                                                 String status_50percent_over,
-                                                 String status_200percent_over) {
+                                                String statusAverage,
+                                                String statusExpensive,
+                                                String cardSurface,
+                                                String widgetSurface,
+                                                String widgetText,
+                                                String toggleEnabled,
+                                                String validationError,
+                                                String status_50percent_over,
+                                                String status_200percent_over) {
         return Map.of(
                 ColorRole.STATUS_CHEAP, color(statusCheap),
                 ColorRole.STATUS_AVERAGE, color(statusAverage),

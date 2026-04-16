@@ -29,7 +29,6 @@ public class SimpleDashboardController {
 
     @FXML private void initialize() {
         energyWidget.bindComponents(energyWidgetVM);
-        energyWidgetVM.startAutoUpdateTest();
         activationsWidget.bindComponents(activationsWidgetVM, editModalVM, activationEditModal);
 
         activationsWidget.loadActivationsAsync();

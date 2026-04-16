@@ -16,7 +16,6 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.Progress
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;
 
@@ -59,11 +58,16 @@ public class ProgressTrackingController {
         categoryComboBox.valueProperty().bindBidirectional(vm.selectedCategoryProperty());
 
         bindChartData(priceChart, "Price Trend (p/kWh)", vm.getPriceData());
+
         bindChartData(expensesChart, "Last 7 Days Spend (£)", vm.getExpenseData());
-        bindChartData(usageChart, "Daily Total Spend", vm.getUsageData());
-        bindChartData(electricityUsageChart, "Daily Spend (Electricity)", vm.getElectricityData());
-        bindChartData(gasUsageChart, "Daily Spend (Gas)", vm.getGasData());
-        bindChartData(otherUsageChart, "Daily Spend (Other)", vm.getOtherExpenseData());
+        bindChartData(electricityExpensesChart, "Last 7 Days Spend (Electricity)", vm.getElectricityExpenseData());
+        bindChartData(gasExpensesChart, "Last 7 Days Spend (Gas)", vm.getGasExpenseData());
+        bindChartData(otherExpensesChart, "Last 7 Days Spend (Other)", vm.getOtherExpenseData());
+
+        bindChartData(usageChart, "Last 7 Days Usage (kWh)", vm.getUsageData());
+        bindChartData(electricityUsageChart, "Last 7 Days Usage (Electricity)", vm.getElectricityUsageData());
+        bindChartData(gasUsageChart, "Last 7 Days Usage (Gas)", vm.getGasUsageData());
+        bindChartData(otherUsageChart, "Last 7 Days Usage (Other)", vm.getOtherUsageData());
 
         expenseUsageToggleGroup.selectedToggleProperty().subscribe(this::updateVisibility);
         navToggleGroup.selectedToggleProperty().subscribe(this::updateVisibility);
@@ -84,13 +88,13 @@ public class ProgressTrackingController {
         chart.getData().add(series);
 
         dataPoints.subscribe(() ->
-            Platform.runLater(() -> {
-                List<XYChart.Data<String, Number>> fxData = dataPoints.stream()
-                        .map(dp -> new XYChart.Data<>(dp.label(), dp.value()))
-                        .toList();
-                series.getData().setAll(fxData);
-                scheduleApplyChartColours();
-            })
+                Platform.runLater(() -> {
+                    List<XYChart.Data<String, Number>> fxData = dataPoints.stream()
+                            .map(dp -> new XYChart.Data<>(dp.label(), dp.value()))
+                            .toList();
+                    series.getData().setAll(fxData);
+                    scheduleApplyChartColours();
+                })
         );
     }
 
@@ -135,16 +139,16 @@ public class ProgressTrackingController {
     private void applyChartColours() {
         priceChart.applyCss();
         priceChart.layout();
-        expensesChart.applyCss();
-        expensesChart.layout();
-        usageChart.applyCss();
-        usageChart.layout();
-        electricityUsageChart.applyCss();
-        electricityUsageChart.layout();
-        gasUsageChart.applyCss();
-        gasUsageChart.layout();
-        otherUsageChart.applyCss();
-        otherUsageChart.layout();
+
+        List<BarChart<String, Number>> allCharts = Arrays.asList(
+                expensesChart, electricityExpensesChart, gasExpensesChart, otherExpensesChart,
+                usageChart, electricityUsageChart, gasUsageChart, otherUsageChart
+        );
+
+        for (BarChart<String, Number> chart : allCharts) {
+            chart.applyCss();
+            chart.layout();
+        }
 
         String lineColour = ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.STATUS_EXPENSIVE);
         String barColour = ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.STATUS_AVERAGE);
@@ -168,32 +172,39 @@ public class ProgressTrackingController {
 
         styleChart(barColour, expensesChart);
         styleChart(barColour, usageChart);
+
+        styleChart(lineColour, electricityExpensesChart);
+        styleChart(lineColour, gasExpensesChart);
+        styleChart(lineColour, otherExpensesChart);
+
         styleChart(lineColour, electricityUsageChart);
         styleChart(lineColour, gasUsageChart);
         styleChart(lineColour, otherUsageChart);
 
-        styleLegend(lineColour, barColour, priceChart.lookupAll(".chart-legend-item-symbol"), expensesChart, usageChart);
-        styleLegend(barColour, barColour, electricityUsageChart.lookupAll(".chart-legend-item-symbol"), gasUsageChart, otherUsageChart);
-    }
-
-    private void styleLegend(String lineColour, String barColour, Set<Node> nodes, BarChart<String, Number> expensesChart, BarChart<String, Number> usageChart) {
-        for (Node legendSymbol : nodes) {
+        for (Node legendSymbol : priceChart.lookupAll(".chart-legend-item-symbol")) {
             legendSymbol.setStyle("-fx-background-color: " + lineColour + ", " + lineColour + ";");
         }
-        for (Node legendSymbol : expensesChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
-        }
-        for (Node legendSymbol : usageChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
+
+        styleLegends(barColour, expensesChart, usageChart);
+        styleLegends(barColour, electricityExpensesChart, gasExpensesChart, otherExpensesChart);
+        styleLegends(barColour, electricityUsageChart, gasUsageChart, otherUsageChart);
+    }
+
+    @SafeVarargs
+    private void styleLegends(String colour, BarChart<String, Number>... charts) {
+        for (BarChart<String, Number> chart : charts) {
+            for (Node legendSymbol : chart.lookupAll(".chart-legend-item-symbol")) {
+                legendSymbol.setStyle("-fx-background-color: " + colour + ", " + colour + ";");
+            }
         }
     }
 
-    private void styleChart(String lineColour, BarChart<String, Number> otherUsageChart) {
-        for (XYChart.Series<String, Number> series : otherUsageChart.getData()) {
+    private void styleChart(String colour, BarChart<String, Number> targetChart) {
+        for (XYChart.Series<String, Number> series : targetChart.getData()) {
             for (XYChart.Data<String, Number> data : series.getData()) {
                 Node barNode = data.getNode();
                 if (barNode != null) {
-                    barNode.setStyle("-fx-bar-fill: " + lineColour + ";");
+                    barNode.setStyle("-fx-bar-fill: " + colour + ";");
                 }
             }
         }

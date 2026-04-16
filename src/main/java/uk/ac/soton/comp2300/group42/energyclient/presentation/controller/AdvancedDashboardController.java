@@ -43,7 +43,6 @@ public class AdvancedDashboardController {
 
     @FXML private void initialize() {
         energyWidget.bindComponents(energyWidgetVM);
-        energyWidgetVM.startAutoUpdateTest();
 
         upcomingActivationsWidget.bindComponents(activationsWidgetVM, editModalVM, activationEditModal);
 

@@ -9,5 +9,6 @@ public record MetricResponse(
         Long houseId,
         LocalDateTime dateTime,
         Double energyUsed,
+        Double energyPrice,
         EnergyCategory category
 ) {}

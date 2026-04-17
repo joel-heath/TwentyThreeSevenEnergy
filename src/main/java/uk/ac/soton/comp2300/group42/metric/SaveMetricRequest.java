@@ -9,6 +9,10 @@ public record SaveMetricRequest(
         @Min(value = 0, message = "Energy used must be a non-negative number")
         Double energyUsed,
 
+        @NotNull(message = "Energy price must not be null")
+        @Min(value = 0, message = "Energy price must be a non-negative number")
+        Double energyPrice,
+
         @NotNull(message = "Energy category must not be null")
         EnergyCategory category
 ) {}

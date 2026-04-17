@@ -15,7 +15,7 @@ class SaveMetricRequestTest {
 
     @Test
     void validRequest_ShouldPassValidation(Validator validator) {
-        SaveMetricRequest request = new SaveMetricRequest(42.5, EnergyCategory.ELECTRICITY);
+        SaveMetricRequest request = new SaveMetricRequest(42.5, 15.0, EnergyCategory.ELECTRICITY);
 
         var violations = validator.validate(request);
 
@@ -24,7 +24,7 @@ class SaveMetricRequestTest {
 
     @Test
     void nullEnergyUsed_ShouldFailValidation(Validator validator) {
-        SaveMetricRequest request = new SaveMetricRequest(null, EnergyCategory.ELECTRICITY);
+        SaveMetricRequest request = new SaveMetricRequest(null, 10.0, EnergyCategory.ELECTRICITY);
 
         var violations = validator.validate(request);
 
@@ -33,8 +33,18 @@ class SaveMetricRequestTest {
     }
 
     @Test
+    void nullEnergyPrice_ShouldFailValidation(Validator validator) {
+        SaveMetricRequest request = new SaveMetricRequest(50.0, null, EnergyCategory.ELECTRICITY);
+
+        var violations = validator.validate(request);
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("Energy price must not be null");
+    }
+
+    @Test
     void negativeEnergyUsed_ShouldFailValidation(Validator validator) {
-        SaveMetricRequest request = new SaveMetricRequest(-5.0, EnergyCategory.ELECTRICITY);
+        SaveMetricRequest request = new SaveMetricRequest(-5.0, 10.0, EnergyCategory.ELECTRICITY);
 
         var violations = validator.validate(request);
 
@@ -43,12 +53,23 @@ class SaveMetricRequestTest {
     }
 
     @Test
+    void negativeEnergyPrice_ShouldFailValidation(Validator validator) {
+        SaveMetricRequest request = new SaveMetricRequest(5.0, -10.0, EnergyCategory.ELECTRICITY);
+
+        var violations = validator.validate(request);
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("Energy price must be a non-negative number");
+    }
+
+    @Test
     void shouldSerializeCorrectly(JacksonTester<SaveMetricRequest> tester) throws IOException {
-        var request = new SaveMetricRequest(122.35, EnergyCategory.GAS);
+        var request = new SaveMetricRequest(122.35, 10.0, EnergyCategory.GAS);
 
         var json = tester.write(request);
 
         assertThat(json).extractingJsonPathNumberValue("@.energyUsed").isEqualTo(122.35);
+        assertThat(json).extractingJsonPathNumberValue("@.energyPrice").isEqualTo(10.0);
     }
 
     @Test
@@ -56,6 +77,7 @@ class SaveMetricRequestTest {
         var payload = """
                 {
                     "energyUsed": 122.35,
+                    "energyPrice": 10.0,
                     "category": "gas"
                 }
                 """;
@@ -63,6 +85,7 @@ class SaveMetricRequestTest {
         var request = tester.parseObject(payload);
 
         assertThat(request.energyUsed()).isEqualTo(122.35);
+        assertThat(request.energyPrice()).isEqualTo(10.0);
         assertThat(request.category()).isEqualTo(EnergyCategory.GAS);
     }
 }

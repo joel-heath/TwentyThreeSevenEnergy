@@ -94,7 +94,7 @@ public class LocalEnergyPriceRepository implements EnergyPriceRepository {
                 .map(metric -> {
                     EnergyPrice price = findPriceForTime(metric.dateTime());
                     double cost = metric.energyUsed() * price.pricePerKwh();
-                    return new EnergyCost(metric.dateTime(), metric.energyUsed(), price.pricePerKwh(), cost);
+                    return new EnergyCost(metric.dateTime(), metric.energyUsed(), price.pricePerKwh(), cost, metric.category());
                 })
                 .toList();
     }

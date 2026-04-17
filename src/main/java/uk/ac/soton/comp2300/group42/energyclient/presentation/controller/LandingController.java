@@ -1,16 +1,15 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
-import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.isDebugging;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.LandingViewModel;
 
 public class LandingController {
 
@@ -22,40 +21,23 @@ public class LandingController {
     @FXML private Parent mainContentArea;
     @FXML private Button debugButton;
 
-    @FXML private void initialize() {
-        if (isDebugging()) {
-            mainContentArea.sceneProperty().addListener((_, _, newScene) -> {
-                if (newScene != null) {
-                    registerDebugShortcut(newScene);
-                }
-            });
-            debugButton.setManaged(true);
-            debugButton.setVisible(true);
-        }
+    private final LandingViewModel vm;
+    @Inject public LandingController(LandingViewModel vm) {
+        this.vm = vm;
     }
 
-    private void registerDebugShortcut(Scene scene) {
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (DEBUG_SHORTCUT.match(e)) {
-                onDebug();
-                e.consume();
+    @FXML private void initialize() {
+        debugButton.visibleProperty().bind(vm.isDebugModeProperty());
+        debugButton.managedProperty().bind(vm.isDebugModeProperty());
+        mainContentArea.sceneProperty().subscribe(newScene -> {
+            if (newScene != null && vm.isDebugModeProperty().get()) {
+                newScene.getAccelerators().put(DEBUG_SHORTCUT, this::onDebug);
             }
         });
     }
 
-    @FXML private void onLogin() {
-        Navigator.goTo("Login.fxml");
-    }
-
-    @FXML private void onDive() {
-        Navigator.goToIrreversible("Dashboard.fxml");
-    }
-
-    @FXML private void onAccessibilitySettings() {
-        Navigator.goTo("AccessibilitySettings.fxml");
-    }
-
-    @FXML private void onDebug() {
-        Navigator.goTo("debug/DashboardDebug.fxml");
-    }
+    @FXML private void onLogin() { Navigator.goTo("Login.fxml"); }
+    @FXML private void onDive() { Navigator.goToIrreversible("Dashboard.fxml"); }
+    @FXML private void onAccessibilitySettings() { Navigator.goTo("AccessibilitySettings.fxml"); }
+    @FXML private void onDebug() { Navigator.goTo("debug/DashboardDebug.fxml"); }
 }

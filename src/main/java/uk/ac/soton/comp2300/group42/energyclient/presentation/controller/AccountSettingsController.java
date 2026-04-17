@@ -1,16 +1,14 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
-
-import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.setIfNew;
 
 public class AccountSettingsController {
 
@@ -28,106 +26,49 @@ public class AccountSettingsController {
         this.vm = vm;
     }
 
-    private static final String RESPONSE_ERROR_CLASS = "response-error";
-    private static final String RESPONSE_SUCCESS_CLASS = "response-success";
-
     @FXML private void initialize() {
-        deleteAccountButton.getStyleClass().add("danger-button");
+        editNameField.textProperty().bindBidirectional(vm.nameProperty());
+        editEmailField.textProperty().bindBidirectional(vm.emailProperty());
+        currentPasswordField.textProperty().bindBidirectional(vm.currentPasswordProperty());
+        newPasswordField.textProperty().bindBidirectional(vm.newPasswordProperty());
+        confirmPasswordField.textProperty().bindBidirectional(vm.confirmPasswordProperty());
 
-        editNameField.setText(vm.getUser().getName());
-        editEmailField.setText(vm.getUser().getName());
-        editNameField.setDisable(true);
-        editEmailField.setDisable(true);
+        editNameField.disableProperty().bind(vm.isLoadingProperty());
+        editEmailField.disableProperty().bind(vm.isLoadingProperty());
+        responseLabel.textProperty().bind(vm.responseMessageProperty());
 
-        vm.refreshDataAsync().thenRunAsync(() ->
-                Platform.runLater(() -> {
-                    setIfNew(editNameField, vm.getUser().getName());
-                    setIfNew(editEmailField, vm.getUser().getEmail());
+        vm.responseColorProperty().subscribe((_, newVal) ->
+                responseLabel.setTextFill(ColorVisionManager.getColor(newVal))
+        );
+        deleteAccountButton.styleProperty().bind(ColorVisionManager.visionProperty().map(
+                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
+                        vision, ColorVisionManager.ColorRole.VALIDATION_ERROR
+                ) + "; -fx-text-fill: #FFFFFF;"
+        ));
 
-                    editNameField.setDisable(false);
-                    editEmailField.setDisable(false);
-                })
-        ).exceptionally(e -> {
-                Platform.runLater(() -> {
-                    editNameField.setText("");
-                    editEmailField.setText("");
-                applyResponseMessage("Failed to load user data.", true);
-                System.out.println("Error loading user data: " + e.getMessage());
-            });
-            return null;
-        });
+        vm.loadData();
     }
 
-    @FXML private void onUpdateAccount() {
-        String name = editNameField.getText().trim();
-        String email = editEmailField.getText().trim();
+    @FXML private void onUpdateName() {
+        vm.updateName();
+    }
 
-        String currentPassword = currentPasswordField.getText();
-        String newPassword = newPasswordField.getText();
-        String confirmPassword = confirmPasswordField.getText();
+    @FXML private void onUpdateEmail() {
+        vm.updateEmail();
+    }
 
-        if (!newPassword.isEmpty() && !newPassword.equals(confirmPassword)) {
-            applyResponseMessage("Passwords do not match.", true);
-            return;
-        }
-
-        if (!currentPassword.isEmpty() && newPassword.isEmpty()) {
-            applyResponseMessage("New password cannot be empty.", true);
-            return;
-        }
-
-        if (!newPassword.isEmpty() && currentPassword.isEmpty()) {
-            applyResponseMessage("Must enter current password to change it.", true);
-            return;
-        }
-
-        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.\\w+$")) {
-            applyResponseMessage("Invalid email format.", true);
-            return;
-        }
-
-        if (name.isEmpty()) {
-            applyResponseMessage("Name cannot be empty.", true);
-            return;
-        }
-
-        vm.getUser().setName(name);
-        vm.getUser().setEmail(email);
-        vm.save();
-
-        if (!newPassword.isEmpty()) {
-            try {
-                vm.setPassword(currentPassword, newPassword);
-            }
-            catch (ApiException e) {
-                applyResponseMessage("Failed to change password: " + e.getMessage(), true);
-                return;
-            }
-        }
-
-        applyResponseMessage("Account updated successfully.", false);
+    @FXML private void onUpdatePassword() {
+        vm.updatePassword();
     }
 
     @FXML private void onLogout() {
         vm.logout();
+        Navigator.goToIrreversible("Landing.fxml");
     }
 
     @FXML private void onDeleteAccount() {
-        String currentPassword = currentPasswordField.getText();
-
-        if (currentPassword.isEmpty()) {
-            applyResponseMessage("Must enter password to delete account.", true);
-            return;
+        if (vm.deleteAccount()) {
+            Navigator.goToIrreversible("Landing.fxml");
         }
-
-        vm.deleteAccount(currentPassword);
-    }
-
-    private void applyResponseMessage(String message, boolean isError) {
-        responseLabel.setText(message);
-        var classes = responseLabel.getStyleClass();
-        classes.remove(RESPONSE_ERROR_CLASS);
-        classes.remove(RESPONSE_SUCCESS_CLASS);
-        classes.add(isError ? RESPONSE_ERROR_CLASS : RESPONSE_SUCCESS_CLASS);
     }
 }

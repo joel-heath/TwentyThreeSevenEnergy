@@ -69,8 +69,17 @@ public class ActivationSchedulePane extends VBox {
                         .otherwise("Enable recurrence")
         );
         oneTimeSchedule.visibleProperty().bind(recurrenceRules.visibleProperty().not());
-        hourProperty.bind(hourSpinner.valueProperty());
-        minuteProperty.bind(minuteSpinner.valueProperty());
+
+        hourProperty.subscribe(newValue -> hourSpinner.getValueFactory().setValue(newValue.intValue()));
+        minuteProperty.subscribe(newValue -> minuteSpinner.getValueFactory().setValue(newValue.intValue()));
+        hourSpinner.valueProperty().subscribe(newValue -> {
+            if (newValue != null && newValue != hourProperty.get())
+                hourProperty.set(newValue);
+        });
+        minuteSpinner.valueProperty().subscribe(newValue -> {
+            if (newValue != null && newValue != minuteProperty.get())
+                minuteProperty.set(newValue);
+        });
     }
 
     @FXML private void onRecur() {

@@ -1,24 +1,32 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
 import com.google.inject.Inject;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
+import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 
 public class AccessibilitySettingsViewModel {
 
-    private final UserStore userStore;
     private final ObservablePreferences preferences;
+    private final ObservableList<ColorVision> availableColorVisions;
 
-    @Inject public AccessibilitySettingsViewModel(UserStore userStore) {
-        this.userStore = userStore;
-        this.preferences = userStore.getPreferences();
+    @Inject public AccessibilitySettingsViewModel(ObservablePreferences preferences) {
+        this.preferences = preferences;
+        this.availableColorVisions = FXCollections.observableArrayList(ColorVision.values());
     }
 
-    public ObservablePreferences getPreferences() {
-        return preferences;
+    public BooleanProperty largeFontProperty() {
+        return preferences.largeFontProperty();
     }
 
-    public void save() {
-        userStore.savePreferences();
+    public ObjectProperty<ColorVision> colorVisionProperty() {
+        return preferences.visionProperty();
+    }
+
+    public ObservableList<ColorVision> getAvailableColorVisions() {
+        return availableColorVisions;
     }
 }

@@ -1,23 +1,13 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.util;
 
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputControl;
 import javafx.util.StringConverter;
 
-import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
 public class ControllerUtils {
-
-    public static boolean isDebugging() {
-        return ManagementFactory.getRuntimeMXBean()
-                .getInputArguments()
-                .stream()
-                .anyMatch(arg -> arg.contains("jdwp"));
-    }
 
     public static <T> StringConverter<T> createConverter(Function<T, String> nameExtractor) {
         return new StringConverter<>() {
@@ -63,29 +53,5 @@ public class ControllerUtils {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return targetDateTime.format(formatter);
-    }
-
-    public static void setIfNew(TextInputControl input, String newValue) {
-        if (newValue != null && !newValue.equals(input.getText())) {
-            input.setText(newValue);
-        }
-    }
-
-    public static void setIfNew(Label label, String newValue) {
-        if (newValue != null && !newValue.equals(label.getText())) {
-            label.setText(newValue);
-        }
-    }
-
-    public static void setValidationError(TextInputControl input, boolean hasError) {
-        if (input == null) return;
-        var classes = input.getStyleClass();
-        if (hasError) {
-            if (!classes.contains("validation-error")) {
-                classes.add("validation-error");
-            }
-        } else {
-            classes.remove("validation-error");
-        }
     }
 }

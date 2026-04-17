@@ -26,7 +26,6 @@ import java.util.List;
 @Singleton
 public class ExternalEnergyPriceClient {
 
-
     private final HttpClient client;
     private final JsonMapper mapper;
     private final URI apiRootUri;

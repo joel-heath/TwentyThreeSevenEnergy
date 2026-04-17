@@ -54,6 +54,20 @@ public class UserStore {
             if (newHouse == null || !newHouse.equals(preferences.getActiveHouse())) return;
             uiExecutor.execute(() -> preferences.setActiveHouse(newHouse));
         });
+
+        preferences.largeFontProperty().subscribe(this::onPreferenceChanged);
+        preferences.visionProperty().subscribe(this::onPreferenceChanged);
+        preferences.themeProperty().subscribe(this::onPreferenceChanged);
+        preferences.modeProperty().subscribe(this::onPreferenceChanged);
+        preferences.shareLocationProperty().subscribe(this::onPreferenceChanged);
+        preferences.energyGoalProperty().subscribe(this::onPreferenceChanged);
+        preferences.activeHouseProperty().subscribe(this::onPreferenceChanged);
+    }
+
+    private <T> void onPreferenceChanged(T oldValue, T newValue) {
+        if (newValue != null && !newValue.equals(oldValue)) {
+            savePreferences();
+        }
     }
 
     public ObservableHousemate getCurrent() { return currentUser; }

@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
 
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch?>
 <BackOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.AccessibilityController"
@@ -11,12 +12,12 @@
     <VBox spacing="20" alignment="CENTER">
         <Label text="Accessibility Settings" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
-        <VBox spacing="5" alignment="CENTER">
-             <!--
+        <!-- Set managed and visible if Large Font Mode is implemented -->
+        <VBox spacing="5" alignment="CENTER" visible="false" managed="false">
             <HBox spacing="10" alignment="CENTER">
                 <Label text="Large Font Mode"/>
                 <ToggleSwitch fx:id="largeFontToggle"/>
-            </HBox> -->
+            </HBox>
         </VBox>
 
         <VBox spacing="5" alignment="CENTER">

@@ -6,14 +6,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug.DashboardDebugViewModel;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-
 
 public class DashboardDebugController {
 
@@ -32,95 +30,41 @@ public class DashboardDebugController {
     @FXML private DatePicker datePicker;
     @FXML private Spinner<LocalTime> timeSpinner;
 
-    @Inject public DashboardDebugController(DashboardDebugViewModel vm) { this.vm = vm; }
+    @Inject public DashboardDebugController(DashboardDebugViewModel vm) {
+        this.vm = vm;
+    }
 
     @FXML private void initialize() {
         energyUsageRect.usageProperty().bind(vm.usageProperty());
-        vm.usageProperty().addListener((_, _, newVal) -> updateUsageState(newVal.doubleValue()));
-        updateUsageState(vm.usageProperty().get());
+        energyUsageRect.fillProperty().bind(vm.visionProperty().map(ColorVisionManager::getGradientFor));
         counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
 
-        colorVisionComboBox.getItems().setAll(ColorVision.values());
-        colorVisionComboBox.valueProperty().bindBidirectional(vm.getPreferences().visionProperty());
+        colorVisionComboBox.setItems(vm.getAvailableVisions());
+        colorVisionComboBox.valueProperty().bindBidirectional(vm.visionProperty());
 
-        LocalTime now = LocalTime.now().withSecond(0).withNano(0);
+        costGoalField.textProperty().bindBidirectional(vm.costGoalInputProperty());
+        datePicker.valueProperty().bindBidirectional(vm.resetDateProperty());
 
-        SpinnerValueFactory<LocalTime> valueFactory =
-                new SpinnerValueFactory<>() {
-                    {
-                        setValue(now);
-                    }
-
-                    @Override
-                    public void decrement(int steps) {
-                        setValue(getValue().minusMinutes(steps));
-                    }
-
-                    @Override
-                    public void increment(int steps) {
-                        setValue(getValue().plusMinutes(steps));
-                    }
-                };
-
+        SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<>() {
+            { setValue(vm.resetTimeProperty().get()); }
+            @Override public void decrement(int steps) { setValue(getValue().minusMinutes(steps)); }
+            @Override public void increment(int steps) { setValue(getValue().plusMinutes(steps)); }
+        };
         timeSpinner.setValueFactory(valueFactory);
+        valueFactory.valueProperty().bindBidirectional(vm.resetTimeProperty());
 
+        vm.hasCostGoalErrorProperty().subscribe(hasError ->
+            costGoalField.setStyle(hasError
+                    ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
+                    : "")
+        );
     }
 
-
-    @FXML private void onIncrement() {
-        vm.incrementCounter();
-    }
-
-    @FXML private void onDecrement() {
-        vm.decrementCounter();
-    }
-
-    @FXML private void onSetCostGoal() {
-        try {
-            String text = costGoalField.getText().replace("£", "");
-            double value = Double.parseDouble(text);
-
-            if (value <= 0) throw new NumberFormatException();
-
-            vm.setCostGoal(value);
-            costGoalField.clear();
-            costGoalField.getStyleClass().remove("validation-error");
-
-        } catch (NumberFormatException e) {
-            if (!costGoalField.getStyleClass().contains("validation-error")) {
-                costGoalField.getStyleClass().add("validation-error");
-            }
-        }
-    }
-
-    @FXML private void onScheduleReset() {
-        LocalDate date = datePicker.getValue();
-        LocalTime time = timeSpinner.getValue();
-
-
-        if (date == null || time == null) {
-            return;
-        }
-
-        LocalDateTime resetTime = LocalDateTime.of(date, time);
-        System.out.println("Reset scheduled for: " + resetTime);
-
-        vm.scheduleReset(resetTime);
-    }
-
-    @FXML private void onExit() {
-        Navigator.goTo("Landing.fxml");
-    }
-
-    private void updateUsageState(double usage) {
-        if (usage >= 2.0) {
-            energyUsageRect.setUsageState(EnergyUsageRect.UsageState.CRITICAL);
-        } else if (usage >= 1.5) {
-            energyUsageRect.setUsageState(EnergyUsageRect.UsageState.WARNING);
-        } else {
-            energyUsageRect.setUsageState(EnergyUsageRect.UsageState.NORMAL);
-        }
-    }
+    @FXML private void onIncrement() { vm.incrementCounter(); }
+    @FXML private void onDecrement() { vm.decrementCounter(); }
+    @FXML private void onSetCostGoal() { vm.updateCostGoal(); }
+    @FXML private void onScheduleReset() { vm.scheduleReset(); }
+    @FXML private void onExit() { Navigator.goTo("Landing.fxml"); }
 }

@@ -2,19 +2,16 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ProgressTrackingViewModel;
 
 import java.util.Arrays;
@@ -34,78 +31,71 @@ public class ProgressTrackingController {
 
     @FXML private ToggleGroup expenseUsageToggleGroup;
     @FXML private ToggleGroup navToggleGroup;
-    @FXML private ToggleButton btnExpenses;
-    @FXML private ToggleButton btnElec;
-    @FXML private ToggleButton btnGas;
-    @FXML private ToggleButton btnOther;
+    @FXML private ToggleButton btnExpenses, btnElec, btnGas, btnOther;
 
     @FXML private Label priceLabel;
     @FXML private TextField logUsageField;
     @FXML private ComboBox<EnergyCategory> categoryComboBox;
 
     private final ProgressTrackingViewModel vm;
-    @Inject public ProgressTrackingController(ProgressTrackingViewModel vm) { this.vm = vm; }
-    private final BooleanProperty loadError = new SimpleBooleanProperty(false);
 
-    @FXML private void initialize() {
+    @Inject
+    public ProgressTrackingController(ProgressTrackingViewModel vm) {
+        this.vm = vm;
+    }
 
-        priceChart.setData(vm.getPriceSeriesData());
-        expensesChart.setData(vm.getExpenseSeriesData());
-        usageChart.setData(vm.getUsageSeriesData());
-        electricityUsageChart.setData(vm.getElectricitySeriesData());
-        gasUsageChart.setData(vm.getGasSeriesData());
-        otherUsageChart.setData(vm.getOtherExpenseSeriesData());
-
-        expenseUsageToggleGroup.selectedToggleProperty().addListener((_) -> updateVisibility());
-        navToggleGroup.selectedToggleProperty().addListener((_) -> updateVisibility());
-
-        updateVisibility();
-
-        priceLabel.textProperty().bind(
-            vm.currentPriceProperty().asString("%.2f p/kWh")
+    @FXML
+    private void initialize() {
+        priceLabel.textProperty().bind(vm.priceLabelTextProperty());
+        vm.priceLabelRoleProperty().subscribe(newVal ->
+                priceLabel.setTextFill(ColorVisionManager.getColor(newVal))
         );
-        priceLabel.getStyleClass().add("price-label");
-        loadError.addListener((_, _, _) -> updatePriceLabelState());
-        updatePriceLabelState();
-        priceLabel.textFillProperty().bind(Bindings.createObjectBinding(
-                () -> ColorVisionManager.getColor(
-                        loadError.get()
-                                ? ColorVisionManager.ColorRole.VALIDATION_ERROR
-                                : ColorVisionManager.ColorRole.WIDGET_TEXT
-                ),
-                loadError,
-                ColorVisionManager.visionProperty()
-        ));
 
-        vm.getPriceSeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
-        vm.getExpenseSeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
-        vm.getUsageSeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
-        vm.getElectricitySeriesData().addListener((ListChangeListener<XYChart.Series<String, Number>>) _ -> scheduleApplyChartColours());
-        ColorVisionManager.visionProperty().addListener((_, _, _) -> scheduleApplyChartColours());
-        scheduleApplyChartColours();
-
-        vm.loadWeeklyExpenses();
-        vm.loadMockExpenses(); // when real data is available, do this asynchronously
-        vm.loadExpensesByCategory(EnergyCategory.ELECTRICITY);
-        vm.loadExpensesByCategory(EnergyCategory.GAS);
-        vm.loadExpensesByCategory(EnergyCategory.OTHER);
-        loadError.set(false);
+        logUsageField.textProperty().bindBidirectional(vm.logUsageInputProperty());
 
         categoryComboBox.getItems().setAll(EnergyCategory.values());
         categoryComboBox.setConverter(createConverter(EnergyCategory::getName));
         categoryComboBox.valueProperty().bindBidirectional(vm.selectedCategoryProperty());
 
-        vm.syncPrices();
+        bindChartData(priceChart, "Price Trend (p/kWh)", vm.getPriceData());
 
-        vm.loadDataAsync().exceptionally(e -> {
-            Platform.runLater(() -> {
-                loadError.set(true);
-                priceLabel.textProperty().unbind();
-                priceLabel.setText("Failed to load data.");
-            });
-            System.out.println("Error loading price data: " + e.getMessage());
-            return null;
-        });
+        bindChartData(expensesChart, "Last 7 Days Spend (£)", vm.getExpenseData());
+        bindChartData(electricityExpensesChart, "Last 7 Days Spend (Electricity)", vm.getElectricityExpenseData());
+        bindChartData(gasExpensesChart, "Last 7 Days Spend (Gas)", vm.getGasExpenseData());
+        bindChartData(otherExpensesChart, "Last 7 Days Spend (Other)", vm.getOtherExpenseData());
+
+        bindChartData(usageChart, "Last 7 Days Usage (kWh)", vm.getUsageData());
+        bindChartData(electricityUsageChart, "Last 7 Days Usage (Electricity)", vm.getElectricityUsageData());
+        bindChartData(gasUsageChart, "Last 7 Days Usage (Gas)", vm.getGasUsageData());
+        bindChartData(otherUsageChart, "Last 7 Days Usage (Other)", vm.getOtherUsageData());
+
+        expenseUsageToggleGroup.selectedToggleProperty().subscribe(this::updateVisibility);
+        navToggleGroup.selectedToggleProperty().subscribe(this::updateVisibility);
+        updateVisibility();
+
+        ColorVisionManager.visionProperty().subscribe(this::scheduleApplyChartColours);
+
+        vm.initializeData();
+    }
+
+    @FXML private void onLogUsage() {
+        vm.logUsage();
+    }
+
+    private void bindChartData(XYChart<String, Number> chart, String seriesName, ObservableList<ProgressTrackingViewModel.DataPoint> dataPoints) {
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(seriesName);
+        chart.getData().add(series);
+
+        dataPoints.subscribe(() ->
+                Platform.runLater(() -> {
+                    List<XYChart.Data<String, Number>> fxData = dataPoints.stream()
+                            .map(dp -> new XYChart.Data<>(dp.label(), dp.value()))
+                            .toList();
+                    series.getData().setAll(fxData);
+                    scheduleApplyChartColours();
+                })
+        );
     }
 
     private void updateVisibility() {
@@ -149,16 +139,16 @@ public class ProgressTrackingController {
     private void applyChartColours() {
         priceChart.applyCss();
         priceChart.layout();
-        expensesChart.applyCss();
-        expensesChart.layout();
-        usageChart.applyCss();
-        usageChart.layout();
-        electricityUsageChart.applyCss();
-        electricityUsageChart.layout();
-        gasUsageChart.applyCss();
-        gasUsageChart.layout();
-        otherUsageChart.applyCss();
-        otherUsageChart.layout();
+
+        List<BarChart<String, Number>> allCharts = Arrays.asList(
+                expensesChart, electricityExpensesChart, gasExpensesChart, otherExpensesChart,
+                usageChart, electricityUsageChart, gasUsageChart, otherUsageChart
+        );
+
+        for (BarChart<String, Number> chart : allCharts) {
+            chart.applyCss();
+            chart.layout();
+        }
 
         String lineColour = ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.STATUS_EXPENSIVE);
         String barColour = ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.STATUS_AVERAGE);
@@ -180,85 +170,43 @@ public class ProgressTrackingController {
             }
         }
 
-        for (XYChart.Series<String, Number> series : expensesChart.getData()) {
-            for (XYChart.Data<String, Number> data : series.getData()) {
-                Node barNode = data.getNode();
-                if (barNode != null) {
-                    barNode.setStyle("-fx-bar-fill: " + barColour + ";");
-                }
-            }
-        }
+        styleChart(barColour, expensesChart);
+        styleChart(barColour, usageChart);
 
-        for (XYChart.Series<String, Number> series : usageChart.getData()) {
-            for (XYChart.Data<String, Number> data : series.getData()) {
-                Node barNode = data.getNode();
-                if (barNode != null) {
-                    barNode.setStyle("-fx-bar-fill: " + barColour + ";");
-                }
-            }
-        }
+        styleChart(lineColour, electricityExpensesChart);
+        styleChart(lineColour, gasExpensesChart);
+        styleChart(lineColour, otherExpensesChart);
 
-        for (XYChart.Series<String, Number> series : electricityUsageChart.getData()) {
-            for (XYChart.Data<String, Number> data : series.getData()) {
-                Node barNode = data.getNode();
-                if (barNode != null) {
-                    barNode.setStyle("-fx-bar-fill: " + lineColour + ";");
-                }
-            }
-        }
-
-        for (XYChart.Series<String, Number> series : gasUsageChart.getData()) {
-            for (XYChart.Data<String, Number> data : series.getData()) {
-                Node barNode = data.getNode();
-                if (barNode != null) {
-                    barNode.setStyle("-fx-bar-fill: " + lineColour + ";");
-                }
-            }
-        }
-
-        for (XYChart.Series<String, Number> series : otherUsageChart.getData()) {
-            for (XYChart.Data<String, Number> data : series.getData()) {
-                Node barNode = data.getNode();
-                if (barNode != null) {
-                    barNode.setStyle("-fx-bar-fill: " + lineColour + ";");
-                }
-            }
-        }
+        styleChart(lineColour, electricityUsageChart);
+        styleChart(lineColour, gasUsageChart);
+        styleChart(lineColour, otherUsageChart);
 
         for (Node legendSymbol : priceChart.lookupAll(".chart-legend-item-symbol")) {
             legendSymbol.setStyle("-fx-background-color: " + lineColour + ", " + lineColour + ";");
         }
-        for (Node legendSymbol : expensesChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
-        }
-        for (Node legendSymbol : usageChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
-        }
-        for (Node legendSymbol : electricityUsageChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
-        }
-        for (Node legendSymbol : gasUsageChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
-        }
-        for (Node legendSymbol : otherUsageChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + barColour + ", " + barColour + ";");
-    private void updatePriceLabelState() {
-        var classes = priceLabel.getStyleClass();
-        if (loadError.get()) {
-            if (!classes.contains("error-text")) {
-                classes.add("error-text");
+
+        styleLegends(barColour, expensesChart, usageChart);
+        styleLegends(barColour, electricityExpensesChart, gasExpensesChart, otherExpensesChart);
+        styleLegends(barColour, electricityUsageChart, gasUsageChart, otherUsageChart);
+    }
+
+    @SafeVarargs
+    private void styleLegends(String colour, BarChart<String, Number>... charts) {
+        for (BarChart<String, Number> chart : charts) {
+            for (Node legendSymbol : chart.lookupAll(".chart-legend-item-symbol")) {
+                legendSymbol.setStyle("-fx-background-color: " + colour + ", " + colour + ";");
             }
-        } else {
-            classes.remove("error-text");
         }
     }
 
-    @FXML
-    private void onLogUsage() {
-        double usage = Double.parseDouble(logUsageField.getText());
-        vm.logUsage(usage);
-        vm.loadWeeklyExpenses();
-        vm.loadMockExpenses();
-        vm.loadExpensesByCategory(vm.selectedCategoryProperty().get());
+    private void styleChart(String colour, BarChart<String, Number> targetChart) {
+        for (XYChart.Series<String, Number> series : targetChart.getData()) {
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                Node barNode = data.getNode();
+                if (barNode != null) {
+                    barNode.setStyle("-fx-bar-fill: " + colour + ";");
+                }
+            }
+        }
     }
 }

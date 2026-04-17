@@ -12,9 +12,7 @@
                  prefHeight="400.0" prefWidth="600.0">
 
     <VBox spacing="15" alignment="CENTER">
-        <padding>
-            <Insets top="30" right="30" bottom="30" left="30"/>
-        </padding>
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
         <Label text="Login" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
 
@@ -27,5 +25,7 @@
                    onAction="#goToSignUp"/>
 
         <Button text="Accessibility Settings" onAction="#onAccessibilitySettings" prefWidth="220"/>
+
+        <Label fx:id="responseLabel" wrapText="true" prefWidth="280" alignment="CENTER"/>
     </VBox>
 </BackOverlayPane>

@@ -22,6 +22,7 @@ class MetricResponseTest {
                 10L,
                 LocalDateTime.of(LocalDate.of(2025, 12, 25), LocalTime.of(15, 30)),
                 32.89,
+                15.0,
                 EnergyCategory.OTHER
         );
 
@@ -31,6 +32,7 @@ class MetricResponseTest {
         assertThat(json).extractingJsonPathNumberValue("@.houseId").isEqualTo(10);
         assertThat(json).extractingJsonPathStringValue("@.dateTime").isEqualTo("2025-12-25T15:30:00");
         assertThat(json).extractingJsonPathNumberValue("@.energyUsed").isEqualTo(32.89);
+        assertThat(json).extractingJsonPathNumberValue("@.energyPrice").isEqualTo(15.0);
         assertThat(json).extractingJsonPathStringValue("@.category").isEqualTo("other");
     }
 
@@ -42,6 +44,7 @@ class MetricResponseTest {
                     "houseId": 8,
                     "dateTime": "2025-04-20T16:20:00",
                     "energyUsed": 60.24,
+                    "energyPrice": 15.0,
                     "category": "electricity"
                 }
                 """;
@@ -52,6 +55,7 @@ class MetricResponseTest {
         assertThat(response.houseId()).isEqualTo(8L);
         assertThat(response.dateTime()).isEqualTo(LocalDateTime.of(LocalDate.of(2025, 4, 20), LocalTime.of(16, 20)));
         assertThat(response.energyUsed()).isEqualTo(60.24);
+        assertThat(response.energyPrice()).isEqualTo(15.0);
         assertThat(response.category()).isEqualTo(EnergyCategory.ELECTRICITY);
     }
 }

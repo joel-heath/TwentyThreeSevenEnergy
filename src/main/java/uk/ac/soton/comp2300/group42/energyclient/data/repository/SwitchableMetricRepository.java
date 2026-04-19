@@ -52,4 +52,9 @@ public class SwitchableMetricRepository implements MetricRepository {
     public List<Metric> getAllByCategory(Long houseId, EnergyCategory category) {
         return getActiveRepo().getAllByCategory(houseId, category);
     }
+
+    @Override
+    public List<Double> getAllCostsByDate(Long houseId, LocalDate date) {
+        return getActiveRepo().getAllCostsByDate(houseId, date);
+    }
 }

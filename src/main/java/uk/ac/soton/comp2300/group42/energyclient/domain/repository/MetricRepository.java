@@ -12,4 +12,5 @@ public interface MetricRepository {
     List<Metric> getAll(Long houseId);
     List<Metric> getAllByDate(Long houseId, LocalDate date);
     List<Metric> getAllByCategory(Long houseId, EnergyCategory category);
+    List<Double> getAllCostsByDate(Long houseId, LocalDate date);
 }

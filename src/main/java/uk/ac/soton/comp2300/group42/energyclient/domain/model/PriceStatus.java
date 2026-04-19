@@ -4,8 +4,8 @@ public enum PriceStatus {
     CHEAP, AVERAGE, EXPENSIVE;
 
     public static PriceStatus fromValue(double valueIncVat) {
-        if (valueIncVat < 10) return CHEAP;
-        if (valueIncVat < 25) return AVERAGE;
+        if (valueIncVat < 20) return CHEAP;
+        if (valueIncVat < 30) return AVERAGE;
         return EXPENSIVE;
     }
 }

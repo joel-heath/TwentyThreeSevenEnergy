@@ -35,6 +35,7 @@ public class LocalMetricRepository implements MetricRepository {
                 metric.houseId(),
                 metric.dateTime(),
                 metric.energyUsed(),
+                metric.energyPrice(),
                 category
         );
 
@@ -78,6 +79,16 @@ public class LocalMetricRepository implements MetricRepository {
 
         return data.metrics.values().stream()
                 .filter(a -> Objects.equals(a.houseId(), houseId) && Objects.equals(a.category(), category))
+                .toList();
+    }
+
+    @Override
+    public List<Double> getAllCostsByDate(Long houseId, LocalDate date) {
+        validateRequestExists(houseId);
+
+        return data.metrics.values().stream()
+                .filter(a -> Objects.equals(a.houseId(), houseId) && Objects.equals(a.dateTime().toLocalDate(), date))
+                .map(Metric::energyPrice)
                 .toList();
     }
 

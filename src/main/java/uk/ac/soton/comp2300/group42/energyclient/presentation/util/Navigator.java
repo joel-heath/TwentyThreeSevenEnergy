@@ -79,7 +79,10 @@ public class Navigator {
                 Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/global.css")
         ).toExternalForm());
         rootScene.getStylesheets().add(Objects.requireNonNull(
-                Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css")
+                Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/switch.css")
+        ).toExternalForm());
+        rootScene.getStylesheets().add(Objects.requireNonNull(
+                Navigator.class.getResource("/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/theme-light-typical.css")
         ).toExternalForm());
 
         rootScene.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {

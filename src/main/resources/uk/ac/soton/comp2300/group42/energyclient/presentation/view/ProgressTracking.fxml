@@ -35,6 +35,15 @@
                 </yAxis>
             </LineChart>
 
+            <BarChart fx:id="expenseChart" title="Daily Energy Usage" prefHeight="200" prefWidth="200" animated="false"
+                      styleClass="chart expense-chart">
+                <xAxis>
+                    <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Total Energy (J)" side="LEFT" animated="false"/>
+                </yAxis>
+            </BarChart>
             <fx:define>
                 <ToggleGroup fx:id="expenseUsageToggleGroup" />
             </fx:define>

@@ -1,0 +1,55 @@
+/* Auto-generated: dark + tritan */
+.root,
+.combo-box-popup,
+.context-menu {
+    /* Modena dark theme overrides */
+    -fx-base: #3f474f;
+    -fx-background: #333639;
+    -fx-control-inner-background: #464a4e;
+    -fx-text-background-color: #ffffff;
+    -fx-accent: #0096c9;
+
+    -fx-app-text: #ffffff;
+    -fx-app-muted: #b3b3b3;
+    -fx-app-card-surface: #464a4e;
+    -fx-app-card-border: #3b3f43;
+    -fx-app-widget-surface: #7A5CDE;
+    -fx-app-widget-text: #FFFFFF;
+    -fx-app-accent: #0096c9;
+    -fx-app-link: #0096c9;
+    -fx-app-error: #DC3545;
+    -fx-app-on-error: #ffffff;
+    -fx-app-success: #2ECC71;
+    -fx-app-toggle-enabled: #0096c9;
+    -fx-app-toggle-disabled: #35393d;
+    -fx-app-thumb: #ffffff;
+    -fx-app-shadow: rgba(0, 0, 0, 0.35);
+    -fx-app-overlay: rgba(0, 0, 0, 0.6);
+
+    -fx-app-status-cheap: #D4EDDA;
+    -fx-app-status-average: #FFF3CD;
+    -fx-app-status-expensive: #F8D7DA;
+    -fx-app-usage-warning: #E74C3C;
+    -fx-app-usage-critical: #C0392B;
+    -fx-app-gradient-start: #2ECC71;
+    -fx-app-gradient-mid: #FFC107;
+    -fx-app-gradient-end: #E74C3C;
+}
+
+.root,
+.combo-box-popup,
+.context-menu {
+    -fx-app-status-cheap: #D8F5EA;
+    -fx-app-status-average: #FFF8CC;
+    -fx-app-status-expensive: #F4DCEC;
+    -fx-app-usage-warning: #56B4E9;
+    -fx-app-usage-critical: #2E86C1;
+    -fx-app-gradient-start: #009E73;
+    -fx-app-gradient-mid: #F0E442;
+    -fx-app-gradient-end: #56B4E9;
+    -fx-app-toggle-enabled: #009E73;
+    -fx-app-error: #CC79A7;
+    -fx-app-success: #009E73;
+}
+
+

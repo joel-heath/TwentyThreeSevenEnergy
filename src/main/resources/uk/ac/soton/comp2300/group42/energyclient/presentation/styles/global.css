@@ -1,36 +1,70 @@
 /* Shared app styles built on Modena looked-up colors */
-.root {
+.root,
+.combo-box-popup,
+.context-menu {
     -fx-background-color: -fx-background;
+
+    /* Default app tokens (overridden by theme + colorblind stylesheets) */
+    -fx-app-text: #000000;
+    -fx-app-muted: #5c5c5c;
+    -fx-app-card-surface: #ffffff;
+    -fx-app-card-border: #d1d1d1;
+    -fx-app-widget-surface: #ffffff;
+    -fx-app-widget-text: #000000;
+    -fx-app-accent: #0096c9;
+    -fx-app-link: #0096c9;
+    -fx-app-error: #DC3545;
+    -fx-app-on-error: #ffffff;
+    -fx-app-success: #2ECC71;
+    -fx-app-toggle-enabled: #0096c9;
+    -fx-app-toggle-disabled: #bfbfbf;
+    -fx-app-thumb: #ffffff;
+    -fx-app-shadow: rgba(0, 0, 0, 0.25);
+    -fx-app-overlay: rgba(0, 0, 0, 0.5);
+    -fx-app-status-cheap: #D4EDDA;
+    -fx-app-status-average: #FFF3CD;
+    -fx-app-status-expensive: #F8D7DA;
+    -fx-app-usage-warning: #E74C3C;
+    -fx-app-usage-critical: #C0392B;
+    -fx-app-gradient-start: #2ECC71;
+    -fx-app-gradient-mid: #FFC107;
+    -fx-app-gradient-end: #E74C3C;
+
+    /* Modena lookup colors needed by popup list cells */
+    -fx-selection-bar: -fx-accent;
+    -fx-selection-bar-non-focused: lightgrey;
+    -fx-cell-hover-color: #cce3f4;
+    -fx-cell-focus-inner-border: derive(-fx-selection-bar, 30%);
 }
 
 /* Typography */
 .label {
-    -fx-text-fill: -fx-text-background-color;
+    -fx-text-fill: -fx-app-text;
 }
 
 .text {
-    -fx-fill: -fx-text-background-color;
+    -fx-fill: -fx-app-text;
 }
 
 /* Inputs */
 .text-input {
     -fx-background-color: -fx-control-inner-background;
-    -fx-text-fill: -fx-text-background-color;
-    -fx-prompt-text-fill: derive(-fx-text-background-color, -45%);
-    -fx-border-color: derive(-fx-control-inner-background, -15%);
+    -fx-text-fill: -fx-app-text;
+    -fx-prompt-text-fill: -fx-app-muted;
+    -fx-border-color: -fx-app-card-border;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
 }
 
 .combo-box-base {
     -fx-background-color: -fx-control-inner-background;
-    -fx-border-color: derive(-fx-control-inner-background, -15%);
+    -fx-border-color: -fx-app-card-border;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
 }
 
 .combo-box .list-cell {
-    -fx-text-fill: -fx-text-background-color;
+    -fx-text-fill: -fx-app-text;
 }
 
 .combo-box-popup .list-view {
@@ -38,14 +72,14 @@
 }
 
 .list-cell {
-    -fx-text-fill: -fx-text-background-color;
+    -fx-text-fill: -fx-app-text;
 }
 
 /* Buttons */
 .button {
     -fx-background-color: -fx-base;
-    -fx-border-color: derive(-fx-base, -20%);
-    -fx-text-fill: -fx-text-background-color;
+    -fx-border-color: -fx-app-card-border;
+    -fx-text-fill: -fx-app-text;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
 }
@@ -55,7 +89,34 @@
 }
 
 .button:focused {
-    -fx-border-color: -fx-accent;
+    -fx-border-color: -fx-app-accent;
+}
+
+.button.danger-button {
+    -fx-background-color: -fx-app-error;
+    -fx-border-color: -fx-app-error;
+    -fx-text-fill: -fx-app-on-error;
+}
+
+.hyperlink.link-accent,
+.link-accent {
+    -fx-text-fill: -fx-app-link;
+}
+
+.validation-error {
+    -fx-border-color: -fx-app-error;
+}
+
+.response-error {
+    -fx-text-fill: -fx-app-error;
+}
+
+.response-success {
+    -fx-text-fill: -fx-app-success;
+}
+
+.error-text {
+    -fx-text-fill: -fx-app-error;
 }
 
 /* Scroll panes */
@@ -70,22 +131,98 @@
 
 /* Cards / Modals */
 .modal-card {
-    -fx-background-color: -fx-control-inner-background;
+    -fx-background-color: -fx-app-card-surface;
     -fx-background-radius: 10;
-    -fx-border-color: derive(-fx-control-inner-background, -18%);
+    -fx-border-color: -fx-app-card-border;
     -fx-border-radius: 10;
     -fx-padding: 20;
 }
 
 .card-scroll {
-    -fx-background-color: -fx-control-inner-background;
+    -fx-background-color: -fx-app-card-surface;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
-    -fx-border-color: derive(-fx-control-inner-background, -18%);
+    -fx-border-color: -fx-app-card-border;
 }
 
 .card-scroll > .viewport {
     -fx-background-color: transparent;
+}
+
+.popup-card {
+    -fx-padding: 10;
+    -fx-border-color: -fx-app-card-border;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.widget-surface {
+    -fx-background-color: -fx-app-widget-surface;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+}
+
+.widget-surface .label {
+    -fx-text-fill: -fx-app-widget-text;
+}
+
+.widget-shadow {
+    -fx-effect: dropshadow(three-pass-box, -fx-app-shadow, 15, 0, 5, 5);
+}
+
+.energy-usage-widget {
+    -fx-font-weight: bold;
+}
+
+.activation-card,
+.list-card {
+    -fx-background-color: -fx-app-card-surface;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: -fx-app-card-border;
+    -fx-padding: 5;
+    -fx-spacing: 5;
+}
+
+.status-card {
+    -fx-alignment: center;
+    -fx-padding: 10;
+    -fx-border-color: -fx-app-card-border;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.status-card.status-cheap {
+    -fx-background-color: -fx-app-status-cheap;
+}
+
+.status-card.status-average {
+    -fx-background-color: -fx-app-status-average;
+}
+
+.status-card.status-expensive {
+    -fx-background-color: -fx-app-status-expensive;
+}
+
+.usage-bar-bg {
+    -fx-fill: derive(-fx-app-widget-surface, -8%);
+}
+
+.usage-gradient {
+    -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-app-gradient-start 0%, -fx-app-gradient-mid 50%, -fx-app-gradient-end 100%);
+}
+
+.usage-warning {
+    -fx-fill: -fx-app-usage-warning;
+}
+
+.usage-critical {
+    -fx-fill: -fx-app-usage-critical;
+    -fx-effect: dropshadow(three-pass-box, -fx-app-usage-critical, 40, 0, 0, 0);
+}
+
+.modal-overlay {
+    -fx-background-color: -fx-app-overlay;
 }
 
 /* Charts */
@@ -94,15 +231,35 @@
 }
 
 .chart-plot-background {
-    -fx-background-color: -fx-control-inner-background;
+    -fx-background-color: -fx-app-card-surface;
 }
 
 .axis-label,
 .chart-title,
 .axis .tick-label {
-    -fx-text-fill: -fx-text-background-color;
+    -fx-text-fill: -fx-app-text;
 }
 
 .chart-legend {
     -fx-background-color: transparent;
+}
+
+.forecast-chart .default-color0.chart-series-line {
+    -fx-stroke: -fx-app-status-expensive;
+}
+
+.forecast-chart .default-color0.chart-line-symbol {
+    -fx-background-color: -fx-app-status-expensive, -fx-app-widget-surface;
+}
+
+.forecast-chart .chart-legend-item-symbol {
+    -fx-background-color: -fx-app-status-expensive, -fx-app-status-expensive;
+}
+
+.expense-chart .default-color0.chart-bar {
+    -fx-bar-fill: -fx-app-status-average;
+}
+
+.expense-chart .chart-legend-item-symbol {
+    -fx-background-color: -fx-app-status-average, -fx-app-status-average;
 }

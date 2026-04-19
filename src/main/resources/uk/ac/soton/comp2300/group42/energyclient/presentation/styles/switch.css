@@ -7,15 +7,16 @@
 
 /* The capsule track */
 .toggle-switch .track {
-    -fx-fill: #b0b0b0; /* Gray when off */
+    -fx-fill: -fx-app-toggle-disabled;
 }
 
 /* Selected fallback track */
 .toggle-switch:selected .track {
-    -fx-fill: #b0b0b0;
+    -fx-fill: -fx-app-toggle-enabled;
 }
 
 /* The thumb (white circle) */
 .toggle-switch .thumb {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+    -fx-fill: -fx-app-thumb;
+    -fx-effect: dropshadow(three-pass-box, -fx-app-shadow, 3, 0, 0, 1);
 }

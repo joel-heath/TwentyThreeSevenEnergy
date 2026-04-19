@@ -8,6 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.LogoutConfirmModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
 
 public class AccountSettingsController {
@@ -21,6 +22,7 @@ public class AccountSettingsController {
     @FXML private PasswordField confirmPasswordField;
     @FXML private Button deleteAccountButton;
     @FXML private Label responseLabel;
+    @FXML private LogoutConfirmModal logoutConfirmModal;
 
     @Inject public AccountSettingsController(AccountSettingsViewModel vm) {
         this.vm = vm;
@@ -46,6 +48,11 @@ public class AccountSettingsController {
                 ) + "; -fx-text-fill: #FFFFFF;"
         ));
 
+        logoutConfirmModal.setOnConfirm(() -> {
+            vm.logout();
+            Navigator.goToIrreversible("Landing.fxml");
+        });
+
         vm.loadData();
     }
 
@@ -62,8 +69,14 @@ public class AccountSettingsController {
     }
 
     @FXML private void onLogout() {
-        vm.logout();
-        Navigator.goToIrreversible("Landing.fxml");
+        logoutConfirmModal.show(
+                "Sign out?",
+                "Are you sure you want to log out? You will need to sign in again.",
+                () -> {
+                    vm.logout();
+                    Navigator.goToIrreversible("Landing.fxml");
+                }
+        );
     }
 
     @FXML private void onDeleteAccount() {

@@ -123,7 +123,7 @@ class MetricServiceTest {
     @Test
     void saveMetric_Success() {
         LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2025, 12, 25), LocalTime.of(15, 30));
-        SaveMetricRequest request = new SaveMetricRequest(20.0, EnergyCategory.OTHER);
+        SaveMetricRequest request = new SaveMetricRequest(20.0, 100.0, EnergyCategory.OTHER);
 
         when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
         when(metricRepo.save(any(Metric.class))).thenAnswer(m -> assignId(m, 200L));

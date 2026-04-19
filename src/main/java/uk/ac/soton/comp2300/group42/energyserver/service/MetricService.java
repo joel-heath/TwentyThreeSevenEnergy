@@ -80,6 +80,7 @@ public class MetricService {
         metric.setHouse(house);
         metric.setDateTime(dateTime);
         metric.setEnergyUsed(request.energyUsed());
+        metric.setEnergyPrice(request.energyPrice());
         metric.setEnergyCategory(request.category());
         metric = metricRepo.save(metric);
 

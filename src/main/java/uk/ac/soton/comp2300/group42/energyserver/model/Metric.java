@@ -28,6 +28,9 @@ public class Metric {
     @Column(nullable = false)
     private Double energyUsed;
 
+    @Column(nullable = false)
+    private Double energyPrice;
+
     public Long getId() { return id; }
 
     public House getHouse() { return house; }
@@ -38,6 +41,9 @@ public class Metric {
 
     public Double getEnergyUsed() { return energyUsed; }
     public void setEnergyUsed(Double energyUsed) { this.energyUsed = energyUsed; }
+
+    public Double getEnergyPrice() { return energyPrice; }
+    public void setEnergyPrice(Double energyPrice) { this.energyPrice = energyPrice; }
 
     public EnergyCategory getEnergyCategory() { return energyCategory; }
     public void setEnergyCategory(EnergyCategory energyCategory) { this.energyCategory = energyCategory; }

@@ -52,7 +52,7 @@ class MetricControllerTest {
     @WithMockUser
     void getMetric_ShouldReturn200() throws Exception {
         LocalDateTime today = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
-        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 15.5, EnergyCategory.ELECTRICITY);
+        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 15.5, 100.0, EnergyCategory.ELECTRICITY);
 
         when(metricService.getMetricById(eq(HOUSE_ID), eq(METRIC_ID), any()))
                 .thenReturn(response);
@@ -74,8 +74,8 @@ class MetricControllerTest {
     void getAllMetrics_ShouldReturn200() throws Exception {
         LocalDateTime today = LocalDateTime.now();
         List<MetricResponse> responses = List.of(
-                new MetricResponse(100L, HOUSE_ID, today.minusDays(1), 12.0, EnergyCategory.OTHER),
-                new MetricResponse(101L, HOUSE_ID, today, 15.5, EnergyCategory.ELECTRICITY)
+                new MetricResponse(100L, HOUSE_ID, today.minusDays(1), 12.0, 100.0, EnergyCategory.OTHER),
+                new MetricResponse(101L, HOUSE_ID, today, 15.5, 150.0, EnergyCategory.ELECTRICITY)
         );
 
         when(metricService.getMetricsByHouseId(eq(HOUSE_ID), any()))
@@ -97,8 +97,8 @@ class MetricControllerTest {
     void getAllMetricsByCategory_ShouldReturn200() throws Exception {
         LocalDateTime today = LocalDateTime.now();
         List<MetricResponse> responses = List.of(
-                new MetricResponse(100L, HOUSE_ID, today.minusDays(1), 12.0, EnergyCategory.OTHER),
-                new MetricResponse(101L, HOUSE_ID, today, 15.5, EnergyCategory.OTHER)
+                new MetricResponse(100L, HOUSE_ID, today.minusDays(1), 12.0, 120.0, EnergyCategory.OTHER),
+                new MetricResponse(101L, HOUSE_ID, today, 15.5, 135.0, EnergyCategory.OTHER)
         );
 
         when(metricService.getMetricsByHouseAndCategory(eq(HOUSE_ID), eq(EnergyCategory.OTHER), any()))
@@ -119,9 +119,9 @@ class MetricControllerTest {
     @DisplayName("POST /seed-test-data - Should save metric and return 200 OK")
     @WithMockUser
     void seedData_ShouldReturn200() throws Exception {
-        SaveMetricRequest request = new SaveMetricRequest(25.0, EnergyCategory.OTHER);
+        SaveMetricRequest request = new SaveMetricRequest(25.0, 200.0, EnergyCategory.OTHER);
         LocalDateTime today = LocalDateTime.now();
-        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 25.0, EnergyCategory.OTHER);
+        MetricResponse response = new MetricResponse(METRIC_ID, HOUSE_ID, today, 25.0, 200.0, EnergyCategory.OTHER);
 
         when(metricService.saveMetric(eq(HOUSE_ID), any(LocalDateTime.class), any(SaveMetricRequest.class), any()))
                 .thenReturn(response);

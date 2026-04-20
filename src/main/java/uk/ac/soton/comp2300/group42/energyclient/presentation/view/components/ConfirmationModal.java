@@ -6,14 +6,15 @@ import javafx.scene.control.Label;
 
 import java.io.IOException;
 
-public class LogoutConfirmModal extends Modal {
-    @FXML private Label titleLabel;
+public class ConfirmationModal extends Modal{
+    @FXML
+    private Label titleLabel;
     @FXML private Label messageLabel;
 
     private Runnable onConfirm = () -> {};
 
-    public LogoutConfirmModal() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("LogoutConfirmModal.fxml"));
+    public ConfirmationModal() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ConfirmationModal.fxml"));
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
@@ -35,7 +36,5 @@ public class LogoutConfirmModal extends Modal {
         onConfirm.run();
     }
 
-    @FXML private void onCancelClicked() {
-        close();
-    }
+    @FXML private void onCancelClicked() { close(); }
 }

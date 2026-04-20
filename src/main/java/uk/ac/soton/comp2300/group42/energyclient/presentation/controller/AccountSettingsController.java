@@ -8,10 +8,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.LogoutConfirmModal;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ConfirmationModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
 
 public class AccountSettingsController {
+
+    private enum ConfirmAction {
+        LOGOUT,
+        DELETE_ACCOUNT
+    }
 
     private final AccountSettingsViewModel vm;
 
@@ -22,7 +27,9 @@ public class AccountSettingsController {
     @FXML private PasswordField confirmPasswordField;
     @FXML private Button deleteAccountButton;
     @FXML private Label responseLabel;
-    @FXML private LogoutConfirmModal logoutConfirmModal;
+    @FXML private ConfirmationModal confirmationModal;
+
+    private ConfirmAction pendingAction;
 
     @Inject public AccountSettingsController(AccountSettingsViewModel vm) {
         this.vm = vm;
@@ -48,11 +55,6 @@ public class AccountSettingsController {
                 ) + "; -fx-text-fill: #FFFFFF;"
         ));
 
-        logoutConfirmModal.setOnConfirm(() -> {
-            vm.logout();
-            Navigator.goToIrreversible("Landing.fxml");
-        });
-
         vm.loadData();
     }
 
@@ -69,19 +71,44 @@ public class AccountSettingsController {
     }
 
     @FXML private void onLogout() {
-        logoutConfirmModal.show(
+        pendingAction = ConfirmAction.LOGOUT;
+        confirmationModal.show(
                 "Sign out?",
                 "Are you sure you want to log out? You will need to sign in again.",
-                () -> {
-                    vm.logout();
-                    Navigator.goToIrreversible("Landing.fxml");
-                }
+                this::handleConfirmedAction
         );
     }
 
     @FXML private void onDeleteAccount() {
-        if (vm.deleteAccount()) {
-            Navigator.goToIrreversible("Landing.fxml");
-        }
+        pendingAction = ConfirmAction.DELETE_ACCOUNT;
+        confirmationModal.show(
+                "Delete account?",
+                "Are you sure you want to delete your account? This action cannot be undone.",
+                this::handleConfirmedAction
+        );
     }
+
+    private void handleConfirmedAction() {
+        if (pendingAction == null) {
+            return;
+        }
+
+        switch (pendingAction) {
+            case LOGOUT -> {
+                vm.logout();
+                Navigator.goToIrreversible("Landing.fxml");
+            }
+            case DELETE_ACCOUNT -> {
+                if (vm.deleteAccount()) {
+                    Navigator.goToIrreversible("Landing.fxml");
+                }
+            }
+        }
+
+        pendingAction = null;
+    }
+
+
+
+
 }

@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
-<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.LogoutConfirmModal ?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ConfirmationModal?>
 
 <ModalOverlayPane xmlns="http://javafx.com/javafx"
                   xmlns:fx="http://javafx.com/fxml"
@@ -38,5 +38,5 @@
         </VBox>
     </BackOverlayPane>
 
-    <LogoutConfirmModal fx:id="logoutConfirmModal"/>
+    <ConfirmationModal fx:id="confirmationModal"/>
 </ModalOverlayPane>

@@ -3,8 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 import com.google.inject.Inject;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import uk.ac.soton.comp2300.group42.energyclient.domain.model.EnergyCost;
-import uk.ac.soton.comp2300.group42.energyclient.domain.repository.EnergyPriceRepository;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
+import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 
@@ -14,7 +14,7 @@ public class EnergyUsageViewModel {
 
     public enum UsageState { NORMAL, WARNING, CRITICAL }
 
-    private final EnergyPriceRepository energyPriceRepo;
+    private final MetricRepository metricRepo;
     private final ObservablePreferences preferences;
 
     private final StringProperty costMessage = new SimpleStringProperty("£0.00");
@@ -24,8 +24,8 @@ public class EnergyUsageViewModel {
 
     private final ObjectProperty<UsageState> usageState = new SimpleObjectProperty<>(UsageState.NORMAL);
 
-    @Inject public EnergyUsageViewModel(EnergyPriceRepository energyPriceRepo, ObservablePreferences preferences) {
-        this.energyPriceRepo = energyPriceRepo;
+    @Inject public EnergyUsageViewModel(MetricRepository metricRepo, ObservablePreferences preferences) {
+        this.metricRepo = metricRepo;
         this.preferences = preferences;
         goalMessage.bind(preferences.energyGoalProperty().map(goal -> String.format("Goal: £%.2f", goal.doubleValue())));
         usage.bind(Bindings.createDoubleBinding(
@@ -47,8 +47,9 @@ public class EnergyUsageViewModel {
     }
 
     public void recalculateCost() {
-        double pounds = energyPriceRepo.getCostsForDate(preferences.getActiveHouse().getId(), LocalDate.now()).stream()
-                .mapToDouble(EnergyCost::totalCost)
+        double pounds = metricRepo.getAllByDate(preferences.getActiveHouse().getId(), LocalDate.now())
+                .stream()
+                .mapToDouble(Metric::energyPrice)
                 .sum() / 100.0; // totalCost is in pence, convert to pounds
         cost.set(pounds);
         costMessage.set(String.format("£%.2f", pounds));

@@ -6,8 +6,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.di.qualifier.UIExecutor;
-import uk.ac.soton.comp2300.group42.energyclient.domain.model.EnergyCost;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.EnergyPriceRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
@@ -65,16 +65,20 @@ public class ProgressTrackingViewModel {
         this.uiExecutor = uiExecutor;
     }
 
+    private List<UnitRate> fetchNext12Hours() {
+        return energyPriceRepo.fetchNext12Hours();
+    }
+
+    private List<UnitRate> fetchNext24Hours() {
+        return energyPriceRepo.fetchNext24Hours();
+    }
+
     public void initializeData() {
-        CompletableFuture.runAsync(energyPriceRepo::syncAndGetNext24Hours)
-                .thenRun(this::loadPriceDataAsync);
+        CompletableFuture.runAsync(this::loadPriceDataAsync);
 
         loadAllChartDataAsync();
     }
 
-    private void syncPrices() {
-        energyPriceRepo.syncAndGetNext24Hours();
-    }
 
     public void loadPriceDataAsync() {
         CompletableFuture.supplyAsync(energyPriceRepo::fetchNext12Hours)
@@ -107,9 +111,11 @@ public class ProgressTrackingViewModel {
         try {
             double energyUsed = Double.parseDouble(rawInput);
             EnergyCategory category = selectedCategory.get();
+            List<UnitRate> next12Hours = fetchNext12Hours();
+            double energyPrice = next12Hours.getFirst().valueIncVat() * energyUsed;
 
             CompletableFuture.runAsync(() -> {
-                        Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDateTime.now(), energyUsed, category);
+                        Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDateTime.now(), energyUsed, energyPrice, category);
                         metricRepo.add(metric, category);
                     }).thenRunAsync(() -> {
                                 logUsageInput.set("");
@@ -142,8 +148,9 @@ public class ProgressTrackingViewModel {
         CompletableFuture.supplyAsync(() -> {
             List<LocalDate> lastSevenDays = IntStream.range(0, 7).mapToObj(i -> LocalDate.now().minusDays(i)).sorted().toList();
             return lastSevenDays.stream().map(date -> {
-                double total = energyPriceRepo.getCostsForDate(preferences.getActiveHouse().getId(), date)
-                        .stream().mapToDouble(EnergyCost::totalCost).sum() / 100.0;
+                double total = metricRepo.getAllByDate(preferences.getActiveHouse().getId(), date)
+                        .stream()
+                        .mapToDouble(Metric::energyPrice).sum() / 100.0;
                 return new DataPoint(date.format(DATE_FORMATTER), total);
             }).toList();
         }).thenAcceptAsync(expenseData::setAll, uiExecutor);
@@ -153,10 +160,10 @@ public class ProgressTrackingViewModel {
         CompletableFuture.supplyAsync(() -> {
             List<LocalDate> lastSevenDays = IntStream.range(0, 7).mapToObj(i -> LocalDate.now().minusDays(i)).sorted().toList();
             return lastSevenDays.stream().map(date -> {
-                double total = energyPriceRepo.getCostsForDate(preferences.getActiveHouse().getId(), date)
+                double total = metricRepo.getAllByDate(preferences.getActiveHouse().getId(), date)
                         .stream()
                         .filter(cost -> cost.category() == category)
-                        .mapToDouble(EnergyCost::totalCost).sum() / 100.0;
+                        .mapToDouble(Metric::energyPrice).sum() / 100.0;
                 return new DataPoint(date.format(DATE_FORMATTER), total);
             }).toList();
         }).thenAcceptAsync(targetList::setAll, uiExecutor);

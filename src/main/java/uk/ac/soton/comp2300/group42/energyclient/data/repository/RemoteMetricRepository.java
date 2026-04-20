@@ -52,4 +52,13 @@ public class RemoteMetricRepository implements MetricRepository {
                 .map(mapper::toMetric)
                 .toList();
     }
+
+    @Override
+    public List<Double> getAllCostsByDate(Long houseId, LocalDate date) {
+        return client.fetchAllMetricsByDate(houseId, date)
+                .stream()
+                .map(mapper::toMetric)
+                .map(Metric::energyPrice)
+                .toList();
+    }
 }

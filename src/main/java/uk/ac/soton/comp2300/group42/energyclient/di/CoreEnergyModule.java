@@ -34,7 +34,7 @@ public class CoreEnergyModule extends AbstractModule {
         bind(ApplianceRepository.class).to(SwitchableApplianceRepository.class);
         bind(ActivationRepository.class).to(SwitchableActivationRepository.class);
         bind(MetricRepository.class).to(SwitchableMetricRepository.class);
-        bind(EnergyPriceRepository.class).to(SwitchableEnergyPriceRepository.class);
+        bind(EnergyPriceRepository.class).to(EnergyPriceRepositoryImpl.class);
     }
 
     @Provides
@@ -127,12 +127,6 @@ public class CoreEnergyModule extends AbstractModule {
     @Singleton
     MetricMapper provideMetricMapper() {
         return Mappers.getMapper(MetricMapper.class);
-    }
-
-    @Provides
-    @Singleton
-    EnergyPriceMapper provideEnergyPriceMapper() {
-        return Mappers.getMapper(EnergyPriceMapper.class);
     }
 
     @Provides

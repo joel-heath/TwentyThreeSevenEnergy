@@ -3,10 +3,10 @@ package uk.ac.soton.comp2300.group42.energyclient.data.mapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import uk.ac.soton.comp2300.group42.common.Role;
-import uk.ac.soton.comp2300.group42.house.HouseResponse;
-import uk.ac.soton.comp2300.group42.house.CreateHouseRequest;
-import uk.ac.soton.comp2300.group42.house.UpdateHouseRequest;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
+import uk.ac.soton.comp2300.group42.house.CreateHouseRequest;
+import uk.ac.soton.comp2300.group42.house.HouseResponse;
+import uk.ac.soton.comp2300.group42.house.UpdateHouseRequest;
 
 import java.time.ZoneId;
 

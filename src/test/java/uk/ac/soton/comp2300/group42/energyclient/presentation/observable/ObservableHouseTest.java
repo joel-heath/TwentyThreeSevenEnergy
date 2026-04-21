@@ -9,7 +9,8 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 
 import java.time.ZoneId;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class ObservableHouseTest {

@@ -3,7 +3,6 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.activation.ActivationType;
@@ -12,7 +11,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Activation;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ActivationRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
@@ -23,7 +21,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,7 +31,6 @@ class ActivationStoreTest {
     @Mock private ActivationRepository repository;
     @Mock private ApplianceStore applianceStore;
     @Mock private ObservablePreferences preferences;
-    @Mock private SessionManager sessionManager;
 
     private final Executor syncExecutor = Runnable::run;
 
@@ -55,7 +51,6 @@ class ActivationStoreTest {
                 repository,
                 applianceStore,
                 preferences,
-                sessionManager,
                 syncExecutor
         );
     }
@@ -194,24 +189,5 @@ class ActivationStoreTest {
         assertTrue(cachedActivation.isRecursFriday());
         assertFalse(cachedActivation.isRecursSaturday());
         assertFalse(cachedActivation.isRecursSunday());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void shouldClearCacheAndMasterListOnSessionChange() {
-        Activation pojo = new Activation(1L, 200L, 100L, ActivationType.NON_RECURRING, LocalTime.of(10, 0), LocalDate.now(), null, null, null, null, null, null, null);
-        when(repository.get(100L, 1L)).thenReturn(pojo);
-        when(applianceStore.get(200L)).thenReturn(mockAppliance);
-        activationStore.get(1L);
-
-        assertFalse(activationStore.getAll().isEmpty());
-
-        ArgumentCaptor<Consumer<Boolean>> subscriberCaptor = ArgumentCaptor.forClass(Consumer.class);
-        verify(sessionManager).subscribe(subscriberCaptor.capture());
-        Consumer<Boolean> sessionCallback = subscriberCaptor.getValue();
-
-        sessionCallback.accept(true);
-
-        assertTrue(activationStore.getAll().isEmpty(), "Master list should be empty after session change");
     }
 }

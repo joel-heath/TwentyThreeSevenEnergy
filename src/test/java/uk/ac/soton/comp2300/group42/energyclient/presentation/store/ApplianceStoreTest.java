@@ -3,14 +3,12 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.ApplianceRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
@@ -18,7 +16,6 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,7 +26,6 @@ class ApplianceStoreTest {
     @Mock private ApplianceRepository repository;
     @Mock private HouseStore houseStore;
     @Mock private ObservablePreferences preferences;
-    @Mock private SessionManager sessionManager;
 
     private final Executor syncExecutor = Runnable::run;
 
@@ -47,7 +43,6 @@ class ApplianceStoreTest {
                 repository,
                 houseStore,
                 preferences,
-                sessionManager,
                 syncExecutor
         );
     }
@@ -150,24 +145,5 @@ class ApplianceStoreTest {
         assertEquals(1, applianceStore.getAll().size());
         assertSame(cachedAppliance, applianceStore.getAll().getFirst());
         assertEquals("New Heater", cachedAppliance.getName());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void shouldClearCacheAndMasterListOnSessionChange() {
-        Appliance pojo = new Appliance(1L, 100L, "TV");
-        when(repository.get(100L, 1L)).thenReturn(pojo);
-        when(houseStore.get(100L)).thenReturn(activeHouse);
-        applianceStore.get(1L);
-        
-        assertFalse(applianceStore.getAll().isEmpty());
-
-        ArgumentCaptor<Consumer<Boolean>> subscriberCaptor = ArgumentCaptor.forClass(Consumer.class);
-        verify(sessionManager).subscribe(subscriberCaptor.capture());
-        Consumer<Boolean> sessionCallback = subscriberCaptor.getValue();
-
-        sessionCallback.accept(true);
-
-        assertTrue(applianceStore.getAll().isEmpty(), "Master list should be empty after session change");
     }
 }

@@ -13,7 +13,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
@@ -21,9 +20,9 @@ import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.time.ZoneId;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +31,6 @@ class UserStoreTest {
     @Mock private UserRepository userRepository;
     @Mock private HouseRepository houseRepository;
     @Mock private HouseStore houseStore;
-    @Mock private SessionManager sessionManager;
 
     private final Executor syncExecutor = Runnable::run;
 
@@ -69,7 +67,6 @@ class UserStoreTest {
                 userRepository,
                 houseRepository,
                 houseStore,
-                sessionManager,
                 syncExecutor
         );
     }
@@ -154,20 +151,6 @@ class UserStoreTest {
         assertEquals(newHouse, userStore.getPreferences().getActiveHouse());
         assertEquals(20L, userStore.getCurrent().getHouse().getId());
         assertEquals(Role.RESIDENT, userStore.getCurrent().getRole());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void shouldRefreshOnSessionChange() {
-        ArgumentCaptor<Consumer<Boolean>> subscriberCaptor = ArgumentCaptor.forClass(Consumer.class);
-        verify(sessionManager).subscribe(subscriberCaptor.capture(), eq(false));
-
-        Consumer<Boolean> sessionCallback = subscriberCaptor.getValue();
-
-        sessionCallback.accept(true);
-
-        // Once in Constructor, once in Session Callback
-        verify(userRepository, times(2)).getCurrentPreferences();
     }
 
     @Test

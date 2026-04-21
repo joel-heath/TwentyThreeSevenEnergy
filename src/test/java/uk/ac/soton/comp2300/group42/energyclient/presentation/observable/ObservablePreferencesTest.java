@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
-import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;

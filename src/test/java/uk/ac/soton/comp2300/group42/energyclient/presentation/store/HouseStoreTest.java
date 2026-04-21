@@ -3,19 +3,16 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 
 import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,7 +21,6 @@ import static org.mockito.Mockito.*;
 class HouseStoreTest {
 
     @Mock private HouseRepository repository;
-    @Mock private SessionManager sessionManager;
 
     private final Executor syncExecutor = Runnable::run;
 
@@ -34,7 +30,6 @@ class HouseStoreTest {
     void setUp() {
         houseStore = new HouseStore(
                 repository,
-                sessionManager,
                 syncExecutor
         );
     }
@@ -182,23 +177,5 @@ class HouseStoreTest {
         assertEquals("Fresh Address", cachedHouse.getAddress());
         assertEquals(ZoneId.of("Asia/Tokyo"), cachedHouse.getTimezone());
         assertEquals(Role.OWNER, cachedHouse.getRole());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void shouldClearCacheAndMasterListOnSessionChange() {
-        House pojo = new House(1L, "Session Test House", "123 Session St", ZoneId.of("UTC"), Role.OWNER);
-        when(repository.get(1L)).thenReturn(pojo);
-        houseStore.get(1L);
-
-        assertFalse(houseStore.getAll().isEmpty());
-
-        ArgumentCaptor<Consumer<Boolean>> subscriberCaptor = ArgumentCaptor.forClass(Consumer.class);
-        verify(sessionManager).subscribe(subscriberCaptor.capture());
-        Consumer<Boolean> sessionCallback = subscriberCaptor.getValue();
-
-        sessionCallback.accept(true);
-
-        assertTrue(houseStore.getAll().isEmpty(), "Master list should be empty after session change");
     }
 }

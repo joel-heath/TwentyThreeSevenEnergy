@@ -6,8 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageRect;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.debug.DashboardDebugViewModel;
 
@@ -36,7 +36,7 @@ public class DashboardDebugController {
 
     @FXML private void initialize() {
         energyUsageRect.usageProperty().bind(vm.usageProperty());
-        energyUsageRect.fillProperty().bind(vm.visionProperty().map(ColorVisionManager::getGradientFor));
+        energyUsageRect.setUsageState(EnergyUsageRect.UsageState.NORMAL);
         counterLabel.textProperty().bind(vm.counterProperty().asString());
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
@@ -55,11 +55,7 @@ public class DashboardDebugController {
         timeSpinner.setValueFactory(valueFactory);
         valueFactory.valueProperty().bindBidirectional(vm.resetTimeProperty());
 
-        vm.hasCostGoalErrorProperty().subscribe(hasError ->
-            costGoalField.setStyle(hasError
-                    ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-                    : "")
-        );
+        StyleClassUtils.bindBooleanClass(costGoalField, vm.hasCostGoalErrorProperty(), "validation-error");
     }
 
     @FXML private void onIncrement() { vm.incrementCounter(); }

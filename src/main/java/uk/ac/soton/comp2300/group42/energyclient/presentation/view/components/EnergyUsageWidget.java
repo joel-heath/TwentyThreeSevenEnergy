@@ -1,19 +1,14 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.view.components;
 
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUsageViewModel;
 
 import java.io.IOException;
 
 public class EnergyUsageWidget extends VBox {
-
-    private static final String WIDGET_STYLE = "-fx-background-radius: 10; -fx-padding: 15; -fx-font-weight: bold";
 
     @FXML private EnergyUsageRect energyUsageRect;
     @FXML private Label totalSpentLabel;
@@ -24,29 +19,8 @@ public class EnergyUsageWidget extends VBox {
         costLabel.textProperty().bind(vm.costMessageProperty());
         goalLabel.textProperty().bind(vm.goalMessageProperty());
         energyUsageRect.usageProperty().bind(vm.usageProperty());
-
-        energyUsageRect.fillProperty().bind(Bindings.createObjectBinding(() -> {
-            EnergyUsageViewModel.UsageState state = vm.usageStateProperty().get();
-            var vision = vm.visionProperty().get();
-
-            if (state == EnergyUsageViewModel.UsageState.WARNING || state == EnergyUsageViewModel.UsageState.CRITICAL) {
-                return ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.STATUS_50PERCENT_OVER);
-            }
-            return ColorVisionManager.getGradientFor(vision);
-
-        }, vm.usageStateProperty(), vm.visionProperty()));
-
-        energyUsageRect.effectProperty().bind(Bindings.createObjectBinding(() -> {
-            EnergyUsageViewModel.UsageState state = vm.usageStateProperty().get();
-
-            if (state == EnergyUsageViewModel.UsageState.CRITICAL) {
-                DropShadow shadow = new DropShadow();
-                shadow.setColor(ColorVisionManager.getColor(vm.visionProperty().get(), ColorVisionManager.ColorRole.STATUS_50PERCENT_OVER));
-                shadow.setRadius(40);
-                return shadow;
-            }
-            return null;
-        }, vm.usageStateProperty(), vm.visionProperty()));
+        applyUsageState(vm.usageStateProperty().get());
+        vm.usageStateProperty().subscribe(this::applyUsageState);
     }
 
     public EnergyUsageWidget() throws IOException {
@@ -54,24 +28,18 @@ public class EnergyUsageWidget extends VBox {
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
-        bindWidgetStyles();
     }
 
-    private void bindWidgetStyles() {
-        styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.WIDGET_SURFACE
-                ) + "; " + WIDGET_STYLE
-        ));
+    private void applyUsageState(EnergyUsageViewModel.UsageState state) {
+        if (state == null) {
+            energyUsageRect.setUsageState(EnergyUsageRect.UsageState.NORMAL);
+            return;
+        }
 
-        totalSpentLabel.textFillProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.WIDGET_TEXT)
-        ));
-        costLabel.textFillProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.WIDGET_TEXT)
-        ));
-        goalLabel.textFillProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.WIDGET_TEXT)
-        ));
+        switch (state) {
+            case NORMAL -> energyUsageRect.setUsageState(EnergyUsageRect.UsageState.NORMAL);
+            case WARNING -> energyUsageRect.setUsageState(EnergyUsageRect.UsageState.WARNING);
+            case CRITICAL -> energyUsageRect.setUsageState(EnergyUsageRect.UsageState.CRITICAL);
+        }
     }
 }

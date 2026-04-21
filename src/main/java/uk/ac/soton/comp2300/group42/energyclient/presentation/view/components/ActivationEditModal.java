@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableActivation;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ActivationEditViewModel;
 
 import java.io.IOException;
@@ -34,9 +34,7 @@ public class ActivationEditModal extends Modal {
         schedulePane.recurrenceRulesVisibleProperty().bindBidirectional(vm.isRecurringProperty());
 
         responseLabel.textProperty().bind(vm.responseMessageProperty());
-        vm.responseRoleProperty().subscribe(newVal ->
-                responseLabel.setTextFill(ColorVisionManager.getColor(newVal))
-        );
+        StyleClassUtils.bindBooleanClass(responseLabel, vm.hasResponseErrorProperty(), "response-error");
     }
 
     public ActivationEditModal() throws IOException  {

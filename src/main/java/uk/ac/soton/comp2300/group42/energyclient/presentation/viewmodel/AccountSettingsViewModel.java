@@ -8,7 +8,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.exception.BadRequestExce
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.UserStore;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 
 import java.util.concurrent.Executor;
 
@@ -26,7 +25,7 @@ public class AccountSettingsViewModel {
 
     private final BooleanProperty isLoading = new SimpleBooleanProperty(true);
     private final StringProperty responseMessage = new SimpleStringProperty("");
-    private final ObjectProperty<ColorVisionManager.ColorRole> responseColor = new SimpleObjectProperty<>(ColorVisionManager.ColorRole.WIDGET_TEXT);
+    private final StringProperty responseStyleClass = new SimpleStringProperty("");
 
     @Inject public AccountSettingsViewModel(UserStore userStore, AuthRepository authRepo, @UIExecutor Executor uiExecutor) {
         this.userStore = userStore;
@@ -46,7 +45,7 @@ public class AccountSettingsViewModel {
         ).exceptionallyAsync(e -> {
             name.set("");
             email.set("");
-            setResponse("Failed to load user data.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse("Failed to load user data.", "response-error");
             isLoading.set(false);
             System.out.println("Error loading user data: " + e.getMessage());
             return null;
@@ -55,7 +54,7 @@ public class AccountSettingsViewModel {
 
     private boolean guard(boolean condition, String errorMessage) {
         if (condition)
-            setResponse(errorMessage, ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse(errorMessage, "response-error");
 
         return condition;
     }
@@ -68,10 +67,10 @@ public class AccountSettingsViewModel {
 
         try {
             userStore.saveUser();
-            setResponse("Name updated successfully.", ColorVisionManager.ColorRole.TOGGLE_ENABLED);
+            setResponse("Name updated successfully.", "response-success");
         }
         catch (ApiException e) {
-            setResponse("Failed to update name: " + e.getMessage(), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse("Failed to update name: " + e.getMessage(), "response-error");
         }
     }
 
@@ -84,10 +83,10 @@ public class AccountSettingsViewModel {
 
         try {
             userStore.saveUser();
-            setResponse("Email updated successfully.", ColorVisionManager.ColorRole.TOGGLE_ENABLED);
+            setResponse("Email updated successfully.", "response-success");
         }
         catch (ApiException e) {
-            setResponse("Failed to update name: " + e.getMessage(), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse("Failed to update name: " + e.getMessage(), "response-error");
         }
     }
 
@@ -102,20 +101,20 @@ public class AccountSettingsViewModel {
             currentPassword.set("");
             newPassword.set("");
             confirmPassword.set("");
-            setResponse("Account updated successfully.", ColorVisionManager.ColorRole.TOGGLE_ENABLED);
+            setResponse("Account updated successfully.", "response-success");
         }
         catch (BadRequestException e) {
             String prefix = "Validation failed: newPassword: ";
             if (e.getMessage().startsWith(prefix))
-                setResponse(e.getMessage().substring(prefix.length()), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+                setResponse(e.getMessage().substring(prefix.length()), "response-error");
             else {
                 System.err.println("Unexpected Bad Request: \n" + e.getMessage());
-                setResponse("Failed to change password.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+                setResponse("Failed to change password.", "response-error");
             }
         }
         catch (ApiException e) {
             System.err.println("Unexpected API Exception: \n" + e.getMessage());
-            setResponse("Failed to change password.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse("Failed to change password.", "response-error");
         }
     }
 
@@ -125,23 +124,23 @@ public class AccountSettingsViewModel {
 
     public boolean deleteAccount() {
         if (currentPassword.get().isEmpty()) {
-            setResponse("Must enter password to delete account.", ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse("Must enter password to delete account.", "response-error");
             return false;
         }
         try {
             userStore.deleteUser(currentPassword.get());
         }
         catch (ApiException e) {
-            setResponse("Failed to delete account: " + e.getMessage(), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse("Failed to delete account: " + e.getMessage(), "response-error");
             return false;
         }
         authRepo.logout();
         return true;
     }
 
-    private void setResponse(String message, ColorVisionManager.ColorRole role) {
+    private void setResponse(String message, String styleClass) {
         responseMessage.set(message);
-        responseColor.set(role);
+        responseStyleClass.set(styleClass);
     }
 
     public StringProperty nameProperty() { return name; }
@@ -151,5 +150,5 @@ public class AccountSettingsViewModel {
     public StringProperty confirmPasswordProperty() { return confirmPassword; }
     public BooleanProperty isLoadingProperty() { return isLoading; }
     public StringProperty responseMessageProperty() { return responseMessage; }
-    public ObjectProperty<ColorVisionManager.ColorRole> responseColorProperty() { return responseColor; }
+    public StringProperty responseStyleClassProperty() { return responseStyleClass; }
 }

@@ -3,8 +3,8 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RegisterViewModel;
 
 public class RegisterController {
@@ -25,14 +25,7 @@ public class RegisterController {
         passwordField.textProperty().bindBidirectional(vm.passwordProperty());
         confirmPasswordField.textProperty().bindBidirectional(vm.confirmPasswordProperty());
         responseLabel.textProperty().bind(vm.responseMessageProperty());
-
-        vm.responseColorProperty().subscribe((_, newVal) ->
-                responseLabel.setTextFill(ColorVisionManager.getColor(newVal))
-        );
-
-        loginLink.textFillProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> ColorVisionManager.getColor(vision, ColorVisionManager.ColorRole.TOGGLE_ENABLED)
-        ));
+        StyleClassUtils.bindBooleanClass(responseLabel, vm.hasResponseErrorProperty(), "response-error");
     }
 
     @FXML private void onRegister() {

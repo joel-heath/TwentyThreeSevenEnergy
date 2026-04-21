@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ScheduleViewModel;
 
@@ -34,9 +34,7 @@ public class ScheduleController {
         vm.isRecurringProperty().bind(schedulePane.recurrenceRulesVisibleProperty());
 
         responseLabel.textProperty().bind(vm.responseMessageProperty());
-        vm.responseRoleProperty().subscribe(newVal ->
-                responseLabel.setTextFill(ColorVisionManager.getColor(newVal))
-        );
+        StyleClassUtils.bindExclusiveClass(responseLabel, vm.responseStyleClassProperty(), "response-error", "response-success");
 
         vm.loadData();
     }

@@ -10,19 +10,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.common.Role;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ManageHousesViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;
 
 public class ManageHousesController {
-
-    private static final String HOUSEMATE_CARD_STYLE =
-            "-fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5";
 
     @FXML private ComboBox<ObservableHouse> activeHouseComboBox;
     @FXML private VBox housematesContainer;
@@ -59,15 +56,9 @@ public class ManageHousesController {
         editHouseNameField.textProperty().bindBidirectional(vm.editHouseNameProperty());
         editAddressField.textProperty().bindBidirectional(vm.editHouseAddressProperty());
 
-        vm.hasNewHouseNameErrorProperty().subscribe(hasError ->
-                newHouseNameField.setStyle(hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";" : "")
-        );
-        vm.hasNewHouseAddressErrorProperty().subscribe(hasError ->
-                newHouseAddressField.setStyle(hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";" : "")
-        );
-        vm.hasInviteEmailErrorProperty().subscribe(hasError ->
-                inviteHousemateField.setStyle(hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";" : "")
-        );
+        StyleClassUtils.bindBooleanClass(newHouseNameField, vm.hasNewHouseNameErrorProperty(), "validation-error");
+        StyleClassUtils.bindBooleanClass(newHouseAddressField, vm.hasNewHouseAddressErrorProperty(), "validation-error");
+        StyleClassUtils.bindBooleanClass(inviteHousemateField, vm.hasInviteEmailErrorProperty(), "validation-error");
 
         vm.isEditingHouseProperty().subscribe(isEditing -> {
             if (isEditing)
@@ -104,11 +95,7 @@ public class ManageHousesController {
 
     private Pane createHousemateView(ObservableHousemate housemate) {
         VBox card = new VBox();
-        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.CARD_SURFACE
-                ) + "; " + HOUSEMATE_CARD_STYLE
-        ));
+        card.getStyleClass().add("list-card");
 
         Label name = new Label();
         Label email = new Label();

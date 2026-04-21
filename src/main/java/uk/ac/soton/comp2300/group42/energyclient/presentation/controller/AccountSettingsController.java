@@ -6,8 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ConfirmationModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountSettingsViewModel;
 
@@ -45,15 +45,8 @@ public class AccountSettingsController {
         editNameField.disableProperty().bind(vm.isLoadingProperty());
         editEmailField.disableProperty().bind(vm.isLoadingProperty());
         responseLabel.textProperty().bind(vm.responseMessageProperty());
-
-        vm.responseColorProperty().subscribe((_, newVal) ->
-                responseLabel.setTextFill(ColorVisionManager.getColor(newVal))
-        );
-        deleteAccountButton.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.VALIDATION_ERROR
-                ) + "; -fx-text-fill: #FFFFFF;"
-        ));
+        StyleClassUtils.bindExclusiveClass(responseLabel, vm.responseStyleClassProperty(), "response-error", "response-success");
+        StyleClassUtils.setClass(deleteAccountButton, "danger-button", true);
 
         vm.loadData();
     }

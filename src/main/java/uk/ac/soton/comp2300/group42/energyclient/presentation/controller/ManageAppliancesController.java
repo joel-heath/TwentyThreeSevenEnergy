@@ -9,14 +9,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ManageAppliancesViewModel;
 
 public class ManageAppliancesController {
-
-    private static final String APPLIANCE_CARD_STYLE =
-            "-fx-background-radius: 5; -fx-padding: 5; -fx-spacing: 5";
 
     @FXML private Label houseLabel;
     @FXML private VBox appliancesContainer;
@@ -41,11 +38,7 @@ public class ManageAppliancesController {
         addApplianceField.textProperty().bindBidirectional(vm.newApplianceNameProperty());
         editApplianceNameField.textProperty().bindBidirectional(vm.editApplianceNameProperty());
 
-        vm.hasNewApplianceErrorProperty().subscribe(hasError ->
-            addApplianceField.setStyle(hasError
-                    ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-                    : "")
-        );
+        StyleClassUtils.bindBooleanClass(addApplianceField, vm.hasNewApplianceErrorProperty(), "validation-error");
 
         vm.selectedApplianceProperty().subscribe(selected -> {
             if (selected != null)
@@ -75,11 +68,7 @@ public class ManageAppliancesController {
 
     private Pane createApplianceView(ObservableAppliance appliance) {
         VBox card = new VBox();
-        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> "-fx-background-color: " + ColorVisionManager.getWebColor(
-                        vision, ColorVisionManager.ColorRole.CARD_SURFACE
-                ) + "; " + APPLIANCE_CARD_STYLE
-        ));
+        card.getStyleClass().add("list-card");
 
         Label name = new Label();
         name.textProperty().bind(appliance.nameProperty());

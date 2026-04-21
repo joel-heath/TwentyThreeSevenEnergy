@@ -11,7 +11,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.EnergyPriceRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.MetricRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 
 import java.time.LocalDate;
@@ -50,7 +49,7 @@ public class ProgressTrackingViewModel {
     private final StringProperty logUsageInput = new SimpleStringProperty("");
     private final ObjectProperty<EnergyCategory> selectedCategory = new SimpleObjectProperty<>(EnergyCategory.OTHER);
     private final StringProperty priceLabelText = new SimpleStringProperty("Loading...");
-    private final ObjectProperty<ColorVisionManager.ColorRole> priceLabelRole = new SimpleObjectProperty<>(ColorVisionManager.ColorRole.WIDGET_TEXT);
+    private final StringProperty priceLabelStyleClass = new SimpleStringProperty("");
 
     @Inject
     public ProgressTrackingViewModel(EnergyPriceRepository energyPriceRepo,
@@ -90,12 +89,12 @@ public class ProgressTrackingViewModel {
 
                         priceData.setAll(points);
                         priceLabelText.set(String.format("%.2f p/kWh", rates.getFirst().valueIncVat()));
-                        priceLabelRole.set(ColorVisionManager.ColorRole.WIDGET_TEXT);
+                        priceLabelStyleClass.set("");
                     }
                 }, uiExecutor)
                 .exceptionallyAsync(e -> {
                     priceLabelText.set("Failed to load data.");
-                    priceLabelRole.set(ColorVisionManager.ColorRole.VALIDATION_ERROR);
+                    priceLabelStyleClass.set("response-error");
                     System.err.println("Error loading price data: " + e.getMessage());
                     return null;
                 }, uiExecutor);
@@ -208,5 +207,5 @@ public class ProgressTrackingViewModel {
     public StringProperty logUsageInputProperty() { return logUsageInput; }
     public ObjectProperty<EnergyCategory> selectedCategoryProperty() { return selectedCategory; }
     public StringProperty priceLabelTextProperty() { return priceLabelText; }
-    public ObjectProperty<ColorVisionManager.ColorRole> priceLabelRoleProperty() { return priceLabelRole; }
+    public StringProperty priceLabelStyleClassProperty() { return priceLabelStyleClass; }
 }

@@ -8,7 +8,6 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.services.ActivationService;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,7 +34,7 @@ public class ActivationEditViewModel {
     private final BooleanProperty isRecurring = new SimpleBooleanProperty(false);
 
     private final StringProperty responseMessage = new SimpleStringProperty("");
-    private final ObjectProperty<ColorVisionManager.ColorRole> responseRole = new SimpleObjectProperty<>(ColorVisionManager.ColorRole.WIDGET_TEXT);
+    private final BooleanProperty hasResponseError = new SimpleBooleanProperty(false);
 
     @Inject public ActivationEditViewModel(ActivationService activationService, ApplianceStore applianceStore) {
         this.activationService = activationService;
@@ -120,7 +119,7 @@ public class ActivationEditViewModel {
 
     private void setErrorResponse(String message) {
         responseMessage.set(message);
-        responseRole.set(ColorVisionManager.ColorRole.VALIDATION_ERROR);
+        hasResponseError.set(true);
     }
 
     public ObservableList<ObservableAppliance> getApplianceList() { return applianceList; }
@@ -139,5 +138,5 @@ public class ActivationEditViewModel {
     public BooleanProperty isRecurringProperty() { return isRecurring; }
 
     public StringProperty responseMessageProperty() { return responseMessage; }
-    public ObjectProperty<ColorVisionManager.ColorRole> responseRoleProperty() { return responseRole; }
+    public BooleanProperty hasResponseErrorProperty() { return hasResponseError; }
 }

@@ -10,7 +10,6 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.Observa
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.services.ActivationService;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +39,7 @@ public class ScheduleViewModel {
     private final BooleanProperty isRecurring;
 
     private final StringProperty responseMessage;
-    private final ObjectProperty<ColorVisionManager.ColorRole> responseRole;
+    private final StringProperty responseStyleClass;
 
     @Inject public ScheduleViewModel(ActivationService activationService, ApplianceStore applianceStore, ObservablePreferences preferences) {
         this.activationService = activationService;
@@ -60,7 +59,7 @@ public class ScheduleViewModel {
         recursSunday = new SimpleBooleanProperty(false);
         isRecurring = new SimpleBooleanProperty(false);
         responseMessage = new SimpleStringProperty("");
-        responseRole = new SimpleObjectProperty<>(ColorVisionManager.ColorRole.WIDGET_TEXT);
+        responseStyleClass = new SimpleStringProperty("");
     }
 
     public void loadData() {
@@ -69,7 +68,7 @@ public class ScheduleViewModel {
 
     private boolean guard(boolean condition, String errorMessage) {
         if (condition)
-            setResponse(errorMessage, ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse(errorMessage, "response-error");
 
         return condition;
     }
@@ -101,10 +100,10 @@ public class ScheduleViewModel {
         try {
             LocalDateTime time = activationService.create(pojo);
             String timeString = String.format("%02d:%02d", hour.get(), minute.get());
-            setResponse(selectedAppliance.get().getName() + " scheduled for " + timeString + " on " + formatDay(time), ColorVisionManager.ColorRole.TOGGLE_ENABLED);
+            setResponse(selectedAppliance.get().getName() + " scheduled for " + timeString + " on " + formatDay(time), "response-success");
         }
         catch (ApiException e) {
-            setResponse("Failed to schedule: " + e.getMessage(), ColorVisionManager.ColorRole.VALIDATION_ERROR);
+            setResponse("Failed to schedule: " + e.getMessage(), "response-error");
         }
     }
 
@@ -113,9 +112,9 @@ public class ScheduleViewModel {
                 recursThursday.get() || recursFriday.get() || recursSaturday.get() || recursSunday.get();
     }
 
-    private void setResponse(String message, ColorVisionManager.ColorRole role) {
+    private void setResponse(String message, String styleClass) {
         responseMessage.set(message);
-        responseRole.set(role);
+        responseStyleClass.set(styleClass);
     }
 
     public ObservableList<ObservableAppliance> getApplianceList() { return applianceList; }
@@ -134,5 +133,5 @@ public class ScheduleViewModel {
     public BooleanProperty isRecurringProperty() { return isRecurring; }
 
     public StringProperty responseMessageProperty() { return responseMessage; }
-    public ObjectProperty<ColorVisionManager.ColorRole> responseRoleProperty() { return responseRole; }
+    public StringProperty responseStyleClassProperty() { return responseStyleClass; }
 }

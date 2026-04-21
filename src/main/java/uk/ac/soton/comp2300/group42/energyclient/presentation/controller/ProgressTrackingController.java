@@ -4,14 +4,17 @@ import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.common.EnergyCategory;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ProgressTrackingViewModel;
 
 import java.util.Arrays;
@@ -47,15 +50,23 @@ public class ProgressTrackingController {
     @FXML
     private void initialize() {
         priceLabel.textProperty().bind(vm.priceLabelTextProperty());
-        vm.priceLabelRoleProperty().subscribe(newVal ->
-                priceLabel.setTextFill(ColorVisionManager.getColor(newVal))
-        );
+        StyleClassUtils.bindExclusiveClass(priceLabel, vm.priceLabelStyleClassProperty(), "response-error");
 
         logUsageField.textProperty().bindBidirectional(vm.logUsageInputProperty());
 
         categoryComboBox.getItems().setAll(EnergyCategory.values());
         categoryComboBox.setConverter(createConverter(EnergyCategory::getName));
         categoryComboBox.valueProperty().bindBidirectional(vm.selectedCategoryProperty());
+
+        priceChart.getStyleClass().add("forecast-chart");
+        expensesChart.getStyleClass().add("expense-chart");
+        electricityExpensesChart.getStyleClass().add("expense-chart");
+        gasExpensesChart.getStyleClass().add("expense-chart");
+        otherExpensesChart.getStyleClass().add("expense-chart");
+        usageChart.getStyleClass().add("expense-chart");
+        electricityUsageChart.getStyleClass().add("expense-chart");
+        gasUsageChart.getStyleClass().add("expense-chart");
+        otherUsageChart.getStyleClass().add("expense-chart");
 
         bindChartData(priceChart, "Price Trend (p/kWh)", vm.getPriceData());
 
@@ -73,12 +84,11 @@ public class ProgressTrackingController {
         navToggleGroup.selectedToggleProperty().subscribe(this::updateVisibility);
         updateVisibility();
 
-        ColorVisionManager.visionProperty().subscribe(this::scheduleApplyChartColours);
-
         vm.initializeData();
     }
 
-    @FXML private void onLogUsage() {
+    @FXML
+    private void onLogUsage() {
         vm.logUsage();
     }
 
@@ -93,7 +103,6 @@ public class ProgressTrackingController {
                             .map(dp -> new XYChart.Data<>(dp.label(), dp.value()))
                             .toList();
                     series.getData().setAll(fxData);
-                    scheduleApplyChartColours();
                 })
         );
     }
@@ -129,84 +138,6 @@ public class ProgressTrackingController {
         if (toShow != null) {
             toShow.setVisible(true);
             toShow.setManaged(true);
-        }
-    }
-
-    private void scheduleApplyChartColours() {
-        Platform.runLater(this::applyChartColours);
-    }
-
-    private void applyChartColours() {
-        priceChart.applyCss();
-        priceChart.layout();
-
-        List<BarChart<String, Number>> allCharts = Arrays.asList(
-                expensesChart, electricityExpensesChart, gasExpensesChart, otherExpensesChart,
-                usageChart, electricityUsageChart, gasUsageChart, otherUsageChart
-        );
-
-        for (BarChart<String, Number> chart : allCharts) {
-            chart.applyCss();
-            chart.layout();
-        }
-
-        String lineColour = ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.STATUS_EXPENSIVE);
-        String barColour = ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.STATUS_AVERAGE);
-
-        for (XYChart.Series<String, Number> series : priceChart.getData()) {
-            Node seriesNode = series.getNode();
-            if (seriesNode != null) {
-                Node lineNode = seriesNode.lookup(".chart-series-line");
-                if (lineNode != null) {
-                    lineNode.setStyle("-fx-stroke: " + lineColour + ";");
-                }
-            }
-
-            for (XYChart.Data<String, Number> data : series.getData()) {
-                Node symbolNode = data.getNode();
-                if (symbolNode != null) {
-                    symbolNode.setStyle("-fx-background-color: " + lineColour + ", white;");
-                }
-            }
-        }
-
-        styleChart(barColour, expensesChart);
-        styleChart(barColour, usageChart);
-
-        styleChart(lineColour, electricityExpensesChart);
-        styleChart(lineColour, gasExpensesChart);
-        styleChart(lineColour, otherExpensesChart);
-
-        styleChart(lineColour, electricityUsageChart);
-        styleChart(lineColour, gasUsageChart);
-        styleChart(lineColour, otherUsageChart);
-
-        for (Node legendSymbol : priceChart.lookupAll(".chart-legend-item-symbol")) {
-            legendSymbol.setStyle("-fx-background-color: " + lineColour + ", " + lineColour + ";");
-        }
-
-        styleLegends(barColour, expensesChart, usageChart);
-        styleLegends(barColour, electricityExpensesChart, gasExpensesChart, otherExpensesChart);
-        styleLegends(barColour, electricityUsageChart, gasUsageChart, otherUsageChart);
-    }
-
-    @SafeVarargs
-    private void styleLegends(String colour, BarChart<String, Number>... charts) {
-        for (BarChart<String, Number> chart : charts) {
-            for (Node legendSymbol : chart.lookupAll(".chart-legend-item-symbol")) {
-                legendSymbol.setStyle("-fx-background-color: " + colour + ", " + colour + ";");
-            }
-        }
-    }
-
-    private void styleChart(String colour, BarChart<String, Number> targetChart) {
-        for (XYChart.Series<String, Number> series : targetChart.getData()) {
-            for (XYChart.Data<String, Number> data : series.getData()) {
-                Node barNode = data.getNode();
-                if (barNode != null) {
-                    barNode.setStyle("-fx-bar-fill: " + colour + ";");
-                }
-            }
         }
     }
 }

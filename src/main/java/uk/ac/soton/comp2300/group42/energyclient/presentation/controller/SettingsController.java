@@ -8,8 +8,8 @@ import javafx.scene.control.TextField;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.SettingsViewModel;
 
 import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils.createConverter;
@@ -40,13 +40,7 @@ public class SettingsController {
         modeComboBox.valueProperty().bindBidirectional(vm.modeProperty());
 
         costGoalField.textProperty().bindBidirectional(vm.costGoalInputProperty());
-
-        vm.hasCostGoalErrorProperty().subscribe(hasError ->
-            costGoalField.setStyle(
-                hasError ? "-fx-border-color: " + ColorVisionManager.getWebColor(ColorVisionManager.ColorRole.VALIDATION_ERROR) + ";"
-                         : ""
-            )
-        );
+        StyleClassUtils.bindBooleanClass(costGoalField, vm.hasCostGoalErrorProperty(), "validation-error");
 
         accountSettingsButton.setText(vm.isLoggedIn() ? "Account Settings" : "Login");
     }

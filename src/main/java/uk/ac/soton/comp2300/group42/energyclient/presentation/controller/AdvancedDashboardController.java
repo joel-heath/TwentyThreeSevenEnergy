@@ -2,11 +2,9 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget;
@@ -17,9 +15,6 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUs
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
 
 public class AdvancedDashboardController {
-
-    private static final String STATUS_CARD_BASE_STYLE =
-            "-fx-alignment: center; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 5;";
 
     @FXML private EnergyUsageWidget energyWidget;
     @FXML private UpcomingActivationsWidget upcomingActivationsWidget;
@@ -68,17 +63,12 @@ public class AdvancedDashboardController {
     private VBox createStatusCard(AdvancedDashboardViewModel.StatusCardState state) {
         VBox card = new VBox(0);
         card.setPrefHeight(40);
-        card.setPadding(new Insets(2, 5, 2, 5));
+        card.getStyleClass().addAll("status-card", state.statusStyleClass());
 
         Label statusLabel = new Label(state.emoji());
 
         Label timeLabel = new Label(state.timeText());
         timeLabel.setStyle("-fx-font-size: 9px;");
-
-        card.styleProperty().bind(ColorVisionManager.visionProperty().map(
-                vision -> STATUS_CARD_BASE_STYLE + "-fx-background-color: " +
-                        ColorVisionManager.getWebColor(vision, state.colorRole()) + ";"
-        ));
 
         card.getChildren().addAll(statusLabel, timeLabel);
         return card;

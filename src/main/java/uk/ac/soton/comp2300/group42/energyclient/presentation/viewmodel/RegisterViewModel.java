@@ -1,13 +1,12 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
 import com.google.inject.Inject;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.ColorVisionManager;
 import uk.ac.soton.comp2300.group42.user.PasswordValidation;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class RegisterViewModel {
     private final StringProperty password = new SimpleStringProperty("");
     private final StringProperty confirmPassword = new SimpleStringProperty("");
     private final StringProperty responseMessage = new SimpleStringProperty("");
-    private final ObjectProperty<ColorVisionManager.ColorRole> responseColor = new SimpleObjectProperty<>(ColorVisionManager.ColorRole.WIDGET_TEXT);
+    private final BooleanProperty hasResponseError = new SimpleBooleanProperty(false);
 
     @Inject public RegisterViewModel(AuthRepository repo) {
         this.repo = repo;
@@ -64,7 +63,7 @@ public class RegisterViewModel {
 
     private void setResponse(String message) {
         responseMessage.set(message);
-        responseColor.set(ColorVisionManager.ColorRole.VALIDATION_ERROR);
+        hasResponseError.set(true);
     }
 
     private static boolean isPasswordSecure(String value) {
@@ -108,5 +107,5 @@ public class RegisterViewModel {
     public StringProperty passwordProperty() { return password; }
     public StringProperty confirmPasswordProperty() { return confirmPassword; }
     public StringProperty responseMessageProperty() { return responseMessage; }
-    public ObjectProperty<ColorVisionManager.ColorRole> responseColorProperty() { return responseColor; }
+    public BooleanProperty hasResponseErrorProperty() { return hasResponseError; }
 }

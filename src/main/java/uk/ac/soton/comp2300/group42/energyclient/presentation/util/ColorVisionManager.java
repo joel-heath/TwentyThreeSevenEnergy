@@ -115,7 +115,7 @@ public final class ColorVisionManager {
 
         Palette protanDeutanPalette = new Palette(
                 createGradient("#0072B2", "#E69F00", "#D55E00"),
-                colors("#D9ECFA", "#FCE8C3", "#F8DCCB", "#CFE8FA", "#D7EAF9", "#3E5F77", "#0072B2", "#D55E00","#D55E00", "9E4400")
+                colors("#D9ECFA", "#FCE8C3", "#F8DCCB", "#CFE8FA", "#D7EAF9", "#3E5F77", "#0072B2", "#D55E00","#D55E00", "#9E4400")
         );
         palettes.put(ColorVision.PROTAN, protanDeutanPalette);
         palettes.put(ColorVision.DEUTERAN, protanDeutanPalette);

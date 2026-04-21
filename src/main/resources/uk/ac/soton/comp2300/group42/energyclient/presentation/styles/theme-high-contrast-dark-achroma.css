@@ -2,53 +2,37 @@
 .root,
 .combo-box-popup,
 .context-menu {
-    -fx-base: #1a1a1a;
+    -fx-base: #1A1A1A;
     -fx-background: #000000;
     -fx-control-inner-background: #000000;
-    -fx-text-background-color: #ffffff;
-    -fx-accent: #ffff00;
+    -fx-text-background-color: #FFFFFF;
+    -fx-accent: #FFFFFF;
 
-    -fx-app-text: #ffffff;
-    -fx-app-muted: #bfbfbf;
+    -fx-app-text: #FFFFFF;
+    -fx-app-muted: #BFBFBF;
     -fx-app-card-surface: #000000;
-    -fx-app-card-border: #ffffff;
-    -fx-app-widget-surface: #8A6BFF;
+    -fx-app-card-border: #FFFFFF;
+    -fx-app-widget-surface: #000000;
     -fx-app-widget-text: #FFFFFF;
-    -fx-app-accent: #ffff00;
-    -fx-app-link: #ffff00;
-    -fx-app-error: #ff0000;
-    -fx-app-on-error: #ffffff;
-    -fx-app-success: #00ff00;
-    -fx-app-toggle-enabled: #ffff00;
+    -fx-app-accent: #FFFFFF;
+    -fx-app-link: #FFFFFF;
+    -fx-app-error: #666666;
+    -fx-app-on-error: #FFFFFF;
+    -fx-app-success: #FFFFFF;
+    -fx-app-toggle-enabled: #FFFFFF;
     -fx-app-toggle-disabled: #808080;
-    -fx-app-thumb: #ffffff;
+    -fx-app-thumb: #FFFFFF;
     -fx-app-shadow: rgba(0, 0, 0, 0.7);
     -fx-app-overlay: rgba(0, 0, 0, 0.7);
 
-    -fx-app-status-cheap: #333333;
-    -fx-app-status-average: #666666;
-    -fx-app-status-expensive: #999999;
-    -fx-app-usage-warning: #ffff00;
-    -fx-app-usage-critical: #ffffff;
-    -fx-app-gradient-start: #000000;
-    -fx-app-gradient-mid: #7f7f7f;
-    -fx-app-gradient-end: #ffffff;
-}
-
-.root,
-.combo-box-popup,
-.context-menu {
     -fx-app-status-cheap: #E8E8E8;
     -fx-app-status-average: #CFCFCF;
     -fx-app-status-expensive: #A8A8A8;
-    -fx-app-usage-warning: #FFFFFF;
+    -fx-app-usage-warning: #CFCFCF;
     -fx-app-usage-critical: #FFFFFF;
     -fx-app-gradient-start: #000000;
     -fx-app-gradient-mid: #808080;
     -fx-app-gradient-end: #FFFFFF;
-    -fx-app-toggle-enabled: #4A4A4A;
-    -fx-app-error: #666666;
-    -fx-app-success: #4A4A4A;
 }
 
 

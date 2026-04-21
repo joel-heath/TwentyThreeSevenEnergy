@@ -2,54 +2,37 @@
 .root,
 .combo-box-popup,
 .context-menu {
-    /* Modena light theme overrides */
-    -fx-base: #ececec;
-    -fx-background: #f4f4f4;
-    -fx-control-inner-background: #ffffff;
+    -fx-base: #ECECEC;
+    -fx-background: #F4F4F4;
+    -fx-control-inner-background: #FFFFFF;
     -fx-text-background-color: #000000;
-    -fx-accent: #0096c9;
+    -fx-accent: #4A4A4A;
 
     -fx-app-text: #000000;
-    -fx-app-muted: #5c5c5c;
-    -fx-app-card-surface: #ffffff;
-    -fx-app-card-border: #d1d1d1;
-    -fx-app-widget-surface: #6B4CC7;
+    -fx-app-muted: #5C5C5C;
+    -fx-app-card-surface: #FFFFFF;
+    -fx-app-card-border: #CFCFCF;
+    -fx-app-widget-surface: #4A4A4A;
     -fx-app-widget-text: #FFFFFF;
-    -fx-app-accent: #0096c9;
-    -fx-app-link: #0096c9;
-    -fx-app-error: #DC3545;
-    -fx-app-on-error: #ffffff;
-    -fx-app-success: #2ECC71;
-    -fx-app-toggle-enabled: #0096c9;
-    -fx-app-toggle-disabled: #bfbfbf;
-    -fx-app-thumb: #ffffff;
+    -fx-app-accent: #4A4A4A;
+    -fx-app-link: #4A4A4A;
+    -fx-app-error: #666666;
+    -fx-app-on-error: #FFFFFF;
+    -fx-app-success: #4A4A4A;
+    -fx-app-toggle-enabled: #4A4A4A;
+    -fx-app-toggle-disabled: #BFBFBF;
+    -fx-app-thumb: #FFFFFF;
     -fx-app-shadow: rgba(0, 0, 0, 0.25);
     -fx-app-overlay: rgba(0, 0, 0, 0.5);
 
-    -fx-app-status-cheap: #D4EDDA;
-    -fx-app-status-average: #FFF3CD;
-    -fx-app-status-expensive: #F8D7DA;
-    -fx-app-usage-warning: #E74C3C;
-    -fx-app-usage-critical: #C0392B;
-    -fx-app-gradient-start: #2ECC71;
-    -fx-app-gradient-mid: #FFC107;
-    -fx-app-gradient-end: #E74C3C;
-}
-
-.root,
-.combo-box-popup,
-.context-menu {
     -fx-app-status-cheap: #E8E8E8;
     -fx-app-status-average: #CFCFCF;
     -fx-app-status-expensive: #A8A8A8;
-    -fx-app-usage-warning: #FFFFFF;
-    -fx-app-usage-critical: #FFFFFF;
+    -fx-app-usage-warning: #666666;
+    -fx-app-usage-critical: #333333;
     -fx-app-gradient-start: #000000;
     -fx-app-gradient-mid: #808080;
     -fx-app-gradient-end: #FFFFFF;
-    -fx-app-toggle-enabled: #4A4A4A;
-    -fx-app-error: #666666;
-    -fx-app-success: #4A4A4A;
 }
 
 

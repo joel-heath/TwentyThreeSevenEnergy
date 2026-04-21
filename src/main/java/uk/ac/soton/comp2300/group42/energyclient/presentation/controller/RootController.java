@@ -13,17 +13,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
+import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RootViewModel;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.util.Objects;
 
 public class RootController {
-
-    private static final String LIGHT_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/light-mode.css";
-    private static final String DARK_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/dark-mode.css";
-    private static final String LIGHT_CONTRAST_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-light.css";
-    private static final String DARK_CONTRAST_THEME_PATH = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/high-contrast-dark.css";
+    private static final String THEME_STYLESHEET_PREFIX = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/theme-";
 
     @FXML private Modal modal;
     @FXML private StackPane contentArea;
@@ -42,15 +39,19 @@ public class RootController {
 
         contentArea.sceneProperty().subscribe(newScene -> {
             if (newScene != null)
-                applyTheme(newScene, vm.themeProperty().get());
+                applyThemeVariant(newScene, vm.themeProperty().get(), vm.visionProperty().get());
         });
 
-        vm.themeProperty().subscribe((oldTheme, newTheme) -> {
+        vm.themeProperty().subscribe((_, _) -> {
             Scene scene = contentArea.getScene();
-            if (scene != null) {
-                unapplyTheme(scene, oldTheme);
-                applyTheme(scene, newTheme);
-            }
+            if (scene != null)
+                applyThemeVariant(scene, vm.themeProperty().get(), vm.visionProperty().get());
+        });
+
+        vm.visionProperty().subscribe((_, _) -> {
+            Scene scene = contentArea.getScene();
+            if (scene != null)
+                applyThemeVariant(scene, vm.themeProperty().get(), vm.visionProperty().get());
         });
 
         var notifications = vm.getActiveNotifications();
@@ -90,13 +91,23 @@ public class RootController {
         return card;
     }
 
-    private String getThemeExternalForm(Theme theme) {
-        String path = switch (theme) {
-            case LIGHT -> LIGHT_THEME_PATH;
-            case DARK -> DARK_THEME_PATH;
-            case LIGHT_CONTRAST -> LIGHT_CONTRAST_THEME_PATH;
-            case DARK_CONTRAST -> DARK_CONTRAST_THEME_PATH;
+    private String getThemeExternalForm(Theme theme, ColorVision vision) {
+        String themePart = switch (theme) {
+            case LIGHT -> "light";
+            case DARK -> "dark";
+            case LIGHT_CONTRAST -> "high-contrast-light";
+            case DARK_CONTRAST -> "high-contrast-dark";
         };
+
+        String visionPart = switch (vision == null ? ColorVision.TYPICAL : vision) {
+            case TYPICAL -> "typical";
+            case PROTAN -> "protan";
+            case DEUTERAN -> "deuteran";
+            case TRITAN -> "tritan";
+            case ACHROMA -> "achroma";
+        };
+
+        String path = THEME_STYLESHEET_PREFIX + themePart + "-" + visionPart + ".css";
 
         return Objects.requireNonNull(
                 RootController.class.getResource(path),
@@ -104,11 +115,12 @@ public class RootController {
         ).toExternalForm();
     }
 
-    private void unapplyTheme(Scene scene, Theme theme) {
-        scene.getStylesheets().remove(getThemeExternalForm(theme));
+    private void removeAllThemeVariants(Scene scene) {
+        scene.getStylesheets().removeIf(stylesheet -> stylesheet.contains("/presentation/styles/theme-"));
     }
 
-    private void applyTheme(Scene scene, Theme theme) {
-        scene.getStylesheets().add(getThemeExternalForm(theme));
+    private void applyThemeVariant(Scene scene, Theme theme, ColorVision vision) {
+        removeAllThemeVariants(scene);
+        scene.getStylesheets().add(getThemeExternalForm(theme, vision));
     }
 }

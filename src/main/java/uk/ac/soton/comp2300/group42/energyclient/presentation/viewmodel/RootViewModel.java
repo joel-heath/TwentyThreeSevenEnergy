@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
+import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,10 @@ public class RootViewModel {
 
     public ObjectProperty<Theme> themeProperty() {
         return preferences.themeProperty();
+    }
+
+    public ObjectProperty<ColorVision> visionProperty() {
+        return preferences.visionProperty();
     }
 
     public ObservableList<Notification> getActiveNotifications() {

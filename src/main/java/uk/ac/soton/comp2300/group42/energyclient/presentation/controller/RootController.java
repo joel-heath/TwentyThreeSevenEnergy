@@ -2,17 +2,11 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 
 import com.google.inject.Inject;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
-import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.AlertModal;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RootViewModel;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
@@ -22,10 +16,8 @@ import java.util.Objects;
 public class RootController {
     private static final String THEME_STYLESHEET_PREFIX = "/uk/ac/soton/comp2300/group42/energyclient/presentation/styles/theme-";
 
-    @FXML private Modal modal;
     @FXML private StackPane contentArea;
-    @FXML private ScrollPane reminderScroll;
-    @FXML private VBox remindersArea;
+    @FXML private AlertModal alertModal;
 
     private final RootViewModel vm;
     @Inject public RootController(RootViewModel vm) {
@@ -33,10 +25,6 @@ public class RootController {
     }
 
     @FXML private void initialize() {
-        reminderScroll.maxHeightProperty().bind(
-                Bindings.min(500, remindersArea.heightProperty().add(40))
-        );
-
         contentArea.sceneProperty().subscribe(newScene -> {
             if (newScene != null)
                 applyThemeVariant(newScene, vm.themeProperty().get(), vm.visionProperty().get());
@@ -57,39 +45,20 @@ public class RootController {
         var notifications = vm.getActiveNotifications();
         notifications.subscribe(() ->
                 Platform.runLater(() -> {
-                    remindersArea.getChildren().setAll(
-                            notifications.stream().map(this::createPopup).toList()
-                    );
-
-                    if (notifications.isEmpty())
-                        modal.close();
-                    else
-                        modal.show();
+                    if (!notifications.isEmpty()) {
+                        RootViewModel.Notification notification = notifications.get(0);
+                        alertModal.show(
+                                notification.title(),
+                                notification.description(),
+                                () -> vm.dismissNotification(notification)
+                        );
+                    }
                 })
         );
     }
 
-    @FXML private void clearReminders() {
-        vm.clearAllNotifications();
-    }
 
     public StackPane getContentArea() { return contentArea; }
-
-    private Node createPopup(RootViewModel.Notification notification) {
-        VBox card = new VBox();
-        card.setStyle("-fx-padding: 10; -fx-border-color: lightgray");
-
-        Label title = new Label(notification.title());
-        title.setStyle("-fx-font-weight: bold; -fx-font-scale: large");
-
-        Label description = new Label(notification.description());
-
-        Button dismiss = new Button("Dismiss");
-        dismiss.setOnAction(_ -> vm.dismissNotification(notification));
-
-        card.getChildren().addAll(title, description, dismiss);
-        return card;
-    }
 
     private String getThemeExternalForm(Theme theme, ColorVision vision) {
         String themePart = switch (theme) {

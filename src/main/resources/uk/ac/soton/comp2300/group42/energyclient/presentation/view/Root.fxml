@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.ScrollPane?>
 
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
-<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.AlertModal?>
 
 <ModalOverlayPane xmlns="http://javafx.com/javafx"
                   xmlns:fx="http://javafx.com/fxml"
@@ -13,13 +12,5 @@
 
     <StackPane fx:id="contentArea" />
 
-    <Modal fx:id="modal" onClose="#clearReminders">
-        <ScrollPane fx:id="reminderScroll" maxWidth="250" prefHeight="-Infinity"
-                    styleClass="scroll-pane card-scroll"
-                    vbarPolicy="NEVER" hbarPolicy="NEVER" pannable="true">
-            <StackPane style="-fx-padding: 20;">
-                <VBox fx:id="remindersArea" alignment="TOP_CENTER" prefHeight="-Infinity"/>
-            </StackPane>
-        </ScrollPane>
-    </Modal>
+    <AlertModal fx:id="alertModal"/>
 </ModalOverlayPane>

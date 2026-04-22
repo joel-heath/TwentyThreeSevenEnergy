@@ -2,38 +2,39 @@
 .root,
 .combo-box-popup,
 .context-menu {
-    -fx-base: #F0F0F0;
-    -fx-background: #FFFFFF;
+    -fx-base: #ECECEC;
+    -fx-background: #F4F4F4;
     -fx-control-inner-background: #FFFFFF;
     -fx-text-background-color: #000000;
-    -fx-accent: #000000;
+    -fx-accent: #4A4A4A;
 
     -fx-app-text: #000000;
-    -fx-app-muted: #333333;
+    -fx-app-muted: #5C5C5C;
     -fx-app-card-surface: #FFFFFF;
     -fx-app-card-border: #000000;
-    -fx-app-widget-background: #000000;
+    -fx-app-widget-background: #5A5A5A;
     -fx-app-widget-surface: #000000;
-    -fx-app-widget-text: #FFFFFF;
-    -fx-app-accent: #000000;
-    -fx-app-link: #000000;
+    -fx-app-widget-text: #ffffff;
+    -fx-app-accent: #4A4A4A;
+    -fx-app-link: #4A4A4A;
     -fx-app-error: #666666;
     -fx-app-on-error: #FFFFFF;
-    -fx-app-success: #000000;
-    -fx-app-toggle-enabled: #000000;
-    -fx-app-toggle-disabled: #808080;
+    -fx-app-success: #4A4A4A;
+    -fx-app-toggle-enabled: #4A4A4A;
+    -fx-app-toggle-disabled: #BFBFBF;
     -fx-app-thumb: #FFFFFF;
-    -fx-app-shadow: rgba(0, 0, 0, 0.4);
-    -fx-app-overlay: rgba(0, 0, 0, 0.6);
+    -fx-app-shadow: rgba(0, 0, 0, 0.25);
+    -fx-app-overlay: rgba(0, 0, 0, 0.5);
 
     -fx-app-status-cheap: #E8E8E8;
     -fx-app-status-average: #CFCFCF;
     -fx-app-status-expensive: #A8A8A8;
     -fx-app-usage-warning: #666666;
-    -fx-app-usage-critical: #000000;
+    -fx-app-usage-critical: #333333;
     -fx-app-gradient-start: #000000;
     -fx-app-gradient-mid: #808080;
     -fx-app-gradient-end: #FFFFFF;
 }
+
 
 

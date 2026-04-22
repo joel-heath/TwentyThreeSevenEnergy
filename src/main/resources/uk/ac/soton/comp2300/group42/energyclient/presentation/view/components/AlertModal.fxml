@@ -8,7 +8,7 @@
          xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml">
 
-    <VBox spacing="16" alignment="CENTER" maxWidth="280">
+    <VBox spacing="16" alignment="CENTER" maxWidth="-Infinity" maxHeight="-Infinity" styleClass="modal-card">
         <Label fx:id="titleLabel" text="Alert"/>
         <Label fx:id="messageLabel"
                text="This is an alert message."

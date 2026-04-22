@@ -25,7 +25,7 @@
     -fx-app-toggle-disabled: #bfbfbf;
     -fx-app-thumb: #ffffff;
     -fx-app-shadow: rgba(0, 0, 0, 0.25);
-    -fx-app-overlay: rgba(0, 0, 0, 0.5);
+    -fx-app-overlay: rgba(255, 255, 255, 0.22);
 
     -fx-app-status-cheap: #D4EDDA;
     -fx-app-status-average: #FFF3CD;
@@ -52,5 +52,6 @@
     -fx-app-error: #D55E00;
     -fx-app-success: #0072B2;
 }
+
 
 

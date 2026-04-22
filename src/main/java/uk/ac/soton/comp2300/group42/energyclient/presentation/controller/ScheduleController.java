@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationSchedulePane;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ScheduleViewModel;
@@ -15,6 +16,8 @@ public class ScheduleController {
 
     private final ScheduleViewModel vm;
     @Inject public ScheduleController(ScheduleViewModel vm) { this.vm = vm; }
+
+    @FXML private void onManageAppliances() { Navigator.goTo("ManageAppliances.fxml"); }
 
     @FXML private void initialize() {
         schedulePane.setApplianceList(vm.getApplianceList());

@@ -13,10 +13,6 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AccountS
 
 public class AccountSettingsController {
 
-    private enum ConfirmAction {
-        LOGOUT,
-        DELETE_ACCOUNT
-    }
 
     private final AccountSettingsViewModel vm;
 
@@ -29,7 +25,6 @@ public class AccountSettingsController {
     @FXML private Label responseLabel;
     @FXML private ConfirmationModal confirmationModal;
 
-    private ConfirmAction pendingAction;
 
     @Inject public AccountSettingsController(AccountSettingsViewModel vm) {
         this.vm = vm;
@@ -48,6 +43,12 @@ public class AccountSettingsController {
         StyleClassUtils.bindExclusiveClass(responseLabel, vm.responseStyleClassProperty(), "response-error", "response-success");
         StyleClassUtils.setClass(deleteAccountButton, "danger-button", true);
 
+        vm.setNavigationCallback(shouldNavigate -> {
+            if (shouldNavigate) {
+                Navigator.goTo("Landing.fxml");
+            }
+        });
+
         vm.loadData();
     }
 
@@ -64,44 +65,19 @@ public class AccountSettingsController {
     }
 
     @FXML private void onLogout() {
-        pendingAction = ConfirmAction.LOGOUT;
-        confirmationModal.show(
-                "Sign out?",
-                "Are you sure you want to log out? You will need to sign in again.",
-                this::handleConfirmedAction
-        );
+        vm.requestLogout(() -> confirmationModal.show(
+                vm.getConfirmationTitle(),
+                vm.getConfirmationMessage(),
+                vm::handleConfirmedAction
+        ));
     }
 
     @FXML private void onDeleteAccount() {
-        pendingAction = ConfirmAction.DELETE_ACCOUNT;
-        confirmationModal.show(
-                "Delete account?",
-                "Are you sure you want to delete your account? This action cannot be undone.",
-                this::handleConfirmedAction
-        );
+        vm.requestDeleteAccount(() -> confirmationModal.show(
+                vm.getConfirmationTitle(),
+                vm.getConfirmationMessage(),
+                vm::handleConfirmedAction
+        ));
     }
-
-    private void handleConfirmedAction() {
-        if (pendingAction == null) {
-            return;
-        }
-
-        switch (pendingAction) {
-            case LOGOUT -> {
-                vm.logout();
-                Navigator.goToIrreversible("Landing.fxml");
-            }
-            case DELETE_ACCOUNT -> {
-                if (vm.deleteAccount()) {
-                    Navigator.goToIrreversible("Landing.fxml");
-                }
-            }
-        }
-
-        pendingAction = null;
-    }
-
-
-
 
 }

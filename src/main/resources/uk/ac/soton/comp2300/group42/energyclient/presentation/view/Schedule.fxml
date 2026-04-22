@@ -18,6 +18,8 @@
 
                 <ActivationSchedulePane fx:id="schedulePane"/>
 
+                <Button text="Manage Appliances" onAction="#onManageAppliances"/>
+
                 <Button text="Schedule" onAction="#onSchedule"/>
 
                 <Label fx:id="responseLabel" />

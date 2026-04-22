@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 
@@ -27,24 +28,24 @@ class SwitchableMetricRepositoryTest {
     @Test
     void add_WhenLoggedIn_ShouldUseRemoteRepository() {
         when(sessionManager.isLoggedIn()).thenReturn(true);
-        when(remoteRepository.add(dummyMetric)).thenReturn(dummyMetric);
+        when(remoteRepository.add(dummyMetric, EnergyCategory.GAS)).thenReturn(dummyMetric);
 
-        Metric result = switchableRepository.add(dummyMetric);
+        Metric result = switchableRepository.add(dummyMetric, EnergyCategory.GAS);
 
         assertEquals(dummyMetric, result);
-        verify(remoteRepository).add(dummyMetric);
+        verify(remoteRepository).add(dummyMetric, EnergyCategory.GAS);
         verifyNoInteractions(localRepository);
     }
 
     @Test
     void add_WhenNotLoggedIn_ShouldUseLocalRepository() {
         when(sessionManager.isLoggedIn()).thenReturn(false);
-        when(localRepository.add(dummyMetric)).thenReturn(dummyMetric);
+        when(localRepository.add(dummyMetric, EnergyCategory.GAS)).thenReturn(dummyMetric);
 
-        Metric result = switchableRepository.add(dummyMetric);
+        Metric result = switchableRepository.add(dummyMetric, EnergyCategory.GAS);
 
         assertEquals(dummyMetric, result);
-        verify(localRepository).add(dummyMetric);
+        verify(localRepository).add(dummyMetric, EnergyCategory.GAS);
         verifyNoInteractions(remoteRepository);
     }
 

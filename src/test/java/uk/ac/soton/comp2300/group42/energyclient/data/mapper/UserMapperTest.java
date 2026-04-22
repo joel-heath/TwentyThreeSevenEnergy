@@ -3,10 +3,10 @@ package uk.ac.soton.comp2300.group42.energyclient.data.mapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.preferences.*;
 import uk.ac.soton.comp2300.group42.user.UpdateUserRequest;
 import uk.ac.soton.comp2300.group42.user.UserResponse;
-import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 

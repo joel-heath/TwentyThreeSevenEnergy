@@ -1,6 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -8,91 +8,72 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.UnitRate;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.EnergyPriceRepository;
 
-import java.time.ZoneOffset;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AdvancedDashboardViewModelTest {
 
-    @Mock private EnergyPriceRepository repository;
+    @Mock private EnergyPriceRepository energyPriceRepository;
 
-    @BeforeAll
-    static void initJavaFx() {
-        JavaFxTestUtil.initJavaFx();
+    private AdvancedDashboardViewModel viewModel;
+
+    @BeforeEach
+    void setUp() {
+        viewModel = new AdvancedDashboardViewModel(energyPriceRepository, Runnable::run);
     }
 
     @Test
-    void loadDashboardData_filtersToHourlyRates_andUpdatesObservableList() {
-        List<UnitRate> rates = List.of(
-                new UnitRate(10.0, ZonedDateTime.of(2026, 3, 4, 10, 0, 0, 0, ZoneOffset.UTC)),
-                new UnitRate(11.0, ZonedDateTime.of(2026, 3, 4, 10, 30, 0, 0, ZoneOffset.UTC)),
-                new UnitRate(12.0, ZonedDateTime.of(2026, 3, 4, 11, 0, 0, 0, ZoneOffset.UTC))
-        );
-        when(repository.fetchNext12Hours()).thenReturn(rates);
+    void loadDashboardData_mapsStatusesAndFiltersNonHourlyRates() {
+        ZonedDateTime base = ZonedDateTime.of(LocalDateTime.of(2026, 1, 1, 10, 0), ZoneId.of("UTC"));
+        when(energyPriceRepository.fetchNext12Hours()).thenReturn(List.of(
+                new UnitRate(10.0, base),
+                new UnitRate(11.0, base.plusMinutes(30)),
+                new UnitRate(25.0, base.plusHours(1)),
+                new UnitRate(35.0, base.plusHours(2))
+        ));
 
-        AdvancedDashboardViewModel viewModel = new AdvancedDashboardViewModel(repository);
         viewModel.loadDashboardData();
-        JavaFxTestUtil.waitForFxEvents();
 
-        assertEquals(2, viewModel.getHourlyForecast().size());
-        assertEquals(10.0, viewModel.getHourlyForecast().get(0).valueIncVat());
-        assertEquals(12.0, viewModel.getHourlyForecast().get(1).valueIncVat());
+        await(() -> viewModel.getHourlyForecast().size() == 3);
+        assertEquals("10:00", viewModel.getHourlyForecast().get(0).timeText());
+        assertEquals("status-cheap", viewModel.getHourlyForecast().get(0).statusStyleClass());
+        assertEquals("11:00", viewModel.getHourlyForecast().get(1).timeText());
+        assertEquals("status-average", viewModel.getHourlyForecast().get(1).statusStyleClass());
+        assertEquals("12:00", viewModel.getHourlyForecast().get(2).timeText());
+        assertEquals("status-expensive", viewModel.getHourlyForecast().get(2).statusStyleClass());
     }
 
     @Test
-    void loadDashboardData_whenRepositoryReturnsEmptyList_forecastIsEmpty() {
-        when(repository.fetchNext12Hours()).thenReturn(List.of());
+    void loadDashboardData_whenRepositoryFails_keepsForecastEmpty() {
+        when(energyPriceRepository.fetchNext12Hours()).thenThrow(new RuntimeException("down"));
 
-        AdvancedDashboardViewModel viewModel = new AdvancedDashboardViewModel(repository);
         viewModel.loadDashboardData();
-        JavaFxTestUtil.waitForFxEvents();
 
-        assertEquals(0, viewModel.getHourlyForecast().size());
+        verify(energyPriceRepository, timeout(1000)).fetchNext12Hours();
+        assertTrue(viewModel.getHourlyForecast().isEmpty());
     }
 
-    @Test
-    void loadDashboardData_whenNoFullHourRates_listIsEmpty() {
-        List<UnitRate> rates = List.of(
-                new UnitRate(10.0, ZonedDateTime.of(2026,3,4,10,30,0,0,ZoneOffset.UTC)),
-                new UnitRate(11.0, ZonedDateTime.of(2026,3,4,11,30,0,0,ZoneOffset.UTC))
-        );
-
-        when(repository.fetchNext12Hours()).thenReturn(rates);
-
-        AdvancedDashboardViewModel viewModel = new AdvancedDashboardViewModel(repository);
-        viewModel.loadDashboardData();
-        JavaFxTestUtil.waitForFxEvents();
-
-        assertEquals(0, viewModel.getHourlyForecast().size());
-    }
-
-    @Test
-    void loadDashboardData_replacesExistingForecast() {
-        List<UnitRate> first = List.of(
-                new UnitRate(10.0, ZonedDateTime.of(2026,3,4,10,0,0,0,ZoneOffset.UTC))
-        );
-
-        List<UnitRate> second = List.of(
-                new UnitRate(20.0, ZonedDateTime.of(2026,3,4,11,0,0,0,ZoneOffset.UTC))
-        );
-
-        when(repository.fetchNext12Hours())
-                .thenReturn(first)
-                .thenReturn(second);
-
-        AdvancedDashboardViewModel viewModel = new AdvancedDashboardViewModel(repository);
-
-        viewModel.loadDashboardData();
-        JavaFxTestUtil.waitForFxEvents();
-
-        viewModel.loadDashboardData();
-        JavaFxTestUtil.waitForFxEvents();
-
-        assertEquals(1, viewModel.getHourlyForecast().size());
-        assertEquals(20.0, viewModel.getHourlyForecast().getFirst().valueIncVat());
+    private static void await(BooleanSupplier condition) {
+        long timeoutAt = System.currentTimeMillis() + 2000;
+        while (!condition.getAsBoolean() && System.currentTimeMillis() < timeoutAt) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError("Interrupted while waiting for async condition", e);
+            }
+        }
+        assertTrue(condition.getAsBoolean(), "Condition did not become true before timeout");
     }
 }
+

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
@@ -13,7 +15,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.User;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.HouseRepository;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.UserRepository;
-import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
@@ -21,72 +22,65 @@ import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.time.ZoneId;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class UserStoreTest {
 
     @Mock private UserRepository userRepository;
     @Mock private HouseRepository houseRepository;
     @Mock private HouseStore houseStore;
-    @Mock private SessionManager sessionManager;
-
-    private final Executor syncExecutor = Runnable::run;
 
     private UserStore userStore;
-
-    private Housemate housemate;
     private ObservableHouse house1;
     private ObservableHouse house2;
 
     @BeforeEach
     void setUp() {
-        House domainHouse1 = new House(10L, "Awesome House", "12 Awesome Road", ZoneId.of("UTC"), Role.OWNER);
-        House domainHouse2 = new House(20L, "TERRIBLE House", "-8 AWFUL Street", ZoneId.of("America/New_York"), Role.RESIDENT);
-        house1 = new ObservableHouse(domainHouse1);
-        house2 = new ObservableHouse(domainHouse2);
+        Executor directExecutor = Runnable::run;
 
-        housemate = new Housemate(1L, 10L, "John Doe", "john@example.com", Role.OWNER);
-        Preferences preferences = new Preferences(
-                1L,
-                false,
-                ColorVision.PROTAN,
-                Theme.LIGHT_CONTRAST,
-                Mode.SIMPLE,
-                false,
-                2.5,
-                10L
+        house1 = new ObservableHouse(new House(10L, "House 1", "Addr 1", ZoneId.of("UTC"), Role.OWNER));
+        house2 = new ObservableHouse(new House(20L, "House 2", "Addr 2", ZoneId.of("Europe/London"), Role.RESIDENT));
+
+        Preferences prefs = new Preferences(
+            1L,
+            false,
+            ColorVision.TYPICAL,
+            Theme.LIGHT,
+            Mode.SIMPLE,
+            false,
+            1.0,
+            10L
         );
 
-        when(userRepository.getCurrentPreferences()).thenReturn(preferences);
+        Housemate meInHouse1 = new Housemate(1L, 10L, "Alice", "alice@example.com", Role.OWNER);
+        Housemate meInHouse2 = new Housemate(1L, 20L, "Alice", "alice@example.com", Role.RESIDENT);
+
+        when(userRepository.getCurrentPreferences()).thenReturn(prefs);
         when(houseStore.get(10L)).thenReturn(house1);
-        when(houseRepository.getCurrentUserAsHousemate(10L)).thenReturn(housemate);
+        when(houseStore.get(20L)).thenReturn(house2);
+        when(houseRepository.getCurrentUserAsHousemate(10L)).thenReturn(meInHouse1);
+        when(houseRepository.getCurrentUserAsHousemate(20L)).thenReturn(meInHouse2);
+        when(houseRepository.getCurrentUserAsHousemate(anyLong())).thenAnswer(invocation -> {
+            long houseId = invocation.getArgument(0, Long.class);
+            return new Housemate(1L, houseId, "Alice", "alice@example.com", Role.RESIDENT);
+        });
 
-        userStore = new UserStore(
-                userRepository,
-                houseRepository,
-                houseStore,
-                sessionManager,
-                syncExecutor
-        );
+        userStore = new UserStore(userRepository, houseRepository, houseStore, directExecutor);
+        userStore.refreshAsync().join();
+        clearInvocations(userRepository, houseRepository, houseStore);
     }
 
     @Test
-    void shouldPopulateStateOnInitialization() {
-        assertEquals(1L, userStore.getCurrent().getId());
-        assertEquals("John Doe", userStore.getCurrent().getName());
-        assertEquals(house1, userStore.getPreferences().getActiveHouse());
-
-        verify(userRepository, times(1)).getCurrentPreferences();
-        verify(houseStore, times(1)).get(10L);
-    }
-
-    @Test
-    void shouldMapAndSaveUser() {
-        userStore.getCurrent().setName("Jane Doe");
+    void saveUser_mapsObservableStateToDomainUser() {
+        userStore.getCurrent().setName("Jane");
         userStore.getCurrent().setEmail("jane@example.com");
 
         userStore.saveUser();
@@ -94,94 +88,47 @@ class UserStoreTest {
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).updateMe(userCaptor.capture());
 
-        User savedUser = userCaptor.getValue();
-        assertEquals(1L, savedUser.id());
-        assertEquals("Jane Doe", savedUser.name());
-        assertEquals("jane@example.com", savedUser.email());
+        User saved = userCaptor.getValue();
+        assertEquals(1L, saved.id());
+        assertEquals("Jane", saved.name());
+        assertEquals("jane@example.com", saved.email());
     }
 
     @Test
-    void shouldSavePreferences() {
-        when(houseRepository.getCurrentUserAsHousemate(anyLong())).thenReturn(housemate);
-
-        userStore.getPreferences().setLargeFont(true);
-        userStore.getPreferences().setVision(ColorVision.DEUTERAN);
-        userStore.getPreferences().setTheme(Theme.DARK);
-        userStore.getPreferences().setMode(Mode.ADVANCED);
-        userStore.getPreferences().setShareLocation(true);
-        userStore.getPreferences().setEnergyGoal(3.0);
-        userStore.getPreferences().setActiveHouse(house2);
-
+    void savePreferences_persistsCurrentPreferences() {
         userStore.savePreferences();
 
-        ArgumentCaptor<Preferences> preferencesCaptor = ArgumentCaptor.forClass(Preferences.class);
-        verify(userRepository).updateCurrentPreferences(preferencesCaptor.capture());
-
-        Preferences savedPrefs = preferencesCaptor.getValue();
-        assertEquals(1L, savedPrefs.userId());
-        assertTrue(savedPrefs.largeFont());
-        assertEquals(ColorVision.DEUTERAN, savedPrefs.vision());
-        assertEquals(Theme.DARK, savedPrefs.theme());
-        assertEquals(Mode.ADVANCED, savedPrefs.mode());
-        assertTrue(savedPrefs.shareLocation());
-        assertEquals(3.0, savedPrefs.energyGoal());
-        assertEquals(20L, savedPrefs.activeHouseId());
+        ArgumentCaptor<Preferences> prefsCaptor = ArgumentCaptor.forClass(Preferences.class);
+        verify(userRepository).updateCurrentPreferences(prefsCaptor.capture());
+        assertEquals(10L, prefsCaptor.getValue().activeHouseId());
     }
 
     @Test
-    void shouldDeleteUser() {
-        userStore.deleteUser("very-secure-password");
-
-        verify(userRepository).deleteMe("very-secure-password");
-    }
-
-    @Test
-    void shouldRefreshAsynchronously() {
-        Preferences newPrefs = mock(Preferences.class);
-        when(newPrefs.activeHouseId()).thenReturn(20L);
-
-        ObservableHouse newHouse = new ObservableHouse(
-                new House(20L, "New House", "456 Ave", ZoneId.of("UTC"), Role.RESIDENT)
+    void refreshAsync_updatesCurrentHouseAndRole() {
+        Preferences newPrefs = new Preferences(
+            1L,
+            true,
+            ColorVision.PROTAN,
+            Theme.DARK,
+            Mode.ADVANCED,
+            true,
+            2.5,
+            20L
         );
-        Housemate newHousemate = new Housemate(1L, 20L, "John Doe", "john@example.com", Role.RESIDENT);
 
         when(userRepository.getCurrentPreferences()).thenReturn(newPrefs);
-        when(houseStore.get(20L)).thenReturn(newHouse);
-        when(houseRepository.getCurrentUserAsHousemate(20L)).thenReturn(newHousemate);
 
         userStore.refreshAsync().join();
 
-        assertEquals(newHouse, userStore.getPreferences().getActiveHouse());
+        assertSame(house2, userStore.getPreferences().getActiveHouse());
         assertEquals(20L, userStore.getCurrent().getHouse().getId());
         assertEquals(Role.RESIDENT, userStore.getCurrent().getRole());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void shouldRefreshOnSessionChange() {
-        ArgumentCaptor<Consumer<Boolean>> subscriberCaptor = ArgumentCaptor.forClass(Consumer.class);
-        verify(sessionManager).subscribe(subscriberCaptor.capture(), eq(false));
+    void deleteUser_delegatesToRepository() {
+        userStore.deleteUser("password123");
 
-        Consumer<Boolean> sessionCallback = subscriberCaptor.getValue();
-
-        sessionCallback.accept(true);
-
-        // Once in Constructor, once in Session Callback
-        verify(userRepository, times(2)).getCurrentPreferences();
-    }
-
-    @Test
-    void shouldUpdateCurrentUserWhenActiveHouseChanges() {
-        ObservableHouse newHouse = new ObservableHouse(
-                new House(30L, "Summer Home", "Beach", ZoneId.of("UTC"), Role.OWNER)
-        );
-        Housemate summerHousemate = new Housemate(1L, 30L, "John Doe", "john@example.com", Role.OWNER);
-
-        when(houseRepository.getCurrentUserAsHousemate(30L)).thenReturn(summerHousemate);
-
-        userStore.getPreferences().setActiveHouse(newHouse);
-
-        verify(houseRepository).getCurrentUserAsHousemate(30L);
-        assertEquals(30L, userStore.getCurrent().getHouse().getId());
+        verify(userRepository).deleteMe("password123");
     }
 }

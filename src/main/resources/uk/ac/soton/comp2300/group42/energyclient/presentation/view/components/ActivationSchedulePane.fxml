@@ -8,7 +8,6 @@
          xmlns:fx="http://javafx.com/fxml"
          spacing="20"
          alignment="CENTER"
-         style="-fx-background-color: -fx-app-widget-background; -fx-background-radius: 6; -fx-padding: 10;"
          styleClass="vbox activation-schedule-pane">
 
     <ComboBox fx:id="applianceSelector" promptText="Select an Appliance"/>

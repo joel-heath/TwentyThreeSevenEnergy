@@ -9,6 +9,7 @@
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal?>
 
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.CurrentWeatherWidget?>
 <ModalOverlayPane xmlns:fx="http://javafx.com/fxml"
                   fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.AdvancedDashboardController">
     <SettingsOverlayPane>
@@ -24,6 +25,10 @@
 
             <StackPane styleClass="widget-surface widget-shadow">
                 <EnergyUsageWidget fx:id="energyWidget"/>
+            </StackPane>
+
+            <StackPane styleClass="widget-surface widget-shadow">
+                <CurrentWeatherWidget fx:id="currentWeatherWidget"/>
             </StackPane>
 
             <StackPane styleClass="widget-surface widget-shadow">

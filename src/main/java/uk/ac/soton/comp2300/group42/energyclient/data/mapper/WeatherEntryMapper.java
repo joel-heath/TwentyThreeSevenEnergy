@@ -1,0 +1,10 @@
+package uk.ac.soton.comp2300.group42.energyclient.data.mapper;
+
+import org.mapstruct.Mapper;
+import uk.ac.soton.comp2300.group42.energyclient.data.external.WeatherResponse;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.WeatherEntry;
+
+@Mapper
+public interface WeatherEntryMapper {
+    WeatherEntry toResponse(WeatherResponse response);
+}

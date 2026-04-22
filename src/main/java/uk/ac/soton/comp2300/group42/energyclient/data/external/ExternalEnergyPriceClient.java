@@ -32,9 +32,10 @@ public class ExternalEnergyPriceClient {
     private final Clock clock;
 
     @Inject
-    public ExternalEnergyPriceClient(@ExternalMapper JsonMapper mapper,
-                             @EnergyPriceApiRootUri URI apiRootUri,
-                             Clock clock) {
+    public ExternalEnergyPriceClient(
+            @ExternalMapper JsonMapper mapper,
+            @EnergyPriceApiRootUri URI apiRootUri,
+            Clock clock) {
         this.client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_2)
                 .connectTimeout(Duration.ofSeconds(10))

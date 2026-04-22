@@ -35,6 +35,7 @@ public class CoreEnergyModule extends AbstractModule {
         bind(ActivationRepository.class).to(SwitchableActivationRepository.class);
         bind(MetricRepository.class).to(SwitchableMetricRepository.class);
         bind(EnergyPriceRepository.class).to(EnergyPriceRepositoryImpl.class);
+        bind(WeatherRepository.class).to(WeatherRepositoryImpl.class);
     }
 
     @Provides
@@ -65,6 +66,20 @@ public class CoreEnergyModule extends AbstractModule {
     @EnergyPriceApiRootUri
     URI provideEnergyPriceApiRootUri() {
         return URI.create("https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/");
+    }
+
+    @Provides
+    @Singleton
+    @WeatherApiRootUri
+    URI provideWeatherApiRootUri() {
+        return URI.create("https://api.open-meteo.com/v1/forecast/");
+    }
+
+    @Provides
+    @Singleton
+    @LocationApiRootUri
+    URI provideLocationApiRootUri() {
+        return URI.create("http://ip-api.com/json/");
     }
 
     @Provides
@@ -133,6 +148,12 @@ public class CoreEnergyModule extends AbstractModule {
     @Singleton
     UnitRateMapper provideUnitRateMapper() {
         return Mappers.getMapper(UnitRateMapper.class);
+    }
+
+    @Provides
+    @Singleton
+    WeatherEntryMapper provideWeatherEntryMapper() {
+        return Mappers.getMapper(WeatherEntryMapper.class);
     }
 
     @Provides

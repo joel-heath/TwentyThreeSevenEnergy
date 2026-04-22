@@ -9,13 +9,12 @@
          xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml">
 
-    <VBox spacing="16" alignment="CENTER" maxWidth="280" styleClass="modal-content">
-        <Label fx:id="titleLabel" text="Delete Account?" styleClass="modal-title"/>
+    <VBox spacing="16" alignment="CENTER" maxWidth="280">
+        <Label fx:id="titleLabel" text="Delete Account?"/>
         <Label fx:id="messageLabel"
                text="You won't be able to access your account again."
                wrapText="true"
-               maxWidth="240"
-               styleClass="modal-message"/>
+               maxWidth="240"/>
 
         <HBox spacing="12" alignment="CENTER">
             <Button text="Cancel" onAction="#onCancelClicked"/>

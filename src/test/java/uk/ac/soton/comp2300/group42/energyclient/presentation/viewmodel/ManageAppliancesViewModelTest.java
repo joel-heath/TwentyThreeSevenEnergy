@@ -1,9 +1,5 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,118 +8,130 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Appliance;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Housemate;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableAppliance;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHousemate;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.time.ZoneId;
+import java.util.concurrent.CompletableFuture;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class ManageAppliancesViewModelTest {
 
     @Mock private ApplianceStore applianceStore;
-    @Mock private ObservableHousemate currentUser;
-    @Mock private ObservablePreferences preferences;
+    @Mock private InputFeedbackManager inputFeedbackManager;
 
-    @Mock private ObservableHouse activeHouse;
-    @Mock private ObservableAppliance observableAppliance;
-    @Mock private Appliance committedAppliance;
-
+    private ObservableHouse house;
+    private ObservableHousemate currentUser;
+    private ObservableAppliance appliance;
+    private ObservableList<ObservableAppliance> applianceList;
     private ManageAppliancesViewModel viewModel;
-
-    private ObjectProperty<Role> roleProperty;
-    private ObservableList<ObservableAppliance> mockApplianceList;
 
     @BeforeEach
     void setUp() {
-        roleProperty = new SimpleObjectProperty<>(Role.RESIDENT);
-        ObjectProperty<ObservableHouse> activeHouseProperty = new SimpleObjectProperty<>(activeHouse);
-        StringProperty activeHouseNameProperty = new SimpleStringProperty("Test House");
-        mockApplianceList = FXCollections.observableArrayList();
+        house = new ObservableHouse(new House(1L, "Home", "1 Street", ZoneId.of("UTC"), Role.OWNER));
+        currentUser = new ObservableHousemate(new Housemate(10L, 1L, "Alice", "alice@example.com", Role.GUEST), house);
+        ObservablePreferences preferences = new ObservablePreferences(new Preferences(), house);
 
-        when(applianceStore.getAll()).thenReturn(mockApplianceList);
-        when(currentUser.roleProperty()).thenReturn(roleProperty);
-        when(preferences.activeHouseProperty()).thenReturn(activeHouseProperty);
-        when(preferences.getActiveHouse()).thenReturn(activeHouse);
-        when(activeHouse.nameProperty()).thenReturn(activeHouseNameProperty);
+        appliance = new ObservableAppliance(new Appliance(100L, 1L, "Kettle"), house);
+        applianceList = FXCollections.observableArrayList(appliance);
 
-        viewModel = new ManageAppliancesViewModel(applianceStore, currentUser, preferences);
+        when(applianceStore.getAll()).thenReturn(applianceList);
+        when(applianceStore.refreshAllAsync()).thenReturn(CompletableFuture.completedFuture(null));
+
+        viewModel = new ManageAppliancesViewModel(applianceStore, currentUser, preferences, inputFeedbackManager, Runnable::run);
     }
 
     @Test
-    void constructor_shouldFetchAllAppliancesAsynchronously() {
-        verify(applianceStore, timeout(500).times(1)).refreshAllAsync();
+    void hasReadWritePermissionProperty_reflectsCurrentUserRole() {
+        assertFalse(viewModel.hasReadWritePermissionProperty().getValue());
+
+        currentUser.setRole(Role.RESIDENT);
+        assertTrue(viewModel.hasReadWritePermissionProperty().getValue());
     }
 
     @Test
-    void getActiveHouseName_shouldReturnCorrectName() {
-        assertEquals("Test House", viewModel.getActiveHouseName());
+    void addAppliance_whenNameBlank_setsErrorAndShowsFeedback() {
+        viewModel.newApplianceNameProperty().set("   ");
+
+        viewModel.addAppliance();
+
+        assertTrue(viewModel.hasNewApplianceErrorProperty().get());
+        verify(inputFeedbackManager).showPopup("Appliance not added", "Please enter an appliance name.");
     }
 
     @Test
-    void getAppliances_shouldReturnApplianceList() {
-        assertEquals(mockApplianceList, viewModel.getAppliances());
+    void addAppliance_whenValid_trimsInputAndAddsToStore() {
+        viewModel.newApplianceNameProperty().set("  Toaster  ");
+
+        viewModel.addAppliance();
+
+        ArgumentCaptor<Appliance> captor = ArgumentCaptor.forClass(Appliance.class);
+        verify(applianceStore).add(captor.capture());
+        Appliance added = captor.getValue();
+        assertEquals(1L, added.houseId());
+        assertEquals("Toaster", added.name());
+        assertFalse(viewModel.hasNewApplianceErrorProperty().get());
+        assertEquals("", viewModel.newApplianceNameProperty().get());
+        verify(inputFeedbackManager).showPopup("Appliance added", "\"Toaster\" has been added.");
     }
 
     @Test
-    void createAppliance_shouldCreateAndStoreNewAppliance() {
-        String applianceName = "Washing Machine";
-        Long houseId = 100L;
-        when(activeHouse.getId()).thenReturn(houseId);
+    void selectApplianceForEdit_setsSelectionAndEditName() {
+        viewModel.selectApplianceForEdit(appliance);
 
-        viewModel.createAppliance(applianceName);
-
-        ArgumentCaptor<Appliance> applianceCaptor = ArgumentCaptor.forClass(Appliance.class);
-        verify(applianceStore).add(applianceCaptor.capture());
-
-        Appliance capturedAppliance = applianceCaptor.getValue();
-        assertNull(capturedAppliance.id());
-        assertEquals(houseId, capturedAppliance.houseId());
-        assertEquals(applianceName, capturedAppliance.name());
+        assertEquals(appliance, viewModel.selectedApplianceProperty().get());
+        assertEquals("Kettle", viewModel.editApplianceNameProperty().get());
     }
 
     @Test
-    void updateAppliance_shouldUpdateObservableAndCommitToStore() {
-        when(observableAppliance.commit()).thenReturn(committedAppliance);
+    void saveApplianceEdits_updatesStoreAndClearsSelection() {
+        viewModel.selectApplianceForEdit(appliance);
+        viewModel.editApplianceNameProperty().set("  New Name  ");
 
-        viewModel.updateAppliance(observableAppliance, "Dishwasher");
+        viewModel.saveApplianceEdits();
 
-        verify(observableAppliance).setName("Dishwasher");
-        verify(observableAppliance).commit();
-        verify(applianceStore).update(committedAppliance);
+        ArgumentCaptor<Appliance> captor = ArgumentCaptor.forClass(Appliance.class);
+        verify(applianceStore).update(captor.capture());
+        assertEquals("New Name", captor.getValue().name());
+        assertNull(viewModel.selectedApplianceProperty().get());
+        assertEquals("", viewModel.editApplianceNameProperty().get());
     }
 
     @Test
-    void deleteAppliance_shouldDeleteFromStoreUsingId() {
-        Long applianceId = 42L;
-        when(observableAppliance.getId()).thenReturn(applianceId);
+    void deleteSelectedAppliance_deletesByIdAndClearsSelection() {
+        viewModel.selectApplianceForEdit(appliance);
 
-        viewModel.deleteAppliance(observableAppliance);
+        viewModel.deleteSelectedAppliance();
 
-        verify(observableAppliance).getId();
-        verify(applianceStore).delete(applianceId);
+        verify(applianceStore).delete(100L);
+        assertNull(viewModel.selectedApplianceProperty().get());
     }
 
     @Test
-    void hasReadWritePermission_whenRoleIsOwner_shouldReturnTrue() {
-        roleProperty.set(Role.OWNER);
-        assertTrue(viewModel.hasReadWritePermission());
-    }
+    void loadData_whenRefreshFails_showsErrorPopup() {
+        when(applianceStore.refreshAllAsync()).thenReturn(CompletableFuture.failedFuture(new RuntimeException("network")));
 
-    @Test
-    void hasReadWritePermission_whenRoleIsResident_shouldReturnTrue() {
-        roleProperty.set(Role.RESIDENT);
-        assertTrue(viewModel.hasReadWritePermission());
-    }
+        viewModel.loadData();
 
-    @Test
-    void hasReadWritePermission_whenRoleIsBelowResident_shouldReturnFalse() {
-        roleProperty.set(Role.GUEST);
-        assertFalse(viewModel.hasReadWritePermission());
+        verify(inputFeedbackManager).showPopup("Error loading appliances", "An error occurred while loading appliances: network");
     }
 }

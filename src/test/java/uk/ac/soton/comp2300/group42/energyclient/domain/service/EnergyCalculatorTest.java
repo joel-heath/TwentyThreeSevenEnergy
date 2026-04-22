@@ -2,7 +2,7 @@ package uk.ac.soton.comp2300.group42.energyclient.domain.service;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EnergyCalculatorTest {
 

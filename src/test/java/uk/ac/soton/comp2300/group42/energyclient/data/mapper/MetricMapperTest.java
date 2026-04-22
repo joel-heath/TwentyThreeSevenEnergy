@@ -6,7 +6,7 @@ import uk.ac.soton.comp2300.group42.common.EnergyCategory;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.Metric;
 import uk.ac.soton.comp2300.group42.metric.MetricResponse;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +19,9 @@ class MetricMapperTest {
         MetricResponse response = new MetricResponse(
                 10L,
                 1L,
-                LocalDate.of(2025, 12, 25),
+                LocalDateTime.of(2025, 12, 25, 13, 0),
                 4.15,
+                6.78,
                 EnergyCategory.GAS
         );
 
@@ -29,8 +30,9 @@ class MetricMapperTest {
         assertNotNull(domain);
         assertEquals(10L, domain.id());
         assertEquals(1L, domain.houseId());
-        assertEquals(LocalDate.of(2025, 12, 25), domain.date());
+        assertEquals(LocalDateTime.of(2025, 12, 25, 13, 0), domain.dateTime());
         assertEquals(4.15, domain.energyUsed());
+        assertEquals(6.78, domain.energyPrice());
         assertEquals(EnergyCategory.GAS, domain.category());
     }
 

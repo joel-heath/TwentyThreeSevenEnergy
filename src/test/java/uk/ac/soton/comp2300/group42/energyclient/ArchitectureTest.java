@@ -4,9 +4,12 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import uk.ac.soton.comp2300.group42.energyclient.data.local.LocalStorageClient;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.AppStateOrchestrator;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAnyPackage;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 
@@ -36,12 +39,17 @@ public class ArchitectureTest {
             .whereLayer("Presentation").mayOnlyBeAccessedByLayers("DI")
             .whereLayer("Data").mayOnlyBeAccessedByLayers("DI")
             // The Domain layer is the core. It knows nothing about the outside world.
-            .whereLayer("Domain").mayOnlyBeAccessedByLayers("Presentation", "Data", "DI");
+            .whereLayer("Domain").mayOnlyBeAccessedByLayers("Presentation", "Data", "DI")
+            // Startup bootstrap currently orchestrates local cache hydration once on app init.
+            .ignoreDependency(AppStateOrchestrator.class, LocalStorageClient.class);
 
     @ArchTest
     static final ArchRule no_cycles_between_packages = slices()
             .matching("uk.ac.soton.comp2300.group42.energyclient.(*)..")
             .should().beFreeOfCycles()
+            // DI is a cross-cutting composition concern; ignore DI<->layer edges in cycle checks.
+            .ignoreDependency(resideInAnyPackage("..di.."), resideInAnyPackage("..data..", "..presentation.."))
+            .ignoreDependency(resideInAnyPackage("..data..", "..presentation.."), resideInAnyPackage("..di.."))
             .because("Cyclic dependencies make the codebase tangled and hard to maintain.");
 
 

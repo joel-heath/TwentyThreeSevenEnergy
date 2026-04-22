@@ -173,46 +173,77 @@ class AccountSettingsViewModelTest {
     }
 
     @Test
-    void deleteAccount_whenPasswordMissing_returnsFalse() {
+    void requestDeleteAccount_setsPendingActionAndRunsConfirmationCallback() {
+        boolean[] confirmShown = {false};
+
+        viewModel.requestDeleteAccount(() -> confirmShown[0] = true);
+
+        assertTrue(confirmShown[0]);
+        assertEquals("Delete Account", viewModel.getConfirmationTitle());
+        assertEquals("Are you sure you want to delete your account? This action cannot be undone.",
+                viewModel.getConfirmationMessage());
+    }
+
+    @Test
+    void handleConfirmedDelete_whenPasswordMissing_setsErrorAndDoesNotLogoutOrNavigate() {
+        boolean[] navigated = {false};
+        viewModel.setNavigationCallback(navigatedValue -> navigated[0] = navigatedValue);
         viewModel.currentPasswordProperty().set("");
+        viewModel.requestDeleteAccount(() -> {});
 
-        boolean result = viewModel.deleteAccount();
+        viewModel.handleConfirmedAction();
 
-        assertFalse(result);
-        assertEquals("Must enter password to delete account.", viewModel.responseMessageProperty().get());
+        assertEquals("Must enter current password to delete account.", viewModel.responseMessageProperty().get());
         assertEquals("response-error", viewModel.responseStyleClassProperty().get());
         verify(userStore, never()).deleteUser("");
         verify(authRepository, never()).logout();
+        assertFalse(navigated[0]);
     }
 
     @Test
-    void deleteAccount_whenRepositoryFails_returnsFalse() {
+    void handleConfirmedDelete_whenRepositoryFails_setsErrorAndDoesNotLogoutOrNavigate() {
+        boolean[] navigated = {false};
+        viewModel.setNavigationCallback(navigatedValue -> navigated[0] = navigatedValue);
         doThrow(apiException("wrong password")).when(userStore).deleteUser("bad-password");
         viewModel.currentPasswordProperty().set("bad-password");
+        viewModel.requestDeleteAccount(() -> {});
 
-        boolean result = viewModel.deleteAccount();
+        viewModel.handleConfirmedAction();
 
-        assertFalse(result);
         assertEquals("Failed to delete account: wrong password", viewModel.responseMessageProperty().get());
         assertEquals("response-error", viewModel.responseStyleClassProperty().get());
         verify(authRepository, never()).logout();
+        assertFalse(navigated[0]);
     }
 
     @Test
-    void deleteAccount_whenSuccessful_deletesUserAndLogsOut() {
+    void handleConfirmedDelete_whenSuccessful_deletesUserLogsOutAndNavigates() {
+        boolean[] navigated = {false};
+        viewModel.setNavigationCallback(navigatedValue -> navigated[0] = navigatedValue);
         viewModel.currentPasswordProperty().set("good-password");
+        viewModel.requestDeleteAccount(() -> {});
 
-        boolean result = viewModel.deleteAccount();
+        viewModel.handleConfirmedAction();
 
-        assertTrue(result);
         verify(userStore).deleteUser("good-password");
         verify(authRepository).logout();
+        assertTrue(navigated[0]);
     }
 
     @Test
-    void logout_delegatesToRepository() {
-        viewModel.logout();
+    void handleConfirmedLogout_logsOutAndNavigates() {
+        boolean[] navigated = {false};
+        viewModel.setNavigationCallback(navigatedValue -> navigated[0] = navigatedValue);
+        viewModel.requestLogout(() -> {});
+
+        assertEquals("Logout", viewModel.getConfirmationTitle());
+        assertEquals("Are you sure you want to log out?  You will need to sign in again.",
+                viewModel.getConfirmationMessage());
+
+        viewModel.handleConfirmedAction();
+
         verify(authRepository).logout();
+        assertTrue(navigated[0]);
     }
 
     private static ApiException apiException(String message) {

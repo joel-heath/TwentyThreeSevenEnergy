@@ -13,8 +13,9 @@
     -fx-app-muted: #b3b3b3;
     -fx-app-card-surface: #464a4e;
     -fx-app-card-border: #3b3f43;
+    -fx-app-widget-background: #5B568C;
     -fx-app-widget-surface: #ffffff;
-    -fx-app-widget-text: #000000;
+    -fx-app-widget-text: #ffffff;
     -fx-app-accent: #0096c9;
     -fx-app-link: #0096c9;
     -fx-app-error: #DC3545;

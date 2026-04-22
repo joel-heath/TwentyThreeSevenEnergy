@@ -131,7 +131,7 @@
 }
 
 .widget-surface {
-    -fx-background-color: -fx-text-background-color, -fx-app-widget-surface;
+    -fx-background-color: -fx-app-widget-background;
     -fx-background-insets: 0, 6;
     -fx-background-radius: 10, 6;
     -fx-padding: 15;
@@ -147,6 +147,23 @@
 
 .energy-usage-widget {
     -fx-font-weight: bold;
+    -fx-background-color: -fx-app-widget-background;
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+}
+
+.upcoming-activations-widget,
+.activation-schedule-pane {
+    -fx-background-color: -fx-app-widget-background;
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+}
+
+.energy-usage-widget .label,
+.upcoming-activations-widget .label,
+.activation-schedule-pane .label,
+.activation-schedule-pane .radio-button {
+    -fx-text-fill: -fx-app-widget-text;
 }
 
 .activation-card,

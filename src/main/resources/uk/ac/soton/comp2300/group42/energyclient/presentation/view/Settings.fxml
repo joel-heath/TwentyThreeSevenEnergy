@@ -5,46 +5,52 @@
 <?import javafx.geometry.Insets?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ToggleSwitch?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.AlertModal?>
 
-<BackOverlayPane xmlns="http://javafx.com/javafx"
+<ModalOverlayPane xmlns="http://javafx.com/javafx"
                  xmlns:fx="http://javafx.com/fxml"
                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.SettingsController">
 
-    <Button fx:id="accountSettingsButton"
-            onAction="#onAccountSettings"
-            StackPane.alignment="TOP_RIGHT"
-            viewOrder="-1.0">
-        <StackPane.margin>
-            <Insets top="15" right="15"/>
-        </StackPane.margin>
-    </Button>
+    <BackOverlayPane>
+        <Button fx:id="accountSettingsButton"
+                onAction="#onAccountSettings"
+                StackPane.alignment="TOP_RIGHT"
+                viewOrder="-1.0">
+            <StackPane.margin>
+                <Insets top="15" right="15"/>
+            </StackPane.margin>
+        </Button>
 
-    <VBox spacing="20" alignment="CENTER">
+        <VBox spacing="20" alignment="CENTER">
 
-        <VBox spacing="5" alignment="CENTER">
-            <Label text="Choose app appearance theme"/>
-            <ComboBox fx:id="themeComboBox" prefWidth="220"/>
-        </VBox>
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Choose app appearance theme"/>
+                <ComboBox fx:id="themeComboBox" prefWidth="220"/>
+            </VBox>
 
-        <VBox spacing="5" alignment="CENTER">
-            <Label text="Choose app UI mode"/>
-            <ComboBox fx:id="modeComboBox" prefWidth="220"/>
-        </VBox>
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Choose app UI mode"/>
+                <ComboBox fx:id="modeComboBox" prefWidth="220"/>
+            </VBox>
 
-        <VBox spacing="5" alignment="CENTER">
+            <VBox spacing="5" alignment="CENTER">
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Share Location"/>
+                    <ToggleSwitch fx:id="shareLocationToggle"/>
+                </HBox>
+            </VBox>
+
             <HBox spacing="10" alignment="CENTER">
-                <Label text="Share Location"/>
-                <ToggleSwitch fx:id="shareLocationToggle"/>
+                <TextField fx:id="costGoalField" promptText="Enter cost goal:"/>
+                <Button text="Set Goal" onAction="#onSetCostGoal"/>
             </HBox>
+
+            <Button text="Accessibility Settings"
+                    onAction="#onGoToAccessibility"
+                    prefWidth="220"/>
         </VBox>
+    </BackOverlayPane>
 
-        <HBox spacing="10" alignment="CENTER">
-            <TextField fx:id="costGoalField" promptText="Enter cost goal:"/>
-            <Button text="Set Goal" onAction="#onSetCostGoal"/>
-        </HBox>
-
-        <Button text="Accessibility Settings"
-                onAction="#onGoToAccessibility"
-                prefWidth="220"/>
-    </VBox>
-</BackOverlayPane>
+    <AlertModal fx:id="alertModal"/>
+</ModalOverlayPane>

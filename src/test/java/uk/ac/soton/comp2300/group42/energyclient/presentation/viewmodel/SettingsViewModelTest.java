@@ -3,7 +3,6 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.common.Role;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.House;
@@ -11,7 +10,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.util.InputFeedbackManager;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
 import uk.ac.soton.comp2300.group42.preferences.Theme;
 
@@ -23,16 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SettingsViewModelTest {
 
-    @Mock private InputFeedbackManager inputFeedbackManager;
-
     private ObservablePreferences preferences;
     private SessionManager sessionManager;
     private SettingsViewModel viewModel;
+    private String alertTitle;
+    private String alertMessage;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +38,11 @@ class SettingsViewModelTest {
         );
         preferences = new ObservablePreferences(new Preferences(), house);
         sessionManager = new SessionManager();
-        viewModel = new SettingsViewModel(preferences, sessionManager, inputFeedbackManager);
+        viewModel = new SettingsViewModel(preferences, sessionManager);
+        viewModel.setAlertCallback((title, message) -> {
+            alertTitle = title;
+            alertMessage = message;
+        });
     }
 
     @Test
@@ -64,7 +65,8 @@ class SettingsViewModelTest {
         viewModel.updateCostGoal();
 
         assertTrue(viewModel.hasCostGoalErrorProperty().get());
-        verify(inputFeedbackManager).showPopup("Cost goal not updated", "Please enter a cost goal before clicking Set Goal.");
+        assertEquals("Cost goal not updated", alertTitle);
+        assertEquals("Please enter a valid number greater than 0 before clicking 'Set Goal'.", alertMessage);
     }
 
     @Test
@@ -74,7 +76,8 @@ class SettingsViewModelTest {
         viewModel.updateCostGoal();
 
         assertTrue(viewModel.hasCostGoalErrorProperty().get());
-        verify(inputFeedbackManager).showPopup("Cost goal not updated", "Please enter a valid number greater than 0.");
+        assertEquals("Cost goal not updated", alertTitle);
+        assertEquals("Please enter a valid number greater than 0 before clicking 'Set Goal'.", alertMessage);
     }
 
     @Test
@@ -86,7 +89,9 @@ class SettingsViewModelTest {
         assertEquals(2.5, preferences.energyGoalProperty().get(), 1e-9);
         assertFalse(viewModel.hasCostGoalErrorProperty().get());
         assertEquals("", viewModel.costGoalInputProperty().get());
-        verify(inputFeedbackManager).showPopup("Cost goal updated", "Your new cost goal is £2.50.");
+        assertEquals("Cost goal updated", alertTitle);
+        assertTrue(alertMessage.startsWith("Your new cost goal is "));
+        assertTrue(alertMessage.endsWith("2.50."));
     }
 
     @Test

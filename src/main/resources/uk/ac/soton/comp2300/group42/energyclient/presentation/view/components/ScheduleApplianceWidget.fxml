@@ -7,7 +7,9 @@
 <fx:root type="UpcomingActivationsWidget"
          xmlns:fx="http://javafx.com/fxml"
          spacing="10"
-         prefWidth="280"
+         minWidth="260"
+         prefWidth="260"
+         maxWidth="260"
          style="-fx-background-color: -fx-app-widget-background; -fx-background-radius: 6; -fx-padding: 10;"
          styleClass="vbox upcoming-activations-widget">
 

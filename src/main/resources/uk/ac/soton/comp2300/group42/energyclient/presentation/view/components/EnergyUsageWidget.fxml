@@ -10,6 +10,9 @@
          spacing="10"
          alignment="CENTER"
          fillWidth="false"
+         minWidth="260"
+         prefWidth="260"
+         maxWidth="260"
          style="-fx-background-color: -fx-app-widget-background; -fx-background-radius: 6; -fx-padding: 10;"
          styleClass="energy-usage-widget widget-surface vbox">
 

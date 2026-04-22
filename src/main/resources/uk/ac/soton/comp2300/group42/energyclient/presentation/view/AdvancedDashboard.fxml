@@ -14,16 +14,21 @@
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false">
 
+            <StackPane styleClass="widget-surface widget-shadow">
+                <ScrollPane prefWidth="300.0" minWidth="300.0" maxWidth="300.0"
+                            vbarPolicy="NEVER" hbarPolicy="ALWAYS" fitToHeight="true">
+                    <HBox fx:id="statusRow" spacing="3" alignment="CENTER_LEFT">
+                    </HBox>
+                </ScrollPane>
+            </StackPane>
 
-            <ScrollPane prefWidth="300.0" minWidth="300.0" maxWidth="300.0"
-                        vbarPolicy="NEVER" hbarPolicy="ALWAYS" fitToHeight="true">
-                <HBox fx:id="statusRow" spacing="3" alignment="CENTER_LEFT">
-                </HBox>
-            </ScrollPane>
+            <StackPane styleClass="widget-surface widget-shadow">
+                <EnergyUsageWidget fx:id="energyWidget"/>
+            </StackPane>
 
-            <EnergyUsageWidget fx:id="energyWidget"/>
-
-            <UpcomingActivationsWidget fx:id="upcomingActivationsWidget"/>
+            <StackPane styleClass="widget-surface widget-shadow">
+                <UpcomingActivationsWidget fx:id="upcomingActivationsWidget"/>
+            </StackPane>
 
             <Button text="Manage Houses" onAction="#onManageHouses"/>
 

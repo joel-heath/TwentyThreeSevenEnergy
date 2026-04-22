@@ -10,7 +10,7 @@
          spacing="10"
          alignment="CENTER"
          fillWidth="false"
-         styleClass="vbox widget-surface widget-shadow energy-usage-widget">
+         styleClass="vbox energy-usage-widget">
 
     <EnergyUsageRect fx:id="energyUsageRect"/>
 

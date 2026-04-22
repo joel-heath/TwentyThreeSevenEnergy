@@ -8,7 +8,7 @@
          xmlns:fx="http://javafx.com/fxml"
          spacing="10"
          prefWidth="280"
-         styleClass="vbox widget-surface widget-shadow upcoming-activations-widget">
+         styleClass="vbox upcoming-activations-widget">
 
     <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">
         <VBox style="-fx-padding: 10; -fx-spacing: 10;" >

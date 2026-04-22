@@ -4,36 +4,10 @@
 .context-menu {
     -fx-background-color: -fx-background;
 
-    /* Default app tokens (overridden by theme + colorblind stylesheets) */
-    -fx-app-text: #000000;
-    -fx-app-muted: #5c5c5c;
-    -fx-app-card-surface: #ffffff;
-    -fx-app-card-border: #d1d1d1;
-    -fx-app-widget-surface: #ffffff;
-    -fx-app-widget-text: #000000;
-    -fx-app-accent: #0096c9;
-    -fx-app-link: #0096c9;
-    -fx-app-error: #DC3545;
-    -fx-app-on-error: #ffffff;
-    -fx-app-success: #2ECC71;
-    -fx-app-toggle-enabled: #0096c9;
-    -fx-app-toggle-disabled: #bfbfbf;
-    -fx-app-thumb: #ffffff;
-    -fx-app-shadow: rgba(0, 0, 0, 0.25);
-    -fx-app-overlay: rgba(0, 0, 0, 0.5);
-    -fx-app-status-cheap: #D4EDDA;
-    -fx-app-status-average: #FFF3CD;
-    -fx-app-status-expensive: #F8D7DA;
-    -fx-app-usage-warning: #E74C3C;
-    -fx-app-usage-critical: #C0392B;
-    -fx-app-gradient-start: #2ECC71;
-    -fx-app-gradient-mid: #FFC107;
-    -fx-app-gradient-end: #E74C3C;
-
     /* Modena lookup colors needed by popup list cells */
     -fx-selection-bar: -fx-accent;
-    -fx-selection-bar-non-focused: lightgrey;
-    -fx-cell-hover-color: #cce3f4;
+    -fx-selection-bar-non-focused: derive(-fx-accent, 75%);
+    -fx-cell-hover-color: derive(-fx-accent, 70%);
     -fx-cell-focus-inner-border: derive(-fx-selection-bar, 30%);
 }
 
@@ -157,8 +131,9 @@
 }
 
 .widget-surface {
-    -fx-background-color: -fx-app-widget-surface;
-    -fx-background-radius: 10;
+    -fx-background-color: -fx-text-background-color, -fx-app-widget-surface;
+    -fx-background-insets: 0, 6;
+    -fx-background-radius: 10, 6;
     -fx-padding: 15;
 }
 

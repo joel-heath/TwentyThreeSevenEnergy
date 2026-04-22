@@ -12,8 +12,8 @@
     -fx-app-muted: #333333;
     -fx-app-card-surface: #ffffff;
     -fx-app-card-border: #000000;
-    -fx-app-widget-surface: #5A2DFF;
-    -fx-app-widget-text: #FFFFFF;
+    -fx-app-widget-surface: #000000;
+    -fx-app-widget-text: #ffffff;
     -fx-app-accent: #0000ff;
     -fx-app-link: #0000ff;
     -fx-app-error: #ff0000;

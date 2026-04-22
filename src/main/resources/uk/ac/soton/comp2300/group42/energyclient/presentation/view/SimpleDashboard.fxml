@@ -14,9 +14,13 @@
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity">
 
-            <EnergyUsageWidget fx:id="energyWidget"/>
+            <StackPane styleClass="widget-surface widget-shadow">
+                <EnergyUsageWidget fx:id="energyWidget"/>
+            </StackPane>
 
-            <UpcomingActivationsWidget fx:id="activationsWidget"/>
+            <StackPane styleClass="widget-surface widget-shadow">
+                <UpcomingActivationsWidget fx:id="activationsWidget"/>
+            </StackPane>
 
             <Button text="Manage Houses" onAction="#onManageHouses"/>
 

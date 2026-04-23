@@ -217,6 +217,11 @@
     -fx-background-color: -fx-app-overlay;
 }
 
+.progress-stripe {
+    -fx-padding: 10;
+    -fx-background-color: derive(-fx-background, 5%);
+}
+
 /* Charts */
 .chart {
     -fx-background-color: transparent;

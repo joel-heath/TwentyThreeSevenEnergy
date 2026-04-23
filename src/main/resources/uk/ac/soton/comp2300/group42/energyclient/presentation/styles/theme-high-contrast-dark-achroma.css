@@ -35,5 +35,17 @@
     -fx-app-gradient-start: #000000;
     -fx-app-gradient-mid: #808080;
     -fx-app-gradient-end: #FFFFFF;
-}
+}
+.chart-alternative-row-fill,
+.chart-alternative-column-fill {
+    -fx-fill: -fx-background;
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: -fx-background;
+}
+.progress-stripe {
+    -fx-background-color: -fx-background;
+}
 

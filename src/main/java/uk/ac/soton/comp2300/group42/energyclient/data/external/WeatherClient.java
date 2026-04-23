@@ -73,9 +73,9 @@ public class WeatherClient {
         }
     }
 
-    private String fetchRawData(HttpRequest request) {
+    protected String fetchRawData(HttpRequest request) {
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = getClient().send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
                 throw new NetworkException("Weather API returned status: " + response.statusCode(), null);
             }
@@ -86,5 +86,9 @@ public class WeatherClient {
             Thread.currentThread().interrupt();
             throw new NetworkException("Interrupted while accessing weather API", e);
         }
+    }
+
+    protected HttpClient getClient() {
+        return client;
     }
 }

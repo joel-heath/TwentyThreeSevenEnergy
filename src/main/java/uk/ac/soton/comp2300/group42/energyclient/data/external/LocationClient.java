@@ -38,10 +38,14 @@ public class LocationClient {
                 .build();
 
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = getClient().send(request, HttpResponse.BodyHandlers.ofString());
             return mapper.readValue(response.body(), LocationResponse.class);
         } catch (Exception e) {
             return new LocationResponse(50.93, -1.39, "Southampton", "UK"); // default to Southampton if API call fails
         }
+    }
+
+    protected HttpClient getClient() {
+        return client;
     }
 }

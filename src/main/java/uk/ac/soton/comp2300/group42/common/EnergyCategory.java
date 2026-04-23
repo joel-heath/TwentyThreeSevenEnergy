@@ -11,8 +11,8 @@ public enum EnergyCategory {
 
     ELECTRICITY("electricity", "Electricity"),
     GAS("gas", "Gas"),
-    SOLAR("solar", "Solar"),
-    OTHER("other", "Other");
+    OTHER("other", "Other"),
+    SOLAR("solar", "Solar");
 
     private final String id;
     private final String name;

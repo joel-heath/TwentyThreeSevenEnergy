@@ -25,8 +25,7 @@ public class LoginController {
     }
 
     @FXML private void onLogin() {
-        if (vm.login())
-            Navigator.goToIrreversible("Dashboard.fxml");
+        vm.login(); // Do not Navigate to dashboard here, AppStateOrchestrator will trigger navigation on session change.
     }
 
     @FXML private void goToSignUp() {

@@ -3,6 +3,7 @@ package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RegisterViewModel;
@@ -17,7 +18,12 @@ public class RegisterController {
     @FXML private Label responseLabel;
 
     private final RegisterViewModel vm;
-    @Inject public RegisterController(RegisterViewModel vm) { this.vm = vm; }
+    private final SessionManager sessionManager;
+
+    @Inject public RegisterController(RegisterViewModel vm, SessionManager sessionManager) {
+        this.vm = vm;
+        this.sessionManager = sessionManager;
+    }
 
     @FXML private void initialize() {
         nameField.textProperty().bindBidirectional(vm.nameProperty());
@@ -29,8 +35,7 @@ public class RegisterController {
     }
 
     @FXML private void onRegister() {
-        if (vm.register())
-            Navigator.goToIrreversible("Dashboard.fxml");
+        vm.register(); // Do not Navigate to dashboard here, AppStateOrchestrator will trigger navigation on session change.
     }
 
     @FXML private void goToLogin() {

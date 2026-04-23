@@ -30,11 +30,11 @@ public class ProgressTrackingController {
     @FXML private BarChart<String, Number> expensesChart, electricityExpensesChart, gasExpensesChart, otherExpensesChart;
 
     @FXML private VBox usageViewContainer;
-    @FXML private BarChart<String, Number> usageChart, electricityUsageChart, gasUsageChart, otherUsageChart;
+    @FXML private BarChart<String, Number> usageChart, electricityUsageChart, gasUsageChart, solarUsageChart, otherUsageChart;
 
     @FXML private ToggleGroup expenseUsageToggleGroup;
     @FXML private ToggleGroup navToggleGroup;
-    @FXML private ToggleButton btnExpenses, btnElec, btnGas, btnOther;
+    @FXML private ToggleButton btnExpenses, btnElec, btnGas, btnSolar, btnOther;
 
     @FXML private Label priceLabel;
     @FXML private TextField logUsageField;
@@ -66,6 +66,7 @@ public class ProgressTrackingController {
         usageChart.getStyleClass().add("expense-chart");
         electricityUsageChart.getStyleClass().add("expense-chart");
         gasUsageChart.getStyleClass().add("expense-chart");
+        solarUsageChart.getStyleClass().add("expense-chart");
         otherUsageChart.getStyleClass().add("expense-chart");
 
         bindChartData(priceChart, "Price Trend (p/kWh)", vm.getPriceData());
@@ -78,6 +79,7 @@ public class ProgressTrackingController {
         bindChartData(usageChart, "Last 7 Days Usage (kWh)", vm.getUsageData());
         bindChartData(electricityUsageChart, "Last 7 Days Usage (Electricity)", vm.getElectricityUsageData());
         bindChartData(gasUsageChart, "Last 7 Days Usage (Gas)", vm.getGasUsageData());
+        bindChartData(solarUsageChart, "Last 7 Days Usage (Solar)", vm.getSolarUsageData());
         bindChartData(otherUsageChart, "Last 7 Days Usage (Other)", vm.getOtherUsageData());
 
         expenseUsageToggleGroup.selectedToggleProperty().subscribe(this::updateVisibility);
@@ -117,7 +119,7 @@ public class ProgressTrackingController {
 
         List<BarChart<String, Number>> categoryCharts = Arrays.asList(
                 electricityExpensesChart, gasExpensesChart, otherExpensesChart,
-                electricityUsageChart, gasUsageChart, otherUsageChart
+                electricityUsageChart, gasUsageChart, solarUsageChart, otherUsageChart
         );
         for (BarChart<String, Number> chart : categoryCharts) {
             chart.setVisible(false);
@@ -131,6 +133,8 @@ public class ProgressTrackingController {
             toShow = isExpenseMode ? electricityExpensesChart : electricityUsageChart;
         } else if (selectedNav == btnGas) {
             toShow = isExpenseMode ? gasExpensesChart : gasUsageChart;
+        } else if (selectedNav == btnSolar) {
+            toShow = isExpenseMode ? null : solarUsageChart; // No solar expenses chart
         } else if (selectedNav == btnOther) {
             toShow = isExpenseMode ? otherExpensesChart : otherUsageChart;
         }

@@ -36,7 +36,6 @@ public class SimpleDashboardController {
         energyWidget.bindComponents(energyWidgetVM);
         currentWeatherWidget.bindComponents(weatherVM);
         activationsWidget.bindComponents(activationsWidgetVM, editModalVM, activationEditModal);
-
         activationsWidget.loadActivationsAsync();
     }
 

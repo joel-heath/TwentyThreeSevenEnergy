@@ -7,37 +7,40 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.CurrentWeatherWidget;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.ActivationEditViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.AdvancedDashboardViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.EnergyUsageViewModel;
-import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.UpcomingActivationsViewModel;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.*;
 
 public class AdvancedDashboardController {
 
     @FXML private EnergyUsageWidget energyWidget;
+    @FXML private CurrentWeatherWidget currentWeatherWidget;
     @FXML private UpcomingActivationsWidget upcomingActivationsWidget;
     @FXML private ActivationEditModal activationEditModal;
     @FXML private HBox statusRow;
 
     private final AdvancedDashboardViewModel vm;
     private final EnergyUsageViewModel energyWidgetVM;
+    private final CurrentWeatherViewModel weatherVM;
     private final UpcomingActivationsViewModel activationsWidgetVM;
     private final ActivationEditViewModel editModalVM;
 
     @Inject public AdvancedDashboardController(AdvancedDashboardViewModel vm,
                                                EnergyUsageViewModel energyWidgetVM,
+                                               CurrentWeatherViewModel weatherVM,
                                                UpcomingActivationsViewModel activationsWidgetVM,
                                                ActivationEditViewModel editModalVM) {
         this.vm = vm;
         this.energyWidgetVM = energyWidgetVM;
+        this.weatherVM = weatherVM;
         this.activationsWidgetVM = activationsWidgetVM;
         this.editModalVM = editModalVM;
     }
 
     @FXML private void initialize() {
         energyWidget.bindComponents(energyWidgetVM);
+        currentWeatherWidget.bindComponents(weatherVM);
 
         upcomingActivationsWidget.bindComponents(activationsWidgetVM, editModalVM, activationEditModal);
 

@@ -44,6 +44,7 @@ public class ProgressTrackingViewModel {
     private final ObservableList<DataPoint> usageData = FXCollections.observableArrayList();
     private final ObservableList<DataPoint> electricityUsageData = FXCollections.observableArrayList();
     private final ObservableList<DataPoint> gasUsageData = FXCollections.observableArrayList();
+    private final ObservableList<DataPoint> solarUsageData = FXCollections.observableArrayList();
     private final ObservableList<DataPoint> otherUsageData = FXCollections.observableArrayList();
 
     private final StringProperty logUsageInput = new SimpleStringProperty("");
@@ -140,6 +141,7 @@ public class ProgressTrackingViewModel {
         loadWeeklyUsagesAsync();
         loadWeeklyUsagesByCategoryAsync(EnergyCategory.ELECTRICITY, electricityUsageData);
         loadWeeklyUsagesByCategoryAsync(EnergyCategory.GAS, gasUsageData);
+        loadWeeklyUsagesByCategoryAsync(EnergyCategory.SOLAR, solarUsageData);
         loadWeeklyUsagesByCategoryAsync(EnergyCategory.OTHER, otherUsageData);
     }
 
@@ -202,6 +204,7 @@ public class ProgressTrackingViewModel {
     public ObservableList<DataPoint> getUsageData() { return usageData; }
     public ObservableList<DataPoint> getElectricityUsageData() { return electricityUsageData; }
     public ObservableList<DataPoint> getGasUsageData() { return gasUsageData; }
+    public ObservableList<DataPoint> getSolarUsageData() { return solarUsageData; }
     public ObservableList<DataPoint> getOtherUsageData() { return otherUsageData; }
 
     public StringProperty logUsageInputProperty() { return logUsageInput; }

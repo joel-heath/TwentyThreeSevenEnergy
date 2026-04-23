@@ -116,6 +116,15 @@
                             </yAxis>
                         </BarChart>
 
+                        <BarChart fx:id="solarUsageChart" title="Daily Solar Usage" prefHeight="200" prefWidth="200" animated="false">
+                            <xAxis>
+                                <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Total Energy (kWh)" side="LEFT" animated="false"/>
+                            </yAxis>
+                        </BarChart>
+
                         <BarChart fx:id="otherUsageChart" title="Daily Other Usage" prefHeight="200" prefWidth="200" animated="false">
                             <xAxis>
                                 <CategoryAxis label="Date" side="BOTTOM" animated="false"/>
@@ -134,6 +143,7 @@
             <HBox alignment="CENTER" spacing="20.0" styleClass="progress-stripe">
                 <ToggleButton fx:id="btnElec" text="Electricity" toggleGroup="$navToggleGroup" selected="true" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
                 <ToggleButton fx:id="btnGas"  text="Gas"         toggleGroup="$navToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                <ToggleButton fx:id="btnSolar" text="Solar"       toggleGroup="$navToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
                 <ToggleButton fx:id="btnOther" text="Other" toggleGroup="$navToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
             </HBox>
 

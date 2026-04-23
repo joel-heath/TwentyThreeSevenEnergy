@@ -14,7 +14,8 @@
     -fx-app-card-border: #5A5A5A;
     -fx-app-widget-background: #4A4A4A;
     -fx-app-widget-surface: #5A5A5A;
-    -fx-app-widget-text: #FFFFFF;
+    
+    -fx-app-status-row-text: #000000;
     -fx-app-accent: #A8A8A8;
     -fx-app-link: #CFCFCF;
     -fx-app-error: #808080;
@@ -34,7 +35,5 @@
     -fx-app-gradient-start: #000000;
     -fx-app-gradient-mid: #808080;
     -fx-app-gradient-end: #FFFFFF;
-}
-
-
+}
 

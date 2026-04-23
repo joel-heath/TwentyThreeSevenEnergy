@@ -15,7 +15,8 @@
     -fx-app-card-border: #3b3f43;
     -fx-app-widget-background: #5B568C;
     -fx-app-widget-surface: #ffffff;
-    -fx-app-widget-text: #ffffff;
+    
+    -fx-app-status-row-text: #000000;
     -fx-app-accent: #0096c9;
     -fx-app-link: #0096c9;
     -fx-app-error: #DC3545;
@@ -51,7 +52,6 @@
     -fx-app-toggle-enabled: #0072B2;
     -fx-app-error: #D55E00;
     -fx-app-success: #0072B2;
-}
-
-
+    -fx-app-status-row-text: #000000;
+}
 

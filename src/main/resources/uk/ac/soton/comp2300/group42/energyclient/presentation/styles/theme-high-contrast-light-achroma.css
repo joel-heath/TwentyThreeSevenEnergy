@@ -34,7 +34,9 @@
     -fx-app-gradient-start: #000000;
     -fx-app-gradient-mid: #808080;
     -fx-app-gradient-end: #FFFFFF;
+    -fx-app-status-row-text: #000000;
 }
+
 
 
 

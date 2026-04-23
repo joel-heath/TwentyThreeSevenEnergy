@@ -35,7 +35,9 @@
     -fx-app-gradient-start: #2ECC71;
     -fx-app-gradient-mid: #FFC107;
     -fx-app-gradient-end: #E74C3C;
+    -fx-app-status-row-text: #000000;
 }
+
 
 
 

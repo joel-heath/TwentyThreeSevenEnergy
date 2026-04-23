@@ -18,7 +18,7 @@
             <StackPane styleClass="widget-surface widget-shadow">
                 <ScrollPane prefWidth="300.0" minWidth="300.0" maxWidth="300.0"
                             vbarPolicy="NEVER" hbarPolicy="ALWAYS" fitToHeight="true">
-                    <HBox fx:id="statusRow" spacing="3" alignment="CENTER_LEFT">
+                    <HBox fx:id="statusRow" styleClass="hbox context menu" style="-fx-text-fill: -fx-app-status-row-text;" spacing="3" alignment="CENTER_LEFT">
                     </HBox>
                 </ScrollPane>
             </StackPane>

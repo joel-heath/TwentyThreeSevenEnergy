@@ -26,7 +26,9 @@ import java.util.concurrent.Executor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -123,6 +125,26 @@ class UserStoreTest {
         assertSame(house2, userStore.getPreferences().getActiveHouse());
         assertEquals(20L, userStore.getCurrent().getHouse().getId());
         assertEquals(Role.RESIDENT, userStore.getCurrent().getRole());
+    }
+
+    @Test
+    void refreshAsync_doesNotSavePreferencesWhileHydrating() {
+        Preferences newPrefs = new Preferences(
+            1L,
+            true,
+            ColorVision.PROTAN,
+            Theme.DARK,
+            Mode.ADVANCED,
+            true,
+            2.5,
+            20L
+        );
+
+        when(userRepository.getCurrentPreferences()).thenReturn(newPrefs);
+
+        userStore.refreshAsync().join();
+
+        verify(userRepository, never()).updateCurrentPreferences(any(Preferences.class));
     }
 
     @Test

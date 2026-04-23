@@ -28,6 +28,7 @@ public class UserStore {
     private final ObservableHousemate currentUser;
     private final ObservablePreferences preferences;
     private final Executor uiExecutor;
+    private volatile boolean isHydratingFromRepository;
 
     @Inject
     public UserStore(UserRepository userRepo,
@@ -64,9 +65,11 @@ public class UserStore {
     }
 
     private <T> void onPreferenceChanged(T oldValue, T newValue) {
-        if (newValue != null && !newValue.equals(oldValue)) {
+        if (isHydratingFromRepository)
+            return;
+
+        if (newValue != null && !newValue.equals(oldValue))
             savePreferences();
-        }
     }
 
     public ObservableHousemate getCurrent() { return currentUser; }
@@ -85,7 +88,6 @@ public class UserStore {
 
     public void deleteUser(String password) {
         userRepo.deleteMe(password);
-        // TODO: need to run many resetting operations that are currently inside constructors ...
     }
 
     public CompletableFuture<Void> refreshAsync() {
@@ -98,8 +100,13 @@ public class UserStore {
 
             return new Data(prefs, house, me);
         }).thenAcceptAsync(data -> {
-            preferences.updateFrom(data.prefs(), data.house());
-            currentUser.updateFrom(data.me(), data.house());
+            isHydratingFromRepository = true;
+            try {
+                preferences.updateFrom(data.prefs(), data.house());
+                currentUser.updateFrom(data.me(), data.house());
+            } finally {
+                isHydratingFromRepository = false;
+            }
         }, uiExecutor);
     }
 }

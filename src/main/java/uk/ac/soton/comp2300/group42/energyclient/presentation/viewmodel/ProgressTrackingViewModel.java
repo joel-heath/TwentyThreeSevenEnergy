@@ -110,9 +110,18 @@ public class ProgressTrackingViewModel {
 
         try {
             double energyUsed = Double.parseDouble(rawInput);
+            if (energyUsed <= 0) {
+                throw new NumberFormatException("\nEnergy used must be a positive number.");
+            }
             EnergyCategory category = selectedCategory.get();
             List<UnitRate> next12Hours = fetchNext12Hours();
-            double energyPrice = next12Hours.getFirst().valueIncVat() * energyUsed;
+            double energyPrice;
+            if (category != EnergyCategory.SOLAR) {
+                energyPrice = next12Hours.getFirst().valueIncVat() * energyUsed;
+            }
+            else {
+                energyPrice = 0.0; // Solar generation doesn't cost money, so price is 0
+            }
 
             CompletableFuture.runAsync(() -> {
                         Metric metric = new Metric(null, preferences.getActiveHouse().getId(), LocalDateTime.now(), energyUsed, energyPrice, category);
@@ -128,7 +137,7 @@ public class ProgressTrackingViewModel {
                         return null;
                     }, uiExecutor);
         } catch (NumberFormatException e) {
-            inputFeedbackManager.showPopup("Invalid Input", "Please enter a valid numeric value.");
+            inputFeedbackManager.showPopup("Invalid Input", "Please enter a valid numeric value." + e.getMessage());
         }
     }
 

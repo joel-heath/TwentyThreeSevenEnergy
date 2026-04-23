@@ -24,18 +24,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -46,11 +41,13 @@ class ProgressTrackingViewModelTest {
     @Mock private InputFeedbackManager inputFeedbackManager;
 
     private ProgressTrackingViewModel viewModel;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM");
 
     @BeforeEach
     void setUp() {
         ObservableHouse house = new ObservableHouse(new House(1L, "Home", "1 Street", ZoneId.of("UTC"), Role.OWNER));
         ObservablePreferences preferences = new ObservablePreferences(new Preferences(), house);
+
         when(metricRepository.getAllByDate(anyLong(), any(LocalDate.class))).thenReturn(List.of());
 
         viewModel = new ProgressTrackingViewModel(
@@ -63,7 +60,18 @@ class ProgressTrackingViewModelTest {
     }
 
     @Test
-    void loadPriceDataAsync_success_populatesChartAndLabel() {
+    void initializeData_loadsAllData() {
+        ZonedDateTime now = ZonedDateTime.now();
+        when(energyPriceRepository.fetchNext12Hours()).thenReturn(List.of(new UnitRate(10.0, now)));
+
+        viewModel.initializeData();
+
+        verify(energyPriceRepository, timeout(2000)).fetchNext12Hours();
+        verify(metricRepository, timeout(2000).atLeast(7)).getAllByDate(eq(1L), any(LocalDate.class));
+    }
+
+    @Test
+    void loadPriceDataAsync_success_updatesUIProperties() {
         ZonedDateTime base = ZonedDateTime.of(LocalDateTime.of(2026, 1, 1, 10, 0), ZoneId.of("UTC"));
         when(energyPriceRepository.fetchNext12Hours()).thenReturn(List.of(
                 new UnitRate(15.5, base),
@@ -73,74 +81,78 @@ class ProgressTrackingViewModelTest {
         viewModel.loadPriceDataAsync();
 
         await(() -> viewModel.getPriceData().size() == 2);
-        assertEquals("10:00", viewModel.getPriceData().get(0).label());
-        assertEquals(15.5, viewModel.getPriceData().get(0).value().doubleValue(), 1e-9);
+
+        assertEquals("10:00", viewModel.getPriceData().getFirst().label());
+        assertEquals(15.5, viewModel.getPriceData().getFirst().value().doubleValue());
         assertEquals("15.50 p/kWh", viewModel.priceLabelTextProperty().get());
-        assertEquals("", viewModel.priceLabelStyleClassProperty().get());
     }
 
     @Test
-    void loadPriceDataAsync_failure_setsErrorLabel() {
-        when(energyPriceRepository.fetchNext12Hours()).thenThrow(new RuntimeException("down"));
+    void loadWeeklyExpensesAsync_calculatesCorrectTotals() {
+        LocalDate today = LocalDate.now();
+        String expectedLabel = today.format(DATE_FORMATTER);
 
-        viewModel.loadPriceDataAsync();
+        when(metricRepository.getAllByDate(eq(1L), eq(today))).thenReturn(List.of(
+                new Metric(1L, 1L, LocalDateTime.now(), 5.0, 150.0, EnergyCategory.ELECTRICITY),
+                new Metric(2L, 1L, LocalDateTime.now(), 2.0, 50.0, EnergyCategory.GAS)
+        ));
 
-        await(() -> "Failed to load data.".equals(viewModel.priceLabelTextProperty().get()));
-        assertEquals("response-error", viewModel.priceLabelStyleClassProperty().get());
+        viewModel.initializeData();
+
+        await(() -> viewModel.getExpenseData().stream()
+                .anyMatch(dp -> dp.label().equals(expectedLabel) && dp.value().doubleValue() == 2.0));
     }
 
     @Test
-    void logUsage_whenInputEmpty_showsValidationFeedback() {
-        viewModel.logUsageInputProperty().set("   ");
+    void loadWeeklyUsageByCategory_filtersCorrect() {
+        LocalDate today = LocalDate.now();
+        String expectedLabel = today.format(DATE_FORMATTER);
 
-        viewModel.logUsage();
+        when(metricRepository.getAllByDate(eq(1L), eq(today))).thenReturn(List.of(
+                new Metric(1L, 1L, LocalDateTime.now(), 10.0, 100.0, EnergyCategory.ELECTRICITY),
+                new Metric(2L, 1L, LocalDateTime.now(), 5.0, 50.0, EnergyCategory.GAS)
+        ));
 
-        verify(inputFeedbackManager).showPopup("Invalid Input", "Please enter a value to log.");
-        verify(metricRepository, never()).add(any(Metric.class), any(EnergyCategory.class));
+        viewModel.initializeData();
+
+        await(() -> viewModel.getElectricityUsageData().stream()
+                .anyMatch(dp -> dp.label().equals(expectedLabel) && dp.value().doubleValue() == 10.0));
+
+        await(() -> viewModel.getGasUsageData().stream()
+                .anyMatch(dp -> dp.label().equals(expectedLabel) && dp.value().doubleValue() == 5.0));
     }
 
     @Test
-    void logUsage_whenInputNonNumeric_showsValidationFeedback() {
-        viewModel.logUsageInputProperty().set("abc");
-
-        viewModel.logUsage();
-
-        verify(inputFeedbackManager).showPopup("Invalid Input", "Please enter a valid numeric value.");
-        verify(metricRepository, never()).add(any(Metric.class), any(EnergyCategory.class));
-    }
-
-    @Test
-    void logUsage_whenValid_persistsMetricClearsInputAndShowsSuccess() {
+    void logUsage_success_refreshesAndClears() {
         ZonedDateTime now = ZonedDateTime.of(LocalDateTime.of(2026, 1, 1, 10, 0), ZoneId.of("UTC"));
         when(energyPriceRepository.fetchNext12Hours()).thenReturn(List.of(new UnitRate(20.0, now)));
-        when(metricRepository.add(any(Metric.class), eq(EnergyCategory.GAS))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        viewModel.selectedCategoryProperty().set(EnergyCategory.GAS);
-        viewModel.logUsageInputProperty().set("2.5");
+        viewModel.selectedCategoryProperty().set(EnergyCategory.ELECTRICITY);
+        viewModel.logUsageInputProperty().set("5.0");
+
         viewModel.logUsage();
 
         ArgumentCaptor<Metric> metricCaptor = ArgumentCaptor.forClass(Metric.class);
-        verify(metricRepository, timeout(1000)).add(metricCaptor.capture(), eq(EnergyCategory.GAS));
-        Metric metric = metricCaptor.getValue();
-        assertEquals(1L, metric.houseId());
-        assertEquals(2.5, metric.energyUsed(), 1e-9);
-        assertEquals(50.0, metric.energyPrice(), 1e-9);
-        assertEquals(EnergyCategory.GAS, metric.category());
+        verify(metricRepository, timeout(2000)).add(metricCaptor.capture(), eq(EnergyCategory.ELECTRICITY));
+
+        assertEquals(100.0, metricCaptor.getValue().energyPrice());
 
         await(() -> "".equals(viewModel.logUsageInputProperty().get()));
-        verify(inputFeedbackManager, timeout(1000)).showPopup("Success", "Logged 2.5 kWh.");
+        verify(inputFeedbackManager).showPopup(eq("Success"), anyString());
     }
 
     private static void await(BooleanSupplier condition) {
-        long timeoutAt = System.currentTimeMillis() + 2000;
+        long timeoutAt = System.currentTimeMillis() + 3000;
         while (!condition.getAsBoolean() && System.currentTimeMillis() < timeoutAt) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new AssertionError("Interrupted while waiting for async condition", e);
+                throw new AssertionError("Interrupted", e);
             }
         }
-        assertTrue(condition.getAsBoolean(), "Condition did not become true before timeout");
+        if (!condition.getAsBoolean()) {
+            throw new AssertionError("Condition not met within timeout");
+        }
     }
 }

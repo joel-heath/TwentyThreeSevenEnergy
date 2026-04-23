@@ -18,7 +18,8 @@ public class CurrentWeatherWidget extends VBox {
     public void bindComponents(CurrentWeatherViewModel vm) {
         tempLabel.textProperty().bind(vm.temperatureProperty());
         sunlightLabel.textProperty().bind(vm.sunlightIntensityProperty());
-
+        this.visibleProperty().bind(vm.shareLocationProperty());
+        this.managedProperty().bind(this.visibleProperty());
         vm.refresh();
     }
 

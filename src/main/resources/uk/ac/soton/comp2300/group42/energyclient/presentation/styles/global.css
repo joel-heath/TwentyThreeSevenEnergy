@@ -3,6 +3,7 @@
 .combo-box-popup,
 .context-menu {
     -fx-background-color: -fx-background;
+    -fx-app-widget-border: -fx-app-card-border;
 
     /* Modena lookup colors needed by popup list cells */
     -fx-selection-bar: -fx-accent;

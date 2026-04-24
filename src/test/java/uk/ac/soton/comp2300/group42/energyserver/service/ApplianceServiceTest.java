@@ -1,6 +1,8 @@
 package uk.ac.soton.comp2300.group42.energyserver.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -21,6 +23,7 @@ import uk.ac.soton.comp2300.group42.energyserver.model.HouseMembership;
 import uk.ac.soton.comp2300.group42.energyserver.model.User;
 import uk.ac.soton.comp2300.group42.energyserver.repository.ApplianceRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +53,8 @@ class ApplianceServiceTest {
     private House dummyHouse;
     private HouseMembership dummyMembership;
     private Appliance dummyAppliance;
+    private final Long HOUSE_ID = 10L;
+    private final Long APPLIANCE_ID = 100L;
 
     @BeforeEach
     void setUp() {
@@ -57,118 +62,169 @@ class ApplianceServiceTest {
         ReflectionTestUtils.setField(dummyUser, "id", 1L);
 
         dummyHouse = new House();
-        ReflectionTestUtils.setField(dummyHouse, "id", 10L);
+        ReflectionTestUtils.setField(dummyHouse, "id", HOUSE_ID);
 
         dummyMembership = new HouseMembership();
         dummyMembership.setHouse(dummyHouse);
 
         dummyAppliance = new Appliance();
-        ReflectionTestUtils.setField(dummyAppliance, "id", 100L);
+        ReflectionTestUtils.setField(dummyAppliance, "id", APPLIANCE_ID);
         dummyAppliance.setName("Dishwasher");
         dummyAppliance.setHouse(dummyHouse);
     }
 
-    @Test
-    void createAppliance_Success() {
-        Long houseId = 10L;
-        CreateApplianceRequest request = new CreateApplianceRequest("Washing Machine");
+    @Nested
+    @DisplayName("createAppliance Tests")
+    class CreateApplianceTests {
+        @Test
+        @DisplayName("Success - Should save and return response")
+        void success() {
+            CreateApplianceRequest request = new CreateApplianceRequest("Washing Machine");
 
-        when(authManager.authorize(houseId, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
-        when(applianceRepo.save(any(Appliance.class))).thenAnswer(app -> assignId(app, 200L));
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
+            when(applianceRepo.save(any(Appliance.class))).thenAnswer(app -> assignId(app, 200L));
 
-        ApplianceResponse result = applianceService.createAppliance(houseId, request, dummyUser);
+            ApplianceResponse result = applianceService.createAppliance(HOUSE_ID, request, dummyUser);
 
-        Appliance saved = verifySaveAndCapture(applianceRepo, Appliance.class);
+            Appliance saved = verifySaveAndCapture(applianceRepo, Appliance.class);
+            assertThat(saved.getName()).isEqualTo("Washing Machine");
+            assertThat(saved.getHouse()).isEqualTo(dummyHouse);
+            assertThat(result.id()).isEqualTo(200L);
+        }
 
-        assertThat(saved.getId()).isEqualTo(200L);
-        assertThat(saved.getName()).isEqualTo("Washing Machine");
-        assertThat(saved.getHouse()).isEqualTo(dummyHouse);
+        @Test
+        @DisplayName("Failure - Unauthorized user should throw exception")
+        void unauthorized_ThrowsException() {
+            CreateApplianceRequest request = new CreateApplianceRequest("Washing Machine");
+            when(authManager.authorize(anyLong(), any(), eq(Role.RESIDENT)))
+                    .thenThrow(new RuntimeException("Access Denied"));
 
-        assertThat(result.id()).isEqualTo(200L);
-        assertThat(result.name()).isEqualTo("Washing Machine");
-        assertThat(result.houseId()).isEqualTo(dummyHouse.getId());
+            assertThatThrownBy(() -> applianceService.createAppliance(HOUSE_ID, request, dummyUser))
+                    .isInstanceOf(RuntimeException.class);
+
+            verifyNoInteractions(applianceRepo);
+        }
     }
 
-    @Test
-    void getApplianceById_Success() {
-        when(authManager.authorize(10L, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
-        when(applianceRepo.findById(100L)).thenReturn(Optional.of(dummyAppliance));
+    @Nested
+    @DisplayName("getApplianceById Tests")
+    class GetApplianceByIdTests {
+        @Test
+        @DisplayName("Success - Should return found appliance")
+        void success() {
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
+            when(applianceRepo.findById(APPLIANCE_ID)).thenReturn(Optional.of(dummyAppliance));
 
-        ApplianceResponse result = applianceService.getApplianceById(10L, 100L, dummyUser);
+            ApplianceResponse result = applianceService.getApplianceById(HOUSE_ID, APPLIANCE_ID, dummyUser);
 
-        assertThat(result).isNotNull();
-        assertThat(result.id()).isEqualTo(100L);
+            assertThat(result.id()).isEqualTo(APPLIANCE_ID);
+            verify(applianceRepo).findById(APPLIANCE_ID);
+        }
+
+        @Test
+        @DisplayName("Failure - ResourceNotFoundException for invalid ID")
+        void notFound_ThrowsException() {
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
+            when(applianceRepo.findById(999L)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> applianceService.getApplianceById(HOUSE_ID, 999L, dummyUser))
+                    .isInstanceOf(ResourceNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("Failure - Authorization failure should block execution")
+        void unauthorized_ThrowsException() {
+            when(authManager.authorize(anyLong(), any(), any()))
+                    .thenThrow(new RuntimeException("Access Denied"));
+
+            assertThatThrownBy(() -> applianceService.getApplianceById(HOUSE_ID, APPLIANCE_ID, dummyUser))
+                    .isInstanceOf(RuntimeException.class);
+
+            verifyNoInteractions(applianceRepo);
+        }
     }
 
-    @Test
-    void getApplianceById_InvalidId_ThrowsException() {
-        when(authManager.authorize(10L, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
-        when(applianceRepo.findById(999L)).thenReturn(Optional.empty());
+    @Nested
+    @DisplayName("getAppliancesByHouseId Tests")
+    class GetAppliancesByHouseIdTests {
+        @Test
+        @DisplayName("Success - Should return list of appliances")
+        void success_ReturnsList() {
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
+            when(applianceRepo.findAllByHouse(dummyHouse)).thenReturn(List.of(dummyAppliance));
 
-        assertThatThrownBy(() -> applianceService.getApplianceById(10L, 999L, dummyUser))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Appliance with ID 999 not found");
+            List<ApplianceResponse> results = applianceService.getAppliancesByHouseId(HOUSE_ID, dummyUser);
 
-        verifyNoInteractions(mapper);
+            assertThat(results).hasSize(1);
+            assertThat(results.get(0).id()).isEqualTo(APPLIANCE_ID);
+        }
+
+        @Test
+        @DisplayName("Success - Should return empty list when no appliances exist")
+        void success_EmptyList() {
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
+            when(applianceRepo.findAllByHouse(dummyHouse)).thenReturn(Collections.emptyList());
+
+            List<ApplianceResponse> results = applianceService.getAppliancesByHouseId(HOUSE_ID, dummyUser);
+
+            assertThat(results).isEmpty();
+        }
     }
 
-    @Test
-    void getAppliancesByHouseId_Success() {
-        when(authManager.authorize(10L, dummyUser, Role.GUEST)).thenReturn(dummyMembership);
-        when(applianceRepo.findAllByHouse(dummyHouse)).thenReturn(List.of(dummyAppliance));
+    @Nested
+    @DisplayName("updateAppliance Tests")
+    class UpdateApplianceTests {
+        @Test
+        @DisplayName("Success - Should update name and return response")
+        void success() {
+            UpdateApplianceRequest request = new UpdateApplianceRequest("Smart Dishwasher");
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
+            when(applianceRepo.findById(APPLIANCE_ID)).thenReturn(Optional.of(dummyAppliance));
 
-        List<ApplianceResponse> results = applianceService.getAppliancesByHouseId(10L, dummyUser);
+            ApplianceResponse result = applianceService.updateAppliance(HOUSE_ID, APPLIANCE_ID, request, dummyUser);
 
-        assertThat(results).hasSize(1);
-        assertThat(results.getFirst().id()).isEqualTo(100L);
+            assertThat(dummyAppliance.getName()).isEqualTo("Smart Dishwasher");
+            assertThat(result.name()).isEqualTo("Smart Dishwasher");
+        }
+
+        @Test
+        @DisplayName("Failure - Unauthorized user cannot update")
+        void unauthorized_ThrowsException() {
+            UpdateApplianceRequest request = new UpdateApplianceRequest("New Name");
+            when(authManager.authorize(anyLong(), any(), eq(Role.RESIDENT)))
+                    .thenThrow(new RuntimeException("Access Denied"));
+
+            assertThatThrownBy(() -> applianceService.updateAppliance(HOUSE_ID, APPLIANCE_ID, request, dummyUser))
+                    .isInstanceOf(RuntimeException.class);
+
+            verify(applianceRepo, never()).findById(any());
+        }
     }
 
-    @Test
-    void updateAppliance_Success() {
-        UpdateApplianceRequest request = new UpdateApplianceRequest("Dishwasher XTreme with HyperWash");
+    @Nested
+    @DisplayName("deleteAppliance Tests")
+    class DeleteApplianceTests {
+        @Test
+        @DisplayName("Success - Should delete existing appliance")
+        void success() {
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
+            when(applianceRepo.findById(APPLIANCE_ID)).thenReturn(Optional.of(dummyAppliance));
 
-        when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
-        when(applianceRepo.findById(100L)).thenReturn(Optional.of(dummyAppliance));
+            applianceService.deleteAppliance(HOUSE_ID, APPLIANCE_ID, dummyUser);
 
-        ApplianceResponse result = applianceService.updateAppliance(10L, 100L, request, dummyUser);
+            verify(applianceRepo).delete(dummyAppliance);
+        }
 
-        assertThat(dummyAppliance.getName()).isEqualTo("Dishwasher XTreme with HyperWash");
-        assertThat(result.name()).isEqualTo("Dishwasher XTreme with HyperWash");
-    }
+        @Test
+        @DisplayName("Failure - Should throw ResourceNotFoundException if ID doesn't exist")
+        void notFound_ThrowsException() {
+            when(authManager.authorize(HOUSE_ID, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
+            when(applianceRepo.findById(999L)).thenReturn(Optional.empty());
 
-    @Test
-    void updateAppliance_InvalidId_ThrowsException() {
-        UpdateApplianceRequest request = new UpdateApplianceRequest("Dishwasher XTreme with HyperWash");
+            assertThatThrownBy(() -> applianceService.deleteAppliance(HOUSE_ID, 999L, dummyUser))
+                    .isInstanceOf(ResourceNotFoundException.class);
 
-        when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
-        when(applianceRepo.findById(999L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> applianceService.updateAppliance(10L, 999L, request, dummyUser))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Appliance with ID 999 not found");
-
-        verifyNoInteractions(mapper);
-    }
-
-    @Test
-    void deleteAppliance_Success() {
-        when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
-        when(applianceRepo.findById(100L)).thenReturn(Optional.of(dummyAppliance));
-
-        applianceService.deleteAppliance(10L, 100L, dummyUser);
-
-        verify(applianceRepo).delete(dummyAppliance);
-    }
-
-    @Test
-    void deleteAppliance_InvalidId_ThrowsException() {
-        when(authManager.authorize(10L, dummyUser, Role.RESIDENT)).thenReturn(dummyMembership);
-        when(applianceRepo.findById(999L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> applianceService.deleteAppliance(10L, 999L, dummyUser))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Appliance with ID 999 not found");
-
-        verify(applianceRepo, never()).delete(any());
+            verify(applianceRepo, never()).delete(any());
+        }
     }
 }

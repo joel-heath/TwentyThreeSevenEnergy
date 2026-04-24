@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.ac.soton.comp2300.group42.energyclient.data.external.CurrentWeather;
+import uk.ac.soton.comp2300.group42.energyclient.domain.model.CurrentWeather;
 import uk.ac.soton.comp2300.group42.energyclient.domain.model.WeatherEntry;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.WeatherRepository;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;

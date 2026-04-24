@@ -2,6 +2,7 @@ package uk.ac.soton.comp2300.group42.energyserver.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -56,10 +57,10 @@ public class GlobalExceptionHandler {
         java.util.List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
 
-        String message = "Validation failed: " + String.join(", ", errors);
+        String message = String.join("\n", errors);
 
         return buildErrorResponse(HttpStatus.BAD_REQUEST, message, request);
     }

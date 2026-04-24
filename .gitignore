@@ -46,3 +46,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+desktop.ini
+/data/testdb.mv.db
+/data/testdb.trace.db

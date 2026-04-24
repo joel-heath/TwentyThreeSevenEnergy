@@ -12,8 +12,10 @@
     -fx-app-muted: #B3B3B3;
     -fx-app-card-surface: #464646;
     -fx-app-card-border: #FFFFFF;
-    -fx-app-widget-background: #4A4A4A;
-    -fx-app-widget-surface: #5A5A5A;
+    -fx-app-widget-background: #000000;
+    -fx-app-widget-border: #FFFFFF;
+    -fx-app-widget-surface: #FFFFFF;
+    -fx-app-widget-text: #000000;
     
     -fx-app-status-row-text: #000000;
     -fx-app-accent: #A8A8A8;
@@ -36,6 +38,19 @@
     -fx-app-gradient-mid: #808080;
     -fx-app-gradient-end: #808080;
 }
+
+.widget-surface,
+.energy-usage-widget,
+.upcoming-activations-widget,
+.activation-schedule-pane {
+    -fx-background-color: -fx-app-widget-background;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-color: -fx-app-widget-border;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
 .chart-alternative-row-fill,
 .chart-alternative-column-fill {
     -fx-fill: -fx-background;
@@ -48,4 +63,3 @@
 .progress-stripe {
     -fx-background-color: -fx-background;
 }
-

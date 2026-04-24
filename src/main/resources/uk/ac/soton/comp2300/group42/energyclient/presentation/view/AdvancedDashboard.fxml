@@ -15,7 +15,8 @@
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false">
 
-            <StackPane styleClass="widget-surface widget-shadow">
+            <StackPane styleClass="widget-surface widget-shadow"
+                       style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 10; -fx-border-radius: 10;">
                 <ScrollPane prefWidth="300.0" minWidth="300.0" maxWidth="300.0"
                             vbarPolicy="NEVER" hbarPolicy="ALWAYS" fitToHeight="true">
                     <HBox fx:id="statusRow" styleClass="hbox context menu" style="-fx-text-fill: -fx-app-status-row-text;" spacing="3" alignment="CENTER_LEFT">
@@ -23,15 +24,18 @@
                 </ScrollPane>
             </StackPane>
 
-            <StackPane styleClass="widget-surface widget-shadow">
+            <StackPane styleClass="widget-surface widget-shadow"
+                       style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 10; -fx-border-radius: 10;">
                 <EnergyUsageWidget fx:id="energyWidget"/>
             </StackPane>
 
-            <StackPane styleClass="widget-surface widget-shadow">
+            <StackPane styleClass="widget-surface widget-shadow"
+                       style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 10; -fx-border-radius: 10;">
                 <CurrentWeatherWidget fx:id="currentWeatherWidget"/>
             </StackPane>
 
-            <StackPane styleClass="widget-surface widget-shadow">
+            <StackPane styleClass="widget-surface widget-shadow"
+                       style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 10; -fx-border-radius: 10;">
                 <UpcomingActivationsWidget fx:id="upcomingActivationsWidget"/>
             </StackPane>
 

@@ -21,6 +21,7 @@ class LocationClientTest {
         mapper = mock(JsonMapper.class);
         client = new LocationClient(mapper, URI.create("http://test.com"));
     }
+
     @Test
     void fetchCurrentLocation_success_returnsParsedResponse() throws Exception {
         LocationResponse expected = new LocationResponse(1, 2, "City", "Country");
@@ -63,5 +64,10 @@ class LocationClientTest {
         assertEquals(-1.39, result.lon());
         assertEquals("Southampton", result.city());
         assertEquals("UK", result.country());
+    }
+
+    @Test
+    void getClient_returnsConstructedClient() {
+        assertNotNull(client.getClient());
     }
 }

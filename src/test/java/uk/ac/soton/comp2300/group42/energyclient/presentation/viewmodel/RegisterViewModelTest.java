@@ -7,8 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.ac.soton.comp2300.group42.energyclient.domain.exception.ApiException;
 import uk.ac.soton.comp2300.group42.energyclient.domain.repository.AuthRepository;
+import uk.ac.soton.comp2300.group42.user.PasswordValidation;
 
+import java.lang.reflect.Method;
 import java.time.Instant;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -69,6 +72,19 @@ class RegisterViewModelTest {
     }
 
     @Test
+    void register_whenPasswordMissingLowercase_reportsSpecificRequirement() {
+        viewModel.nameProperty().set("User");
+        viewModel.emailProperty().set("user@example.com");
+        viewModel.passwordProperty().set("ABCDEFG!");
+        viewModel.confirmPasswordProperty().set("ABCDEFG!");
+
+        boolean result = viewModel.register();
+
+        assertFalse(result);
+        assertEquals("Password is insecure: missing one lowercase letter.", viewModel.responseMessageProperty().get());
+    }
+
+    @Test
     void register_whenRepositoryThrows_setsApiError() {
         viewModel.nameProperty().set("User");
         viewModel.emailProperty().set("user@example.com");
@@ -96,8 +112,27 @@ class RegisterViewModelTest {
         verify(authRepository).register("User", "user@example.com", "StrongPass1!");
     }
 
+    @Test
+    void buildPasswordInsecurityMessage_whenNoRequirementsMissing_returnsContractMessage() throws Exception {
+        Method method = RegisterViewModel.class.getDeclaredMethod("buildPasswordInsecurityMessage", String.class);
+        method.setAccessible(true);
+
+        String result = (String) method.invoke(null, "Abcdefg!");
+
+        assertEquals(PasswordValidation.PASSWORD_QUALITY_MESSAGE, result);
+    }
+
+    @Test
+    void formatMissingRequirements_withTwoEntries_usesAndJoin() throws Exception {
+        Method method = RegisterViewModel.class.getDeclaredMethod("formatMissingRequirements", List.class);
+        method.setAccessible(true);
+
+        String result = (String) method.invoke(null, List.of("one uppercase letter", "one special character"));
+
+        assertEquals("one uppercase letter and one special character", result);
+    }
+
     private static ApiException apiException(String message) {
         return new ApiException(Instant.now(), 400, "Bad Request", message, "/auth/register");
     }
 }
-

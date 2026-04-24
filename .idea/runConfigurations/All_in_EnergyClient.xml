@@ -99,6 +99,11 @@
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.data.repository.WeatherRepositoryImpl" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
 
       <pattern>
         <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.di.*" />
@@ -132,6 +137,11 @@
       </pattern>
       <pattern>
         <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.presentation.util.ControllerUtils" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="uk.ac.soton.comp2300.group42.energyclient.presentation.util.AppStateOrchestrator" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>

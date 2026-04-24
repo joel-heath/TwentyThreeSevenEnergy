@@ -32,9 +32,9 @@
     -fx-app-status-expensive: #A8A8A8;
     -fx-app-usage-warning: #808080;
     -fx-app-usage-critical: #CFCFCF;
-    -fx-app-gradient-start: #000000;
+    -fx-app-gradient-start: #808080;
     -fx-app-gradient-mid: #808080;
-    -fx-app-gradient-end: #FFFFFF;
+    -fx-app-gradient-end: #808080;
 }
 .chart-alternative-row-fill,
 .chart-alternative-column-fill {

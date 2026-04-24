@@ -15,18 +15,15 @@
     <SettingsOverlayPane>
         <VBox spacing="20" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity">
 
-            <StackPane styleClass="widget-surface widget-shadow"
-                       style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 10; -fx-border-radius: 10;">
+            <StackPane styleClass="widget-shadow">
                 <EnergyUsageWidget fx:id="energyWidget"/>
             </StackPane>
 
-            <StackPane styleClass="widget-surface widget-shadow"
-                       style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 10; -fx-border-radius: 10;">
+            <StackPane styleClass="widget-shadow">
                 <CurrentWeatherWidget fx:id="currentWeatherWidget"/>
             </StackPane>
 
-            <StackPane styleClass="widget-surface widget-shadow"
-                       style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 10; -fx-border-radius: 10;">
+            <StackPane styleClass="widget-shadow">
                 <UpcomingActivationsWidget fx:id="activationsWidget"/>
             </StackPane>
 

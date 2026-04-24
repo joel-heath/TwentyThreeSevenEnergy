@@ -12,7 +12,7 @@
          minWidth="274"
          prefWidth="274"
          maxWidth="274"
-         style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 1; -fx-background-radius: 6; -fx-border-radius: 6; -fx-padding: 10;"
+         style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 0.5; -fx-background-radius: 6; -fx-border-radius: 6; -fx-padding: 10;"
          styleClass="vbox widget-surface widget-shadow energy-usage-widget">
 
     <VBox spacing="5" alignment="CENTER">

@@ -19,8 +19,6 @@ public class AlertModal extends Modal{
         loader.load();
     }
 
-    //public void setOnOk(Runnable onOk) { this.onOk = onOk != null ? onOk : () -> {}; }
-
     public void show(String title, String message) {
         titleLabel.setText(title);
         messageLabel.setText(message);
@@ -36,6 +34,10 @@ public class AlertModal extends Modal{
 
     @FXML private void onOkClicked() {
         close();
+    }
+
+    @Override
+    public void onDismissed() {
         onOk.run();
     }
 }

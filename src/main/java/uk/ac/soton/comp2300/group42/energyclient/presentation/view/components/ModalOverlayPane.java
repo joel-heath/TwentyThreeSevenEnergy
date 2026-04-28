@@ -67,6 +67,8 @@ public class ModalOverlayPane extends StackPane {
         modal.setVisible(false);
         mainContent.setEffect(null);
 
+        modal.onDismissed();
+
         EventHandler<ActionEvent> handler = modal.getOnClose();
         if (handler != null)
             handler.handle(new ActionEvent(this, null));

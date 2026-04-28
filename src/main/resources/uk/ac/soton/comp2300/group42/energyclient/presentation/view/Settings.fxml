@@ -42,7 +42,7 @@
             </VBox>
 
             <HBox spacing="10" alignment="CENTER">
-                <TextField fx:id="costGoalField" promptText="Enter cost goal:"/>
+                <TextField fx:id="costGoalField" promptText="Enter cost goal (£):"/>
                 <Button text="Set Goal" onAction="#onSetCostGoal"/>
             </HBox>
 

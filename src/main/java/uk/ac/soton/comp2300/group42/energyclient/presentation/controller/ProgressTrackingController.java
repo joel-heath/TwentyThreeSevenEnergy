@@ -34,6 +34,7 @@ public class ProgressTrackingController {
 
     @FXML private ToggleGroup expenseUsageToggleGroup;
     @FXML private ToggleGroup navToggleGroup;
+    @FXML private Label categoryBreakdownLabel;
     @FXML private ToggleButton btnExpenses, btnElec, btnGas, btnSolar, btnOther;
 
     @FXML private Label priceLabel;
@@ -128,6 +129,8 @@ public class ProgressTrackingController {
 
         ToggleButton selectedNav = (ToggleButton) navToggleGroup.getSelectedToggle();
         BarChart<String, Number> toShow = null;
+        categoryBreakdownLabel.setVisible(true);
+        categoryBreakdownLabel.setManaged(true);
 
         if (selectedNav == btnElec) {
             toShow = isExpenseMode ? electricityExpensesChart : electricityUsageChart;
@@ -142,6 +145,11 @@ public class ProgressTrackingController {
         if (toShow != null) {
             toShow.setVisible(true);
             toShow.setManaged(true);
+        }
+
+        if (selectedNav == btnSolar && isExpenseMode) {
+            categoryBreakdownLabel.setVisible(false);
+            categoryBreakdownLabel.setManaged(false);
         }
     }
 }

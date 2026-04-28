@@ -24,8 +24,8 @@
                         </HBox>
                     </VBox>
 
-                    <ScrollPane>
-                        <VBox fx:id="housematesContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 10;"/>
+                    <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" style="-fx-padding: 10;">
+                        <HBox fx:id="housematesContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 10;"/>
                     </ScrollPane>
 
                     <VBox spacing="5" alignment="CENTER" maxWidth="220" fx:id="inviteContainer">

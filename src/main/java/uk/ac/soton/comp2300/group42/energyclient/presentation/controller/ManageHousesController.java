@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2300.group42.common.Role;
@@ -22,7 +23,7 @@ import static uk.ac.soton.comp2300.group42.energyclient.presentation.util.Contro
 public class ManageHousesController {
 
     @FXML private ComboBox<ObservableHouse> activeHouseComboBox;
-    @FXML private VBox housematesContainer;
+    @FXML private HBox housematesContainer;
     @FXML private TextField inviteHousemateField;
     @FXML private TextField newHouseNameField;
     @FXML private TextField newHouseAddressField;

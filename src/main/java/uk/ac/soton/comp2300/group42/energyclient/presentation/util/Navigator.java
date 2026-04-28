@@ -1,10 +1,13 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.util;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2300.group42.energyclient.di.AppStateManager;
@@ -103,7 +106,26 @@ public class Navigator {
     private static void switchView(ViewContext context) {
         try {
             Parent newRoot = loadFXML(context);
-            contentArea.getChildren().setAll(newRoot);
+
+            // Wrap content in a StackPane to allow centering within viewport
+            StackPane contentWrapper = new StackPane(newRoot);
+            contentWrapper.setStyle("-fx-background-color: transparent;");
+            contentWrapper.setPadding(new Insets(20, 0, 20, 0)); // top, right, bottom, left
+
+
+            // Wrap in ScrollPane for adaptive scrolling
+            ScrollPane scrollPane = new ScrollPane(contentWrapper);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setFitToHeight(true);
+            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+            // Use BorderPane to ensure ScrollPane fills available space
+            BorderPane container = new BorderPane();
+            container.setStyle("-fx-background-color: transparent;");
+            container.setCenter(scrollPane);
+
+            contentArea.getChildren().setAll(container);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load view: " + context.fxmlPath, e);
         }

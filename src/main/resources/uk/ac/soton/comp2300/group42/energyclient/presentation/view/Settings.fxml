@@ -30,6 +30,11 @@
             </VBox>
 
             <VBox spacing="5" alignment="CENTER">
+                <Label text="Colorblind options"/>
+                <ComboBox fx:id="colorVisionComboBox" prefWidth="220"/>
+            </VBox>
+
+            <VBox spacing="5" alignment="CENTER">
                 <Label text="Choose app UI mode"/>
                 <ComboBox fx:id="modeComboBox" prefWidth="220"/>
             </VBox>
@@ -45,10 +50,6 @@
                 <TextField fx:id="costGoalField" promptText="Enter cost goal (£):"/>
                 <Button text="Set Goal" onAction="#onSetCostGoal"/>
             </HBox>
-
-            <Button text="Accessibility Settings"
-                    onAction="#onGoToAccessibility"
-                    prefWidth="220"/>
         </VBox>
     </BackOverlayPane>
 

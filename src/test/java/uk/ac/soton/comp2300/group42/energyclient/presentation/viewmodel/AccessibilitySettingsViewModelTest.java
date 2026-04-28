@@ -8,6 +8,7 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.model.Preferences;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.preferences.ColorVision;
+import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -33,7 +34,14 @@ class AccessibilitySettingsViewModelTest {
     @Test
     void properties_delegateToPreferences() {
         assertSame(preferences.largeFontProperty(), viewModel.largeFontProperty());
+        assertSame(preferences.themeProperty(), viewModel.themeProperty());
         assertSame(preferences.visionProperty(), viewModel.colorVisionProperty());
+    }
+
+    @Test
+    void availableThemes_containsAllEnumValues() {
+        assertEquals(Theme.values().length, viewModel.getAvailableThemes().size());
+        assertIterableEquals(Arrays.asList(Theme.values()), viewModel.getAvailableThemes());
     }
 
     @Test

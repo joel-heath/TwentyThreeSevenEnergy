@@ -11,7 +11,6 @@ import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservableHouse;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
-import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -46,15 +45,13 @@ class SettingsViewModelTest {
     }
 
     @Test
-    void availableValues_containAllThemesAndModes() {
-        assertIterableEquals(Arrays.asList(Theme.values()), viewModel.getAvailableThemes());
+    void availableValues_containAllModes() {
         assertIterableEquals(Arrays.asList(Mode.values()), viewModel.getAvailableModes());
     }
 
     @Test
     void properties_delegateToPreferences() {
         assertSame(preferences.shareLocationProperty(), viewModel.shareLocationProperty());
-        assertSame(preferences.themeProperty(), viewModel.themeProperty());
         assertSame(preferences.modeProperty(), viewModel.modeProperty());
     }
 

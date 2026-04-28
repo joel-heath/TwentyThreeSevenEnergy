@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
 import uk.ac.soton.comp2300.group42.energyclient.presentation.observable.ObservablePreferences;
 import uk.ac.soton.comp2300.group42.preferences.Mode;
-import uk.ac.soton.comp2300.group42.preferences.Theme;
 
 import java.util.function.BiConsumer;
 
@@ -18,7 +17,6 @@ public class SettingsViewModel {
     private final SessionManager sessionManager;
     private final ObservablePreferences preferences;
 
-    private final ObservableList<Theme> availableThemes;
     private final ObservableList<Mode> availableModes;
 
     private final StringProperty costGoalInput = new SimpleStringProperty("");
@@ -29,8 +27,6 @@ public class SettingsViewModel {
     @Inject public SettingsViewModel(ObservablePreferences preferences, SessionManager sessionManager) {
         this.sessionManager = sessionManager;
         this.preferences = preferences;
-
-        this.availableThemes = FXCollections.observableArrayList(Theme.values());
         this.availableModes = FXCollections.observableArrayList(Mode.values());
     }
 
@@ -70,11 +66,9 @@ public class SettingsViewModel {
         return sessionManager.isLoggedIn();
     }
 
-    public ObservableList<Theme> getAvailableThemes() { return availableThemes; }
     public ObservableList<Mode> getAvailableModes() { return availableModes; }
 
     public BooleanProperty shareLocationProperty() { return preferences.shareLocationProperty(); }
-    public ObjectProperty<Theme> themeProperty() { return preferences.themeProperty(); }
     public ObjectProperty<Mode> modeProperty() { return preferences.modeProperty(); }
 
     public StringProperty costGoalInputProperty() { return costGoalInput; }

@@ -107,6 +107,8 @@ public class ManageHousesController {
         if (vm.isOwnerProperty().get()) {
             Button kickButton = new Button("Kick");
             kickButton.setOnAction(_ -> vm.kickHousemate(housemate));
+            if (housemate.getId().equals(vm.getCurrentUserId()))
+                kickButton.setDisable(true);
 
             ComboBox<Role> roleComboBox = new ComboBox<>();
             roleComboBox.getItems().setAll(Role.values());

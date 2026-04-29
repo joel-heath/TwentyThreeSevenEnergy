@@ -16,7 +16,8 @@
     <BackOverlayPane>
         <SettingsOverlayPane>
             <VBox StackPane.alignment="TOP_CENTER"
-                  viewOrder="-0.5">
+                  viewOrder="-0.5"
+                  maxHeight="80">
                 <StackPane.margin>
                     <Insets top="10"/>
                 </StackPane.margin>

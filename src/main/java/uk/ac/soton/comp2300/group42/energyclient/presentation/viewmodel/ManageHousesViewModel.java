@@ -166,6 +166,7 @@ public class ManageHousesViewModel {
     public ObservableList<ObservableHousemate> getHousemates() { return housemates; }
     public ObjectProperty<ObservableHouse> activeHouseProperty() { return activeHouse; }
     public ObservableHouse getActiveHouse() { return activeHouse.get(); }
+    public Long getCurrentUserId() { return  currentUser.getId(); }
 
     public BooleanBinding isOwnerProperty() { return currentUser.roleProperty().isEqualTo(Role.OWNER); }
     public BooleanBinding canInviteProperty() { return currentUser.roleProperty().isNotEqualTo(Role.GUEST); }

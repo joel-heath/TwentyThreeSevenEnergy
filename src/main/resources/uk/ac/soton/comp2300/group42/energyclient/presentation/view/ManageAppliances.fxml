@@ -19,7 +19,7 @@
                     <Label fx:id="houseLabel" style="-fx-font-size: 18px;"/>
 
                     <ScrollPane>
-                        <VBox fx:id="appliancesContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 10;"/>
+                        <HBox fx:id="appliancesContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 10;"/>
                     </ScrollPane>
 
                     <VBox spacing="5" alignment="CENTER" maxWidth="220" fx:id="addContainer">

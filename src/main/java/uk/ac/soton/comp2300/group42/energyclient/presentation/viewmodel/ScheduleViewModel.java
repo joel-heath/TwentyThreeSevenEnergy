@@ -76,7 +76,7 @@ public class ScheduleViewModel {
     public void scheduleActivation() {
         if (guard(selectedAppliance.get() == null, "Failed to schedule, no appliance selected") ||
             guard(isRecurring.get() && !hasRecurrenceDaysSelected(), "Failed to schedule, no recurrence days selected") ||
-            guard(!isRecurring.get() && date.get().isBefore(LocalDate.now()), "Failed to schedule, selected date is in the past"))
+            guard(!isRecurring.get() && date.get().atTime(hour.get(), minute.get()).isBefore(LocalDateTime.now()), "Failed to schedule, selected date is in the past"))
             return;
 
         Activation pojo = isRecurring.get()

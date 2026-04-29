@@ -10,6 +10,7 @@ import uk.ac.soton.comp2300.group42.energyclient.presentation.services.Activatio
 import uk.ac.soton.comp2300.group42.energyclient.presentation.store.ApplianceStore;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ActivationEditViewModel {
@@ -65,7 +66,7 @@ public class ActivationEditViewModel {
     public boolean saveChanges() {
         if (guard(selectedAppliance.get() == null, "Failed to schedule, no appliance selected") ||
             guard(isRecurring.get() && !hasRecurrenceDaysSelected(), "Failed to schedule, no recurrence days selected") ||
-            guard(!isRecurring.get() && date.get().isBefore(LocalDate.now()), "Failed to schedule, selected date is in the past"))
+            guard(!isRecurring.get() && date.get().atTime(hour.get(), minute.get()).isBefore(LocalDateTime.now()), "Failed to schedule, selected date is in the past"))
             return false;
 
         currentActivation.setAppliance(selectedAppliance.get());

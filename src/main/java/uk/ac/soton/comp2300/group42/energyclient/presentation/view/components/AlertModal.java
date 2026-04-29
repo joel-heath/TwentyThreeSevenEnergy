@@ -6,11 +6,14 @@ import javafx.scene.control.Label;
 
 import java.io.IOException;
 
-public class AlertModal extends Modal{
+public class AlertModal extends Modal {
+
     @FXML private Label titleLabel;
     @FXML private Label messageLabel;
 
-    private Runnable onOk = () -> {};
+    @FXML private void onOkClicked() {
+        close();
+    }
 
     public AlertModal() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AlertModal.fxml"));
@@ -26,18 +29,9 @@ public class AlertModal extends Modal{
     }
 
     public void show(String title, String message, Runnable onOk) {
-        this.onOk = onOk != null ? onOk : () -> {};
+        super.setOnClose(_ -> onOk.run());
         titleLabel.setText(title);
         messageLabel.setText(message);
         super.show();
-    }
-
-    @FXML private void onOkClicked() {
-        close();
-    }
-
-    @Override
-    public void onDismissed() {
-        onOk.run();
     }
 }

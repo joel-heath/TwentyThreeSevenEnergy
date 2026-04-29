@@ -62,7 +62,7 @@
         </SettingsOverlayPane>
     </BackOverlayPane>
 
-    <Modal fx:id="editHouseModal">
+    <Modal fx:id="editHouseModal" onClose="#onCloseEditModal">
         <VBox maxWidth="250" maxHeight="300" styleClass="modal-card">
             <Label text="Edit House" style="-fx-padding: 0 0 20 0;"/>
             <VBox style="-fx-padding: 5;">

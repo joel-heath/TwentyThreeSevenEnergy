@@ -29,13 +29,6 @@ public class Modal extends StackPane {
         overlayParent.get().hideModal();
     }
 
-    /**
-     * Called when the modal is dismissed (either by user action or background click).
-     * Override in subclasses to perform dismissal actions.
-     */
-    public void onDismissed() {
-    }
-
     public final ObjectProperty<EventHandler<ActionEvent>> onCloseProperty() { return this.onClose; }
     public final void setOnClose(EventHandler<ActionEvent> handler) { this.onCloseProperty().set(handler); }
     public final EventHandler<ActionEvent> getOnClose() { return this.onCloseProperty().get(); }

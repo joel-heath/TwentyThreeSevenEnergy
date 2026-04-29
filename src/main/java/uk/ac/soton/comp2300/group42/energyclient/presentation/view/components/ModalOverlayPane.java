@@ -56,6 +56,8 @@ public class ModalOverlayPane extends StackPane {
         if (modal == null)
             throw new IllegalStateException("No Modal content has been added to this ModalOverlayPane");
 
+        if (modal.isVisible()) return;
+
         modal.setVisible(true);
         mainContent.setEffect(blur);
     }
@@ -64,10 +66,10 @@ public class ModalOverlayPane extends StackPane {
         if (modal == null)
             throw new IllegalStateException("No Modal content has been added to this ModalOverlayPane");
 
+        if (!modal.isVisible()) return;
+
         modal.setVisible(false);
         mainContent.setEffect(null);
-
-        modal.onDismissed();
 
         EventHandler<ActionEvent> handler = modal.getOnClose();
         if (handler != null)

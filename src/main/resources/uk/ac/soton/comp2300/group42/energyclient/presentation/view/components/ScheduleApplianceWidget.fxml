@@ -13,7 +13,7 @@
          style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 0.5; -fx-background-radius: 6; -fx-border-radius: 6; -fx-padding: 10;"
          styleClass="vbox upcoming-activations-widget">
 
-    <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS">
+    <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS" minHeight="134">
         <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
             <Label text="Upcoming Device Schedules"/>
             <HBox fx:id="scheduleContainer" spacing="15"/>

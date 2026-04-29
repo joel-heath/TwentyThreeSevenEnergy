@@ -24,9 +24,13 @@
                         </HBox>
                     </VBox>
 
-                    <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" style="-fx-padding: 10;">
-                        <HBox fx:id="housematesContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 10;"/>
-                    </ScrollPane>
+                    <VBox alignment="CENTER" style="-fx-padding: 10">
+                        <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER"
+                                    prefHeight="120" minHeight="120"
+                                    style="-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;">
+                            <HBox fx:id="housematesContainer" spacing="10" alignment="TOP_CENTER"/>
+                        </ScrollPane>
+                    </VBox>
 
                     <VBox spacing="5" alignment="CENTER" maxWidth="220" fx:id="inviteContainer">
                         <TextField fx:id="inviteHousemateField" promptText="Enter email to invite"/>

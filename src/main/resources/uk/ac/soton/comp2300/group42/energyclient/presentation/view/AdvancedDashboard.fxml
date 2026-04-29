@@ -18,6 +18,7 @@
             <StackPane styleClass="widget-surface widget-shadow"
                        style="-fx-border-color: -fx-app-widget-border; -fx-border-width: 0.5; -fx-background-radius: 10; -fx-border-radius: 10;">
                 <ScrollPane prefWidth="300.0" minWidth="300.0" maxWidth="300.0"
+                            minHeight="70"
                             vbarPolicy="NEVER" hbarPolicy="ALWAYS" fitToHeight="true">
                     <HBox fx:id="statusRow" styleClass="hbox context menu" style="-fx-text-fill: -fx-app-status-row-text;" spacing="3" alignment="CENTER_LEFT">
                     </HBox>

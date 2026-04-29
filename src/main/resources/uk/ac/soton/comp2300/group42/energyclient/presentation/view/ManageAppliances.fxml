@@ -18,7 +18,9 @@
                     <Label text="Manage Appliances" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
                     <Label fx:id="houseLabel" style="-fx-font-size: 18px;"/>
 
-                    <ScrollPane>
+                    <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER"
+                                prefHeight="100"
+                                style="-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;">
                         <HBox fx:id="appliancesContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 10;"/>
                     </ScrollPane>
 

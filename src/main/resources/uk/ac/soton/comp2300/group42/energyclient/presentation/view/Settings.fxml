@@ -23,6 +23,7 @@
         </Button>
 
         <VBox spacing="20" alignment="CENTER">
+            <padding><Insets top="50"/></padding>
 
             <VBox spacing="5" alignment="CENTER">
                 <Label text="Choose app appearance theme"/>

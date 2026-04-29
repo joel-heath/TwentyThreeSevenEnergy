@@ -1,7 +1,6 @@
 package uk.ac.soton.comp2300.group42.energyclient.presentation.util;
 
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -110,8 +109,6 @@ public class Navigator {
             // Wrap content in a StackPane to allow centering within viewport
             StackPane contentWrapper = new StackPane(newRoot);
             contentWrapper.setStyle("-fx-background-color: transparent;");
-            contentWrapper.setPadding(new Insets(20, 0, 20, 0)); // top, right, bottom, left
-
 
             // Wrap in ScrollPane for adaptive scrolling
             ScrollPane scrollPane = new ScrollPane(contentWrapper);

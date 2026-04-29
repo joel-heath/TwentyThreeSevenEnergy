@@ -16,7 +16,8 @@
             <padding><Insets top="0" right="15" bottom="0" left="15"/></padding>
 
             <VBox spacing="10">
-                <VBox alignment="CENTER" style="-fx-padding: 15; -fx-background-radius: 10;">
+                <VBox alignment="CENTER" style="-fx-background-radius: 10;">
+                    <padding><Insets top="15" right="15" bottom="0" left="15"/></padding>
                     <Label text="CURRENT PRICE" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
                     <Label fx:id="priceLabel" text="Loading..." style="-fx-font-size: 28; -fx-font-weight: bold;"/>
                 </VBox>

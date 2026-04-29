@@ -6,12 +6,14 @@
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
 <?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ConfirmationModal?>
 
+<?import javafx.geometry.Insets?>
 <ModalOverlayPane xmlns="http://javafx.com/javafx"
                   xmlns:fx="http://javafx.com/fxml"
                   fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.AccountSettingsController">
     <BackOverlayPane>
-
         <VBox spacing="20" alignment="CENTER">
+            <padding><Insets top="50"/></padding>
+
             <VBox spacing="5" alignment="CENTER">
                 <Label text="Name"/>
                 <TextField fx:id="editNameField" promptText="Name" maxWidth="220"/>

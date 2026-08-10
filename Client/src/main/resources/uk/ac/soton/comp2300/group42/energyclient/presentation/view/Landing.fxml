@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.LandingController"
+      fx:id="mainContentArea">
+
+    <VBox spacing="10" alignment="TOP_CENTER"
+          xmlns:fx="http://javafx.com/fxml">
+
+        <Label text="23/7 Energy"
+               style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+
+    </VBox>
+
+    <Button text="Log In" onAction="#onLogin"/>
+    <Button text="Dive Straight In" onAction="#onDive"/>
+    <Button text="Accessibility Settings" onAction="#onAccessibilitySettings"/>
+    <Button text="Debug Dashboard" onAction="#onDebug" visible="false" managed="false" fx:id="debugButton"/>
+</VBox>
+
+

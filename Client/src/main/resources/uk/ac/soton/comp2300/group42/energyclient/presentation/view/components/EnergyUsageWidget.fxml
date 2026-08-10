@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageRect?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget?>
+
+<fx:root type="EnergyUsageWidget"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="10"
+         alignment="CENTER"
+         fillWidth="false"
+         minWidth="274"
+         prefWidth="274"
+         maxWidth="274"
+         style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 0.5; -fx-background-radius: 6; -fx-border-radius: 6; -fx-padding: 10;"
+         styleClass="energy-usage-widget widget-surface vbox">
+
+    <EnergyUsageRect fx:id="energyUsageRect"/>
+
+    <VBox spacing="5" alignment="CENTER">
+        <VBox alignment="CENTER">
+            <Label fx:id="totalSpentLabel"
+                   text="Total Spent"
+                   style="-fx-font-size: 12"/>
+            <Label fx:id="costLabel"
+                   style="-fx-font-size: 20"/>
+        </VBox>
+        <Label layoutX="50"
+               layoutY="80"
+               fx:id="goalLabel"
+               style="-fx-font-size: 12"/>
+    </VBox>
+</fx:root>

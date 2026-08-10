@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget?>
+
+<fx:root type="UpcomingActivationsWidget"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="10"
+         minWidth="274"
+         prefWidth="274"
+         maxWidth="274"
+         style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 0.5; -fx-background-radius: 6; -fx-border-radius: 6; -fx-padding: 10;"
+         styleClass="vbox upcoming-activations-widget">
+
+    <ScrollPane vbarPolicy="NEVER" hbarPolicy="ALWAYS" minHeight="134">
+        <VBox style="-fx-padding: 10; -fx-spacing: 10;" >
+            <Label text="Upcoming Device Schedules"/>
+            <HBox fx:id="scheduleContainer" spacing="15"/>
+        </VBox>
+    </ScrollPane>
+
+    <Button text="Schedule Appliance" onAction="#onSchedule"/>
+</fx:root>

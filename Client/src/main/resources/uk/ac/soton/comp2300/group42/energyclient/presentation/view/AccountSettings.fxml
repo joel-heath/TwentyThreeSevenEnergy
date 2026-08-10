@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ConfirmationModal?>
+
+<?import javafx.geometry.Insets?>
+<ModalOverlayPane xmlns="http://javafx.com/javafx"
+                  xmlns:fx="http://javafx.com/fxml"
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.AccountSettingsController">
+    <BackOverlayPane>
+        <VBox spacing="20" alignment="CENTER">
+            <padding><Insets top="50"/></padding>
+
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Name"/>
+                <TextField fx:id="editNameField" promptText="Name" maxWidth="220"/>
+                <Button onAction="#onUpdateName" text="Update Name"/>
+            </VBox>
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Email"/>
+                <TextField fx:id="editEmailField" promptText="Email" maxWidth="220"/>
+                <Button onAction="#onUpdateEmail" text="Update Email"/>
+            </VBox>
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Change Password"/>
+                <PasswordField fx:id="currentPasswordField" promptText="Current Password" maxWidth="220"/>
+                <PasswordField fx:id="newPasswordField" promptText="New Password" maxWidth="220"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" maxWidth="220"/>
+                <Button onAction="#onUpdatePassword" text="Update Password"/>
+            </VBox>
+
+            <Button onAction="#onLogout" text="Logout"/>
+
+            <Button fx:id="deleteAccountButton" onAction="#onDeleteAccount" text="Delete Account"/>
+
+            <Label fx:id="responseLabel" wrapText="true" prefWidth="280" alignment="CENTER"/>
+        </VBox>
+    </BackOverlayPane>
+
+    <ConfirmationModal fx:id="confirmationModal"/>
+</ModalOverlayPane>

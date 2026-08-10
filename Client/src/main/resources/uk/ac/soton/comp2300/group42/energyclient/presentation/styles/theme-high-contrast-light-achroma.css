@@ -1,0 +1,56 @@
+/* Auto-generated: high-contrast-light + achroma */
+.root,
+.combo-box-popup,
+.context-menu {
+    -fx-base: #ECECEC;
+    -fx-background: #F4F4F4;
+    -fx-control-inner-background: #FFFFFF;
+    -fx-text-background-color: #000000;
+    -fx-accent: #8e8e8e;
+
+    -fx-app-text: #000000;
+    -fx-app-muted: #5C5C5C;
+    -fx-app-card-surface: #FFFFFF;
+    -fx-app-card-border: #000000;
+    -fx-app-widget-background: #FFFFFF;
+    -fx-app-widget-border: #000000;
+    -fx-app-widget-surface: #FFFFFF;
+    -fx-app-widget-text: #000000;
+    -fx-app-accent: #4A4A4A;
+    -fx-app-link: #4A4A4A;
+    -fx-app-error: #666666;
+    -fx-app-on-error: #FFFFFF;
+    -fx-app-success: #4A4A4A;
+    -fx-app-toggle-enabled: #4A4A4A;
+    -fx-app-toggle-disabled: #BFBFBF;
+    -fx-app-thumb: #FFFFFF;
+    -fx-app-shadow: rgba(0, 0, 0, 0.25);
+    -fx-app-overlay: rgba(255, 255, 255, 0.22);
+
+    -fx-app-status-cheap: #E8E8E8;
+    -fx-app-status-average: #CFCFCF;
+    -fx-app-status-expensive: #A8A8A8;
+    -fx-app-usage-warning: #666666;
+    -fx-app-usage-critical: #333333;
+    -fx-app-gradient-start: #808080;
+    -fx-app-gradient-mid: #808080;
+    -fx-app-gradient-end: #808080;
+    -fx-app-status-row-text: #000000;
+}
+
+.widget-surface,
+.energy-usage-widget,
+.upcoming-activations-widget,
+.activation-schedule-pane {
+    -fx-background-color: -fx-app-widget-background;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-color: -fx-app-widget-border;
+    -fx-border-style: solid;
+    -fx-border-width: 0.5;
+    -fx-border-radius: 10;
+}
+
+
+
+

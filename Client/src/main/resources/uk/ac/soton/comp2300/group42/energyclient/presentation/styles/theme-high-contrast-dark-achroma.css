@@ -1,0 +1,65 @@
+/* Auto-generated: high-contrast-dark + achroma */
+.root,
+.combo-box-popup,
+.context-menu {
+    -fx-base: #404040;
+    -fx-background: #2F2F2F;
+    -fx-control-inner-background: #464646;
+    -fx-text-background-color: #FFFFFF;
+    -fx-accent: #A8A8A8;
+
+    -fx-app-text: #FFFFFF;
+    -fx-app-muted: #B3B3B3;
+    -fx-app-card-surface: #464646;
+    -fx-app-card-border: #FFFFFF;
+    -fx-app-widget-background: #000000;
+    -fx-app-widget-border: #FFFFFF;
+    -fx-app-widget-surface: #FFFFFF;
+    -fx-app-widget-text: #000000;
+    
+    -fx-app-status-row-text: #000000;
+    -fx-app-accent: #A8A8A8;
+    -fx-app-link: #CFCFCF;
+    -fx-app-error: #808080;
+    -fx-app-on-error: #FFFFFF;
+    -fx-app-success: #A8A8A8;
+    -fx-app-toggle-enabled: #A8A8A8;
+    -fx-app-toggle-disabled: #353535;
+    -fx-app-thumb: #FFFFFF;
+    -fx-app-shadow: rgba(0, 0, 0, 0.35);
+    -fx-app-overlay: rgba(0, 0, 0, 0.22);
+
+    -fx-app-status-cheap: #E8E8E8;
+    -fx-app-status-average: #CFCFCF;
+    -fx-app-status-expensive: #A8A8A8;
+    -fx-app-usage-warning: #808080;
+    -fx-app-usage-critical: #CFCFCF;
+    -fx-app-gradient-start: #808080;
+    -fx-app-gradient-mid: #808080;
+    -fx-app-gradient-end: #808080;
+}
+
+.widget-surface,
+.energy-usage-widget,
+.upcoming-activations-widget,
+.activation-schedule-pane {
+    -fx-background-color: -fx-app-widget-background;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-color: -fx-app-widget-border;
+    -fx-border-style: solid;
+    -fx-border-width: 0.5;
+    -fx-border-radius: 10;
+}
+.chart-alternative-row-fill,
+.chart-alternative-column-fill {
+    -fx-fill: -fx-background;
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: -fx-background;
+}
+.progress-stripe {
+    -fx-background-color: -fx-background;
+}

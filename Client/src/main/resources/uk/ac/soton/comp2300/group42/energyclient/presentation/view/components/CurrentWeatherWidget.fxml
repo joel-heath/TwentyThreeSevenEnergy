@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.CurrentWeatherWidget?>
+
+<fx:root type="CurrentWeatherWidget"
+         xmlns:fx="http://javafx.com/fxml"
+         spacing="10"
+         alignment="CENTER"
+         fillWidth="false"
+         minWidth="274"
+         prefWidth="274"
+         maxWidth="274"
+         style="-fx-background-color: -fx-app-widget-background; -fx-border-color: -fx-app-widget-border; -fx-border-width: 0.5; -fx-background-radius: 6; -fx-border-radius: 6; -fx-padding: 10;"
+         styleClass="vbox widget-surface widget-shadow energy-usage-widget">
+
+    <VBox spacing="5" alignment="CENTER">
+        <Label fx:id="tempLabel" style="-fx-font-size: 12"/>
+        <Label fx:id="sunlightLabel" style="-fx-font-size: 12"/>
+    </VBox>
+
+</fx:root>

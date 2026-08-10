@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.SettingsOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget?>
+<?import javafx.geometry.Insets?>
+<ModalOverlayPane xmlns:fx="http://javafx.com/fxml"
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.SimpleDashboardController">
+    <SettingsOverlayPane>
+        <Label text="23/7 Energy" style="-fx-font-size: 24px; -fx-font-weight: bold;"
+               StackPane.alignment="TOP_LEFT"
+               viewOrder="-1.0">
+            <StackPane.margin>
+                <Insets top="10" left="15"/>
+            </StackPane.margin>
+        </Label>
+
+        <VBox spacing="20" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity">
+
+            <StackPane styleClass="widget-shadow">
+                <EnergyUsageWidget fx:id="energyWidget"/>
+            </StackPane>
+
+            <StackPane styleClass="widget-shadow">
+                <UpcomingActivationsWidget fx:id="activationsWidget"/>
+            </StackPane>
+
+            <Button text="Manage Houses" onAction="#onManageHouses"/>
+
+            <Button text="Track Progress" onAction="#onProgressTracking"/>
+
+        </VBox>
+    </SettingsOverlayPane>
+    <ActivationEditModal fx:id="activationEditModal"/>
+</ModalOverlayPane>

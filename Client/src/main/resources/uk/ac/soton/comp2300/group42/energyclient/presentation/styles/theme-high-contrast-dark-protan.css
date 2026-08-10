@@ -1,0 +1,69 @@
+/* Auto-generated: high-contrast-dark + protan */
+.root,
+.combo-box-popup,
+.context-menu {
+    /* Modena dark theme overrides */
+    -fx-base: #3f474f;
+    -fx-background: #333639;
+    -fx-control-inner-background: #464a4e;
+    -fx-text-background-color: #ffffff;
+    -fx-accent: #0096c9;
+
+    -fx-app-text: #ffffff;
+    -fx-app-muted: #b3b3b3;
+    -fx-app-card-surface: #464a4e;
+    -fx-app-card-border: #FFFFFF;
+    -fx-app-widget-background: #5B568C;
+    -fx-app-widget-surface: #ffffff;
+    
+    -fx-app-status-row-text: #000000;
+    -fx-app-accent: #0096c9;
+    -fx-app-link: #0096c9;
+    -fx-app-error: #DC3545;
+    -fx-app-on-error: #ffffff;
+    -fx-app-success: #2ECC71;
+    -fx-app-toggle-enabled: #0096c9;
+    -fx-app-toggle-disabled: #35393d;
+    -fx-app-thumb: #ffffff;
+    -fx-app-shadow: rgba(0, 0, 0, 0.35);
+    -fx-app-overlay: rgba(0, 0, 0, 0.22);
+
+    -fx-app-status-cheap: #D4EDDA;
+    -fx-app-status-average: #FFF3CD;
+    -fx-app-status-expensive: #F8D7DA;
+    -fx-app-usage-warning: #E74C3C;
+    -fx-app-usage-critical: #C0392B;
+    -fx-app-gradient-start: #2ECC71;
+    -fx-app-gradient-mid: #FFC107;
+    -fx-app-gradient-end: #E74C3C;
+}
+
+.root,
+.combo-box-popup,
+.context-menu {
+    -fx-app-status-cheap: #D9ECFA;
+    -fx-app-status-average: #FCE8C3;
+    -fx-app-status-expensive: #F8DCCB;
+    -fx-app-usage-warning: #D55E00;
+    -fx-app-usage-critical: #9E4400;
+    -fx-app-gradient-start: #0072B2;
+    -fx-app-gradient-mid: #E69F00;
+    -fx-app-gradient-end: #D55E00;
+    -fx-app-toggle-enabled: #0072B2;
+    -fx-app-error: #D55E00;
+    -fx-app-success: #0072B2;
+    -fx-app-status-row-text: #000000;
+}
+.chart-alternative-row-fill,
+.chart-alternative-column-fill {
+    -fx-fill: -fx-background;
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: -fx-background;
+}
+.progress-stripe {
+    -fx-background-color: -fx-background;
+}
+

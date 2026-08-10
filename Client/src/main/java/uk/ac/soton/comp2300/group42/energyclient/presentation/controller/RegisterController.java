@@ -1,0 +1,48 @@
+package uk.ac.soton.comp2300.group42.energyclient.presentation.controller;
+
+import com.google.inject.Inject;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import uk.ac.soton.comp2300.group42.energyclient.domain.session.SessionManager;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.Navigator;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.util.StyleClassUtils;
+import uk.ac.soton.comp2300.group42.energyclient.presentation.viewmodel.RegisterViewModel;
+
+public class RegisterController {
+
+    @FXML private TextField nameField;
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmPasswordField;
+    @FXML private Hyperlink loginLink;
+    @FXML private Label responseLabel;
+
+    private final RegisterViewModel vm;
+    private final SessionManager sessionManager;
+
+    @Inject public RegisterController(RegisterViewModel vm, SessionManager sessionManager) {
+        this.vm = vm;
+        this.sessionManager = sessionManager;
+    }
+
+    @FXML private void initialize() {
+        nameField.textProperty().bindBidirectional(vm.nameProperty());
+        emailField.textProperty().bindBidirectional(vm.emailProperty());
+        passwordField.textProperty().bindBidirectional(vm.passwordProperty());
+        confirmPasswordField.textProperty().bindBidirectional(vm.confirmPasswordProperty());
+        responseLabel.textProperty().bind(vm.responseMessageProperty());
+        StyleClassUtils.bindBooleanClass(responseLabel, vm.hasResponseErrorProperty(), "response-error");
+    }
+
+    @FXML private void onRegister() {
+        vm.register(); // Do not Navigate to dashboard here, AppStateOrchestrator will trigger navigation on session change.
+    }
+
+    @FXML private void goToLogin() {
+        Navigator.goTo("Login.fxml");
+    }
+
+    @FXML private void onAccessibilitySettings() {
+        Navigator.goTo("AccessibilitySettings.fxml");
+    }
+}

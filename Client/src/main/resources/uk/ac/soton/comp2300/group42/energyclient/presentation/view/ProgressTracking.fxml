@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.SettingsOverlayPane?>
+<BackOverlayPane xmlns="http://javafx.com/javafx"
+                 xmlns:fx="http://javafx.com/fxml"
+                 fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.ProgressTrackingController">
+
+    <SettingsOverlayPane>
+        <VBox spacing="15" alignment="TOP_CENTER" maxWidth="450">
+            <padding><Insets top="0" right="15" bottom="0" left="15"/></padding>
+
+            <VBox spacing="10">
+                <VBox alignment="CENTER" style="-fx-background-radius: 10;">
+                    <padding><Insets top="15" right="15" bottom="0" left="15"/></padding>
+                    <Label text="CURRENT PRICE" style="-fx-font-size: 10; -fx-font-weight: bold;"/>
+                    <Label fx:id="priceLabel" text="Loading..." style="-fx-font-size: 28; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <LineChart fx:id="priceChart" prefHeight="180" animated="false" createSymbols="false" legendVisible="false">
+                    <xAxis><CategoryAxis side="BOTTOM" tickLabelRotation="45" /></xAxis>
+                    <yAxis><NumberAxis side="LEFT" /></yAxis>
+                </LineChart>
+
+                <VBox spacing="8" style="-fx-padding: 12; -fx-background-radius: 10;">
+                    <HBox spacing="8">
+                        <ComboBox fx:id="categoryComboBox" promptText="Category" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        <TextField fx:id="logUsageField" promptText="kWh" prefWidth="70"/>
+                    </HBox>
+                    <Button text="Log Usage" onAction="#onLogUsage" maxWidth="Infinity" style="-fx-font-weight: bold;"/>
+                </VBox>
+            </VBox>
+
+            <VBox spacing="10" style="-fx-padding: 10; -fx-background-radius: 10;">
+
+                <StackPane>
+                    <VBox fx:id="expensesViewContainer" spacing="5">
+                        <Label text="AGGREGATE EXPENSES (£)" style="-fx-font-weight: bold; -fx-padding: 10 0 0 5;"/>
+                        <BarChart fx:id="expensesChart" prefHeight="180" legendVisible="false" animated="false">
+                            <xAxis><CategoryAxis side="BOTTOM"/></xAxis>
+                            <yAxis><NumberAxis side="LEFT"/></yAxis>
+                        </BarChart>
+
+                        <Label text="CATEGORY BREAKDOWN (£)" style="-fx-font-weight: bold; -fx-padding: 10 0 0 5;" fx:id="categoryBreakdownLabel"/>
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <BarChart fx:id="electricityExpensesChart" prefHeight="180" managed="false" visible="false" animated="false"><xAxis><CategoryAxis/></xAxis><yAxis><NumberAxis/></yAxis></BarChart>
+                            <BarChart fx:id="gasExpensesChart" prefHeight="180" managed="false" visible="false" animated="false"><xAxis><CategoryAxis/></xAxis><yAxis><NumberAxis/></yAxis></BarChart>
+                            <BarChart fx:id="otherExpensesChart" prefHeight="180" managed="false" visible="false" animated="false"><xAxis><CategoryAxis/></xAxis><yAxis><NumberAxis/></yAxis></BarChart>
+                        </StackPane>
+                    </VBox>
+
+                    <VBox fx:id="usageViewContainer" spacing="5" managed="false" visible="false">
+                        <Label text="AGGREGATE USAGE (kWh)" style="-fx-font-weight: bold; -fx-padding: 10 0 0 5;"/>
+                        <BarChart fx:id="usageChart" prefHeight="180" legendVisible="false" animated="false">
+                            <xAxis><CategoryAxis side="BOTTOM"/></xAxis>
+                            <yAxis><NumberAxis side="LEFT"/></yAxis>
+                        </BarChart>
+
+                        <Label text="CATEGORY BREAKDOWN (kWh)" style="-fx-font-weight: bold; -fx-padding: 10 0 0 5;"/>
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <BarChart fx:id="electricityUsageChart" prefHeight="180" managed="false" visible="false" animated="false"><xAxis><CategoryAxis/></xAxis><yAxis><NumberAxis/></yAxis></BarChart>
+                            <BarChart fx:id="gasUsageChart" prefHeight="180" managed="false" visible="false" animated="false"><xAxis><CategoryAxis/></xAxis><yAxis><NumberAxis/></yAxis></BarChart>
+                            <BarChart fx:id="solarUsageChart" prefHeight="180" managed="false" visible="false" animated="false"><xAxis><CategoryAxis/></xAxis><yAxis><NumberAxis/></yAxis></BarChart>
+                            <BarChart fx:id="otherUsageChart" prefHeight="180" managed="false" visible="false" animated="false"><xAxis><CategoryAxis/></xAxis><yAxis><NumberAxis/></yAxis></BarChart>
+                        </StackPane>
+                    </VBox>
+                </StackPane>
+
+                <fx:define>
+                    <ToggleGroup fx:id="expenseUsageToggleGroup" />
+                    <ToggleGroup fx:id="navToggleGroup" />
+                </fx:define>
+
+                <HBox style="-fx-background-radius: 8; -fx-padding: 2;">
+                    <ToggleButton fx:id="btnExpenses" text="Expenses" toggleGroup="$expenseUsageToggleGroup" selected="true" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                    <ToggleButton text="Usage" toggleGroup="$expenseUsageToggleGroup" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <FlowPane hgap="5" vgap="5" alignment="CENTER">
+                    <ToggleButton fx:id="btnElec" text="Elec" toggleGroup="$navToggleGroup" selected="true" prefWidth="65"/>
+                    <ToggleButton fx:id="btnGas"  text="Gas"  toggleGroup="$navToggleGroup" prefWidth="65"/>
+                    <ToggleButton fx:id="btnSolar" text="Solar" toggleGroup="$navToggleGroup" prefWidth="65"/>
+                    <ToggleButton fx:id="btnOther" text="Other" toggleGroup="$navToggleGroup" prefWidth="65"/>
+                </FlowPane>
+
+            </VBox>
+        </VBox>
+    </SettingsOverlayPane>
+</BackOverlayPane>

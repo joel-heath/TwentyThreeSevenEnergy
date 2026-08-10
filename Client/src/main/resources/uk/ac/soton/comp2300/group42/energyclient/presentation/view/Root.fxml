@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.AlertModal?>
+
+<ModalOverlayPane xmlns="http://javafx.com/javafx"
+                  xmlns:fx="http://javafx.com/fxml"
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.RootController"
+                  prefHeight="400.0" prefWidth="600.0">
+
+    <StackPane fx:id="contentArea" />
+
+    <AlertModal fx:id="alertModal"/>
+</ModalOverlayPane>

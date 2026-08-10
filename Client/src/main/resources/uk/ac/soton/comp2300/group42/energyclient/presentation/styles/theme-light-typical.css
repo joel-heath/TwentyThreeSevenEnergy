@@ -1,0 +1,43 @@
+/* Auto-generated: light + typical */
+.root,
+.combo-box-popup,
+.context-menu {
+    /* Modena light theme overrides */
+    -fx-base: #ececec;
+    -fx-background: #f4f4f4;
+    -fx-control-inner-background: #ffffff;
+    -fx-text-background-color: #000000;
+    -fx-accent: #0096c9;
+
+    -fx-app-text: #000000;
+    -fx-app-muted: #5c5c5c;
+    -fx-app-card-surface: #ffffff;
+    -fx-app-card-border: #d1d1d1;
+    -fx-app-widget-background: #B0ACE3;
+    -fx-app-widget-surface: #ffffff;
+    -fx-app-widget-text: #000000;
+    -fx-app-accent: #0096c9;
+    -fx-app-link: #0096c9;
+    -fx-app-error: #DC3545;
+    -fx-app-on-error: #ffffff;
+    -fx-app-success: #2ECC71;
+    -fx-app-toggle-enabled: #0096c9;
+    -fx-app-toggle-disabled: #bfbfbf;
+    -fx-app-thumb: #ffffff;
+    -fx-app-shadow: rgba(0, 0, 0, 0.25);
+    -fx-app-overlay: rgba(255, 255, 255, 0.22);
+
+    -fx-app-status-cheap: #D4EDDA;
+    -fx-app-status-average: #FFF3CD;
+    -fx-app-status-expensive: #F8D7DA;
+    -fx-app-usage-warning: #E74C3C;
+    -fx-app-usage-critical: #C0392B;
+    -fx-app-gradient-start: #2ECC71;
+    -fx-app-gradient-mid: #FFC107;
+    -fx-app-gradient-end: #E74C3C;
+    -fx-app-status-row-text: #000000;
+}
+
+
+
+

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.BackOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.SettingsOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.Modal?>
+<?import javafx.geometry.Insets?>
+<ModalOverlayPane xmlns="http://javafx.com/javafx"
+                  xmlns:fx="http://javafx.com/fxml"
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.ManageHousesController">
+
+    <BackOverlayPane>
+        <SettingsOverlayPane>
+            <VBox StackPane.alignment="TOP_CENTER"
+                  viewOrder="-0.5"
+                  maxHeight="80">
+                <StackPane.margin>
+                    <Insets top="10"/>
+                </StackPane.margin>
+                <VBox alignment="CENTER">
+                    <Label text="Manage" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                    <Label text="Houses" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                </VBox>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="20">
+                <padding><Insets top="80" bottom="10"/></padding>
+
+                <VBox spacing="5" alignment="CENTER">
+                    <Label text="Active House"/>
+                    <HBox alignment="CENTER">
+                        <ComboBox fx:id="activeHouseComboBox" prefWidth="220"/>
+                        <Button text="⚙" onAction="#onEditHouse"/>
+                    </HBox>
+                </VBox>
+
+                <VBox alignment="CENTER" style="-fx-padding: 10">
+                    <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER"
+                                prefHeight="120" minHeight="120"
+                                style="-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;">
+                        <HBox fx:id="housematesContainer" spacing="10" alignment="TOP_CENTER"/>
+                    </ScrollPane>
+                </VBox>
+
+                <VBox spacing="5" alignment="CENTER" maxWidth="220" fx:id="inviteContainer">
+                    <TextField fx:id="inviteHousemateField" promptText="Enter email to invite"/>
+                    <Button text="Invite New Housemate" onAction="#onInviteHousemate"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="CENTER" maxWidth="220">
+                    <TextField fx:id="newHouseNameField" promptText="Enter new house name"/>
+                    <TextField fx:id="newHouseAddressField" promptText="Enter new house address"/>
+                    <Button text="Create New House" onAction="#onCreateNewHouse"/>
+                </VBox>
+
+                <Button text="Manage Appliances" onAction="#onManageAppliances"/>
+            </VBox>
+        </SettingsOverlayPane>
+    </BackOverlayPane>
+
+    <Modal fx:id="editHouseModal" onClose="#onCloseEditModal">
+        <VBox maxWidth="250" maxHeight="300" styleClass="modal-card">
+            <Label text="Edit House" style="-fx-padding: 0 0 20 0;"/>
+            <VBox style="-fx-padding: 5;">
+                <Label text="House Name"/>
+                <TextField fx:id="editHouseNameField" prefWidth="220"/>
+            </VBox>
+            <VBox style="-fx-padding: 5;">
+                <Label text="House Address"/>
+                <TextField fx:id="editAddressField" prefWidth="220"/>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0;">
+                <Button text="Save Edits" onAction="#onSaveHouseEdits"/>
+                <Button text="Leave House" onAction="#onLeaveHouse" fx:id="leaveHouseButton"/>
+                <Button text="Delete House" onAction="#onDeleteHouse" fx:id="deleteHouseButton"/>
+                <Button text="Exit Without Saving" onAction="#onCloseEditModal"/>
+            </VBox>
+            <Label fx:id="responseLabel"/>
+        </VBox>
+    </Modal>
+</ModalOverlayPane>

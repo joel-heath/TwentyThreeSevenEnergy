@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.SettingsOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ModalOverlayPane?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.EnergyUsageWidget?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.UpcomingActivationsWidget?>
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.ActivationEditModal?>
+
+<?import uk.ac.soton.comp2300.group42.energyclient.presentation.view.components.CurrentWeatherWidget?>
+<?import javafx.geometry.Insets?>
+<ModalOverlayPane xmlns:fx="http://javafx.com/fxml"
+                  fx:controller="uk.ac.soton.comp2300.group42.energyclient.presentation.controller.AdvancedDashboardController">
+    <SettingsOverlayPane>
+        <Label text="23/7 Energy" style="-fx-font-size: 24px; -fx-font-weight: bold;"
+               StackPane.alignment="TOP_LEFT"
+               viewOrder="-1.0">
+            <StackPane.margin>
+                <Insets top="10" left="15"/>
+            </StackPane.margin>
+        </Label>
+        <VBox spacing="20" alignment="CENTER" fillWidth="false">
+            <padding><Insets top="50" bottom="10"/></padding>
+
+            <StackPane styleClass="widget-surface widget-shadow"
+                       style="-fx-border-color: -fx-app-widget-border; -fx-border-width: 0.5; -fx-background-radius: 10; -fx-border-radius: 10;">
+                <ScrollPane prefWidth="300.0" minWidth="300.0" maxWidth="300.0"
+                            minHeight="70"
+                            vbarPolicy="NEVER" hbarPolicy="ALWAYS" fitToHeight="true">
+                    <HBox fx:id="statusRow" styleClass="hbox context menu" style="-fx-text-fill: -fx-app-status-row-text;" spacing="3" alignment="CENTER_LEFT">
+                    </HBox>
+                </ScrollPane>
+            </StackPane>
+
+            <StackPane styleClass="widget-shadow">
+                <EnergyUsageWidget fx:id="energyWidget"/>
+            </StackPane>
+
+            <StackPane styleClass="widget-shadow">
+                <CurrentWeatherWidget fx:id="currentWeatherWidget"/>
+            </StackPane>
+
+            <StackPane styleClass="widget-shadow">
+                <UpcomingActivationsWidget fx:id="upcomingActivationsWidget"/>
+            </StackPane>
+
+            <Button text="Manage Houses" onAction="#onManageHouses"/>
+
+            <Button text="Track Progress" onAction="#onProgressTracking"/>
+
+        </VBox>
+    </SettingsOverlayPane>
+    <ActivationEditModal fx:id="activationEditModal"/>
+</ModalOverlayPane>

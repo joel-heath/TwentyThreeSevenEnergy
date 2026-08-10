@@ -1,0 +1,27 @@
+image: maven:3.9-eclipse-temurin-25
+
+stages:
+  - test
+  - deploy
+
+run_unit_tests:
+  stage: test
+  tags:
+    - docker
+  script:
+    - mvn test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+
+deploy_library:
+  stage: deploy
+  tags:
+    - docker
+  script:
+    - echo '<settings><servers><server><id>gitlab-maven</id><configuration><httpHeaders><property><name>Job-Token</name><value>${CI_JOB_TOKEN}</value></property></httpHeaders></configuration></server></servers></settings>' > ci_settings.xml
+    - mvn deploy -s ci_settings.xml
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
